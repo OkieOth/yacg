@@ -1,0 +1,11 @@
+---
+name: Simple Example
+description: This is only an example to display how the configuration could look like
+models:
+- jsonSchema: config_example.json
+tasks:
+- name: echo model
+  description: prints the content of the model in a new file
+  singleFileTask:
+    template: echo
+    destFile: echo.json
