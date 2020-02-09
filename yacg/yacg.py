@@ -1,11 +1,14 @@
 import argparse
+import sys
+import util.fileUtils
+from util.outputUtils import printError, printOk, printInfo, getErrorTxt, getOkTxt
 
+# test 
 description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
 source code from it
 """
 parser = argparse.ArgumentParser(prog='yacg', description=description)
-
 parser.add_argument_group('input')
 parser.add_argument('--model', nargs='+', help='models to process')
 parser.add_argument('--config', nargs='?', help='config file')
@@ -15,10 +18,50 @@ parser.add_argument_group('output')
 parser.add_argument('--outputDir',  help='dir to write the output')
 
 
-def main():
-    args = parser.parse_args()
-    print("the program args are: {}".format(args))
+def getFileExt(fileName):
+    """returns the fileextension of a given file name"""
 
+    lastDot = fileName.rindex('.')
+    return fileName[lastDot:]
+
+def checkModelsToLoad(args):
+    """test if the desired model files exist"""
+    
+    if not args.model:
+        print ('no models given, cancel')
+        return False
+    print ('\nModels to load:')
+    foundAll = True
+    for model in args.model:
+        modelExists = util.fileUtils.doesFileExist(model)        
+        modelExistsString = getOkTxt('yes') if modelExists else getErrorTxt('no') 
+        if not modelExists:
+            foundAll = False
+        print (' {}\t{}'.format(modelExistsString,model))
+    return foundAll
+
+def readModels(args):
+    """reads all desired models and build the model object tree from it"""
+
+    yamlExtensions = set(['.yaml','.yml'])
+    for model in args.model:
+        fileExt = getFileExt(model)
+        if fileExt.lower() in yamlExtensions:
+            pass # TODO
+        else
+            pass # TODO
+
+def main():
+    """starts the program execution"""
+
+    args = parser.parse_args()
+    argumentsAreOk = True
+    if not checkModelsToLoad(args):
+        argumentsAreOk = False
+    if not argumentsAreOk:
+        printError('\nfound errors in configuration, cancel execution')
+        sys.exit(1)
+    readModels(args)
 
 if __name__ == '__main__':
     main()
