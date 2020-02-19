@@ -1,0 +1,181 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "yacg inner type model",
+    "description": "model types used internally to provide loaded models for the code generators",
+    "version": "0.0.1",
+    "definitions": {
+        "Type": {
+            "type": "object",
+            "description": "base type for all type",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "BaseType": {
+            "type": "object",
+            "description": "base for all base types like int, string, date, ...",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                }
+            ]
+        },
+        "IntegerType": {
+            "type": "object",
+            "description": "integer values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseType"
+                },
+                {
+                    "properties": {
+                        "format": {
+                            "type": "string",
+                            "enum": ["int32", "int64"]
+                        }
+                    }
+                }
+            ]
+        },
+        "NumberType": {
+            "type": "object",
+            "description": "long values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseType"
+                },
+                {
+                    "properties": {
+                        "format": {
+                            "type": "string",
+                            "enum": ["float", "double"]
+                        }
+                    }
+                }
+            ]
+        },
+        "StringType": {
+            "type": "object",
+            "description": "integer values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseType"
+                }
+            ]
+        },
+        "EnumType": {
+            "type": "object",
+            "description": "integer values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/StringType"
+                },
+                {
+                    "properties": {
+                        "values": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"   
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "DateType": {
+            "type": "object",
+            "description": "integer values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseType"
+                }
+            ]
+        },
+        "DateTimeType": {
+            "type": "object",
+            "description": "integer values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseType"
+                }
+            ]
+        },
+        "ComplexType": {
+            "type": "object",
+            "description": "Complex type description",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "source": {
+                            "description": "from what file the Type was loaded",
+                            "$comment": "basically a nomalized fileName with path",
+                            "type": "string"
+                        },
+                        "referencedBy": {
+                            "description": "types that hold references to that type",
+                            "type": "array",
+                            "$ref": "#/definitions/ComplexType"
+                        },
+                        "properties": {
+                            "description": "properties of that type",
+                            "type": "array",
+                            "$ref": "#/definitions/Property"                            
+                        },
+                        "tags": {
+                            "description": "additional flags to mark a type",
+                            "$comment": "custom extension marked with '__tags'",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Tag"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "Property": {
+            "type": "object",
+            "description": "a property of a type",
+            "properties": {
+                "name": {
+                    "description": "type unique identifier",
+                    "type": "string"
+                },
+                "isArray": {
+                    "description": "trure - if the property is an array",
+                    "type": "boolean"
+                },
+                "type": {
+                    "description": "either a basic or a complex type",
+                    "$ref": "#/definitions/Type"                                                
+                },
+                "tags": {
+                    "description": "additional flags to mark a property",
+                    "$comment": "custom extension marked with '__tags'",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Tag"
+                    }
+                }
+            }
+        },
+        "Tag": {
+            "type": "object",
+            "description": "a tag type",
+            "$comment": "this type can be used to implement additional grouping or marks for processing",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

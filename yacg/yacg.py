@@ -2,6 +2,9 @@ import argparse
 import sys
 import util.fileUtils
 from util.outputUtils import printError, printOk, printInfo, getErrorTxt, getOkTxt
+from builder.jsonBuilder import getModelFromJson 
+from builder.yamlBuilder import getModelFromYaml 
+from generators.test import renderTemplate
 
 # test 
 description = """Yet another code generation.
@@ -47,13 +50,14 @@ def readModels(args):
     for model in args.model:
         fileExt = getFileExt(model)
         if fileExt.lower() in yamlExtensions:
-            pass # TODO
-        else
-            pass # TODO
+            getModelFromYaml(model)
+            # TODO
+        else:
+            getModelFromJson(model) 
+            # TODO
 
 def main():
     """starts the program execution"""
-
     args = parser.parse_args()
     argumentsAreOk = True
     if not checkModelsToLoad(args):
@@ -61,7 +65,8 @@ def main():
     if not argumentsAreOk:
         printError('\nfound errors in configuration, cancel execution')
         sys.exit(1)
-    readModels(args)
+    # readModels(args)
+    renderTemplate()
 
 if __name__ == '__main__':
     main()

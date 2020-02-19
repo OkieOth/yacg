@@ -3,6 +3,7 @@
 import json
 
 def getModelFromJson(modelFile):
+    """reads a JSON schema file and build a model from it"""
+
     with open(modelFile) as json_schema:
         parsedSchema = json.load(json_schema)
-        print (parsedSchema)

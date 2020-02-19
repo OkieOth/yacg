@@ -10,6 +10,9 @@ pylint = "<2.0.0"
 argparse = "*"
 colorama = "*"
 pyyaml = "*"
+mako = "*"
+ptvsd = "*"
+pudb = "*"
 
 [requires]
 python_version = "3.7"
