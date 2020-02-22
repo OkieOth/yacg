@@ -13,21 +13,12 @@
                 }
             }
         },
-        "BaseType": {
-            "type": "object",
-            "description": "base for all base types like int, string, date, ...",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/Type"
-                }
-            ]
-        },
         "IntegerType": {
             "type": "object",
             "description": "integer values",
             "allOf": [
                 {
-                    "$ref": "#/definitions/BaseType"
+                    "$ref": "#/definitions/Type"
                 },
                 {
                     "properties": {
@@ -44,7 +35,7 @@
             "description": "long values",
             "allOf": [
                 {
-                    "$ref": "#/definitions/BaseType"
+                    "$ref": "#/definitions/Type"
                 },
                 {
                     "properties": {
@@ -61,7 +52,7 @@
             "description": "integer values",
             "allOf": [
                 {
-                    "$ref": "#/definitions/BaseType"
+                    "$ref": "#/definitions/Type"
                 }
             ]
         },
@@ -89,7 +80,7 @@
             "description": "integer values",
             "allOf": [
                 {
-                    "$ref": "#/definitions/BaseType"
+                    "$ref": "#/definitions/Type"
                 }
             ]
         },
@@ -98,7 +89,7 @@
             "description": "integer values",
             "allOf": [
                 {
-                    "$ref": "#/definitions/BaseType"
+                    "$ref": "#/definitions/Type"
                 }
             ]
         },
@@ -111,13 +102,27 @@
                 },
                 {
                     "properties": {
+                        "domain": {
+                            "description": "scope/domain to that this type belongs",
+                            "$comment": "optional, can be used for domain driven modelling",
+                            "type": "string"
+                        },
                         "source": {
                             "description": "from what file the Type was loaded",
                             "$comment": "basically a nomalized fileName with path",
                             "type": "string"
                         },
+                        "extendsType": {
+                            "description": "in case of inheritance points this attrib to the base type",
+                            "$ref": "#/definitions/ComplexType"
+                        },
+                        "extendedBy": {
+                            "description": "list of types that extend this type",
+                            "type": "array",
+                            "$ref": "#/definitions/ComplexType"
+                        },
                         "referencedBy": {
-                            "description": "types that hold references to that type",
+                            "description": "types that hold attribute references to that type",
                             "type": "array",
                             "$ref": "#/definitions/ComplexType"
                         },

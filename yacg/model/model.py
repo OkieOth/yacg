@@ -4,59 +4,50 @@ types that are passed into the templates'''
 
 class Type:
     '''Base class for all types'''
-
-    def __init__(self, name):
+    def __init__(self,name):
         #: name of the type
         self.name = name
 
-
-class BaseType (Type):
-    '''Base class for all base types, e.g. int, string ...'''
-
-    def __init__(self, name):
-        super(Type, self).__init__(name)
-
-
-class IntegerType (BaseType):
+class IntegerType (Type):
     '''Type to represent Integer and Long types'''
 
     def __init__(self):
-        super(BaseType, self).__init__(self.__class__.__name__)
+        super().__init__(self.__class__.__name__)
 
 
-class NumberType (BaseType):
+class NumberType (Type):
     '''Type to represent floating point numbers'''
 
     def __init__(self):
-        super(BaseType, self).__init__(self.__class__.__name__)
+        super().__init__(self.__class__.__name__)
 
 
-class StringType (BaseType):
+class StringType (Type):
     '''Type to represent texts'''
 
     def __init__(self):
-        super(BaseType, self).__init__(self.__class__.__name__)
+        super().__init__(self.__class__.__name__)
 
 
-class DateType (BaseType):
+class DateType (Type):
     '''Type that represents a date without a time'''
 
     def __init__(self):
-        super(BaseType, self).__init__(self.__class__.__name__)
+        super().__init__(self.__class__.__name__)
 
 
-class DateTimeType (BaseType):
+class DateTimeType (Type):
     '''Type that represents a date without a time'''
 
     def __init__(self):
-        super(BaseType, self).__init__(self.__class__.__name__)
+        super().__init__(self.__class__.__name__)
 
 
 class EnumType (Type):
     '''Type to represent fixed values sets'''
 
     def __init__(self, name):
-        super(BaseType, self).__init__(name)
+        super().__init__(name)
 
 
 class ComplexType (Type):

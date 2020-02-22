@@ -1,6 +1,6 @@
 import unittest
 import yacg
-from yacg.model.model import Type, BaseType 
+from yacg.model.model import Type 
 from yacg.model.model import IntegerType, NumberType
 from yacg.model.model import StringType
 from yacg.model.model import DateType, DateTimeType
@@ -14,11 +14,10 @@ class TestModelClasses (unittest.TestCase):
         self.assertIsNotNone (x)
         self.assertEqual('test',x.name)        
 
-    def testBaseType(self):        
-        pass
-
     def testIntegerType(self):        
-        pass
+        x = IntegerType()
+        self.assertIsNotNone (x)
+        self.assertEqual('IntegerType',x.name)        
 
     def testNumberType(self):        
         pass
