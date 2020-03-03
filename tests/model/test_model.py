@@ -20,28 +20,53 @@ class TestModelClasses (unittest.TestCase):
         self.assertEqual('IntegerType',x.name)        
 
     def testNumberType(self):        
-        pass
+        x = NumberType()
+        self.assertIsNotNone (x)
+        self.assertEqual('NumberType',x.name)        
 
     def testStringType(self):        
-        pass
+        x = StringType()
+        self.assertIsNotNone (x)
+        self.assertEqual('StringType',x.name)        
 
     def testDateType(self):        
-        pass
+        x = DateType()
+        self.assertIsNotNone (x)
+        self.assertEqual('DateType',x.name)        
 
     def testDateTimeType(self):        
-        pass
+        x = DateTimeType()
+        self.assertIsNotNone (x)
+        self.assertEqual('DateTimeType',x.name)        
 
     def testEnumType(self):        
-        pass
+        x = EnumType('TestEnum')
+        self.assertIsNotNone (x)
+        self.assertEqual('TestEnum',x.name)        
 
     def testComplexType(self):        
-        pass
+        x = ComplexType('ComplexTest')
+        self.assertIsNotNone (x)
+        self.assertEqual('ComplexTest',x.name)        
+        self.assertEquals(0,len(x.tags))
 
-    def testProperty(self):        
-        pass
+    def testProperty(self):   
+        x = ComplexType('ComplexTest')
+        self.assertIsNotNone (x)
+        self.assertEqual('ComplexTest',x.name)        
+        property = Property('testProp',x)
+        self.assertEqual('testProp',property.name)
+        self.assertTrue(isinstance(property.type, ComplexType))
+        self.assertFalse(property.isArray)
+        self.assertEquals(0,len(property.tags))
 
     def testTag(self):        
-        pass
+        tag1 = Tag('myName')
+        self.assertEqual('myName',tag1.name)
+        self.assertTrue(tag1.value == None)
+        tag2 = Tag('myName2','I am a string')
+        self.assertEqual('myName2',tag2.name)
+        self.assertEqual('I am a string',tag2.value)
 
 if __name__ == '__main__':
     unittest.main()

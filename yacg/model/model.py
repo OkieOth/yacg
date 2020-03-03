@@ -54,7 +54,10 @@ class ComplexType (Type):
     '''Container type that bundles attributes'''
 
     def __init__(self, name):
-        super(Type, self).__init__(name)
+        super().__init__(name)
+
+        #: Additional tags to group types or provide additional context
+        self.tags = []
 
 
 class Property:
