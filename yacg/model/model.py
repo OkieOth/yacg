@@ -49,6 +49,8 @@ class EnumType (Type):
     def __init__(self, name):
         super().__init__(name)
 
+        #: 
+
 
 class ComplexType (Type):
     '''Container type that bundles attributes'''
@@ -58,6 +60,24 @@ class ComplexType (Type):
 
         #: Additional tags to group types or provide additional context
         self.tags = []
+
+        #: the attributes of that type
+        self.properties = []
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        #: what is the super class of that type
+        self.extendsType = None
+
+        #: references to types that direct inherrited from that type
+        self.extendedBy = []
+
+        #: what types hold references of that type
+        self.referencedBy = []
 
 
 class Property:
