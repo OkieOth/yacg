@@ -7,3 +7,5 @@ def getModelFromJson(modelFile):
 
     with open(modelFile) as json_schema:
         parsedSchema = json.load(json_schema)
+        #print (parsedSchema)
+        return [] #TODO

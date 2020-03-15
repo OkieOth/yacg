@@ -65,8 +65,8 @@ def main():
     if not argumentsAreOk:
         printError('\nfound errors in configuration, cancel execution')
         sys.exit(1)
-    # readModels(args)
-    renderTemplate()
+    readModels(args)    
+    #renderTemplate()
 
 if __name__ == '__main__':
     main()

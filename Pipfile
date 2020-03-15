@@ -13,6 +13,7 @@ pyyaml = "*"
 mako = "*"
 ptvsd = "*"
 pudb = "*"
+util = "*"
 
 [requires]
 python_version = "3.7"
