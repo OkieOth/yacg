@@ -6,7 +6,6 @@ from builder.jsonBuilder import getModelFromJson
 from builder.yamlBuilder import getModelFromYaml 
 from generators.test import renderTemplate
 
-# test 
 description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
 source code from it

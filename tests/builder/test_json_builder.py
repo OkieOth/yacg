@@ -12,5 +12,13 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone (modelTypes)
         self.assertEqual(2,len(modelTypes))
 
+        mainType = None
+        for type in modelTypes:
+            if type.name == 'SingleTypeSchema':
+                mainType = type
+
+        self.assertIsNotNone (mainType)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
 
-
+        
 
         {
             "name": "Python: Aktuelle Datei",
@@ -18,7 +18,7 @@
             "name": "yacg",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/yacg/yacg.py",
             "args": [
                 "--model",
                 "resources/models/json/examples/single_type_schema.json"
@@ -39,23 +39,12 @@
             "host": "localhost" // Set to your remote host's public IP address.
         },
         {
-            "name": "Python: Current File (Integrated Terminal)",
+            "name": "test current",
             "type": "python",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Python: Remote Attach",
-            "type": "python",
-            "request": "attach",
-            "port": 5678,
-            "host": "localhost",
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "."
-                }
-            ]
+            "request": "launch",
+            "module": "unittest",
+            "program": "${workspaceFolder}/tests"
         }
+
     ]
 }

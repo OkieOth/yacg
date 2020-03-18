@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "example schema that contains a top-level type",
-    "description": "only an example",
+    "title": "single type schema",
+    "description": "example schema that contains a top-level type",
     "version": "0.0.1",
     "type": "object",
     "properties": {

@@ -48,7 +48,7 @@ class TestModelClasses (unittest.TestCase):
         x = ComplexType('ComplexTest')
         self.assertIsNotNone (x)
         self.assertEqual('ComplexTest',x.name)        
-        self.assertEquals(0,len(x.tags))
+        self.assertEqual(0,len(x.tags))
 
     def testProperty(self):   
         x = ComplexType('ComplexTest')
@@ -58,7 +58,7 @@ class TestModelClasses (unittest.TestCase):
         self.assertEqual('testProp',property.name)
         self.assertTrue(isinstance(property.type, ComplexType))
         self.assertFalse(property.isArray)
-        self.assertEquals(0,len(property.tags))
+        self.assertEqual(0,len(property.tags))
 
     def testTag(self):        
         tag1 = Tag('myName')
