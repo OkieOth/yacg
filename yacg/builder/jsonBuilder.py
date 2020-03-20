@@ -4,6 +4,11 @@ import json
 
 from yacg.model.model import ComplexType 
 from yacg.model.model import Property 
+from yacg.util.stringUtils import toUpperCamelCase
+from yacg.model.model import IntegerType, NumberType
+from yacg.model.model import StringType
+from yacg.model.model import DateType, DateTimeType
+from yacg.model.model import EnumType, ComplexType
 
 def getModelFromJson(modelFile):
     """reads a JSON schema file and build a model from it, 
@@ -31,7 +36,7 @@ def extractTypes(parsedSchema,modelFile):
     if (parsedSchema['type']=='object') and (parsedSchema['properties']!=None):
         # extract top level type
         titleStr = parsedSchema['title']
-        typeNameStr = titleStr #TODO convert to camel case
+        typeNameStr = toUpperCamelCase(titleStr)
         properties = parsedSchema['properties']
         extractObjectType(typeNameStr,properties,modelTypes,modelFile)
     if parsedSchema['definitions'] != None:
@@ -72,7 +77,7 @@ def extractObjectType(typeNameStr,properties,modelTypes,modelFile):
 
 def extractAttributes(type, properties, modelTypes,modelFile):
     """extract the attributes of a type from the parsed model file
-}
+
     Keyword arguments:
     type -- type that contains the properties
     properties -- dict of a schema properties-block
@@ -83,6 +88,42 @@ def extractAttributes(type, properties, modelTypes,modelFile):
     for key in properties.keys():
         prop = properties[key]
         propName = key
-        propType = None
+        extractAndSetAttribType(prop,modelTypes,modelFile)
         newProperty =  Property(propName,propType)
+        #TODO
         type.properties.append(newProperty)
+
+def extractAndSetAttribType(prop,modelTypes,modelFile):
+    """extract the type from the parsed model file
+
+    Keyword arguments:
+    prop -- dict of the property
+    modelTypes -- list of already loaded models
+    modelFile -- file name and path to the model to load        
+    """
+
+    type = prop['type']
+    if type == 'int':
+        prop.type = IntegerType()
+        pass
+    elif type =='number':
+        prop.type = NumberType()
+        pass
+    elif type =='string':
+        # DateType, DateTimeType, StringType, EnumType
+        pass
+    elif type =='object':
+        # TODO ComplexType
+        pass
+    else:
+        pass
+
+def extractAndSetStringType(prop,modelTypes,modelFile):
+    """extract the type from the parsed model file
+
+    Keyword arguments:
+    prop -- dict of the property
+    modelTypes -- list of already loaded models
+    modelFile -- file name and path to the model to load        
+    """
+    pass #TODO

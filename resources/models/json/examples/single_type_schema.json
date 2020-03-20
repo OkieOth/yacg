@@ -33,8 +33,7 @@
                 "another1": {
                     "type": "string",
                     "format": "date-time"
-                },
-                
+                },                
                 "another2": {
                     "type": "number"
                 }

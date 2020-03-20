@@ -19,3 +19,11 @@ pipenv run python3 -m unittest -v tests/model/test_model.py
 # run all tests
 pipenv run python3 -m unittest discover tests "test_*.py"
 ```
+
+# Documentation
+
+```bash
+pip install -U Sphinx
+
+sphinx-build -b html sphinx docs
+```

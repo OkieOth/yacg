@@ -13,6 +13,7 @@ class IntegerType (Type):
 
     def __init__(self):
         super().__init__(self.__class__.__name__)
+        self.isLong = False
 
 
 class NumberType (Type):
