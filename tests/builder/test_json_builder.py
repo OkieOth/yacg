@@ -20,7 +20,7 @@ class TestJsonBuilder (unittest.TestCase):
             if type.name == 'AnotherType':
                 anotherType = type
         self.assertIsNotNone (mainType)
-        self.assertEqual(3,len(mainType.properties))
+        self.assertEqual(4,len(mainType.properties))
         self.assertIsNotNone (anotherType)
         self.assertEqual(2,len(anotherType.properties))
 

@@ -33,16 +33,17 @@ def extractTypes(parsedSchema,modelFile):
     """
     
     modelTypes = []
-    if (parsedSchema['type']=='object') and (parsedSchema['properties']!=None):
+    schemaType = parsedSchema.get('type',None)
+    schemaProperties = parsedSchema.get('properties',None)
+    if (schemaType=='object') and (schemaProperties!=None):
         # extract top level type
-        titleStr = parsedSchema['title']
+        titleStr = parsedSchema.get('title',None)
         typeNameStr = toUpperCamelCase(titleStr)
-        properties = parsedSchema['properties']
-        extractObjectType(typeNameStr,properties,modelTypes,modelFile)
-    if parsedSchema['definitions'] != None:
+        extractObjectType(typeNameStr,schemaProperties,modelTypes,modelFile)
+    schemaDefinitions = parsedSchema.get('definitions',None)
+    if schemaDefinitions != None:
         # extract types from extra definitions section
-        definitions = parsedSchema['definitions']
-        extractDefinitionsTypes(definitions,modelTypes,modelFile)
+        extractDefinitionsTypes(schemaDefinitions,modelTypes,modelFile)
     return modelTypes
 
 def extractDefinitionsTypes(definitions,modelTypes,modelFile):    
@@ -56,7 +57,7 @@ def extractDefinitionsTypes(definitions,modelTypes,modelFile):
 
     for key in definitions.keys():
         object = definitions[key]
-        properties = object['properties']
+        properties = object.get('properties',None)
         extractObjectType(key,properties,modelTypes,modelFile)    
 
 def extractObjectType(typeNameStr,properties,modelTypes,modelFile):
@@ -86,44 +87,75 @@ def extractAttributes(type, properties, modelTypes,modelFile):
     """
 
     for key in properties.keys():
-        prop = properties[key]
+        propDict = properties[key]
         propName = key
-        extractAndSetAttribType(prop,modelTypes,modelFile)
-        newProperty =  Property(propName,propType)
+        newProperty =  Property(propName,None)
+        newProperty.type = extractAttribType(type,newProperty,propDict,modelTypes,modelFile)
         #TODO
         type.properties.append(newProperty)
 
-def extractAndSetAttribType(prop,modelTypes,modelFile):
-    """extract the type from the parsed model file
+def extractAttribType(newType,newProperty,propDict,modelTypes,modelFile):
+    """extract the type from the parsed model file and
+    returns the type of the property.
 
     Keyword arguments:
-    prop -- dict of the property
+    newType -- current Type
+    newProperty -- current property
+    propDict -- dict of the property from the model file
     modelTypes -- list of already loaded models
     modelFile -- file name and path to the model to load        
     """
 
-    type = prop['type']
+    type = propDict.get('type',None)
     if type == 'int':
-        prop.type = IntegerType()
-        pass
+        return IntegerType()
     elif type =='number':
-        prop.type = NumberType()
-        pass
+        return NumberType()
     elif type =='string':
         # DateType, DateTimeType, StringType, EnumType
-        pass
+        return extractStringType(newType,newProperty,propDict,modelTypes,modelFile)
     elif type =='object':
         # TODO ComplexType
-        pass
+        return None
     else:
+        # TODO logging
+        # return None
         pass
 
-def extractAndSetStringType(prop,modelTypes,modelFile):
-    """extract the type from the parsed model file
+def extractStringType(newType,newProperty,propDict,modelTypes,modelFile):
+    """extract the specific string type depending on the given format
+    and return the specific type
 
     Keyword arguments:
-    prop -- dict of the property
+    newType -- current Type
+    newProperty -- current property
+    propDict -- dict of the property from the model file
     modelTypes -- list of already loaded models
     modelFile -- file name and path to the model to load        
     """
+
+    formatValue = propDict.get('format',None)
+    enumValue = propDict.get('enum',None)
+    if (formatValue == None) and (enumValue == None):
+        return StringType()
+    elif enumValue != None:
+        return extractEnumType(newType,newProperty,enumValue,modelTypes,modelFile)
     pass #TODO
+
+def extractEnumType(newType,newProperty,enumValue,modelTypes,modelFile):
+    """extract the specific string type depending on the given format
+    and return the specific type
+
+    Keyword arguments:
+    newType -- current Type
+    newProperty -- current property
+    enumValues -- list with allowed values
+    modelTypes -- list of already loaded models
+    modelFile -- file name and path to the model to load        
+    """
+
+    enumTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name + 'Enum');    
+    enumType = EnumType(enumTypeName)
+    enumType.values = enumValue
+    enumType.source = modelFile
+    return enumType

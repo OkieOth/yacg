@@ -50,7 +50,14 @@ class EnumType (Type):
     def __init__(self, name):
         super().__init__(name)
 
-        #: 
+        #: allowed values for the enum
+        self.values = []
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
 
 
 class ComplexType (Type):

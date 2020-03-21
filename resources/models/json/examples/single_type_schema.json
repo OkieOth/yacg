@@ -11,6 +11,10 @@
         "aValue": {
             "type": "number"
         },
+        "aEnum": {
+          "type": "string",
+          "enum": ["value1", "value2", "value3"]
+        },
         "complexAttrib": {
             "type": "object",
             "properties": {
