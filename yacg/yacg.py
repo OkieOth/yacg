@@ -1,5 +1,6 @@
 import argparse
 import sys
+import logging
 import util.fileUtils
 from util.outputUtils import printError, printOk, printInfo, getErrorTxt, getOkTxt
 from builder.jsonBuilder import getModelFromJson 
@@ -10,6 +11,9 @@ description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
 source code from it
 """
+
+logging.basicConfig(level=logging.INFO)
+
 parser = argparse.ArgumentParser(prog='yacg', description=description)
 parser.add_argument_group('input')
 parser.add_argument('--model', nargs='+', help='models to process')

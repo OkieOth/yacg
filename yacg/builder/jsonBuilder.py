@@ -1,6 +1,7 @@
 """Reads JSON schema files and build the model types from it"""
 
 import json
+import logging
 
 from yacg.model.model import ComplexType 
 from yacg.model.model import Property 
@@ -60,6 +61,7 @@ def extractDefinitionsTypes(definitions,modelTypes,modelFile):
         properties = object.get('properties',None)
         extractObjectType(key,properties,modelTypes,modelFile)    
 
+
 def extractObjectType(typeNameStr,properties,modelTypes,modelFile):
     """build a type object
 
@@ -115,12 +117,32 @@ def extractAttribType(newType,newProperty,propDict,modelTypes,modelFile):
         # DateType, DateTimeType, StringType, EnumType
         return extractStringType(newType,newProperty,propDict,modelTypes,modelFile)
     elif type =='object':
-        # TODO ComplexType
-        return None
+        return extractComplexType(newType,newProperty,propDict,modelTypes,modelFile)
     else:
-        # TODO logging
         # return None
-        pass
+        logging.error("type=%s, property=%s: unknown property type: %s" % (newType.name,newProperty.name,type))
+        return None
+
+
+def extractComplexType(newType,newProperty,propDict,modelTypes,modelFile):
+    """builds a new inner complex type for that property
+    and return it
+
+    Keyword arguments:
+    newType -- current Type
+    newProperty -- current property
+    propDict -- dict of the property from the model file
+    modelTypes -- list of already loaded models
+    modelFile -- file name and path to the model to load        
+    """
+
+    innerTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name)
+    newInnerType = ComplexType(innerTypeName)
+    newInnerType.source = modelFile
+    # TODO extract properties
+    modelTypes.append(newInnerType)
+    return newInnerType
+
 
 def extractStringType(newType,newProperty,propDict,modelTypes,modelFile):
     """extract the specific string type depending on the given format
@@ -140,7 +162,14 @@ def extractStringType(newType,newProperty,propDict,modelTypes,modelFile):
         return StringType()
     elif enumValue != None:
         return extractEnumType(newType,newProperty,enumValue,modelTypes,modelFile)
-    pass #TODO
+    elif formatValue == 'date':
+        return DateType()
+    elif formatValue == 'date-time':
+        return DateTimeType()
+    else:
+        # TODO logging
+        logging.error("type=%s, property=%s: unknown string type format: %s" % (newType.name,newProperty.name,formatValue))
+        return StringType()
 
 def extractEnumType(newType,newProperty,enumValue,modelTypes,modelFile):
     """extract the specific string type depending on the given format
