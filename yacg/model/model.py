@@ -8,6 +8,8 @@ class Type:
         #: name of the type
         self.name = name
 
+        self.isBaseType = True
+
 class IntegerType (Type):
     '''Type to represent Integer and Long types'''
 
@@ -65,6 +67,8 @@ class EnumType (Type):
         #: from what file the Type was loaded
         self.source = None
 
+        self.isBaseType = False
+
 
 class ComplexType (Type):
     '''Container type that bundles attributes'''
@@ -93,6 +97,7 @@ class ComplexType (Type):
         #: what types hold references of that type
         self.referencedBy = []
 
+        self.isBaseType = False
 
 class Property:
     '''Attribute of a ComplexType'''

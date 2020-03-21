@@ -22,6 +22,10 @@ pipenv run python3 -m unittest discover tests "test_*.py"
 
 # Documentation
 
+## Mako templates
+* Usage: https://docs.makotemplates.org/en/latest/usage.html
+* Syntax: https://docs.makotemplates.org/en/latest/syntax.html
+
 ```bash
 pip install -U Sphinx
 
