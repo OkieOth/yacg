@@ -72,11 +72,30 @@ def extractObjectType(typeNameStr,properties,modelTypes,modelFile):
     modelFile -- file name and path to the model to load        
     """
     
-    newType = ComplexType(typeNameStr)
-    newType.source = modelFile    
-    modelTypes.append(newType)
-    extractAttributes(newType,properties,modelTypes,modelFile)
+    # check up that no dummy for this type is already created.
+    alreadyCreatedType = getAlreadyCreatedTypesWithThatName(typeNameStr,modelTypes,modelFile)
+    # This can be the case in situations where attributes refer to another complex type
+    newType = ComplexType(typeNameStr) if alreadyCreatedType == None else alreadyCreatedType 
+    newType.source = modelFile
+    if alreadyCreatedType == None:            
+        modelTypes.append(newType)
+    if len(newType.properties)==0: 
+        extractAttributes(newType,properties,modelTypes,modelFile)
 
+def getAlreadyCreatedTypesWithThatName(typeNameStr,modelTypes,modelFile):
+    """searches in the modelTypes list for a already created Type with that Name
+    and return it if found
+
+    Keyword arguments:
+    typeNameStr -- Name of the new type
+    modelTypes -- list of already loaded models
+    modelFile -- file name and path to the model to load        
+    """
+
+    for alreadyCreatedType in modelTypes:
+        if alreadyCreatedType.name == typeNameStr and alreadyCreatedType.source == modelFile:
+            return alreadyCreatedType 
+    return None
 
 def extractAttributes(type, properties, modelTypes,modelFile):
     """extract the attributes of a type from the parsed model file
@@ -130,7 +149,7 @@ def extractAttribType(newType,newProperty,propDict,modelTypes,modelFile):
 
 
 def extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
-    """builds a new inner complex type for that property
+    """build or reload a type reference 
     and return it
 
     Keyword arguments:
@@ -141,8 +160,38 @@ def extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
     modelFile -- file name and path to the model to load        
     """
 
-    # TODO
+    # TODO .. #/definitions/
+    localDefinitionsStr = '#/definitions/'
+    if refEntry.startswith(localDefinitionsStr):
+        # internal reference
+        typeName = refEntry[len(localDefinitionsStr):]
+        return extractInternalReferenceType(newType,newProperty,typeName,modelTypes,modelFile)
+    else:
+        # external reference
+        pass
     pass
+
+def extractInternalReferenceType(newType,newProperty,refTypeName,modelTypes,modelFile):
+    """builds or relaod a type reference in the current file
+    and return it.
+
+    If the type isn't loaded an empty dummy is created.
+
+    Keyword arguments:
+    newType -- current Type
+    newProperty -- current property
+    refTypeName -- name of the referenced type
+    modelTypes -- list of already loaded models
+    modelFile -- file name and path to the model to load        
+    """
+
+    alreadyCreatedType = getAlreadyCreatedTypesWithThatName(refTypeName,modelTypes,modelFile)
+    if alreadyCreatedType != None:
+        return alreadyCreatedType 
+    dummyReference = ComplexType(refTypeName)
+    dummyReference.source = modelFile
+    modelTypes.append(dummyReference)
+    return dummyReference
 
 def extractComplexType(newType,newProperty,propDict,modelTypes,modelFile):
     """builds a new inner complex type for that property
