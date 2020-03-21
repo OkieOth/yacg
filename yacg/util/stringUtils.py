@@ -6,5 +6,6 @@ def toUpperCamelCase(text):
     splittedText = text.split()
     upperCamelCase = ''
     for t in splittedText:
-        upperCamelCase += t.capitalize()
+        upperCamelCase += t[0:1].capitalize()
+        upperCamelCase += t[1:]
     return upperCamelCase

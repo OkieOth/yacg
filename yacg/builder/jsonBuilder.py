@@ -7,7 +7,7 @@ from yacg.model.model import ComplexType
 from yacg.model.model import Property 
 from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType
-from yacg.model.model import StringType
+from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType
 
@@ -109,7 +109,8 @@ def extractAttribType(newType,newProperty,propDict,modelTypes,modelFile):
     """
 
     type = propDict.get('type',None)
-    if type == 'int':
+    refEntry = propDict.get('$ref',None)
+    if type == 'integer':
         return IntegerType()
     elif type =='number':
         return NumberType()
@@ -119,10 +120,29 @@ def extractAttribType(newType,newProperty,propDict,modelTypes,modelFile):
     elif type =='object':
         return extractComplexType(newType,newProperty,propDict,modelTypes,modelFile)
     else:
-        # return None
-        logging.error("type=%s, property=%s: unknown property type: %s" % (newType.name,newProperty.name,type))
-        return None
+        if refEntry != None:
+            # TODO extract reference type
+            return extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile)
+        else:
+            logging.error("modelFile: %s, type=%s, property=%s: unknown property type: %s" 
+                % (modelFile,newType.name,newProperty.name,type))
+            return None
 
+
+def extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
+    """builds a new inner complex type for that property
+    and return it
+
+    Keyword arguments:
+    newType -- current Type
+    newProperty -- current property
+    refEntry -- $ref entry from the model file
+    modelTypes -- list of already loaded models
+    modelFile -- file name and path to the model to load        
+    """
+
+    # TODO
+    pass
 
 def extractComplexType(newType,newProperty,propDict,modelTypes,modelFile):
     """builds a new inner complex type for that property
@@ -139,8 +159,13 @@ def extractComplexType(newType,newProperty,propDict,modelTypes,modelFile):
     innerTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name)
     newInnerType = ComplexType(innerTypeName)
     newInnerType.source = modelFile
-    # TODO extract properties
     modelTypes.append(newInnerType)
+    properties = propDict.get('properties',None)
+    if properties != None:
+        extractAttributes(newInnerType, properties, modelTypes,modelFile)
+    else:
+        logging.error("modelFile: %s, type=%s, property=%s: inner complex type without properties" 
+                % (modelFile, newType.name,newProperty.name))
     return newInnerType
 
 
@@ -166,9 +191,12 @@ def extractStringType(newType,newProperty,propDict,modelTypes,modelFile):
         return DateType()
     elif formatValue == 'date-time':
         return DateTimeType()
+    elif formatValue == 'uuid':
+        return UuidType()
     else:
         # TODO logging
-        logging.error("type=%s, property=%s: unknown string type format: %s" % (newType.name,newProperty.name,formatValue))
+        logging.error("modelFile: %s, type=%s, property=%s: unknown string type format: %s" 
+            % (modelFile,newType.name,newProperty.name,formatValue))
         return StringType()
 
 def extractEnumType(newType,newProperty,enumValue,modelTypes,modelFile):

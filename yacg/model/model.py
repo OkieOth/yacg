@@ -29,6 +29,12 @@ class StringType (Type):
     def __init__(self):
         super().__init__(self.__class__.__name__)
 
+class UuidType (Type):
+    '''Type to represent a uuid'''
+
+    def __init__(self):
+        super().__init__(self.__class__.__name__)
+
 
 class DateType (Type):
     '''Type that represents a date without a time'''
