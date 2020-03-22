@@ -11,6 +11,14 @@ from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType
 
+def getParsedSchema(modelFile):
+    """reads a JSON schema file in json format
+    and returns the parsed dictionary from it"""
+
+    with open(modelFile) as json_schema:
+        return json.load(json_schema)
+
+
 def getModelFromJson(modelFile):
     """reads a JSON schema file and build a model from it, 
     returns a list of yacg.model.model.Type objects
@@ -20,9 +28,8 @@ def getModelFromJson(modelFile):
     modelFile -- file name and path to the model to load
     """
 
-    with open(modelFile) as json_schema:
-        parsedSchema = json.load(json_schema)
-        return extractTypes (parsedSchema,modelFile)
+    parsedSchema = getParsedSchema(modelFile)
+    return extractTypes (parsedSchema,modelFile)
 
 def extractTypes(parsedSchema,modelFile):
     """extract the types from the parsed schema
