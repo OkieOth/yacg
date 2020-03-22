@@ -69,6 +69,9 @@ class EnumType (Type):
 
         self.isBaseType = False
 
+        #: the dummy attributes of that type - only to harden the code
+        self.properties = ()
+
 
 class ComplexType (Type):
     '''Container type that bundles attributes'''

@@ -142,10 +142,31 @@ def extractAttribType(newType,newProperty,propDict,modelTypes,modelFile):
         if refEntry != None:
             # TODO extract reference type
             return extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile)
+        elif type == 'array':
+            return extractArrayType(newType,newProperty,propDict,modelTypes,modelFile)
         else:
             logging.error("modelFile: %s, type=%s, property=%s: unknown property type: %s" 
                 % (modelFile,newType.name,newProperty.name,type))
             return None
+
+def extractArrayType(newType,newProperty,propDict,modelTypes,modelFile):
+    """build array type reference 
+    and return it
+
+    Keyword arguments:
+    newType -- current Type
+    newProperty -- current property
+    propDict -- dict of the property from the model file
+    modelTypes -- list of already loaded models
+    modelFile -- file name and path to the model to load        
+    """
+    itemsDict = propDict.get('items',None)
+    if itemsDict != None:
+        newProperty.isArray = True
+        return extractAttribType(newType,newProperty,itemsDict,modelTypes,modelFile)
+
+    # TODO
+    pass
 
 
 def extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
@@ -160,7 +181,6 @@ def extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
     modelFile -- file name and path to the model to load        
     """
 
-    # TODO .. #/definitions/
     localDefinitionsStr = '#/definitions/'
     if refEntry.startswith(localDefinitionsStr):
         # internal reference
@@ -264,4 +284,5 @@ def extractEnumType(newType,newProperty,enumValue,modelTypes,modelFile):
     enumType = EnumType(enumTypeName)
     enumType.values = enumValue
     enumType.source = modelFile
+    modelTypes.append(enumType)
     return enumType
