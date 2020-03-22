@@ -30,7 +30,8 @@ def extractTypes(parsedSchema,modelFile):
         # extract top level type
         titleStr = parsedSchema.get('title',None)
         typeNameStr = toUpperCamelCase(titleStr)
-        extractObjectType(typeNameStr,schemaProperties,modelTypes,modelFile)
+        description = parsedSchema.get('description',None)
+        extractObjectType(typeNameStr,schemaProperties,description,modelTypes,modelFile)
     schemaDefinitions = parsedSchema.get('definitions',None)
     if schemaDefinitions != None:
         # extract types from extra definitions section
@@ -49,15 +50,17 @@ def extractDefinitionsTypes(definitions,modelTypes,modelFile):
     for key in definitions.keys():
         object = definitions[key]
         properties = object.get('properties',None)
-        extractObjectType(key,properties,modelTypes,modelFile)    
+        description = object.get('description',None)
+        extractObjectType(key,properties,description,modelTypes,modelFile)    
 
 
-def extractObjectType(typeNameStr,properties,modelTypes,modelFile):
+def extractObjectType(typeNameStr,properties,description,modelTypes,modelFile):
     """build a type object
 
     Keyword arguments:
     typeNameStr -- Name of the new type
     properties -- dict of a schema properties-block
+    description -- optional description of that type
     modelTypes -- list of already loaded models
     modelFile -- file name and path to the model to load        
     """
@@ -67,6 +70,9 @@ def extractObjectType(typeNameStr,properties,modelTypes,modelFile):
     # This can be the case in situations where attributes refer to another complex type
     newType = ComplexType(typeNameStr) if alreadyCreatedType == None else alreadyCreatedType 
     newType.source = modelFile
+    if description != None:
+        newType.description = description
+
     if alreadyCreatedType == None:            
         modelTypes.append(newType)
     if len(newType.properties)==0: 
@@ -100,7 +106,10 @@ def extractAttributes(type, properties, modelTypes,modelFile):
     for key in properties.keys():
         propDict = properties[key]
         propName = key
+        description = properties.get('description',None)
         newProperty =  Property(propName,None)
+        if description != None:
+            newProperty.description = description
         newProperty.type = extractAttribType(type,newProperty,propDict,modelTypes,modelFile)
         #TODO
         type.properties.append(newProperty)
@@ -219,6 +228,9 @@ def extractComplexType(newType,newProperty,propDict,modelTypes,modelFile):
     newInnerType = ComplexType(innerTypeName)
     newInnerType.source = modelFile
     modelTypes.append(newInnerType)
+    description = propDict.get('description',None)
+    if description != None:
+        newInnerType.description = description
     properties = propDict.get('properties',None)
     if properties != None:
         extractAttributes(newInnerType, properties, modelTypes,modelFile)

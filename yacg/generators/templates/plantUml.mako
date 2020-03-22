@@ -1,3 +1,18 @@
+<%
+    def addLineBreakToDescription(textLine):
+        breakedText = ''
+        splittedLine = textLine.split()
+        i = 0
+        for t in splittedLine:
+            if i==5:
+                breakedText = breakedText + '\\n'
+                i=0
+            if i>0:
+                breakedText = breakedText + ' '
+            breakedText = breakedText + t
+            i = i + 1
+        return breakedText
+%>
 @startuml
 
 % for type in modelTypes:
@@ -7,6 +22,9 @@ class ${type.name} {
     % endfor
 }
 
+    % if type.description != None:
+note top: ${addLineBreakToDescription(type.description)}
+    % endif
 % endfor
 
 % for type in modelTypes:

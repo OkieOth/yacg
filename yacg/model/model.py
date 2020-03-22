@@ -72,6 +72,9 @@ class EnumType (Type):
         #: the dummy attributes of that type - only to harden the code
         self.properties = ()
 
+        #: some words to explain what this type is good for
+        self.description = None
+
 
 class ComplexType (Type):
     '''Container type that bundles attributes'''
@@ -100,6 +103,9 @@ class ComplexType (Type):
         #: what types hold references of that type
         self.referencedBy = []
 
+        #: some words to explain what this type is good for
+        self.description = None
+
         self.isBaseType = False
 
 class Property:
@@ -118,6 +124,8 @@ class Property:
         #: Additional tags to group properties or provide additional context
         self.tags = []
 
+        #: some words to explain what this property is good for
+        self.description = None
 
 class Tag:
     '''Helper class that allows to add keywords to types and
