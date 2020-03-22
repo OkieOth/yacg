@@ -69,7 +69,10 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(propCount,len(type.properties))
         for prop in type.properties:
             self.assertIsNotNone(prop.type,"property w/o a type: %s.%s" % (typeName,prop.name))
-
+            if prop.name.endswith('s') or prop.name.endswith('ed'):
+                self.assertTrue(prop.isArray, "property has to be an array: %s.%s" % (typeName,prop.name))
+            else: 
+                self.assertFalse(prop.isArray, "property should be no array: %s.%s" % (typeName,prop.name))
 
 
 
