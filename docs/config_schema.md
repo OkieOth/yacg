@@ -1,6 +1,8 @@
+# Configuration
+The code generation processes can be configured by a configuration file.
+The following picture displays the possible configurations
 
-@startuml
-
+```plantuml
 class Job {
     StringType name 
     StringType description 
@@ -88,4 +90,4 @@ MultiFileTask "0" *-- "n" TemplateParam
             
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\npowered by plantuml (https://plantuml.com/)
-@enduml
+```
