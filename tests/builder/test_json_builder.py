@@ -62,6 +62,15 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(6,'TemplateParam',2,modelTypes)
         self._checkUpType(7,'MultiFileTask',6,modelTypes)
 
+    def testSchemaWithExternalRef(self):
+        modelFile = 'resources/models/json/examples/schema_with_external_ref.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        modelTypes = getModelFromJson (modelFile)
+        self.assertIsNotNone (modelTypes)
+        self.assertEqual (3,len(modelTypes))
+
+
     def _checkUpType(self,position,typeName,propCount,modelTypes):
         type = modelTypes[position]
         self.assertIsNotNone(type)

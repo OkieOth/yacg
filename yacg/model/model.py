@@ -17,6 +17,11 @@ class IntegerType (Type):
         super().__init__(self.__class__.__name__)
         self.isLong = False
 
+class BooleanType (Type):
+    '''Type to represent Integer and Long types'''
+
+    def __init__(self):
+        super().__init__(self.__class__.__name__)
 
 class NumberType (Type):
     '''Type to represent floating point numbers'''
