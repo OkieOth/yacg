@@ -1,7 +1,6 @@
 import unittest
 import os.path
-import yacg.builder.jsonBuilder
-import yacg.builder.yamlBuilder
+from yacg.builder.impl.dictionaryBuilder import getParsedSchemaFromJson, getParsedSchemaFromYaml
 
 class TestJsonBuilder (unittest.TestCase):
     def testYamlAndJsonEquality(self):
@@ -13,9 +12,9 @@ class TestJsonBuilder (unittest.TestCase):
         yamlModelFileExists = os.path.isfile(yamlModelFile)
         self.assertTrue ('yaml model file exists: '+ yamlModelFile,yamlModelFileExists)
 
-        parsedJsonSchema = yacg.builder.jsonBuilder.getParsedSchema(jsonModelFile)
+        parsedJsonSchema = getParsedSchemaFromJson(jsonModelFile)
         self.assertIsNotNone (parsedJsonSchema)
-        parsedYamlSchema = yacg.builder.yamlBuilder.getParsedSchema(yamlModelFile)        
+        parsedYamlSchema = getParsedSchemaFromYaml(yamlModelFile)        
         self.assertIsNotNone (parsedYamlSchema)
 
         self.assertEqual(parsedYamlSchema,parsedYamlSchema)
