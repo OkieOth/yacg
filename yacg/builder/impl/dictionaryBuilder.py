@@ -5,6 +5,9 @@ of JSON and YAML sources.
 """
 
 import logging
+import os.path
+import json
+import yaml
 
 from yacg.model.model import ComplexType 
 from yacg.model.model import Property 
@@ -13,6 +16,30 @@ from yacg.model.model import IntegerType, NumberType, BooleanType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType
+
+
+def getParsedSchemaFromJson(modelFile):
+    """reads a JSON schema file in json format
+    and returns the parsed dictionary from it
+    
+    Keyword arguments:
+    modelFile -- file name and path to the model to load
+    """
+
+    with open(modelFile) as json_schema:
+        return json.load(json_schema)
+
+
+def getParsedSchemaFromYaml(modelFile):
+    """reads a JSON schema file in yaml format
+    and returns the parsed dictionary from it
+    
+    Keyword arguments:
+    modelFile -- file name and path to the model to load
+    """
+
+    with open(modelFile) as json_schema:
+        return yaml.load(json_schema, Loader=yaml.FullLoader)
 
 def extractTypes(parsedSchema,modelFile):
     """extract the types from the parsed schema
@@ -190,10 +217,10 @@ def _extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
     else:
         if refEntry.find('.json') != -1:
             # load a new model from a json file
-            return _extractExternalReferenceTypeFromJson(refEntry,modelTypes)
+            return _extractExternalReferenceTypeFromJson(refEntry,modelTypes,modelFile)
         elif (refEntry.find('.yaml') != -1) or (refEntry.find('.yml') != -1):
             # load new model from a yaml file
-            return _extractExternalReferenceTypeFromYaml(refEntry,modelTypes)
+            return _extractExternalReferenceTypeFromYaml(refEntry,modelTypes,modelFile)
         else:
             logging.error("external reference from unknown type: %s, type=%s, property=%s" %
                 (refEntry,newType.name,newProperty.name))
@@ -212,7 +239,7 @@ def _extractDesiredTypeNameFromRefEntry(refEntry,fileName):
     lastSlash = refEntry.rfind('/',fileNameLen)
     return refEntry[lastSlash+1:]
 
-def _extractExternalReferenceTypeFromJson(refEntry,modelTypes):
+def _extractExternalReferenceTypeFromJson(refEntry,modelTypes,originModelFile):
     """load a reference type from an external JSON file. Before loading
     it is checked up, that the type isn't already loaded.
     The new created or already loaded type is returned.
@@ -220,6 +247,7 @@ def _extractExternalReferenceTypeFromJson(refEntry,modelTypes):
     Keyword arguments:
     refEntry -- content of the $ref entry in the schema        
     modelTypes -- list of already loaded models
+    originModelFile -- file name and path to the model to load        
     """
 
     fileName = _extractFileNameFromRefEntry(refEntry,'.json')
@@ -227,9 +255,20 @@ def _extractExternalReferenceTypeFromJson(refEntry,modelTypes):
     alreadyLoadedType = _getTypeIfAlreadyLoaded(desiredTypeName,fileName,modelTypes)
     if alreadyLoadedType != None:
         return alreadyLoadedType
+    if not os.path.isfile(fileName):
+        # maybe the path is relative to the current type file
+        originPathLength = originModelFile.rfind('/')
+        originPath = originModelFile[:originPathLength+1]
+        fileName = originPath + fileName
+        if not os.path.isfile(fileName):
+            logging.error("can't find external model file: modelFile=%s, refStr=%s, desiredFile=%s" 
+                % (originModelFile, refEntry,fileName))
+            return None
+    parsedSchema = getParsedSchemaFromJson(fileName)
+    return _getTypeFromParsedSchema(parsedSchema,desiredTypeName,fileName,modelTypes)
     # TODO
 
-def _extractExternalReferenceTypeFromYaml(refEntry,modelTypes):
+def _extractExternalReferenceTypeFromYaml(refEntry,modelTypes,originModelFile):
     """load a reference type from an external YAML file. Before loading
     it is checked up, that the type isn't already loaded.
     The new created or already loaded type is returned.
@@ -237,6 +276,7 @@ def _extractExternalReferenceTypeFromYaml(refEntry,modelTypes):
     Keyword arguments:
     refEntry -- content of the $ref entry in the schema        
     modelTypes -- list of already loaded models
+    originModelFile -- file name and path to the model to load        
     """
 
     fileExt = '.yaml' if refEntry.find('.yaml') != -1 else '.yml'
@@ -245,7 +285,76 @@ def _extractExternalReferenceTypeFromYaml(refEntry,modelTypes):
     alreadyLoadedType = _getTypeIfAlreadyLoaded(desiredTypeName,fileName,modelTypes)
     if alreadyLoadedType != None:
         return alreadyLoadedType
-    # TODO
+    if not os.path.isfile(fileName):
+        # maybe the path is relative to the current type file
+        originPathLength = originModelFile.rfind('/')
+        originPath = originModelFile[:originPathLength+1]
+        fileName = originPath + fileName
+        if not os.path.isfile(fileName):
+            logging.error("can't find external model file: modelFile=%s, refStr=%s, desiredFile=%s" 
+                % (originModelFile, refEntry,fileName))
+            return None
+    parsedSchema = getParsedSchemaFromYaml(fileName)
+    return _getTypeFromParsedSchema(parsedSchema,desiredTypeName,fileName,modelTypes)
+
+
+def _getTypeFromParsedSchema(parsedSchema,desiredTypeName,fileName,modelTypes):
+    """loads a desired type from a parsed schema
+    and return it.
+    The desired type and all over attributes related will be added to the
+    list of the current loaded types.
+
+    If the type isn't loaded an empty dummy is created.
+
+    Keyword arguments:
+    parsedSchema -- dictionary of the parsed schema
+    desiredTypeName -- name of the type to look for
+    fileName -- file where the type is loaded from
+    modelTypes -- list of already loaded models
+    """
+
+    newModelTypes = extractTypes(parsedSchema,fileName)
+    desiredType = None
+    for type in newModelTypes:
+        if (type.name == desiredTypeName) and (type.source == fileName):
+            desiredType = type
+            break
+    if desiredType == None:
+        logging.error ("can't find external type: desiredTypeName=%s, file=%s" % (desiredTypeName,fileName))
+        return None
+    _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,modelTypes)
+    return desiredType
+
+def _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,alreadyLoadedModelTypes):
+    """Search in new model types for all related types to the desired type and
+    put them the already loaded model types.
+
+    Keyword arguments:
+    desiredType -- desired type
+    alreadyLoadedModelTypes -- list with already loaded types
+    """
+
+    _appendToAlreadyLoadedTypes(desiredType,alreadyLoadedModelTypes)
+    for property in desiredType.properties:
+        if not property.type.isBaseType:
+            _putAllNewRelatedTypesToAlreadyLoadedTypes(property.type,alreadyLoadedModelTypes)
+
+def _appendToAlreadyLoadedTypes(newType,alreadyLoadedModelTypes):
+    """Tests if the new type is already contained in the list of
+    loaded types. If not then the new type is appended.
+
+    Keyword arguments:
+    newType -- new type that should be added
+    alreadyLoadedModelTypes -- list with already loaded types
+    """
+
+    newTypeName = newType.name
+    newTypeSource = newType.source
+    for type in alreadyLoadedModelTypes:
+        if (newTypeName == type.name) and (newTypeSource == type.source):
+            return
+    alreadyLoadedModelTypes.append(newType)
+
 
 def _getTypeIfAlreadyLoaded(typeName,fileName,modelTypes):
     """builds or relaod a type reference in the current file
