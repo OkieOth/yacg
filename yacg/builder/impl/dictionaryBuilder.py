@@ -264,6 +264,9 @@ def _extractExternalReferenceTypeFromJson(refEntry,modelTypes,originModelFile):
             logging.error("can't find external model file: modelFile=%s, refStr=%s, desiredFile=%s" 
                 % (originModelFile, refEntry,fileName))
             return None
+    alreadyLoadedType =_getAlreadyLoadedType(desiredTypeName,fileName,modelTypes)
+    if alreadyLoadedType != None:
+        return alreadyLoadedType
     parsedSchema = getParsedSchemaFromJson(fileName)
     return _getTypeFromParsedSchema(parsedSchema,desiredTypeName,fileName,modelTypes)
     # TODO
@@ -294,6 +297,10 @@ def _extractExternalReferenceTypeFromYaml(refEntry,modelTypes,originModelFile):
             logging.error("can't find external model file: modelFile=%s, refStr=%s, desiredFile=%s" 
                 % (originModelFile, refEntry,fileName))
             return None
+    # to handle circular dependencies
+    alreadyLoadedType =_getAlreadyLoadedType(desiredTypeName,fileName,modelTypes)
+    if alreadyLoadedType != None:
+        return alreadyLoadedType
     parsedSchema = getParsedSchemaFromYaml(fileName)
     return _getTypeFromParsedSchema(parsedSchema,desiredTypeName,fileName,modelTypes)
 
@@ -338,6 +345,22 @@ def _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,alreadyLoadedModelTyp
     for property in desiredType.properties:
         if not property.type.isBaseType:
             _putAllNewRelatedTypesToAlreadyLoadedTypes(property.type,alreadyLoadedModelTypes)
+
+def _getAlreadyLoadedType(typeName,typeSource,alreadyLoadedModelTypes):
+    """Tests if the type is already contained in the list of
+    loaded types. If that is the case it is returned.
+
+    Keyword arguments:
+    typeName -- name of the type to check up
+    typeSource -- model file that contains that type
+    alreadyLoadedModelTypes -- list with already loaded types
+    """
+
+    for type in alreadyLoadedModelTypes:
+        if (typeName == type.name) and (typeSource == type.source):
+            return type
+    return None
+
 
 def _appendToAlreadyLoadedTypes(newType,alreadyLoadedModelTypes):
     """Tests if the new type is already contained in the list of

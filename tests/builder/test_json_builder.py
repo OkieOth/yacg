@@ -73,6 +73,12 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(1,'TwoType',3,modelTypes)
         self._checkUpType(2,'AnotherType',2,modelTypes)
 
+    def testSchemaWithExternalCircularRefs(self):
+        modelFile = 'resources/models/json/examples/schema_with_circular_deps.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        modelTypes = getModelFromJson (modelFile)
+        self.assertIsNotNone (modelTypes)
 
 
     def _checkUpType(self,position,typeName,propCount,modelTypes):
