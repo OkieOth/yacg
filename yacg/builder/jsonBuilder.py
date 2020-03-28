@@ -1,5 +1,5 @@
 """Reads JSON schema files and build the model types from it"""
-
+import os.path
 from yacg.builder.impl.dictionaryBuilder import extractTypes, getParsedSchemaFromJson
 
 
@@ -12,5 +12,7 @@ def getModelFromJson(modelFile):
     modelFile -- file name and path to the model to load
     """
 
+
     parsedSchema = getParsedSchemaFromJson(modelFile)
-    return extractTypes (parsedSchema,modelFile)
+    modelFile = os.path.abspath(modelFile)
+    return extractTypes (parsedSchema,modelFile,[])

@@ -8,5 +8,6 @@ class TestStringUtils (unittest.TestCase):
 
     def testUpperCamelCase2(self):
         t = toUpperCamelCase('IamAnotherTest')
-        self.assertEqual('IamAnotherTest',t)        
+        self.assertEqual('IamAnotherTest',t) 
+       
 

@@ -79,6 +79,16 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
         modelTypes = getModelFromJson (modelFile)
         self.assertIsNotNone (modelTypes)
+        self.assertEqual(8,len(modelTypes))
+
+        self._checkUpType(0,'OneType',2,modelTypes)
+        self._checkUpType(1,'RefBackType',3,modelTypes)
+        self._checkUpType(2,'RefBackType2',3,modelTypes)
+        self._checkUpType(3,'TwoType',3,modelTypes)
+        self._checkUpType(4,'SingleTypeSchema',4,modelTypes)
+        self._checkUpType(5,'SingleTypeSchemaAEnumEnum',0,modelTypes)
+        self._checkUpType(6,'SingleTypeSchemaComplexAttrib',3,modelTypes)
+        self._checkUpType(7,'AnotherType',2,modelTypes)
 
 
     def _checkUpType(self,position,typeName,propCount,modelTypes):

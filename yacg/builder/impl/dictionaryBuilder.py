@@ -41,7 +41,7 @@ def getParsedSchemaFromYaml(modelFile):
     with open(modelFile) as json_schema:
         return yaml.load(json_schema, Loader=yaml.FullLoader)
 
-def extractTypes(parsedSchema,modelFile):
+def extractTypes(parsedSchema,modelFile,modelTypes):
     """extract the types from the parsed schema
 
 
@@ -50,7 +50,6 @@ def extractTypes(parsedSchema,modelFile):
     modelFile -- file name and path to the model to load
     """
     
-    modelTypes = []
     schemaType = parsedSchema.get('type',None)
     schemaProperties = parsedSchema.get('properties',None)
     if (schemaType=='object') and (schemaProperties!=None):
@@ -259,11 +258,12 @@ def _extractExternalReferenceTypeFromJson(refEntry,modelTypes,originModelFile):
         # maybe the path is relative to the current type file
         originPathLength = originModelFile.rfind('/')
         originPath = originModelFile[:originPathLength+1]
-        fileName = originPath + fileName
+        fileName = originPath + fileName        
         if not os.path.isfile(fileName):
             logging.error("can't find external model file: modelFile=%s, refStr=%s, desiredFile=%s" 
                 % (originModelFile, refEntry,fileName))
             return None
+        fileName = os.path.abspath(fileName)
     alreadyLoadedType =_getAlreadyLoadedType(desiredTypeName,fileName,modelTypes)
     if alreadyLoadedType != None:
         return alreadyLoadedType
@@ -320,7 +320,7 @@ def _getTypeFromParsedSchema(parsedSchema,desiredTypeName,fileName,modelTypes):
     modelTypes -- list of already loaded models
     """
 
-    newModelTypes = extractTypes(parsedSchema,fileName)
+    newModelTypes = extractTypes(parsedSchema,fileName,modelTypes)
     desiredType = None
     for type in newModelTypes:
         if (type.name == desiredTypeName) and (type.source == fileName):
@@ -329,7 +329,7 @@ def _getTypeFromParsedSchema(parsedSchema,desiredTypeName,fileName,modelTypes):
     if desiredType == None:
         logging.error ("can't find external type: desiredTypeName=%s, file=%s" % (desiredTypeName,fileName))
         return None
-    _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,modelTypes)
+    #_putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,modelTypes)
     return desiredType
 
 def _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,alreadyLoadedModelTypes):
