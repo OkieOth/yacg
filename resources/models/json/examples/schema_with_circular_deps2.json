@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "single type schema",
+    "description": "example schema that contains a top-level type",
+    "version": "0.0.1",
+    "definitions": {
+        "RefBackType": {
+            "type": "object",
+            "properties": {
+                "another1": {
+                    "type": "string",
+                    "format": "date-time"
+                },                
+                "another2": {
+                    "type": "number"
+                },
+                "another3": {
+                    "$ref": "./schema_with_circular_deps.json#/definitions/OneType"
+                }
+            }
+        },
+        "RefBackType2": {
+            "type": "object",
+            "properties": {
+                "another1": {
+                    "type": "string",
+                    "format": "date-time"
+                },                
+                "another2": {
+                    "type": "number"
+                },
+                "another3": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "./schema_with_circular_deps.json#/definitions/OneType"
+                    }
+                }
+            }
+        }
+    }
+}
