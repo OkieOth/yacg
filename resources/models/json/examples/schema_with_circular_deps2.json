@@ -16,6 +16,12 @@
                 },
                 "another3": {
                     "$ref": "./schema_with_circular_deps.json#/definitions/OneType"
+                },
+                "another4s": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RefBackType2"
+                    }
                 }
             }
         },
@@ -29,7 +35,7 @@
                 "another2": {
                     "type": "number"
                 },
-                "another3": {
+                "another3s": {
                     "type": "array",
                     "items": {
                         "$ref": "./schema_with_circular_deps.json#/definitions/OneType"

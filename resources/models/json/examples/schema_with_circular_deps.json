@@ -26,7 +26,7 @@
                 "aBool": {
                     "type": "boolean"
                 },
-                "aRef": {
+                "aRefs": {
                     "type": "array",
                     "items": {
                         "$ref": "./single_type_schema.json#/definitions/AnotherType"

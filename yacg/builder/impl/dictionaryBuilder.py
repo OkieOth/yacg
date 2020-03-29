@@ -61,10 +61,49 @@ def extractTypes(parsedSchema,modelFile,modelTypes):
     schemaDefinitions = parsedSchema.get('definitions',None)
     if schemaDefinitions != None:
         # extract types from extra definitions section
-        _extractDefinitionsTypes(schemaDefinitions,modelTypes,modelFile)
+        _extractDefinitionsTypes(schemaDefinitions,modelTypes,modelFile,None)
+    # there could be situations with circular type dependencies where are some
+    # types not properly loaded ... so I search 
+    for type in modelTypes:
+        if len(type.properties) == 0:
+            sourceFile = type.source
+            parsedSchema = None
+            if sourceFile.find('.json') != -1:
+                # load a new model from a json file
+                parsedSchema = getParsedSchemaFromJson(sourceFile)
+            elif (sourceFile.find('.yaml') != -1) or (sourceFile.find('.yml') != -1):
+                # load new model from a yaml file
+                parsedSchema = getParsedSchemaFromYaml(sourceFile)
+            # eiko
+            _getTypeFromParsedSchema(parsedSchema,type.name,sourceFile,modelTypes)
     return modelTypes
 
-def _extractDefinitionsTypes(definitions,modelTypes,modelFile):    
+def _extractTypeAndRelatedTypes(parsedSchema,desiredTypeName,modelFile,modelTypes):
+    """extract the types from the parsed schema
+
+
+    Keyword arguments:
+    parsedSchema -- dictionary with the loaded schema
+    desiredTypeName -- name of the type that should be loaded
+    modelFile -- file name and path to the model to load
+    """
+    
+    schemaType = parsedSchema.get('type',None)
+    schemaProperties = parsedSchema.get('properties',None)
+    if (schemaType=='object') and (schemaProperties!=None):
+        # extract top level type
+        titleStr = parsedSchema.get('title',None)
+        typeNameStr = toUpperCamelCase(titleStr)
+        if typeNameStr == desiredTypeName:
+            description = parsedSchema.get('description',None)
+            _extractObjectType(typeNameStr,schemaProperties,description,modelTypes,modelFile)
+    schemaDefinitions = parsedSchema.get('definitions',None)
+    if schemaDefinitions != None:
+        # extract types from extra definitions section
+        _extractDefinitionsTypes(schemaDefinitions,modelTypes,modelFile,desiredTypeName)
+    return modelTypes
+
+def _extractDefinitionsTypes(definitions,modelTypes,modelFile,desiredTypeName):    
     """build types from definitions section
     
     Keyword arguments:
@@ -74,6 +113,8 @@ def _extractDefinitionsTypes(definitions,modelTypes,modelFile):
     """
 
     for key in definitions.keys():
+        if (desiredTypeName != None) and (key != desiredTypeName):
+            continue
         object = definitions[key]
         properties = object.get('properties',None)
         description = object.get('description',None)
@@ -320,7 +361,7 @@ def _getTypeFromParsedSchema(parsedSchema,desiredTypeName,fileName,modelTypes):
     modelTypes -- list of already loaded models
     """
 
-    newModelTypes = extractTypes(parsedSchema,fileName,modelTypes)
+    newModelTypes = _extractTypeAndRelatedTypes(parsedSchema,desiredTypeName,fileName,modelTypes)
     desiredType = None
     for type in newModelTypes:
         if (type.name == desiredTypeName) and (type.source == fileName):
