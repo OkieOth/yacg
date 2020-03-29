@@ -54,3 +54,20 @@ class TestPlantUml (unittest.TestCase):
         f = open(testOutputFile,"w+")
         f.write(renderResult)
         f.close()
+
+    def testCircularTypeDeps(self):
+        modelFile = 'resources/models/json/examples/schema_with_circular_deps.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        modelTypes = getModelFromJson (modelFile)
+        templateFile = 'yacg/generators/templates/plantUml.mako'
+        template = Template(filename=templateFile)
+        templateFileExists = os.path.isfile(modelFile)
+        self.assertTrue ('template file exists: '+ templateFile,templateFileExists)
+        renderResult = template.render(modelTypes = modelTypes)
+        self.assertIsNotNone(renderResult)
+
+        testOutputFile = "tmp/schema_with_circular_deps.puml"
+        f = open(testOutputFile,"w+")
+        f.write(renderResult)
+        f.close()
