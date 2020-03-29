@@ -26,8 +26,11 @@ pipenv run python3 -m unittest discover tests "test_*.py"
 * Usage: https://docs.makotemplates.org/en/latest/usage.html
 * Syntax: https://docs.makotemplates.org/en/latest/syntax.html
 
-```bash
-pip install -U Sphinx
+# Visual Studio Code
+This project is written with vscode as editor. It contains also the .vscode configuration for the development.
 
-sphinx-build -b html sphinx docs
-```
+Most interesting are in the debug section to pre-configured debugging tasks for the included
+tests.
+
+* 'current tests' expects a open test file in the editor, and if this configuration is started, all test from this file are executed.
+* 'all tests' let run all tests in the 'tests' folder of the repository
