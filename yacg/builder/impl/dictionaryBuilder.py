@@ -52,12 +52,13 @@ def extractTypes(parsedSchema,modelFile,modelTypes):
     
     schemaType = parsedSchema.get('type',None)
     schemaProperties = parsedSchema.get('properties',None)
-    if (schemaType=='object') and (schemaProperties!=None):
+    allOfEntry = parsedSchema.get('allOf',None)
+    if (schemaProperties!=None) or (allOfEntry != None):
         # extract top level type
         titleStr = parsedSchema.get('title',None)
         typeNameStr = toUpperCamelCase(titleStr)
         description = parsedSchema.get('description',None)
-        _extractObjectType(typeNameStr,schemaProperties,description,modelTypes,modelFile)
+        _extractObjectType(typeNameStr,schemaProperties,allOfEntry,description,modelTypes,modelFile)
     schemaDefinitions = parsedSchema.get('definitions',None)
     if schemaDefinitions != None:
         # extract types from extra definitions section
@@ -90,13 +91,14 @@ def _extractTypeAndRelatedTypes(parsedSchema,desiredTypeName,modelFile,modelType
     
     schemaType = parsedSchema.get('type',None)
     schemaProperties = parsedSchema.get('properties',None)
-    if (schemaType=='object') and (schemaProperties!=None):
+    allOfEntry = parsedSchema.get('allOf',None)
+    if (schemaProperties != None) or (allOfEntry != None):
         # extract top level type
         titleStr = parsedSchema.get('title',None)
         typeNameStr = toUpperCamelCase(titleStr)
         if typeNameStr == desiredTypeName:
             description = parsedSchema.get('description',None)
-            _extractObjectType(typeNameStr,schemaProperties,description,modelTypes,modelFile)
+            _extractObjectType(typeNameStr,schemaProperties,allOfEntry,description,modelTypes,modelFile)
     schemaDefinitions = parsedSchema.get('definitions',None)
     if schemaDefinitions != None:
         # extract types from extra definitions section
@@ -117,16 +119,18 @@ def _extractDefinitionsTypes(definitions,modelTypes,modelFile,desiredTypeName):
             continue
         object = definitions[key]
         properties = object.get('properties',None)
+        allOfEntry = object.get('allOf',None)
         description = object.get('description',None)
-        _extractObjectType(key,properties,description,modelTypes,modelFile)    
+        _extractObjectType(key,properties,allOfEntry,description,modelTypes,modelFile)    
 
 
-def _extractObjectType(typeNameStr,properties,description,modelTypes,modelFile):
+def _extractObjectType(typeNameStr,properties,allOfEntries,description,modelTypes,modelFile):
     """build a type object
 
     Keyword arguments:
     typeNameStr -- Name of the new type
     properties -- dict of a schema properties-block
+    allOfEntries -- dict of allOf block
     description -- optional description of that type
     modelTypes -- list of already loaded models
     modelFile -- file name and path to the model to load        
@@ -142,6 +146,16 @@ def _extractObjectType(typeNameStr,properties,description,modelTypes,modelFile):
 
     if alreadyCreatedType == None:            
         modelTypes.append(newType)
+    if allOfEntries != None:
+        for allOfEntry in allOfEntries:
+            refEntry = allOfEntry.get('$ref',None)
+            propertiesEntry = allOfEntry.get('properties',None)
+            if (propertiesEntry != None):
+                _extractAttributes(newType,propertiesEntry,modelTypes,modelFile)
+            elif refEntry != None:
+                # TODO extract reference to the base class
+                # TODO load external file and set 
+                newType.extendsType = _extractReferenceType(newType,refEntry,modelTypes,modelFile)
     if len(newType.properties)==0: 
         _extractAttributes(newType,properties,modelTypes,modelFile)
 
@@ -170,6 +184,8 @@ def _extractAttributes(type, properties, modelTypes,modelFile):
     modelFile -- file name and path to the model to load        
     """
 
+    if properties == None:
+        return
     for key in properties.keys():
         propDict = properties[key]
         propName = key
@@ -194,7 +210,6 @@ def _extractAttribType(newType,newProperty,propDict,modelTypes,modelFile):
     """
 
     type = propDict.get('type',None)
-    refEntry = propDict.get('$ref',None)
     if type == 'integer':
         return IntegerType()
     elif type =='number':
@@ -207,9 +222,12 @@ def _extractAttribType(newType,newProperty,propDict,modelTypes,modelFile):
     elif type =='object':
         return _extractComplexType(newType,newProperty,propDict,modelTypes,modelFile)
     else:
-        if refEntry != None:
-            # TODO extract reference type
-            return _extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile)
+        refEntry = propDict.get('$ref',None)
+        enumEntry = propDict.get('enum',None)
+        if enumEntry != None:
+            return _extractEnumType(newType,newProperty,enumEntry,modelTypes,modelFile)
+        elif refEntry != None:
+            return _extractReferenceType(newType,refEntry,modelTypes,modelFile)
         elif type == 'array':
             return _extractArrayType(newType,newProperty,propDict,modelTypes,modelFile)
         else:
@@ -237,13 +255,12 @@ def _extractArrayType(newType,newProperty,propDict,modelTypes,modelFile):
     pass
 
 
-def _extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
+def _extractReferenceType(newType,refEntry,modelTypes,modelFile):
     """build or reload a type reference 
     and return it
 
     Keyword arguments:
     newType -- current Type
-    newProperty -- current property
     refEntry -- $ref entry from the model file
     modelTypes -- list of already loaded models
     modelFile -- file name and path to the model to load        
@@ -253,7 +270,7 @@ def _extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
     if refEntry.startswith(localDefinitionsStr):
         # internal reference
         typeName = refEntry[len(localDefinitionsStr):]
-        return _extractInternalReferenceType(newType,newProperty,typeName,modelTypes,modelFile)
+        return _extractInternalReferenceType(newType,typeName,modelTypes,modelFile)
     else:
         if refEntry.find('.json') != -1:
             # load a new model from a json file
@@ -262,8 +279,8 @@ def _extractReferenceType(newType,newProperty,refEntry,modelTypes,modelFile):
             # load new model from a yaml file
             return _extractExternalReferenceTypeFromYaml(refEntry,modelTypes,modelFile)
         else:
-            logging.error("external reference from unknown type: %s, type=%s, property=%s" %
-                (refEntry,newType.name,newProperty.name))
+            logging.error("external reference from unknown type: %s, type=%s" %
+                (refEntry,newType.name))
     pass
 
 def _extractFileNameFromRefEntry(refEntry,fileExt):
@@ -438,7 +455,7 @@ def _getTypeIfAlreadyLoaded(typeName,fileName,modelTypes):
     return None
 
 
-def _extractInternalReferenceType(newType,newProperty,refTypeName,modelTypes,modelFile):
+def _extractInternalReferenceType(newType,refTypeName,modelTypes,modelFile):
     """builds or relaod a type reference in the current file
     and return it.
 
@@ -446,7 +463,6 @@ def _extractInternalReferenceType(newType,newProperty,refTypeName,modelTypes,mod
 
     Keyword arguments:
     newType -- current Type
-    newProperty -- current property
     refTypeName -- name of the referenced type
     modelTypes -- list of already loaded models
     modelFile -- file name and path to the model to load        

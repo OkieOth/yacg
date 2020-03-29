@@ -87,6 +87,17 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(3,'TwoType',3,modelTypes)
         self._checkUpType(4,'AnotherType',2,modelTypes)
 
+    def testSimpleAllOf(self):
+        modelFile = 'resources/models/json/examples/simple_allof.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        modelTypes = getModelFromJson (modelFile)
+        self.assertIsNotNone (modelTypes)
+        self.assertEqual(3,len(modelTypes))
+        self._checkUpType(0,'SimpleAllOfSchema',1,modelTypes)
+        self._checkUpType(1,'Address',3,modelTypes)
+        self._checkUpType(2,'SimpleAllOfSchemaTypeEnum',0,modelTypes)
+
 
     def _checkUpType(self,position,typeName,propCount,modelTypes):
         type = modelTypes[position]
