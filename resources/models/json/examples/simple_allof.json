@@ -1,0 +1,29 @@
+{
+    "title": "simple allOf schema",
+    "description": "example schema that contains a simple allOf construct, source: https://json-schema.org/understanding-json-schema/reference/combining.html",
+    "version": "0.0.1",
+    "type": "object",
+    "definitions": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "street_addr":    { "type": "string" },
+          "city":           { "type": "string" },
+          "state":          { "type": "string" }
+        },
+        "required": ["street_address", "city", "state"]
+      }
+    },
+    "allOf": [
+        { 
+          "$ref": "#/definitions/Address" 
+        },
+        { 
+            "properties": {
+                "type": { 
+                    "enum": [ "residential", "business" ] 
+                }
+        }
+      }
+    ]
+  }
