@@ -98,6 +98,21 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(1,'Address',3,modelTypes)
         self._checkUpType(2,'SimpleAllOfSchemaTypeEnum',0,modelTypes)
 
+    def testSophisticatedAllOf(self):
+        modelFile = 'resources/models/json/examples/more_sophisticated_allof.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        modelTypes = getModelFromJson (modelFile)
+        self.assertIsNotNone (modelTypes)
+        self.assertEqual(5,len(modelTypes))
+        type = self._checkUpType(0,'MoreSophisticatedAllOf',1,modelTypes)
+        self.assertIsNotNone(type.extendsType)
+        address = self._checkUpType(1,'Address',3,modelTypes)
+        self.assertEqual(type.extendsType,address)
+        self._checkUpType(2,'MoreSophisticatedAllOfTypeEnum',0,modelTypes)
+        self._checkUpType(3,'MainAddress',2,modelTypes)
+        self._checkUpType(4,'MainAddressComplex',3,modelTypes)
+
 
     def _checkUpType(self,position,typeName,propCount,modelTypes):
         type = modelTypes[position]
@@ -113,6 +128,7 @@ class TestJsonBuilder (unittest.TestCase):
                 self.assertTrue(prop.isArray, "property has to be an array: %s.%s" % (typeName,prop.name))
             else: 
                 self.assertFalse(prop.isArray, "property should be no array: %s.%s" % (typeName,prop.name))
+        return type
 
 
 
