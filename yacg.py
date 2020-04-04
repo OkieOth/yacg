@@ -50,15 +50,15 @@ def checkModelsToLoad(args):
 def readModels(args):
     """reads all desired models and build the model object tree from it"""
 
+    loadedTypes = []
     yamlExtensions = set(['.yaml','.yml'])
     for model in args.model:
         fileExt = getFileExt(model)
         if fileExt.lower() in yamlExtensions:
-            getModelFromYaml(model)
-            # TODO
+            loadedTypes = getModelFromYaml(model,loadedTypes)
         else:
-            getModelFromJson(model) 
-            # TODO
+            loadedTypes = getModelFromJson(model,loadedTypes) 
+        return loadedTypes
 
 def main():
     """starts the program execution"""
@@ -69,7 +69,7 @@ def main():
     if not argumentsAreOk:
         printError('\nfound errors in configuration, cancel execution')
         sys.exit(1)
-    readModels(args)    
+    loadedTypes = readModels(args)    
     #renderTemplate()
 
 if __name__ == '__main__':

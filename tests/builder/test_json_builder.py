@@ -12,7 +12,7 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'resources/models/json/examples/single_type_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         self.assertIsNotNone (modelTypes)
         self.assertEqual(3,len(modelTypes))
 
@@ -49,7 +49,7 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'resources/models/json/config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         self.assertIsNotNone (modelTypes)
         self.assertEqual(8,len(modelTypes))
 
@@ -66,7 +66,7 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'resources/models/json/examples/schema_with_external_ref.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         self.assertIsNotNone (modelTypes)
         self.assertEqual (3,len(modelTypes))
         self._checkUpType(0,'OneType',2,modelTypes)
@@ -77,7 +77,7 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         self.assertIsNotNone (modelTypes)
         self.assertEqual(5,len(modelTypes))
 
@@ -91,7 +91,7 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'resources/models/json/examples/simple_allof.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         self.assertIsNotNone (modelTypes)
         self.assertEqual(3,len(modelTypes))
         self._checkUpType(0,'SimpleAllOfSchema',1,modelTypes)
@@ -102,7 +102,7 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'resources/models/json/examples/more_sophisticated_allof.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         self.assertIsNotNone (modelTypes)
         self.assertEqual(5,len(modelTypes))
         type = self._checkUpType(0,'MoreSophisticatedAllOf',1,modelTypes)

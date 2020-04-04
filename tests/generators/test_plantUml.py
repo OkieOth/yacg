@@ -8,7 +8,7 @@ class TestPlantUml (unittest.TestCase):
         modelFile = 'resources/models/json/examples/single_type_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
@@ -25,7 +25,7 @@ class TestPlantUml (unittest.TestCase):
         modelFile = 'resources/models/json/examples/single_type_schema2.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
@@ -42,7 +42,7 @@ class TestPlantUml (unittest.TestCase):
         modelFile = 'resources/models/json/config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
@@ -59,7 +59,7 @@ class TestPlantUml (unittest.TestCase):
         modelFile = 'resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
-        modelTypes = getModelFromJson (modelFile)
+        modelTypes = getModelFromJson (modelFile,[])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
