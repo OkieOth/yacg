@@ -37,7 +37,7 @@ def checkModelsToLoad(args):
     if not args.model:
         print ('no models given, cancel')
         return False
-    print ('\nModels to load:')
+    print ('\nAvailable models:')
     foundAll = True
     for model in args.model:
         modelExists = doesFileExist(model)        
