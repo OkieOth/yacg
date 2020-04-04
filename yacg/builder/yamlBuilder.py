@@ -2,7 +2,7 @@
 
 import os.path
 
-from yacg.builder.impl.dictionaryBuilder import extractTypes, getParsedSchemaFromYaml
+from .impl.dictionaryBuilder import extractTypes, getParsedSchemaFromYaml
 
 def getModelFromYaml(modelFile):
     """reads a JSON schema file and build a model from it, 

@@ -1,11 +1,12 @@
 import argparse
 import sys
 import logging
-import util.fileUtils
-from util.outputUtils import printError, printOk, printInfo, getErrorTxt, getOkTxt
-from builder.jsonBuilder import getModelFromJson 
-from builder.yamlBuilder import getModelFromYaml 
-from generators.test import renderTemplate
+
+
+from yacg.util.fileUtils import doesFileExist
+from yacg.util.outputUtils import printError, printOk, printInfo, getErrorTxt, getOkTxt
+from yacg.builder.jsonBuilder import getModelFromJson 
+from yacg.builder.yamlBuilder import getModelFromYaml 
 
 description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
@@ -39,7 +40,7 @@ def checkModelsToLoad(args):
     print ('\nModels to load:')
     foundAll = True
     for model in args.model:
-        modelExists = util.fileUtils.doesFileExist(model)        
+        modelExists = doesFileExist(model)        
         modelExistsString = getOkTxt('yes') if modelExists else getErrorTxt('no') 
         if not modelExists:
             foundAll = False

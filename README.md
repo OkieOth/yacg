@@ -6,12 +6,15 @@ W.I.P.
 # Basic usage
 
 ```bash
+# basic preparation
+pip install --user pipenv
+
 pipenv --python 3.7
 pipenv --three install
 pipenv shell
 
 # do a demo run
-python3 yacg/yacg.py --model resources/models/yaml/config_schema.yaml
+python3 yacg.py --model resources/models/yaml/config_schema.yaml
 
 # run a test
 pipenv run python3 -m unittest -v tests/model/test_model.py
