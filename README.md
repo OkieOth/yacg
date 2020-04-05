@@ -3,7 +3,8 @@ yet another code generation
 
 W.I.P.
 
-# Basic usage
+# Usage
+## Basic Usage
 
 ```bash
 # basic preparation
@@ -25,6 +26,20 @@ pipenv run python3 -m unittest -v tests/model/test_model.py
 
 # run all tests
 pipenv run python3 -m unittest discover tests "test_*.py"
+```
+## Docker
+```bash
+# build a docker images
+./bin/buildDockerImage.sh
+
+# run the docker image
+cd REPO_PATH
+docker run -v `pwd`/resources:/resources --rm -t okieoth/yacg:0.0.1 --model \
+    /resources/models/json/config_schema.json \
+    /resources/models/json/yacg_model_schema.json \
+    --output stdout \
+    --template plantuml
+
 ```
 
 # Documentation
