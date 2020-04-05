@@ -7,12 +7,12 @@ class TestPlantUml (unittest.TestCase):
     def testSingleTypeSchema(self):
         modelFile = 'resources/models/json/examples/single_type_schema.json'
         modelFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        self.assertTrue('model file exists: '+ modelFile,modelFileExists)
         modelTypes = getModelFromJson (modelFile,[])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('template file exists: '+ templateFile,templateFileExists)
+        self.assertTrue('template file exists: '+ templateFile,templateFileExists)
         renderResult = template.render(modelTypes = modelTypes)
         self.assertIsNotNone(renderResult)
 
@@ -24,12 +24,12 @@ class TestPlantUml (unittest.TestCase):
     def testSingleTypeSchema(self):
         modelFile = 'resources/models/json/examples/single_type_schema2.json'
         modelFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        self.assertTrue('model file exists: '+ modelFile,modelFileExists)
         modelTypes = getModelFromJson (modelFile,[])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('template file exists: '+ templateFile,templateFileExists)
+        self.assertTrue('template file exists: '+ templateFile,templateFileExists)
         renderResult = template.render(modelTypes = modelTypes)
         self.assertIsNotNone(renderResult)
 
@@ -41,12 +41,12 @@ class TestPlantUml (unittest.TestCase):
     def testConfigSchema(self):
         modelFile = 'resources/models/json/config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        self.assertTrue('model file exists: '+ modelFile,modelFileExists)
         modelTypes = getModelFromJson (modelFile,[])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('template file exists: '+ templateFile,templateFileExists)
+        self.assertTrue('template file exists: '+ templateFile,templateFileExists)
         renderResult = template.render(modelTypes = modelTypes)
         self.assertIsNotNone(renderResult)
 
@@ -58,12 +58,12 @@ class TestPlantUml (unittest.TestCase):
     def testCircularTypeDeps(self):
         modelFile = 'resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        self.assertTrue('model file exists: '+ modelFile,modelFileExists)
         modelTypes = getModelFromJson (modelFile,[])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('template file exists: '+ templateFile,templateFileExists)
+        self.assertTrue('template file exists: '+ templateFile,templateFileExists)
         renderResult = template.render(modelTypes = modelTypes)
         self.assertIsNotNone(renderResult)
 

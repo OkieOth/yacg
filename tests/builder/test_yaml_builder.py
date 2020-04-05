@@ -11,7 +11,7 @@ class TestYamlBuilder (unittest.TestCase):
     def testSingleTypeSchema(self):
         modelFile = 'resources/models/yaml/config_schema.yaml'
         modelFileExists = os.path.isfile(modelFile)
-        self.assertTrue ('model file exists: '+ modelFile,modelFileExists)
+        self.assertTrue('model file exists: '+ modelFile,modelFileExists)
         modelTypes = getModelFromYaml (modelFile,[])
         self.assertIsNotNone (modelTypes)
         self.assertEqual(8,len(modelTypes))
