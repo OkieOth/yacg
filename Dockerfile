@@ -3,6 +3,7 @@ FROM python:3.8-slim-buster
 RUN pip install pipenv
 
 ADD yacg.py /yacg/
+ADD version.txt /yacg/
 ADD Pipfile /yacg/
 ADD Pipfile.lock /yacg/
 COPY yacg /yacg/yacg/

@@ -2,10 +2,13 @@
 
 scriptPos=${0%/*}
 
+
 imageBase=okieoth/yacg
-imageTag=0.0.1
+imageTag=`cat $scriptPos/../version.txt | grep -P '\d+\.\d+\.\d+'`
 
 imageName="$imageBase:$imageTag"
+
+echo "I am going to create: $imageName"
 
 pushd "$scriptPos" > /dev/null
 	if docker build -t $imageName ..
