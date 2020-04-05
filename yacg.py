@@ -11,7 +11,6 @@ from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 from yacg.util.fileUtils import getInternalTemplatePath
 
-
 description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
 source code from it
