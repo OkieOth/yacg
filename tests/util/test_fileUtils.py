@@ -21,4 +21,3 @@ class TestFileUtils (unittest.TestCase):
         templateFile = getInternalTemplatePath('generators/templates/plantUml.mako')
         fileExists = os.path.exists(templateFile)
         self.assertTrue(fileExists)
-
