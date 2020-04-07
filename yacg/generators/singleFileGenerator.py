@@ -3,7 +3,9 @@ one single output file"""
 
 from mako.template import Template
 
-def renderSingleFileTemplate(modelTypes,templateFile,args):
+
+def renderSingleFileTemplate(modelTypes, templateFile, args):
     template = Template(filename=templateFile)
-    renderResult = template.render(modelTypes = modelTypes)
-    print (renderResult) # TODO
+    renderResult = template.render(modelTypes=modelTypes)
+    print(renderResult)
+    # TODO
