@@ -14,7 +14,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromJson(modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(3, len(modelTypes))
+        self.assertEqual(4, len(modelTypes))
 
         mainType = None
         anotherType = None

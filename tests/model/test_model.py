@@ -63,7 +63,7 @@ class TestModelClasses (unittest.TestCase):
     def testTag(self):
         tag1 = Tag('myName')
         self.assertEqual('myName', tag1.name)
-        self.assertTrue(tag1.value is not None)
+        self.assertTrue(tag1.value is None)
         tag2 = Tag('myName2', 'I am a string')
         self.assertEqual('myName2', tag2.name)
         self.assertEqual('I am a string', tag2.value)
