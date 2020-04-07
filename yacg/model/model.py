@@ -2,13 +2,15 @@
 will be transalated into this types. These are also the
 types that are passed into the templates'''
 
+
 class Type:
     '''Base class for all types'''
-    def __init__(self,name):
+    def __init__(self, name):
         #: name of the type
         self.name = name
 
         self.isBaseType = True
+
 
 class IntegerType (Type):
     '''Type to represent Integer and Long types'''
@@ -17,11 +19,13 @@ class IntegerType (Type):
         super().__init__(self.__class__.__name__)
         self.isLong = False
 
+
 class BooleanType (Type):
     '''Type to represent Integer and Long types'''
 
     def __init__(self):
         super().__init__(self.__class__.__name__)
+
 
 class NumberType (Type):
     '''Type to represent floating point numbers'''
@@ -35,6 +39,7 @@ class StringType (Type):
 
     def __init__(self):
         super().__init__(self.__class__.__name__)
+
 
 class UuidType (Type):
     '''Type to represent a uuid'''
@@ -113,6 +118,7 @@ class ComplexType (Type):
 
         self.isBaseType = False
 
+
 class Property:
     '''Attribute of a ComplexType'''
 
@@ -132,12 +138,13 @@ class Property:
         #: some words to explain what this property is good for
         self.description = None
 
+
 class Tag:
     '''Helper class that allows to add keywords to types and
     attributes
     '''
 
-    def __init__(self, name, value = None):
+    def __init__(self, name, value=None):
         #: name of the tag
         self.name = name
 

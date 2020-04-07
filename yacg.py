@@ -1,13 +1,12 @@
 import argparse
 import sys
-import os
 import logging
 
 
 from yacg.util.fileUtils import doesFileExist
-from yacg.util.outputUtils import printError, printOk, printInfo, getErrorTxt, getOkTxt
-from yacg.builder.jsonBuilder import getModelFromJson 
-from yacg.builder.yamlBuilder import getModelFromYaml 
+from yacg.util.outputUtils import printError, getErrorTxt, getOkTxt
+from yacg.builder.jsonBuilder import getModelFromJson
+from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 from yacg.util.fileUtils import getInternalTemplatePath
 
@@ -34,34 +33,38 @@ def getFileExt(fileName):
     lastDot = fileName.rindex('.')
     return fileName[lastDot:]
 
+
 def checkModelsToLoad(args):
     """test if the desired model files exist"""
-    
+
     if not args.model:
-        print ('no models given, cancel')
+        print('no models given, cancel')
         return False
-    print ('\nAvailable models:')
+    print('\nAvailable models:')
     foundAll = True
     for model in args.model:
-        modelExists = doesFileExist(model)        
-        modelExistsString = getOkTxt('yes') if modelExists else getErrorTxt('no') 
+        modelExists = doesFileExist(model)
+        modelExistsString = getOkTxt('yes') if modelExists \
+            else getErrorTxt('no')
         if not modelExists:
             foundAll = False
-        print (' {}\t{}'.format(modelExistsString,model))
+        print(' {}\t{}'.format(modelExistsString, model))
     return foundAll
+
 
 def readModels(args):
     """reads all desired models and build the model object tree from it"""
 
     loadedTypes = []
-    yamlExtensions = set(['.yaml','.yml'])
+    yamlExtensions = set(['.yaml', '.yml'])
     for model in args.model:
         fileExt = getFileExt(model)
         if fileExt.lower() in yamlExtensions:
-            loadedTypes = getModelFromYaml(model,loadedTypes)
+            loadedTypes = getModelFromYaml(model, loadedTypes)
         else:
-            loadedTypes = getModelFromJson(model,loadedTypes) 
+            loadedTypes = getModelFromJson(model, loadedTypes)
     return loadedTypes
+
 
 def main():
     """starts the program execution"""
@@ -75,8 +78,8 @@ def main():
     loadedTypes = readModels(args)
     if args.template == 'plantuml':
         templateFile = getInternalTemplatePath('generators/templates/plantUml.mako')
-        renderSingleFileTemplate (loadedTypes,templateFile,args)
+        renderSingleFileTemplate(loadedTypes, templateFile, args)
+
 
 if __name__ == '__main__':
     main()
-
