@@ -1,7 +1,32 @@
-# yacg
-yet another code generation
+# yacg - yet another code generation
 
-W.I.P.
+The purpose of this project is to handle JSON schema models and generate
+stuff based on them.
+
+Possible use-case are for instance to create PlanUML class diagrams based
+on the models, create bean classes based on model or more sophisticated
+create fully dao code with included tests. 
+
+Basically it's a tool to play with model driven development ...
+
+The general workflow is:
+1. Take a bunch of models - for this tool JSON schemas
+2. Use some suitable templates
+3. Feed all of them into the tool
+4. yacg - processes templates and models
+5. ... and produces different text outputs
+
+Even if this tool written in Python it can be used to create text output
+in every format - all depends from choosen templates.
+
+To free the usage of yacg from too much care about dependencies, is on 
+Docker Hub `https://hub.docker.com/repository/docker/okieoth/yacg/general` 
+also a docker image, from the latest master brunch push, available. 
+
+```bash
+# pull the image
+docker pull okieoth/yacg
+```
 
 # Usage
 ## Basic Usage
@@ -51,8 +76,12 @@ docker run -v `pwd`/resources:/resources --rm -t okieoth/yacg:0.0.1 --model \
 # Visual Studio Code
 This project is written with vscode as editor. It contains also the .vscode configuration for the development.
 
-Most interesting are in the debug section to pre-configured debugging tasks for the included
-tests.
+Most interesting are in the debug section to pre-configured debugging tasks for the included tests.
 
 * 'current tests' expects a open test file in the editor, and if this configuration is started, all test from this file are executed.
 * 'all tests' let run all tests in the 'tests' folder of the repository
+
+# Some Last Words
+This project is a spare time project - with all its pros and cons. The development of 
+project this project is done under a Linux OS, so I have no clue how it is working
+on Windows machines. 
