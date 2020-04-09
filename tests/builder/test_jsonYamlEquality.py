@@ -4,12 +4,10 @@ from yacg.builder.impl.dictionaryBuilder import getParsedSchemaFromJson, getPars
 
 
 class TestJsonBuilder (unittest.TestCase):
-    def testYamlAndJsonEquality(self):
-        jsonModelFile = 'resources/models/json/config_schema.json'
+    def _testYamlAndJsonEquality(self, jsonModelFile, yamlModelFile):
         jsonModelFileExists = os.path.isfile(jsonModelFile)
         self.assertTrue('json model file exists: ' + jsonModelFile, jsonModelFileExists)
 
-        yamlModelFile = 'resources/models/yaml/config_schema.yaml'
         yamlModelFileExists = os.path.isfile(yamlModelFile)
         self.assertTrue('yaml model file exists: ' + yamlModelFile, yamlModelFileExists)
 
@@ -19,3 +17,18 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(parsedYamlSchema)
 
         self.assertEqual(parsedYamlSchema, parsedYamlSchema)
+
+    def testConfigSchemaEquality(self):
+        jsonModelFile = 'resources/models/json/config_schema.json'
+        yamlModelFile = 'resources/models/yaml/config_schema.yaml'
+        self._testYamlAndJsonEquality(jsonModelFile, yamlModelFile)
+
+    def testSwagger2Equality(self):
+        jsonModelFile = 'resources/models/json/examples/swagger_v2_example.json'
+        yamlModelFile = 'resources/models/yaml/examples/swagger_v2_example.yaml'
+        self._testYamlAndJsonEquality(jsonModelFile, yamlModelFile)
+
+    def testOpenApi3Equality(self):
+        jsonModelFile = 'resources/models/json/examples/openapi_v3_example.json'
+        yamlModelFile = 'resources/models/yaml/examples/openapi_v3_example.yaml'
+        self._testYamlAndJsonEquality(jsonModelFile, yamlModelFile)
