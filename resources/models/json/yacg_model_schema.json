@@ -9,8 +9,10 @@
             "description": "base type for all type",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "__tags": ["constructorValue"]
                 }
+
             }
         },
         "IntegerType": {
@@ -28,11 +30,12 @@
                         }
                     }
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "NumberType": {
             "type": "object",
-            "description": "long values",
+            "description": "floating point values",
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
@@ -45,7 +48,8 @@
                         }
                     }
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "StringType": {
             "type": "object",
@@ -54,11 +58,12 @@
                 {
                     "$ref": "#/definitions/Type"
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "EnumType": {
             "type": "object",
-            "description": "integer values",
+            "description": "type for enum values - fixed value types",
             "allOf": [
                 {
                     "$ref": "#/definitions/StringType"
@@ -73,29 +78,32 @@
                         }
                     }
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "DateType": {
             "type": "object",
-            "description": "integer values",
+            "description": "type for date values",
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "DateTimeType": {
             "type": "object",
-            "description": "integer values",
+            "description": "type for timestamp values",
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "ComplexType": {
             "type": "object",
-            "description": "Complex type description",
+            "description": "complex type description",
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
@@ -141,7 +149,8 @@
                         }
                     }
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "Property": {
             "type": "object",
@@ -149,7 +158,8 @@
             "properties": {
                 "name": {
                     "description": "type unique identifier",
-                    "type": "string"
+                    "type": "string",
+                    "__tags": ["constructorValue"]
                 },
                 "isArray": {
                     "description": "trure - if the property is an array",
@@ -157,7 +167,8 @@
                 },
                 "type": {
                     "description": "either a basic or a complex type",
-                    "$ref": "#/definitions/Type"                                                
+                    "$ref": "#/definitions/Type",                                              
+                    "__tags": ["constructorValue"]
                 },
                 "tags": {
                     "description": "additional flags to mark a property",
@@ -175,10 +186,14 @@
             "$comment": "this type can be used to implement additional grouping or marks for processing",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "__tags": ["constructorValue"]
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "__tags": [
+                        {"constructorValue":"None"}
+                    ]
                 }
             }
         }

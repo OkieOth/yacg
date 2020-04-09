@@ -79,6 +79,9 @@ def main():
     if args.template == 'plantuml':
         templateFile = getInternalTemplatePath('generators/templates/plantUml.mako')
         renderSingleFileTemplate(loadedTypes, templateFile, args)
+    elif args.template == 'pythonBeans':
+        templateFile = getInternalTemplatePath('generators/templates/pythonBeans.mako')
+        renderSingleFileTemplate(loadedTypes, templateFile, args)
 
 
 if __name__ == '__main__':

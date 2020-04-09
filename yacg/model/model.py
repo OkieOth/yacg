@@ -79,8 +79,11 @@ class EnumType (Type):
 
         self.isBaseType = False
 
-        #: the dummy attributes of that type - only to harden the code
+        #: the dummy attribute of that type - only to harden the code
         self.properties = ()
+
+        #: the dummy attribute of that type - only to harden the code
+        self.extendsType = None
 
         #: some words to explain what this type is good for
         self.description = None

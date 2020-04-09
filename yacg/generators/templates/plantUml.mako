@@ -1,3 +1,4 @@
+## Template to create PlantUml class diagrams from the model types
 <%
     def addLineBreakToDescription(textLine):
         breakedText = ''
