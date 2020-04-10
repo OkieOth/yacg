@@ -5,6 +5,7 @@ from yacg.model.model import IntegerType, NumberType
 from yacg.model.model import StringType
 from yacg.model.model import DateTimeType
 from yacg.model.model import EnumType, ComplexType
+from yacg.model.modelFuncs import hasTag
 
 
 class TestJsonBuilder (unittest.TestCase):
@@ -112,6 +113,28 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(2, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes)
         self._checkUpType(3, 'MainAddress', 2, modelTypes)
         self._checkUpType(4, 'MainAddressComplex', 3, modelTypes)
+
+    def testTags(self):
+        modelFile = 'resources/models/json/yacg_model_schema.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        modelTypes = getModelFromJson(modelFile, [])
+        metaModelTypes = []
+        self.assertIsNotNone(modelTypes)
+        for type in modelTypes:
+            if hasTag('metaModelType', type):
+                metaModelTypes.append(type.name)
+
+        expectedMetaModelTypes = [
+            'IntegerType',
+            'NumberType',
+            'StringType',
+            'EnumType',
+            'DateType',
+            'DateTimeType',
+            'ComplexType'
+        ]
+        self.assertEqual(expectedMetaModelTypes, metaModelTypes)
 
     def _checkUpType(self, position, typeName, propCount, modelTypes):
         type = modelTypes[position]

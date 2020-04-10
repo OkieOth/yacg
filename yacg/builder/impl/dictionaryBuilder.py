@@ -14,7 +14,7 @@ from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateType, DateTimeType
-from yacg.model.model import EnumType, ComplexType
+from yacg.model.model import EnumType, ComplexType, Tag
 
 
 def getParsedSchemaFromJson(modelFile):
@@ -204,12 +204,12 @@ def _extractAttributes(type, properties, modelTypes, modelFile):
     for key in properties.keys():
         propDict = properties[key]
         propName = key
-        description = properties.get('description', None)
+        description = propDict.get('description', None)
         newProperty = Property(propName, None)
         if description is not None:
             newProperty.description = description
         newProperty.type = _extractAttribType(type, newProperty, propDict, modelTypes, modelFile)
-        tags = properties.get('__tags', None)
+        tags = propDict.get('__tags', None)
         if tags is not None:
             newProperty.tags = _extractTags(tags)
         type.properties.append(newProperty)
@@ -590,13 +590,24 @@ def _extractEnumType(newType, newProperty, enumValue, modelTypes, modelFile):
     return enumType
 
 
-def _extractTags(tagDict):
+def _extractTags(tagArray):
     """extracts the tags attached to types or properties and returns them as
     list
 
     Keyword arguments:
-    tagDict -- dictionary of models '__tags' entry
+    tagArray -- dictionary of models '__tags' entry
     """
 
-    # TODO
-    pass
+    tags = []
+    for tag in tagArray:
+        if isinstance(tag, str):
+            tagObj = Tag(tag)
+            tags.append(tagObj)
+        elif isinstance(tag, dict):
+            keyArray = list(tag.keys())
+            if len(keyArray) > 0:
+                tagName = keyArray[0]
+                tagValue = tag.get(tagName, None)
+                tagObj = Tag(tagName, tagValue)
+                tags.append(tagObj)
+    return tags
