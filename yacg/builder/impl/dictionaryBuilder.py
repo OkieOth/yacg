@@ -57,7 +57,12 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
         description = parsedSchema.get('description', None)
-        _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFile)
+        mainType = _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFile)
+        if len(mainType.tags) == 0:
+            tags = parsedSchema.get('__tags', None)
+            if tags is not None:
+                mainType.tags = _extractTags(tags)
+
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -82,7 +87,6 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
 def _extractTypeAndRelatedTypes(parsedSchema, desiredTypeName, modelFile, modelTypes):
     """extract the types from the parsed schema
 
-
     Keyword arguments:
     parsedSchema -- dictionary with the loaded schema
     desiredTypeName -- name of the type that should be loaded
@@ -97,7 +101,12 @@ def _extractTypeAndRelatedTypes(parsedSchema, desiredTypeName, modelFile, modelT
         typeNameStr = toUpperCamelCase(titleStr)
         if typeNameStr == desiredTypeName:
             description = parsedSchema.get('description', None)
-            _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFile)
+            type = _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFile)
+            if len(type.tags) == 0:
+                tags = parsedSchema.get('__tags', None)
+                if tags is not None:
+                    type.tags = _extractTags(tags)
+
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -121,7 +130,11 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFile, desiredTypeName
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
         description = object.get('description', None)
-        _extractObjectType(key, properties, allOfEntry, description, modelTypes, modelFile)
+        type = _extractObjectType(key, properties, allOfEntry, description, modelTypes, modelFile)
+        if len(type.tags) == 0:
+            tags = object.get('__tags', None)
+            if tags is not None:
+                type.tags = _extractTags(tags)
 
 
 def _extractObjectType(typeNameStr, properties, allOfEntries, description, modelTypes, modelFile):
@@ -143,7 +156,6 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
     newType.source = modelFile
     if description is not None:
         newType.description = description
-
     if alreadyCreatedType is None:
         modelTypes.append(newType)
     if allOfEntries is not None:
@@ -158,6 +170,7 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
                 newType.extendsType = _extractReferenceType(newType, refEntry, modelTypes, modelFile)
     if len(newType.properties) == 0:
         _extractAttributes(newType, properties, modelTypes, modelFile)
+    return newType
 
 
 def _getAlreadyCreatedTypesWithThatName(typeNameStr, modelTypes, modelFile):
@@ -196,6 +209,9 @@ def _extractAttributes(type, properties, modelTypes, modelFile):
         if description is not None:
             newProperty.description = description
         newProperty.type = _extractAttribType(type, newProperty, propDict, modelTypes, modelFile)
+        tags = properties.get('__tags', None)
+        if tags is not None:
+            newProperty.tags = _extractTags(tags)
         type.properties.append(newProperty)
 
 
@@ -509,6 +525,9 @@ def _extractComplexType(newType, newProperty, propDict, modelTypes, modelFile):
     description = propDict.get('description', None)
     if description is not None:
         newInnerType.description = description
+    tags = propDict.get('__tags', None)
+    if tags is not None:
+        newInnerType.tags = _extractTags(tags)
     properties = propDict.get('properties', None)
     if properties is not None:
         _extractAttributes(newInnerType, properties, modelTypes, modelFile)
@@ -569,3 +588,15 @@ def _extractEnumType(newType, newProperty, enumValue, modelTypes, modelFile):
     enumType.source = modelFile
     modelTypes.append(enumType)
     return enumType
+
+
+def _extractTags(tagDict):
+    """extracts the tags attached to types or properties and returns them as
+    list
+
+    Keyword arguments:
+    tagDict -- dictionary of models '__tags' entry
+    """
+
+    # TODO
+    pass
