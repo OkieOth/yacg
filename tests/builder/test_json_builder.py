@@ -5,7 +5,7 @@ from yacg.model.model import IntegerType, NumberType
 from yacg.model.model import StringType
 from yacg.model.model import DateTimeType
 from yacg.model.model import EnumType, ComplexType
-from yacg.model.modelFuncs import hasTag
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
 
 
 class TestJsonBuilder (unittest.TestCase):
@@ -121,9 +121,27 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(modelFile, [])
         metaModelTypes = []
         self.assertIsNotNone(modelTypes)
+        tagType = None
+        propertyType = None
+        complexTypeType = None
         for type in modelTypes:
             if hasTag('metaModelType', type):
                 metaModelTypes.append(type.name)
+            if type.name == 'Tag':
+                tagType = type
+            elif type.name == 'Property':
+                propertyType = type
+            elif type.name == 'ComplexType':
+                complexTypeType = type
+        self.assertIsNotNone(tagType)
+        constructorValueProps1 = getPropertiesThatHasTag('constructorValue', tagType)
+        self.assertEqual(2, len(constructorValueProps1))
+        self.assertIsNotNone(propertyType)
+        constructorValueProps2 = getPropertiesThatHasTag('constructorValue', propertyType)
+        self.assertEqual(2, len(constructorValueProps2))
+        self.assertIsNotNone(complexTypeType)
+        constructorValueProps3 = getPropertiesThatHasTag('constructorValue', complexTypeType)
+        self.assertEqual(0, len(constructorValueProps3))
 
         expectedMetaModelTypes = [
             'IntegerType',
