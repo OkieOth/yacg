@@ -25,6 +25,8 @@ parser.add_argument_group('processing')
 parser.add_argument('--templates', nargs='+', help='templates to process')
 parser.add_argument_group('output')
 parser.add_argument('--output', nargs='+', help='output files or directories in order of the given templates')
+parser.add_argument_group('additional')
+parser.add_argument('--templateParameters', nargs='+', help='additional parameters passed to the templates')
 
 
 def getFileExt(fileName):
@@ -86,6 +88,21 @@ def readModels(args):
     return loadedTypes
 
 
+def getTemplateParameters(args):
+    """extracts the per command line given template parameters, copies them
+    into a dictionary and return this dictonary
+    """
+
+    templateParameters = {}
+    for parameter in args.templateParameters:
+        keyValueArray = parameter.split('=')
+        if (len(keyValueArray) == 2):
+            templateParameters[keyValueArray[0]] = keyValueArray[1]
+        else:
+            printError('\ntemplate param with wrong structure found ... skipped: {}'.format(parameter))    
+    return templateParameters
+
+
 def main():
     """starts the program execution"""
     args = parser.parse_args()
@@ -98,6 +115,7 @@ def main():
         printError('\nfound errors in configuration, cancel execution')
         sys.exit(1)
     loadedTypes = readModels(args)
+    templateParameters = getTemplateParameters(args)
     i = 0
     for template in args.templates:
         internalTemplateName = 'generators/templates/{}.mako'.format(template)
@@ -105,7 +123,7 @@ def main():
         if isInternalTemplate is True:
             templateFile = getInternalTemplatePath(internalTemplateName)
             output = args.output[i]
-            renderSingleFileTemplate(loadedTypes, templateFile, output, args)
+            renderSingleFileTemplate(loadedTypes, templateFile, output, templateParameters)
         else:
             printError('template not found: {}'.format(template))
         i = i + 1

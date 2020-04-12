@@ -4,9 +4,9 @@ one single output file"""
 from mako.template import Template
 
 
-def renderSingleFileTemplate(modelTypes, templateFile, output, args):
+def renderSingleFileTemplate(modelTypes, templateFile, output, templateParameters):
     template = Template(filename=templateFile)
-    renderResult = template.render(modelTypes=modelTypes)
+    renderResult = template.render(modelTypes=modelTypes, templateParameters=templateParameters)
     if (output == 'stdout'):
         print(renderResult)
     else:
