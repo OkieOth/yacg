@@ -10,8 +10,7 @@ class Type:
     """
 
     def __init__(self):
-        super.__init__()
-        pass
+        self.name = None
 
 
 class IntegerType (Type):
@@ -19,8 +18,7 @@ class IntegerType (Type):
     """
 
     def __init__(self):
-        super.__init__()
-        pass
+        self.format = None
 
 
 class IntegerTypeFormatEnum(Enum):
@@ -33,8 +31,7 @@ class NumberType (Type):
     """
 
     def __init__(self):
-        super.__init__()
-        pass
+        self.format = None
 
 
 class NumberTypeFormatEnum(Enum):
@@ -47,7 +44,6 @@ class StringType (Type):
     """
 
     def __init__(self):
-        super.__init__()
         pass
 
 
@@ -56,8 +52,7 @@ class EnumType (Type):
     """
 
     def __init__(self):
-        super.__init__()
-        pass
+        self.values = []
 
 
 class DateType (Type):
@@ -65,7 +60,6 @@ class DateType (Type):
     """
 
     def __init__(self):
-        super.__init__()
         pass
 
 
@@ -74,7 +68,6 @@ class DateTimeType (Type):
     """
 
     def __init__(self):
-        super.__init__()
         pass
 
 
@@ -83,8 +76,13 @@ class ComplexType (Type):
     """
 
     def __init__(self):
-        super.__init__()
-        pass
+        self.domain = None
+        self.source = None
+        self.extendsType = None
+        self.extendedBy = None
+        self.referencedBy = None
+        self.properties = None
+        self.tags = []
 
 
 class Property:
@@ -92,8 +90,10 @@ class Property:
     """
 
     def __init__(self):
-        super.__init__()
-        pass
+        self.name = None
+        self.isArray = None
+        self.type = None
+        self.tags = []
 
 
 class Tag:
@@ -101,7 +101,7 @@ class Tag:
     """
 
     def __init__(self):
-        super.__init__()
-        pass
+        self.name = None
+        self.value = None
 
 

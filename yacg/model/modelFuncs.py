@@ -1,5 +1,7 @@
 '''Compfort function for model classes'''
 
+import yacg.model.model as model
+
 
 def hasTag(tagName, typeOrPropertyObj):
     """check up if the as parameter given object has a tag with the
@@ -32,3 +34,14 @@ def getPropertiesThatHasTag(tagName, typeObj):
         if hasTag(tagName, property):
             propertiesWithTag.append(property)
     return propertiesWithTag
+
+
+def isEnumType(typeObj):
+    """checks if the given type object is an EnumType. If that's the
+    case then True is returned, else the return is false
+
+    Keyword arguments:
+    typeObj -- type or property object to check up
+    """
+
+    return isinstance(typeObj, model.EnumType)

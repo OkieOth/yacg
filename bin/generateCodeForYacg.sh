@@ -14,7 +14,7 @@ if ! pipenv run python3 yacg.py --models \
              ${scriptPos}/../tests/model/test_genModel.py \
     --templates pythonBeans \
                 pythonBeansTests \
-    --templateParameters modelPackage=yacg.model.model \
+    --templateParameters modelPackage=yacg.model.genModel \
                          title="yacg model"; then
     echo "    ERROR while create meta model classes"
     exit 1

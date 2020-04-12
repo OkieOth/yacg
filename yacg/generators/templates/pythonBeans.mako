@@ -3,6 +3,7 @@
     import yacg.model.model as model
     import yacg.templateHelper as templateHelper
     import yacg.model.modelFuncs as modelFuncs
+    import yacg.generators.helper.pythonFuncs as pythonFuncs
 
     templateFile = 'pythonBeans.mako'
     templateVersion = '1.0.0'
@@ -37,10 +38,13 @@ class ${type.name}${ ' ({})'.format(type.extendsType.name) if type.extendsType i
 
         % endif
     def __init__(self):
-        % if type.description != None:
-        super.__init__()
-        % endif
+        % if len(type.properties) == 0:
         pass
+        % else:
+            % for property in type.properties:
+        self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
+            % endfor
+        % endif
 
     % endif
 

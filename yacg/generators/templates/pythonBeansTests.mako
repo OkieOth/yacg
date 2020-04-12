@@ -21,5 +21,17 @@ import unittest
 from ${modelPackage} import ${type.name}
 % endfor
 
+
 class Test${testClassName} (unittest.TestCase):
-    pass
+% for type in modelTypes:
+    def test${type.name}(self):
+    % if not modelFuncs.isEnumType(type):
+        x = ${type.name}()
+        self.assertIsNotNone(x)
+    % else:
+        % for value in type.values:
+        self.assertIsNotNone(${type.name}.${value.upper()})
+        % endfor
+    % endif
+
+% endfor
