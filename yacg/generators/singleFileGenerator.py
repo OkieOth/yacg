@@ -4,8 +4,15 @@ one single output file"""
 from mako.template import Template
 
 
-def renderSingleFileTemplate(modelTypes, templateFile, args):
+def renderSingleFileTemplate(modelTypes, templateFile, output, args):
     template = Template(filename=templateFile)
     renderResult = template.render(modelTypes=modelTypes)
-    print(renderResult)
+    if (output == 'stdout'):
+        print(renderResult)
+    else:
+        outputFile = output
+        f = open(outputFile, "w+")
+        f.write(renderResult)
+        f.close()
+
     # TODO

@@ -66,7 +66,7 @@
             "description": "type for enum values - fixed value types",
             "allOf": [
                 {
-                    "$ref": "#/definitions/StringType"
+                    "$ref": "#/definitions/Type"
                 },
                 {
                     "properties": {

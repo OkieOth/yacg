@@ -8,13 +8,14 @@ scriptPos=${0%/*}
 pushd $scriptPos/.. > /dev/null
 
 echo "create meta model classes ..."
-if ! pipenv run python3 yacg.py --model \
+if ! pipenv run python3 yacg.py --models \
     resources/models/json/yacg_model_schema.json \
-    --output stdout \
-    --template pythonBeans; then
+    --output ${scriptPos}/../yacg/model/genModel.py \
+             ${scriptPos}/../tests/model/test_genModel.py \
+    --templates pythonBeans \
+                pythonBeansTests; then
     echo "    ERROR while create meta model classes"
-else
-    echo "    done"
+    exit 1
 fi
 
 popd > /dev/null

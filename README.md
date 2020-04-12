@@ -40,11 +40,11 @@ pipenv --three install
 pipenv shell
 
 # do a demo run
-pipenv run python3 yacg.py --model \
-    resources/models/json/config_schema.json \
-    resources/models/json/yacg_model_schema.json \
+pipenv run python3 yacg.py \
+    --models resources/models/json/config_schema.json \
+             resources/models/json/yacg_model_schema.json \
     --output stdout \
-    --template plantuml
+    --templates plantUml
 
 # run a test
 pipenv run python3 -m unittest -v tests/model/test_model.py
@@ -59,11 +59,11 @@ pipenv run python3 -m unittest discover tests "test_*.py"
 
 # run the docker image
 cd REPO_PATH
-docker run -v `pwd`/resources:/resources --rm -t okieoth/yacg:0.0.1 --model \
-    /resources/models/json/config_schema.json \
-    /resources/models/json/yacg_model_schema.json \
+docker run -v `pwd`/resources:/resources --rm -t okieoth/yacg:0.0.1 \
+    --models /resources/models/json/config_schema.json \
+             /resources/models/json/yacg_model_schema.json \
     --output stdout \
-    --template plantuml
+    --templates plantUml
 
 ```
 
