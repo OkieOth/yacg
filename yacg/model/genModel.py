@@ -6,11 +6,11 @@ from enum import Enum
 
 
 class Type:
-    """ base type for all type
+    """ Dummy base class to implement strong typed references
     """
 
     def __init__(self):
-        self.name = None
+        pass
 
 
 class IntegerType (Type):
@@ -18,7 +18,12 @@ class IntegerType (Type):
     """
 
     def __init__(self):
+
+        #: integer values
         self.format = None
+
+        #: integer values
+        self.default = None
 
 
 class IntegerTypeFormatEnum(Enum):
@@ -31,7 +36,12 @@ class NumberType (Type):
     """
 
     def __init__(self):
+
+        #: floating point values
         self.format = None
+
+        #: floating point values
+        self.default = None
 
 
 class NumberTypeFormatEnum(Enum):
@@ -44,7 +54,19 @@ class StringType (Type):
     """
 
     def __init__(self):
-        pass
+
+        #: integer values
+        self.default = None
+
+
+class UuidType (Type):
+    """ UUID values
+    """
+
+    def __init__(self):
+
+        #: UUID values
+        self.default = None
 
 
 class EnumType (Type):
@@ -52,7 +74,18 @@ class EnumType (Type):
     """
 
     def __init__(self):
+
+        #: type for enum values - fixed value types
+        self.name = None
+
+        #: type for enum values - fixed value types
+        self.domain = None
+
+        #: type for enum values - fixed value types
         self.values = []
+
+        #: type for enum values - fixed value types
+        self.default = None
 
 
 class DateType (Type):
@@ -60,7 +93,9 @@ class DateType (Type):
     """
 
     def __init__(self):
-        pass
+
+        #: type for date values
+        self.default = None
 
 
 class DateTimeType (Type):
@@ -68,7 +103,9 @@ class DateTimeType (Type):
     """
 
     def __init__(self):
-        pass
+
+        #: type for timestamp values
+        self.default = None
 
 
 class ComplexType (Type):
@@ -76,12 +113,29 @@ class ComplexType (Type):
     """
 
     def __init__(self):
+
+        #: complex type description
+        self.name = None
+
+        #: complex type description
         self.domain = None
+
+        #: complex type description
         self.source = None
+
+        #: complex type description
         self.extendsType = None
+
+        #: complex type description
         self.extendedBy = None
+
+        #: complex type description
         self.referencedBy = None
+
+        #: complex type description
         self.properties = None
+
+        #: complex type description
         self.tags = []
 
 
@@ -90,10 +144,21 @@ class Property:
     """
 
     def __init__(self):
+
+        #: a property of a type
         self.name = None
+
+        #: a property of a type
         self.isArray = None
+
+        #: a property of a type
         self.type = None
+
+        #: a property of a type
         self.tags = []
+
+        #: a property of a type
+        self.description = None
 
 
 class Tag:
@@ -101,7 +166,11 @@ class Tag:
     """
 
     def __init__(self):
+
+        #: a tag type
         self.name = None
+
+        #: a tag type
         self.value = None
 
 

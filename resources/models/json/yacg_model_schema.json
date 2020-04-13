@@ -6,14 +6,8 @@
     "definitions": {
         "Type": {
             "type": "object",
-            "description": "base type for all type",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "__tags": ["constructorValue"]
-                }
-
-            }
+            "description": "Dummy base class to implement strong typed references",
+            "__tags": ["metaModelType"]
         },
         "IntegerType": {
             "type": "object",
@@ -27,6 +21,9 @@
                         "format": {
                             "type": "string",
                             "enum": ["int32", "int64"]
+                        },
+                        "default": {
+                            "type": "integer"
                         }
                     }
                 }
@@ -45,6 +42,9 @@
                         "format": {
                             "type": "string",
                             "enum": ["float", "double"]
+                        },
+                        "default": {
+                            "type": "number"
                         }
                     }
                 }
@@ -57,6 +57,30 @@
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ],
+            "__tags": ["metaModelType"]
+        },
+        "UuidType": {
+            "type": "object",
+            "description": "UUID values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "string"
+                        }
+                    }
                 }
             ],
             "__tags": ["metaModelType"]
@@ -70,11 +94,22 @@
                 },
                 {
                     "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "domain": {
+                            "description": "scope/domain to that this type belongs",
+                            "$comment": "optional, can be used for domain driven modelling",
+                            "type": "string"
+                        },
                         "values": {
                             "type": "array",
                             "items": {
                                 "type": "string"   
                             }
+                        },
+                        "default": {
+                            "type": "string"
                         }
                     }
                 }
@@ -87,6 +122,13 @@
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "integer"
+                        }
+                    }
                 }
             ],
             "__tags": ["metaModelType"]
@@ -97,6 +139,13 @@
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "integer"
+                        }
+                    }
                 }
             ],
             "__tags": ["metaModelType"]
@@ -110,6 +159,9 @@
                 },
                 {
                     "properties": {
+                        "name": {
+                            "type": "string"
+                        },
                         "domain": {
                             "description": "scope/domain to that this type belongs",
                             "$comment": "optional, can be used for domain driven modelling",
@@ -163,7 +215,8 @@
                 },
                 "isArray": {
                     "description": "trure - if the property is an array",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "type": {
                     "description": "either a basic or a complex type",
@@ -177,6 +230,10 @@
                     "items": {
                         "$ref": "#/definitions/Tag"
                     }
+                },
+                "description": {
+                    "description": "optional description from the model file",
+                    "type": "string"
                 }
             }
         },
@@ -193,7 +250,8 @@
                     "type": "string",
                     "__tags": [
                         {"constructorValue":"None"}
-                    ]
+                    ],
+                    "default": "None"
                 }
             }
         }

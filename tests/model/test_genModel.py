@@ -10,6 +10,7 @@ from yacg.model.genModel import IntegerTypeFormatEnum
 from yacg.model.genModel import NumberType
 from yacg.model.genModel import NumberTypeFormatEnum
 from yacg.model.genModel import StringType
+from yacg.model.genModel import UuidType
 from yacg.model.genModel import EnumType
 from yacg.model.genModel import DateType
 from yacg.model.genModel import DateTimeType
@@ -41,6 +42,10 @@ class TestYacgModel (unittest.TestCase):
 
     def testStringType(self):
         x = StringType()
+        self.assertIsNotNone(x)
+
+    def testUuidType(self):
+        x = UuidType()
         self.assertIsNotNone(x)
 
     def testEnumType(self):

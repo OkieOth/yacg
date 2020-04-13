@@ -19,12 +19,18 @@ class IntegerType (Type):
         super().__init__(self.__class__.__name__)
         self.isLong = False
 
+        #: default value
+        self.default = None
+
 
 class BooleanType (Type):
     '''Type to represent Integer and Long types'''
 
     def __init__(self):
         super().__init__(self.__class__.__name__)
+
+        #: default value
+        self.default = None
 
 
 class NumberType (Type):
@@ -33,12 +39,18 @@ class NumberType (Type):
     def __init__(self):
         super().__init__(self.__class__.__name__)
 
+        #: default value
+        self.default = None
+
 
 class StringType (Type):
     '''Type to represent texts'''
 
     def __init__(self):
         super().__init__(self.__class__.__name__)
+
+        #: default value
+        self.default = None
 
 
 class UuidType (Type):
@@ -53,6 +65,9 @@ class DateType (Type):
 
     def __init__(self):
         super().__init__(self.__class__.__name__)
+
+        #: default value
+        self.default = None
 
 
 class DateTimeType (Type):
@@ -87,6 +102,9 @@ class EnumType (Type):
 
         #: some words to explain what this type is good for
         self.description = None
+
+        #: default value
+        self.default = None
 
 
 class ComplexType (Type):

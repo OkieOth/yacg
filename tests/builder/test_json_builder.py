@@ -144,9 +144,11 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(0, len(constructorValueProps3))
 
         expectedMetaModelTypes = [
+            'Type',
             'IntegerType',
             'NumberType',
             'StringType',
+            'UuidType',
             'EnumType',
             'DateType',
             'DateTimeType',

@@ -42,6 +42,10 @@ class ${type.name}${ ' ({})'.format(type.extendsType.name) if type.extendsType i
         pass
         % else:
             % for property in type.properties:
+
+                % if type.description != None:
+        #: ${type.description}
+                % endif
         self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
             % endfor
         % endif
