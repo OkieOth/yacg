@@ -1,6 +1,7 @@
 import unittest
 import os.path
 from yacg.builder.yamlBuilder import getModelFromYaml
+from yacg.model.model import EnumType, Type
 
 
 class TestYamlBuilder (unittest.TestCase):
@@ -25,6 +26,8 @@ class TestYamlBuilder (unittest.TestCase):
         type = modelTypes[position]
         self.assertIsNotNone(type)
         self.assertEqual(typeName, type.name)
+        if isinstance(type, EnumType) or isinstance(type, Type):
+            return type
         self.assertEqual(propCount, len(type.properties))
         for prop in type.properties:
             self.assertIsNotNone(prop.type, "property w/o a type: %s.%s" % (typeName, prop.name))

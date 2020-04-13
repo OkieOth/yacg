@@ -1,0 +1,141 @@
+
+@startuml
+
+class Type {
+}
+ 
+note top: Dummy base class to implement\nstrong typed references
+
+class IntegerType {
+    IntegerTypeFormatEnum format 
+    IntegerType default 
+}
+ 
+note top: integer values
+
+IntegerType --|> Type
+class IntegerTypeFormatEnum {
+}
+ 
+
+class NumberType {
+    NumberTypeFormatEnum format 
+    NumberType default 
+}
+ 
+note top: floating point values
+
+NumberType --|> Type
+class NumberTypeFormatEnum {
+}
+ 
+
+class BooleanType {
+    BooleanType default 
+}
+ 
+note top: boolean values
+
+BooleanType --|> Type
+class StringType {
+    StringType default 
+}
+ 
+note top: integer values
+
+StringType --|> Type
+class UuidType {
+    StringType default 
+}
+ 
+note top: UUID values
+
+UuidType --|> Type
+class EnumType {
+    StringType name 
+    StringType domain 
+    StringType[] values 
+    StringType default 
+}
+ 
+note top: type for enum values -\nfixed value types
+
+EnumType --|> Type
+class DateType {
+    IntegerType default 
+}
+ 
+note top: type for date values
+
+DateType --|> Type
+class DateTimeType {
+    IntegerType default 
+}
+ 
+note top: type for timestamp values
+
+DateTimeType --|> Type
+class ComplexType {
+    StringType name 
+    StringType description 
+    StringType domain 
+    StringType source 
+    ComplexType extendsType 
+    ComplexType[] extendedBy 
+    ComplexType[] referencedBy 
+    Property[] properties 
+    Tag[] tags 
+}
+ 
+note top: complex type description
+
+ComplexType --|> Type
+class Property {
+    StringType name 
+    BooleanType isArray 
+    Type type 
+    Tag[] tags 
+    StringType description 
+}
+ 
+note top: a property of a type
+
+class Tag {
+    StringType name 
+    StringType value 
+}
+ 
+note top: a tag type
+
+
+    
+    
+IntegerType  *--  IntegerTypeFormatEnum        
+            
+    
+    
+NumberType  *--  NumberTypeFormatEnum        
+            
+    
+    
+    
+    
+    
+    
+    
+    
+ComplexType  *--  ComplexType        
+            
+ComplexType "0" *-- "n" Property        
+            
+ComplexType "0" *-- "n" Tag        
+            
+    
+Property  *--  Type        
+            
+Property "0" *-- "n" Tag        
+            
+    
+
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
+@enduml

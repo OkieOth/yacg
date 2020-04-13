@@ -14,7 +14,7 @@ from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateType, DateTimeType
-from yacg.model.model import EnumType, ComplexType
+from yacg.model.model import EnumType, ComplexType, Tag
 
 
 def getParsedSchemaFromJson(modelFile):
@@ -57,7 +57,12 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
         description = parsedSchema.get('description', None)
-        _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFile)
+        mainType = _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFile)
+        if len(mainType.tags) == 0:
+            tags = parsedSchema.get('__tags', None)
+            if tags is not None:
+                mainType.tags = _extractTags(tags)
+
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -65,7 +70,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
     for type in modelTypes:
-        if len(type.properties) == 0:
+        if (hasattr(type, 'property')) and (len(type.properties) == 0):
             sourceFile = type.source
             parsedSchema = None
             if sourceFile.find('.json') != -1:
@@ -82,7 +87,6 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
 def _extractTypeAndRelatedTypes(parsedSchema, desiredTypeName, modelFile, modelTypes):
     """extract the types from the parsed schema
 
-
     Keyword arguments:
     parsedSchema -- dictionary with the loaded schema
     desiredTypeName -- name of the type that should be loaded
@@ -97,7 +101,12 @@ def _extractTypeAndRelatedTypes(parsedSchema, desiredTypeName, modelFile, modelT
         typeNameStr = toUpperCamelCase(titleStr)
         if typeNameStr == desiredTypeName:
             description = parsedSchema.get('description', None)
-            _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFile)
+            type = _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFile)
+            if len(type.tags) == 0:
+                tags = parsedSchema.get('__tags', None)
+                if tags is not None:
+                    type.tags = _extractTags(tags)
+
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -121,7 +130,11 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFile, desiredTypeName
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
         description = object.get('description', None)
-        _extractObjectType(key, properties, allOfEntry, description, modelTypes, modelFile)
+        type = _extractObjectType(key, properties, allOfEntry, description, modelTypes, modelFile)
+        if len(type.tags) == 0:
+            tags = object.get('__tags', None)
+            if tags is not None:
+                type.tags = _extractTags(tags)
 
 
 def _extractObjectType(typeNameStr, properties, allOfEntries, description, modelTypes, modelFile):
@@ -139,11 +152,15 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
     # check up that no dummy for this type is already created.
     alreadyCreatedType = _getAlreadyCreatedTypesWithThatName(typeNameStr, modelTypes, modelFile)
     # This can be the case in situations where attributes refer to another complex type
-    newType = ComplexType(typeNameStr) if alreadyCreatedType is None else alreadyCreatedType
+    newType = None
+    if alreadyCreatedType is None:
+        newType = ComplexType()
+        newType.name = typeNameStr
+    else:
+        newType = alreadyCreatedType
     newType.source = modelFile
     if description is not None:
         newType.description = description
-
     if alreadyCreatedType is None:
         modelTypes.append(newType)
     if allOfEntries is not None:
@@ -156,8 +173,9 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
                 # TODO extract reference to the base class
                 # TODO load external file and set
                 newType.extendsType = _extractReferenceType(newType, refEntry, modelTypes, modelFile)
-    if len(newType.properties) == 0:
+    if (hasattr(newType, 'properties')) and (len(newType.properties) == 0):
         _extractAttributes(newType, properties, modelTypes, modelFile)
+    return newType
 
 
 def _getAlreadyCreatedTypesWithThatName(typeNameStr, modelTypes, modelFile):
@@ -191,11 +209,15 @@ def _extractAttributes(type, properties, modelTypes, modelFile):
     for key in properties.keys():
         propDict = properties[key]
         propName = key
-        description = properties.get('description', None)
-        newProperty = Property(propName, None)
+        description = propDict.get('description', None)
+        newProperty = Property()
+        newProperty.name = propName
         if description is not None:
             newProperty.description = description
         newProperty.type = _extractAttribType(type, newProperty, propDict, modelTypes, modelFile)
+        tags = propDict.get('__tags', None)
+        if tags is not None:
+            newProperty.tags = _extractTags(tags)
         type.properties.append(newProperty)
 
 
@@ -484,7 +506,8 @@ def _extractInternalReferenceType(newType, refTypeName, modelTypes, modelFile):
     alreadyCreatedType = _getAlreadyCreatedTypesWithThatName(refTypeName, modelTypes, modelFile)
     if alreadyCreatedType is not None:
         return alreadyCreatedType
-    dummyReference = ComplexType(refTypeName)
+    dummyReference = ComplexType()
+    dummyReference.name = refTypeName
     dummyReference.source = modelFile
     modelTypes.append(dummyReference)
     return dummyReference
@@ -503,12 +526,16 @@ def _extractComplexType(newType, newProperty, propDict, modelTypes, modelFile):
     """
 
     innerTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name)
-    newInnerType = ComplexType(innerTypeName)
+    newInnerType = ComplexType()
+    newInnerType.name = innerTypeName
     newInnerType.source = modelFile
     modelTypes.append(newInnerType)
     description = propDict.get('description', None)
     if description is not None:
         newInnerType.description = description
+    tags = propDict.get('__tags', None)
+    if tags is not None:
+        newInnerType.tags = _extractTags(tags)
     properties = propDict.get('properties', None)
     if properties is not None:
         _extractAttributes(newInnerType, properties, modelTypes, modelFile)
@@ -564,8 +591,35 @@ def _extractEnumType(newType, newProperty, enumValue, modelTypes, modelFile):
     """
 
     enumTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name + 'Enum')
-    enumType = EnumType(enumTypeName)
+    enumType = EnumType()
+    enumType.name = enumTypeName
     enumType.values = enumValue
     enumType.source = modelFile
     modelTypes.append(enumType)
     return enumType
+
+
+def _extractTags(tagArray):
+    """extracts the tags attached to types or properties and returns them as
+    list
+
+    Keyword arguments:
+    tagArray -- dictionary of models '__tags' entry
+    """
+
+    tags = []
+    for tag in tagArray:
+        if isinstance(tag, str):
+            tagObj = Tag()
+            tagObj.name = tag
+            tags.append(tagObj)
+        elif isinstance(tag, dict):
+            keyArray = list(tag.keys())
+            if len(keyArray) > 0:
+                tagName = keyArray[0]
+                tagValue = tag.get(tagName, None)
+                tagObj = Tag()
+                tagObj.name = tagName
+                tagObj.value = tagValue
+                tags.append(tagObj)
+    return tags

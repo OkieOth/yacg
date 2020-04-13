@@ -6,12 +6,8 @@
     "definitions": {
         "Type": {
             "type": "object",
-            "description": "base type for all type",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
+            "description": "Dummy base class to implement strong typed references",
+            "__tags": ["metaModelType"]
         },
         "IntegerType": {
             "type": "object",
@@ -25,14 +21,18 @@
                         "format": {
                             "type": "string",
                             "enum": ["int32", "int64"]
+                        },
+                        "default": {
+                            "type": "integer"
                         }
                     }
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "NumberType": {
             "type": "object",
-            "description": "long values",
+            "description": "floating point values",
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
@@ -42,10 +42,31 @@
                         "format": {
                             "type": "string",
                             "enum": ["float", "double"]
+                        },
+                        "default": {
+                            "type": "number"
                         }
                     }
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
+        },
+        "BooleanType": {
+            "type": "object",
+            "description": "boolean values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ],
+            "__tags": ["metaModelType"]
         },
         "StringType": {
             "type": "object",
@@ -53,55 +74,114 @@
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
-                }
-            ]
-        },
-        "EnumType": {
-            "type": "object",
-            "description": "integer values",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/StringType"
                 },
                 {
                     "properties": {
+                        "default": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ],
+            "__tags": ["metaModelType"]
+        },
+        "UuidType": {
+            "type": "object",
+            "description": "UUID values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ],
+            "__tags": ["metaModelType"]
+        },
+        "EnumType": {
+            "type": "object",
+            "description": "type for enum values - fixed value types",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "domain": {
+                            "description": "scope/domain to that this type belongs",
+                            "$comment": "optional, can be used for domain driven modelling",
+                            "type": "string"
+                        },
                         "values": {
                             "type": "array",
                             "items": {
                                 "type": "string"   
                             }
+                        },
+                        "default": {
+                            "type": "string"
                         }
                     }
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "DateType": {
             "type": "object",
-            "description": "integer values",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/Type"
-                }
-            ]
-        },
-        "DateTimeType": {
-            "type": "object",
-            "description": "integer values",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/Type"
-                }
-            ]
-        },
-        "ComplexType": {
-            "type": "object",
-            "description": "Complex type description",
+            "description": "type for date values",
             "allOf": [
                 {
                     "$ref": "#/definitions/Type"
                 },
                 {
                     "properties": {
+                        "default": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            ],
+            "__tags": ["metaModelType"]
+        },
+        "DateTimeType": {
+            "type": "object",
+            "description": "type for timestamp values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            ],
+            "__tags": ["metaModelType"]
+        },
+        "ComplexType": {
+            "type": "object",
+            "description": "complex type description",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
                         "domain": {
                             "description": "scope/domain to that this type belongs",
                             "$comment": "optional, can be used for domain driven modelling",
@@ -119,17 +199,23 @@
                         "extendedBy": {
                             "description": "list of types that extend this type",
                             "type": "array",
-                            "$ref": "#/definitions/ComplexType"
+                            "items": {
+                                "$ref": "#/definitions/ComplexType"
+                            }
                         },
                         "referencedBy": {
                             "description": "types that hold attribute references to that type",
                             "type": "array",
-                            "$ref": "#/definitions/ComplexType"
+                            "items": {
+                                "$ref": "#/definitions/ComplexType"
+                            }
                         },
                         "properties": {
                             "description": "properties of that type",
                             "type": "array",
-                            "$ref": "#/definitions/Property"                            
+                            "items": {
+                                "$ref": "#/definitions/Property"                            
+                            }
                         },
                         "tags": {
                             "description": "additional flags to mark a type",
@@ -141,7 +227,8 @@
                         }
                     }
                 }
-            ]
+            ],
+            "__tags": ["metaModelType"]
         },
         "Property": {
             "type": "object",
@@ -149,15 +236,18 @@
             "properties": {
                 "name": {
                     "description": "type unique identifier",
-                    "type": "string"
+                    "type": "string",
+                    "__tags": ["constructorValue"]
                 },
                 "isArray": {
                     "description": "trure - if the property is an array",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "type": {
                     "description": "either a basic or a complex type",
-                    "$ref": "#/definitions/Type"                                                
+                    "$ref": "#/definitions/Type",                                              
+                    "__tags": ["constructorValue"]
                 },
                 "tags": {
                     "description": "additional flags to mark a property",
@@ -166,6 +256,10 @@
                     "items": {
                         "$ref": "#/definitions/Tag"
                     }
+                },
+                "description": {
+                    "description": "optional description from the model file",
+                    "type": "string"
                 }
             }
         },
@@ -175,10 +269,15 @@
             "$comment": "this type can be used to implement additional grouping or marks for processing",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "__tags": ["constructorValue"]
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "__tags": [
+                        {"constructorValue":"None"}
+                    ],
+                    "default": "None"
                 }
             }
         }

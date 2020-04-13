@@ -1,72 +1,81 @@
+# Attention, this file is generated. Manual changes get lost with the next
+# run of the code generation.
+# created by yacg (template: pythonBeans.mako v1.0.0)
+
 import unittest
 
 from yacg.model.model import Type
-from yacg.model.model import IntegerType, NumberType
+from yacg.model.model import IntegerType
+from yacg.model.model import IntegerTypeFormatEnum
+from yacg.model.model import NumberType
+from yacg.model.model import NumberTypeFormatEnum
+from yacg.model.model import BooleanType
 from yacg.model.model import StringType
-from yacg.model.model import DateType, DateTimeType
-from yacg.model.model import EnumType, ComplexType
-from yacg.model.model import Property, Tag
+from yacg.model.model import UuidType
+from yacg.model.model import EnumType
+from yacg.model.model import DateType
+from yacg.model.model import DateTimeType
+from yacg.model.model import ComplexType
+from yacg.model.model import Property
+from yacg.model.model import Tag
 
 
-class TestModelClasses (unittest.TestCase):
+class TestYacgModel (unittest.TestCase):
     def testType(self):
-        x = Type('test')
+        x = Type()
         self.assertIsNotNone(x)
-        self.assertEqual('test', x.name)
 
     def testIntegerType(self):
         x = IntegerType()
         self.assertIsNotNone(x)
-        self.assertEqual('IntegerType', x.name)
+
+    def testIntegerTypeFormatEnum(self):
+        self.assertIsNotNone(IntegerTypeFormatEnum.INT32)
+        self.assertIsNotNone(IntegerTypeFormatEnum.INT64)
 
     def testNumberType(self):
         x = NumberType()
         self.assertIsNotNone(x)
-        self.assertEqual('NumberType', x.name)
+
+    def testNumberTypeFormatEnum(self):
+        self.assertIsNotNone(NumberTypeFormatEnum.FLOAT)
+        self.assertIsNotNone(NumberTypeFormatEnum.DOUBLE)
+
+    def testBooleanType(self):
+        x = BooleanType()
+        self.assertIsNotNone(x)
 
     def testStringType(self):
         x = StringType()
         self.assertIsNotNone(x)
-        self.assertEqual('StringType', x.name)
+
+    def testUuidType(self):
+        x = UuidType()
+        self.assertIsNotNone(x)
+
+    def testEnumType(self):
+        x = EnumType()
+        self.assertIsNotNone(x)
 
     def testDateType(self):
         x = DateType()
         self.assertIsNotNone(x)
-        self.assertEqual('DateType', x.name)
 
     def testDateTimeType(self):
         x = DateTimeType()
         self.assertIsNotNone(x)
-        self.assertEqual('DateTimeType', x.name)
-
-    def testEnumType(self):
-        x = EnumType('TestEnum')
-        self.assertIsNotNone(x)
-        self.assertEqual('TestEnum', x.name)
 
     def testComplexType(self):
-        x = ComplexType('ComplexTest')
+        x = ComplexType()
         self.assertIsNotNone(x)
-        self.assertEqual('ComplexTest', x.name)
-        self.assertEqual(0, len(x.tags))
 
     def testProperty(self):
-        x = ComplexType('ComplexTest')
+        x = Property()
         self.assertIsNotNone(x)
-        self.assertEqual('ComplexTest', x.name)
-        property = Property('testProp', x)
-        self.assertEqual('testProp', property.name)
-        self.assertTrue(isinstance(property.type, ComplexType))
-        self.assertFalse(property.isArray)
-        self.assertEqual(0, len(property.tags))
 
     def testTag(self):
-        tag1 = Tag('myName')
-        self.assertEqual('myName', tag1.name)
-        self.assertTrue(tag1.value is None)
-        tag2 = Tag('myName2', 'I am a string')
-        self.assertEqual('myName2', tag2.name)
-        self.assertEqual('I am a string', tag2.value)
+        x = Tag()
+        self.assertIsNotNone(x)
 
 
 if __name__ == '__main__':

@@ -2,9 +2,10 @@ import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.model import IntegerType, NumberType
-from yacg.model.model import StringType
+from yacg.model.model import StringType, Type
 from yacg.model.model import DateTimeType
 from yacg.model.model import EnumType, ComplexType
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
 
 
 class TestJsonBuilder (unittest.TestCase):
@@ -113,6 +114,49 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(3, 'MainAddress', 2, modelTypes)
         self._checkUpType(4, 'MainAddressComplex', 3, modelTypes)
 
+    def testTags(self):
+        modelFile = 'resources/models/json/yacg_model_schema.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        modelTypes = getModelFromJson(modelFile, [])
+        metaModelTypes = []
+        self.assertIsNotNone(modelTypes)
+        tagType = None
+        propertyType = None
+        complexTypeType = None
+        for type in modelTypes:
+            if hasTag('metaModelType', type):
+                metaModelTypes.append(type.name)
+            if type.name == 'Tag':
+                tagType = type
+            elif type.name == 'Property':
+                propertyType = type
+            elif type.name == 'ComplexType':
+                complexTypeType = type
+        self.assertIsNotNone(tagType)
+        constructorValueProps1 = getPropertiesThatHasTag('constructorValue', tagType)
+        self.assertEqual(2, len(constructorValueProps1))
+        self.assertIsNotNone(propertyType)
+        constructorValueProps2 = getPropertiesThatHasTag('constructorValue', propertyType)
+        self.assertEqual(2, len(constructorValueProps2))
+        self.assertIsNotNone(complexTypeType)
+        constructorValueProps3 = getPropertiesThatHasTag('constructorValue', complexTypeType)
+        self.assertEqual(0, len(constructorValueProps3))
+
+        expectedMetaModelTypes = [
+            'Type',
+            'IntegerType',
+            'NumberType',
+            'BooleanType',
+            'StringType',
+            'UuidType',
+            'EnumType',
+            'DateType',
+            'DateTimeType',
+            'ComplexType'
+        ]
+        self.assertEqual(expectedMetaModelTypes, metaModelTypes)
+
     def _checkUpType(self, position, typeName, propCount, modelTypes):
         type = modelTypes[position]
         self.assertIsNotNone(type)
@@ -120,6 +164,8 @@ class TestJsonBuilder (unittest.TestCase):
         sourceExists = os.path.isfile(type.source)
         self.assertTrue('source file exists: ' + type.source, sourceExists)
         self.assertEqual(typeName, type.name)
+        if isinstance(type, EnumType) or isinstance(type, Type):
+            return type
         self.assertEqual(propCount, len(type.properties))
         for prop in type.properties:
             self.assertIsNotNone(prop.type, "property w/o a type: %s.%s" % (typeName, prop.name))
