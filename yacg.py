@@ -99,7 +99,7 @@ def getTemplateParameters(args):
         if (len(keyValueArray) == 2):
             templateParameters[keyValueArray[0]] = keyValueArray[1]
         else:
-            printError('\ntemplate param with wrong structure found ... skipped: {}'.format(parameter))    
+            printError('\ntemplate param with wrong structure found ... skipped: {}'.format(parameter))
     return templateParameters
 
 
@@ -127,6 +127,7 @@ def main():
         else:
             printError('template not found: {}'.format(template))
         i = i + 1
+
 
 if __name__ == '__main__':
     main()
