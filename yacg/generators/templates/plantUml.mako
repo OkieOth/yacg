@@ -22,9 +22,13 @@ class ${type.name} {
     ${prop.type.name}${'[]' if prop.isArray else ''} ${prop.name} 
     % endfor
 }
-
+ 
     % if type.description != None:
 note top: ${addLineBreakToDescription(type.description)}
+    % endif
+
+    % if type.extendsType != None:
+${type.name} --|> ${type.extendsType.name}
     % endif
 % endfor
 
