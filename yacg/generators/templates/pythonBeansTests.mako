@@ -35,3 +35,6 @@ class Test${testClassName} (unittest.TestCase):
     % endif
 
 % endfor
+
+if __name__ == '__main__':
+    unittest.main()

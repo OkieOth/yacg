@@ -1,173 +1,189 @@
-'''Model types that are used by yacg. The loaded schemas
-will be transalated into this types. These are also the
-types that are passed into the templates'''
+# Attention, this file is generated. Manual changes get lost with the next
+# run of the code generation.
+# created by yacg (template: pythonBeans.mako v1.0.0)
+
+from enum import Enum
 
 
 class Type:
-    '''Base class for all types'''
-    def __init__(self, name):
-        #: name of the type
-        self.name = name
+    """ Dummy base class to implement strong typed references
+    """
 
-        self.isBaseType = True
+    def __init__(self):
+        pass
 
 
 class IntegerType (Type):
-    '''Type to represent Integer and Long types'''
+    """ integer values
+    """
 
     def __init__(self):
-        super().__init__(self.__class__.__name__)
-        self.isLong = False
 
-        #: default value
+        #: integer values
+        self.format = None
+
+        #: integer values
         self.default = None
 
 
-class BooleanType (Type):
-    '''Type to represent Integer and Long types'''
-
-    def __init__(self):
-        super().__init__(self.__class__.__name__)
-
-        #: default value
-        self.default = None
+class IntegerTypeFormatEnum(Enum):
+    INT32 = 'int32'
+    INT64 = 'int64'
 
 
 class NumberType (Type):
-    '''Type to represent floating point numbers'''
+    """ floating point values
+    """
 
     def __init__(self):
-        super().__init__(self.__class__.__name__)
 
-        #: default value
+        #: floating point values
+        self.format = None
+
+        #: floating point values
+        self.default = None
+
+
+class NumberTypeFormatEnum(Enum):
+    FLOAT = 'float'
+    DOUBLE = 'double'
+
+
+class BooleanType (Type):
+    """ boolean values
+    """
+
+    def __init__(self):
+
+        #: boolean values
         self.default = None
 
 
 class StringType (Type):
-    '''Type to represent texts'''
+    """ integer values
+    """
 
     def __init__(self):
-        super().__init__(self.__class__.__name__)
 
-        #: default value
+        #: integer values
         self.default = None
 
 
 class UuidType (Type):
-    '''Type to represent a uuid'''
+    """ UUID values
+    """
 
     def __init__(self):
-        super().__init__(self.__class__.__name__)
+
+        #: UUID values
+        self.default = None
+
+
+class EnumType (Type):
+    """ type for enum values - fixed value types
+    """
+
+    def __init__(self):
+
+        #: type for enum values - fixed value types
+        self.name = None
+
+        #: type for enum values - fixed value types
+        self.domain = None
+
+        #: type for enum values - fixed value types
+        self.values = []
+
+        #: type for enum values - fixed value types
+        self.default = None
 
 
 class DateType (Type):
-    '''Type that represents a date without a time'''
+    """ type for date values
+    """
 
     def __init__(self):
-        super().__init__(self.__class__.__name__)
 
-        #: default value
+        #: type for date values
         self.default = None
 
 
 class DateTimeType (Type):
-    '''Type that represents a date without a time'''
+    """ type for timestamp values
+    """
 
     def __init__(self):
-        super().__init__(self.__class__.__name__)
 
-
-class EnumType (Type):
-    '''Type to represent fixed values sets'''
-
-    def __init__(self, name):
-        super().__init__(name)
-
-        #: allowed values for the enum
-        self.values = []
-
-        #: scope/domain to that this type belongs
-        self.domain = None
-
-        #: from what file the Type was loaded
-        self.source = None
-
-        self.isBaseType = False
-
-        #: the dummy attribute of that type - only to harden the code
-        self.properties = ()
-
-        #: the dummy attribute of that type - only to harden the code
-        self.extendsType = None
-
-        #: some words to explain what this type is good for
-        self.description = None
-
-        #: default value
+        #: type for timestamp values
         self.default = None
 
 
 class ComplexType (Type):
-    '''Container type that bundles attributes'''
+    """ complex type description
+    """
 
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self):
 
-        #: Additional tags to group types or provide additional context
-        self.tags = []
+        #: complex type description
+        self.name = None
 
-        #: the attributes of that type
-        self.properties = []
-
-        #: scope/domain to that this type belongs
-        self.domain = None
-
-        #: from what file the Type was loaded
-        self.source = None
-
-        #: what is the super class of that type
-        self.extendsType = None
-
-        #: references to types that direct inherrited from that type
-        self.extendedBy = []
-
-        #: what types hold references of that type
-        self.referencedBy = []
-
-        #: some words to explain what this type is good for
+        #: complex type description
         self.description = None
 
-        self.isBaseType = False
+        #: complex type description
+        self.domain = None
+
+        #: complex type description
+        self.source = None
+
+        #: complex type description
+        self.extendsType = None
+
+        #: complex type description
+        self.extendedBy = []
+
+        #: complex type description
+        self.referencedBy = []
+
+        #: complex type description
+        self.properties = []
+
+        #: complex type description
+        self.tags = []
 
 
 class Property:
-    '''Attribute of a ComplexType'''
+    """ a property of a type
+    """
 
-    def __init__(self, name, type):
-        #: name of the property
-        self.name = name
+    def __init__(self):
 
-        #: instance of model.Type
-        self.type = type
+        #: a property of a type
+        self.name = None
 
-        #: True in case that attribute is an array
-        self.isArray = False
+        #: a property of a type
+        self.isArray = None
 
-        #: Additional tags to group properties or provide additional context
+        #: a property of a type
+        self.type = None
+
+        #: a property of a type
         self.tags = []
 
-        #: some words to explain what this property is good for
+        #: a property of a type
         self.description = None
 
 
 class Tag:
-    '''Helper class that allows to add keywords to types and
-    attributes
-    '''
+    """ a tag type
+    """
 
-    def __init__(self, name, value=None):
-        #: name of the tag
-        self.name = name
+    def __init__(self):
 
-        #: otional value of a tag
-        self.value = value
+        #: a tag type
+        self.name = None
+
+        #: a tag type
+        self.value = None
+
+

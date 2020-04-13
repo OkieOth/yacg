@@ -30,6 +30,8 @@ def getPropertiesThatHasTag(tagName, typeObj):
     """
 
     propertiesWithTag = []
+    if typeObj.properties is None:
+        return propertiesWithTag
     for property in typeObj.properties:
         if hasTag(tagName, property):
             propertiesWithTag.append(property)
@@ -45,3 +47,11 @@ def isEnumType(typeObj):
     """
 
     return isinstance(typeObj, model.EnumType)
+
+
+def getTypeName(type):
+    return type.name if hasattr(type, 'name') else type.__class__.__name__
+
+
+def isBaseType(type):
+    return (not isinstance(type, model.EnumType)) and (not isinstance(type, model.ComplexType))

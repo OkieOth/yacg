@@ -51,6 +51,23 @@
             ],
             "__tags": ["metaModelType"]
         },
+        "BooleanType": {
+            "type": "object",
+            "description": "boolean values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ],
+            "__tags": ["metaModelType"]
+        },
         "StringType": {
             "type": "object",
             "description": "integer values",
@@ -162,6 +179,9 @@
                         "name": {
                             "type": "string"
                         },
+                        "description": {
+                            "type": "string"
+                        },
                         "domain": {
                             "description": "scope/domain to that this type belongs",
                             "$comment": "optional, can be used for domain driven modelling",
@@ -179,17 +199,23 @@
                         "extendedBy": {
                             "description": "list of types that extend this type",
                             "type": "array",
-                            "$ref": "#/definitions/ComplexType"
+                            "items": {
+                                "$ref": "#/definitions/ComplexType"
+                            }
                         },
                         "referencedBy": {
                             "description": "types that hold attribute references to that type",
                             "type": "array",
-                            "$ref": "#/definitions/ComplexType"
+                            "items": {
+                                "$ref": "#/definitions/ComplexType"
+                            }
                         },
                         "properties": {
                             "description": "properties of that type",
                             "type": "array",
-                            "$ref": "#/definitions/Property"                            
+                            "items": {
+                                "$ref": "#/definitions/Property"                            
+                            }
                         },
                         "tags": {
                             "description": "additional flags to mark a type",

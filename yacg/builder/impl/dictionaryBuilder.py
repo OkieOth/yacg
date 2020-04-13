@@ -70,7 +70,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
     for type in modelTypes:
-        if len(type.properties) == 0:
+        if (hasattr(type, 'property')) and (len(type.properties) == 0):
             sourceFile = type.source
             parsedSchema = None
             if sourceFile.find('.json') != -1:
@@ -152,7 +152,12 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
     # check up that no dummy for this type is already created.
     alreadyCreatedType = _getAlreadyCreatedTypesWithThatName(typeNameStr, modelTypes, modelFile)
     # This can be the case in situations where attributes refer to another complex type
-    newType = ComplexType(typeNameStr) if alreadyCreatedType is None else alreadyCreatedType
+    newType = None
+    if alreadyCreatedType is None:
+        newType = ComplexType()
+        newType.name = typeNameStr
+    else:
+        newType = alreadyCreatedType
     newType.source = modelFile
     if description is not None:
         newType.description = description
@@ -168,7 +173,7 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
                 # TODO extract reference to the base class
                 # TODO load external file and set
                 newType.extendsType = _extractReferenceType(newType, refEntry, modelTypes, modelFile)
-    if len(newType.properties) == 0:
+    if (hasattr(newType, 'properties')) and (len(newType.properties) == 0):
         _extractAttributes(newType, properties, modelTypes, modelFile)
     return newType
 
@@ -205,7 +210,8 @@ def _extractAttributes(type, properties, modelTypes, modelFile):
         propDict = properties[key]
         propName = key
         description = propDict.get('description', None)
-        newProperty = Property(propName, None)
+        newProperty = Property()
+        newProperty.name = propName
         if description is not None:
             newProperty.description = description
         newProperty.type = _extractAttribType(type, newProperty, propDict, modelTypes, modelFile)
@@ -500,7 +506,8 @@ def _extractInternalReferenceType(newType, refTypeName, modelTypes, modelFile):
     alreadyCreatedType = _getAlreadyCreatedTypesWithThatName(refTypeName, modelTypes, modelFile)
     if alreadyCreatedType is not None:
         return alreadyCreatedType
-    dummyReference = ComplexType(refTypeName)
+    dummyReference = ComplexType()
+    dummyReference.name = refTypeName
     dummyReference.source = modelFile
     modelTypes.append(dummyReference)
     return dummyReference
@@ -519,7 +526,8 @@ def _extractComplexType(newType, newProperty, propDict, modelTypes, modelFile):
     """
 
     innerTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name)
-    newInnerType = ComplexType(innerTypeName)
+    newInnerType = ComplexType()
+    newInnerType.name = innerTypeName
     newInnerType.source = modelFile
     modelTypes.append(newInnerType)
     description = propDict.get('description', None)
@@ -583,7 +591,8 @@ def _extractEnumType(newType, newProperty, enumValue, modelTypes, modelFile):
     """
 
     enumTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name + 'Enum')
-    enumType = EnumType(enumTypeName)
+    enumType = EnumType()
+    enumType.name = enumTypeName
     enumType.values = enumValue
     enumType.source = modelFile
     modelTypes.append(enumType)
@@ -601,13 +610,16 @@ def _extractTags(tagArray):
     tags = []
     for tag in tagArray:
         if isinstance(tag, str):
-            tagObj = Tag(tag)
+            tagObj = Tag()
+            tagObj.name = tag
             tags.append(tagObj)
         elif isinstance(tag, dict):
             keyArray = list(tag.keys())
             if len(keyArray) > 0:
                 tagName = keyArray[0]
                 tagValue = tag.get(tagName, None)
-                tagObj = Tag(tagName, tagValue)
+                tagObj = Tag()
+                tagObj.name = tagName
+                tagObj.value = tagValue
                 tags.append(tagObj)
     return tags

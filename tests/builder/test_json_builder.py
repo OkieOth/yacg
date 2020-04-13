@@ -2,7 +2,7 @@ import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.model import IntegerType, NumberType
-from yacg.model.model import StringType
+from yacg.model.model import StringType, Type
 from yacg.model.model import DateTimeType
 from yacg.model.model import EnumType, ComplexType
 from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
@@ -147,6 +147,7 @@ class TestJsonBuilder (unittest.TestCase):
             'Type',
             'IntegerType',
             'NumberType',
+            'BooleanType',
             'StringType',
             'UuidType',
             'EnumType',
@@ -163,6 +164,8 @@ class TestJsonBuilder (unittest.TestCase):
         sourceExists = os.path.isfile(type.source)
         self.assertTrue('source file exists: ' + type.source, sourceExists)
         self.assertEqual(typeName, type.name)
+        if isinstance(type, EnumType) or isinstance(type, Type):
+            return type
         self.assertEqual(propCount, len(type.properties))
         for prop in type.properties:
             self.assertIsNotNone(prop.type, "property w/o a type: %s.%s" % (typeName, prop.name))

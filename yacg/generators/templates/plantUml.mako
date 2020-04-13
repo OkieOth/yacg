@@ -1,5 +1,10 @@
 ## Template to create PlantUml class diagrams from the model types
 <%
+    import yacg.model.modelFuncs as modelFuncs
+
+    templateFile = 'plantUml.mako'
+    templateVersion = '1.1.0'
+
     def addLineBreakToDescription(textLine):
         breakedText = ''
         splittedLine = textLine.split()
@@ -13,22 +18,25 @@
             breakedText = breakedText + t
             i = i + 1
         return breakedText
+
 %>
 @startuml
 
 % for type in modelTypes:
-class ${type.name} {
-    % for prop in type.properties:
-    ${prop.type.name}${'[]' if prop.isArray else ''} ${prop.name} 
-    % endfor
+class ${modelFuncs.getTypeName(type)} {
+    % if hasattr(type,'properties'):
+        % for prop in type.properties:
+    ${modelFuncs.getTypeName(prop.type)}${'[]' if prop.isArray else ''} ${prop.name} 
+        % endfor
+    % endif
 }
  
-    % if type.description != None:
+    % if hasattr(type,'description') and (type.description != None):
 note top: ${addLineBreakToDescription(type.description)}
     % endif
 
-    % if type.extendsType != None:
-${type.name} --|> ${type.extendsType.name}
+    % if hasattr(type,'extendsType') and (type.extendsType != None):
+${modelFuncs.getTypeName(type)} --|> ${modelFuncs.getTypeName(type.extendsType)}
     % endif
 % endfor
 
@@ -37,16 +45,18 @@ ${type.name} --|> ${type.extendsType.name}
         ## array to store already printed links between the objects
         alreadyLinkedTypes=[]
     %>
-    % for prop in type.properties:
-        % if not prop.type.isBaseType and (not (prop.type.name in alreadyLinkedTypes)):
-${type.name} ${ '"0"' if prop.isArray else '' } *-- ${'"n"' if prop.isArray else ''} ${prop.type.name}        
+    % if hasattr(type,'properties'):
+        % for prop in type.properties:
+            % if (not modelFuncs.isBaseType(prop.type)) and (not (prop.type.name in alreadyLinkedTypes)):
+${modelFuncs.getTypeName(type)} ${ '"0"' if prop.isArray else '' } *-- ${'"n"' if prop.isArray else ''} ${modelFuncs.getTypeName(prop.type)}        
             <%
                 ## add the current type name to the already linked types
-                alreadyLinkedTypes.append(prop.type.name)
+                alreadyLinkedTypes.append(modelFuncs.getTypeName(prop.type))
             %>
-        % endif 
-    % endfor
+            % endif 
+        % endfor
+    % endif 
 % endfor
 
-footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\npowered by plantuml (https://plantuml.com/)
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: ${templateFile} v${templateVersion})\npowered by plantuml (https://plantuml.com/)
 @enduml

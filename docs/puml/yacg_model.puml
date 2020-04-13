@@ -30,6 +30,13 @@ class NumberTypeFormatEnum {
 }
  
 
+class BooleanType {
+    BooleanType default 
+}
+ 
+note top: boolean values
+
+BooleanType --|> Type
 class StringType {
     StringType default 
 }
@@ -70,12 +77,13 @@ note top: type for timestamp values
 DateTimeType --|> Type
 class ComplexType {
     StringType name 
+    StringType description 
     StringType domain 
     StringType source 
     ComplexType extendsType 
-    ComplexType extendedBy 
-    ComplexType referencedBy 
-    Property properties 
+    ComplexType[] extendedBy 
+    ComplexType[] referencedBy 
+    Property[] properties 
     Tag[] tags 
 }
  
@@ -115,9 +123,10 @@ NumberType  *--  NumberTypeFormatEnum
     
     
     
+    
 ComplexType  *--  ComplexType        
             
-ComplexType  *--  Property        
+ComplexType "0" *-- "n" Property        
             
 ComplexType "0" *-- "n" Tag        
             
@@ -128,5 +137,5 @@ Property "0" *-- "n" Tag
             
     
 
-footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\npowered by plantuml (https://plantuml.com/)
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
 @enduml
