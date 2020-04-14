@@ -67,6 +67,14 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
     if schemaDefinitions is not None:
         # extract types from extra definitions section
         _extractDefinitionsTypes(schemaDefinitions, modelTypes, modelFile, None)
+    else:
+        openApiComponents = parsedSchema.get('components', None)
+        if openApiComponents is not None:
+            schemas = openApiComponents.get('schemas', None)
+            if schemas is not None:
+                # extract types from extra components section (OpenApi v3)
+                _extractDefinitionsTypes(schemas, modelTypes, modelFile, None)
+
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
     for type in modelTypes:
@@ -111,6 +119,13 @@ def _extractTypeAndRelatedTypes(parsedSchema, desiredTypeName, modelFile, modelT
     if schemaDefinitions is not None:
         # extract types from extra definitions section
         _extractDefinitionsTypes(schemaDefinitions, modelTypes, modelFile, desiredTypeName)
+    else:
+        openApiComponents = parsedSchema.get('components', None)
+        if openApiComponents is not None:
+            schemas = openApiComponents.get('schemas', None)
+            if schemas is not None:
+                # extract types from extra components section (OpenApi v3)
+                _extractDefinitionsTypes(openApiComponents, modelTypes, modelFile, desiredTypeName)
     return modelTypes
 
 
@@ -293,9 +308,14 @@ def _extractReferenceType(newType, refEntry, modelTypes, modelFile):
     """
 
     localDefinitionsStr = '#/definitions/'
+    openApiComponentsStr = '#/components/schemas/'
     if refEntry.startswith(localDefinitionsStr):
         # internal reference
         typeName = refEntry[len(localDefinitionsStr):]
+        return _extractInternalReferenceType(newType, typeName, modelTypes, modelFile)
+    elif refEntry.startswith(openApiComponentsStr):
+        # internal reference
+        typeName = refEntry[len(openApiComponentsStr):]
         return _extractInternalReferenceType(newType, typeName, modelTypes, modelFile)
     else:
         if refEntry.find('.json') != -1:
