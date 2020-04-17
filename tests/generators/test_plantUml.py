@@ -6,7 +6,7 @@ from yacg.builder.jsonBuilder import getModelFromJson
 
 class TestPlantUml (unittest.TestCase):
     def testSingleTypeSchema(self):
-        modelFile = 'resources/models/json/examples/single_type_schema.json'
+        modelFile = 'tests/resources/models/json/examples/single_type_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromJson(modelFile, [])
@@ -23,7 +23,7 @@ class TestPlantUml (unittest.TestCase):
         f.close()
 
     def testSingleTypeSchema2(self):
-        modelFile = 'resources/models/json/examples/single_type_schema2.json'
+        modelFile = 'tests/resources/models/json/examples/single_type_schema2.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromJson(modelFile, [])
@@ -57,7 +57,7 @@ class TestPlantUml (unittest.TestCase):
         f.close()
 
     def testCircularTypeDeps(self):
-        modelFile = 'resources/models/json/examples/schema_with_circular_deps.json'
+        modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromJson(modelFile, [])

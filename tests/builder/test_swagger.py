@@ -8,37 +8,37 @@ from yacg.model.model import ComplexType
 
 class TestSwagger (unittest.TestCase):
     def test_swaggerV2Json(self):
-        modelFile = 'resources/models/json/examples/swagger_v2_example.json'
+        modelFile = 'tests/resources/models/json/examples/swagger_v2_example.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromJson(modelFile, [])
         self._checkUpTypes(modelTypes)
 
     def test_openApiV3Json(self):
-        modelFile = 'resources/models/json/examples/openapi_v3_example.json'
+        modelFile = 'tests/resources/models/json/examples/openapi_v3_example.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromJson(modelFile, [])
         self._checkUpTypes(modelTypes)
 
     def test_swaggerV2Yaml(self):
-        modelFile = 'resources/models/yaml/examples/swagger_v2_example.yaml'
+        modelFile = 'tests/resources/models/yaml/examples/swagger_v2_example.yaml'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromYaml(modelFile, [])
         self._checkUpTypes(modelTypes)
 
     def test_openApiV3Yaml(self):
-        modelFile = 'resources/models/yaml/examples/openapi_v3_example.yaml'
+        modelFile = 'tests/resources/models/yaml/examples/openapi_v3_example.yaml'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromYaml(modelFile, [])
         self._checkUpTypes(modelTypes)
 
     def test_compareSwaggerV2(self):
-        modelFileJson = 'resources/models/json/examples/swagger_v2_example.json'
+        modelFileJson = 'tests/resources/models/json/examples/swagger_v2_example.json'
         modelTypesJson = getModelFromJson(modelFileJson, [])
-        modelFileYaml = 'resources/models/yaml/examples/swagger_v2_example.yaml'
+        modelFileYaml = 'tests/resources/models/yaml/examples/swagger_v2_example.yaml'
         modelTypesYaml = getModelFromYaml(modelFileYaml, [])
         self.assertEqual(len(modelTypesJson), len(modelTypesYaml))
         for i in range(len(modelTypesJson)):

@@ -24,11 +24,11 @@ class TestJsonBuilder (unittest.TestCase):
         self._testYamlAndJsonEquality(jsonModelFile, yamlModelFile)
 
     def testSwagger2Equality(self):
-        jsonModelFile = 'resources/models/json/examples/swagger_v2_example.json'
-        yamlModelFile = 'resources/models/yaml/examples/swagger_v2_example.yaml'
+        jsonModelFile = 'tests/resources/models/json/examples/swagger_v2_example.json'
+        yamlModelFile = 'tests/resources/models/yaml/examples/swagger_v2_example.yaml'
         self._testYamlAndJsonEquality(jsonModelFile, yamlModelFile)
 
     def testOpenApi3Equality(self):
-        jsonModelFile = 'resources/models/json/examples/openapi_v3_example.json'
-        yamlModelFile = 'resources/models/yaml/examples/openapi_v3_example.yaml'
+        jsonModelFile = 'tests/resources/models/json/examples/openapi_v3_example.json'
+        yamlModelFile = 'tests/resources/models/yaml/examples/openapi_v3_example.yaml'
         self._testYamlAndJsonEquality(jsonModelFile, yamlModelFile)
