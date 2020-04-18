@@ -22,4 +22,19 @@ if ! pipenv run python3 yacg.py --models \
     exit 1
 fi
 
+echo "create openapi model classes ..."
+if ! pipenv run python3 yacg.py --models \
+    resources/models/json/yacg_openapi_paths.json \
+    --output ${scriptPos}/../yacg/model/openapi.py \
+             ${scriptPos}/../tests/model/test_openapi.py \
+             ${scriptPos}/../docs/puml/yacg_openapi.puml \
+    --templates pythonBeans \
+                pythonBeansTests \
+                plantUml \
+    --templateParameters modelPackage=yacg.model.model \
+                         title="yacg openapi model"; then
+    echo "    ERROR while create openapi model classes"
+    exit 1
+fi
+
 popd > /dev/null
