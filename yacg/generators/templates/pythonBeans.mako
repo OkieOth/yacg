@@ -3,6 +3,7 @@
     import yacg.model.model as model
     import yacg.templateHelper as templateHelper
     import yacg.model.modelFuncs as modelFuncs
+    import yacg.util.stringUtils as stringUtils
     import yacg.generators.helper.pythonFuncs as pythonFuncs
 
     templateFile = 'pythonBeans.mako'
@@ -27,7 +28,7 @@ from enum import Enum
     % if isinstance(type, model.EnumType):    
 class ${type.name}(Enum):
         % for value in type.values:
-    ${value.upper()} = '${value}'
+    ${stringUtils.toUpperCaseName(value)} = '${value}'
         % endfor
 
     % else:

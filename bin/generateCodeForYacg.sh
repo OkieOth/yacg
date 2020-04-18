@@ -31,7 +31,7 @@ if ! pipenv run python3 yacg.py --models \
     --templates pythonBeans \
                 pythonBeansTests \
                 plantUml \
-    --templateParameters modelPackage=yacg.model.model \
+    --templateParameters modelPackage=yacg.model.openapi \
                          title="yacg openapi model"; then
     echo "    ERROR while create openapi model classes"
     exit 1

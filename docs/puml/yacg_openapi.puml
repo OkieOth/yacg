@@ -1,0 +1,117 @@
+
+@startuml
+
+class Path {
+    StringType pathPattern 
+    Command[] commands 
+}
+ 
+note top: base type that contains all\nREST path information
+
+class Command {
+    CommandCommandEnum command 
+    StringType[] tags 
+    StringType summary 
+    StringType description 
+    StringType operationId 
+    CommandConsumesEnum[] consumes 
+    CommandProducesEnum[] produces 
+    Parameter[] parameters 
+    RequestBody requestBody 
+    Response[] responses 
+}
+ 
+note top: information to a specific HTTP\ncommand
+
+class CommandCommandEnum {
+}
+ 
+
+class CommandConsumesEnum {
+}
+ 
+
+class CommandProducesEnum {
+}
+ 
+
+class Parameter {
+    ParameterInTypeEnum inType 
+    StringType name 
+    StringType description 
+    BooleanType required 
+    Type type 
+}
+ 
+note top: definition of a parameter that\nis used in the request
+
+class RequestBody {
+    StringType description 
+    BooleanType required 
+    RequestBodyContent[] content 
+}
+ 
+note top: definition of a parameter that\nis used in the request
+
+class Response {
+    IntegerType returnCode 
+    StringType description 
+    Type type 
+}
+ 
+note top: description of a response option\nfor a request
+
+class RequestBodyContent {
+    StringType mimeType 
+    Type type 
+}
+ 
+
+class Type {
+}
+ 
+note top: Dummy base class to implement\nstrong typed references
+
+class ParameterInTypeEnum {
+}
+ 
+
+
+    
+Path "0" *-- "n" Command        
+            
+    
+Command  *--  CommandCommandEnum        
+            
+Command "0" *-- "n" CommandConsumesEnum        
+            
+Command "0" *-- "n" CommandProducesEnum        
+            
+Command "0" *-- "n" Parameter        
+            
+Command  *--  RequestBody        
+            
+Command "0" *-- "n" Response        
+            
+    
+    
+    
+    
+Parameter  *--  ParameterInTypeEnum        
+            
+Parameter  *--  Type        
+            
+    
+RequestBody "0" *-- "n" RequestBodyContent        
+            
+    
+Response  *--  Type        
+            
+    
+RequestBodyContent  *--  Type        
+            
+    
+    
+
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
+@enduml

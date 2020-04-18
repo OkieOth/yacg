@@ -118,7 +118,7 @@
             "type": "object",
             "description": "definition of a parameter that is used in the request",
             "properties": {
-                "in": {
+                "inType": {
                     "description": "how is the parameter passed to the back-end, attention",
                     "$comment": "attention, the request body gots its own attribute in the command type",
                     "type": "string",

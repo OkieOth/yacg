@@ -30,7 +30,7 @@ class Test${testClassName} (unittest.TestCase):
         self.assertIsNotNone(x)
     % else:
         % for value in type.values:
-        self.assertIsNotNone(${type.name}.${value.upper()})
+        self.assertIsNotNone(${type.name}.${stringUtils.toUpperCaseName(value)})
         % endfor
     % endif
 
