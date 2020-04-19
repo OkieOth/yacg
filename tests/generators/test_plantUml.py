@@ -40,7 +40,7 @@ class TestPlantUml (unittest.TestCase):
         f.close()
 
     def testConfigSchema(self):
-        modelFile = 'resources/models/json/config_schema.json'
+        modelFile = 'resources/models/json/yacg_config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromJson(modelFile, [])
@@ -51,7 +51,7 @@ class TestPlantUml (unittest.TestCase):
         renderResult = template.render(modelTypes=modelTypes)
         self.assertIsNotNone(renderResult)
 
-        testOutputFile = "tmp/config_schema.puml"
+        testOutputFile = "tmp/yacg_config_schema.puml"
         f = open(testOutputFile, "w+")
         f.write(renderResult)
         f.close()

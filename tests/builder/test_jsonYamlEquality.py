@@ -19,8 +19,8 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(parsedYamlSchema, parsedYamlSchema)
 
     def testConfigSchemaEquality(self):
-        jsonModelFile = 'resources/models/json/config_schema.json'
-        yamlModelFile = 'resources/models/yaml/config_schema.yaml'
+        jsonModelFile = 'resources/models/json/yacg_config_schema.json'
+        yamlModelFile = 'resources/models/yaml/yacg_config_schema.yaml'
         self._testYamlAndJsonEquality(jsonModelFile, yamlModelFile)
 
     def testSwagger2Equality(self):

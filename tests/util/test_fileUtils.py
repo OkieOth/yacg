@@ -6,7 +6,7 @@ from yacg.util.fileUtils import getInternalTemplatePath
 
 class TestFileUtils (unittest.TestCase):
     def testUpperCamelCase(self):
-        modelFile = 'resources/models/json/config_schema.json'
+        modelFile = 'resources/models/json/yacg_config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue(modelFileExists)
 

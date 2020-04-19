@@ -6,5 +6,5 @@ The following picture displays the possible configurations
 
 ```bash
 # helper link to create the plantuml image link
-!includeurl https://raw.githubusercontent.com/OkieOth/yacg/master/docs/puml/config_schema.puml
+!includeurl https://raw.githubusercontent.com/OkieOth/yacg/master/docs/puml/yacg_config_schema.puml
 ```

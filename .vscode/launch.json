@@ -18,7 +18,7 @@
             "program": "${workspaceFolder}/yacg.py",
             "args": [
                 "--model",
-                "resources/models/json/config_schema.json",
+                "resources/models/json/yacg_config_schema.json",
                 "resources/models/json/yacg_model_schema.json",
                 "--output",
                 "stdout",

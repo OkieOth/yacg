@@ -6,7 +6,7 @@ from yacg.model.model import EnumType, Type
 
 class TestYamlBuilder (unittest.TestCase):
     def testSingleTypeSchema(self):
-        modelFile = 'resources/models/yaml/config_schema.yaml'
+        modelFile = 'resources/models/yaml/yacg_config_schema.yaml'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromYaml(modelFile, [])

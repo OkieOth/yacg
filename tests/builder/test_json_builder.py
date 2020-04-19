@@ -47,7 +47,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(anotherType, innerComplexType.properties[2].type)
 
     def testSingleTypeSchema2(self):
-        modelFile = 'resources/models/json/config_schema.json'
+        modelFile = 'resources/models/json/yacg_config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         modelTypes = getModelFromJson(modelFile, [])
