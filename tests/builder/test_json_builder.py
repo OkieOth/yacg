@@ -133,6 +133,7 @@ class TestJsonBuilder (unittest.TestCase):
                 propertyType = type
             elif type.name == 'ComplexType':
                 complexTypeType = type
+            self.assertEqual('yacgCore', type.domain)
         self.assertIsNotNone(tagType)
         constructorValueProps1 = getPropertiesThatHasTag('constructorValue', tagType)
         self.assertEqual(2, len(constructorValueProps1))
@@ -167,6 +168,7 @@ class TestJsonBuilder (unittest.TestCase):
         if isinstance(type, EnumType) or isinstance(type, Type):
             return type
         self.assertEqual(propCount, len(type.properties))
+        self.assertIsNotNone(type.domain)
         for prop in type.properties:
             self.assertIsNotNone(prop.type, "property w/o a type: %s.%s" % (typeName, prop.name))
             if prop.name.endswith('s') or prop.name.endswith('ed'):
