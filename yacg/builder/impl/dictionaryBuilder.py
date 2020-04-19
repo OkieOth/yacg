@@ -177,6 +177,7 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
     newType = None
     if alreadyCreatedType is None:
         newType = ComplexType()
+        newType.domain = modelFileContainer.domain
         newType.name = typeNameStr
     else:
         newType = alreadyCreatedType
@@ -535,6 +536,7 @@ def _extractInternalReferenceType(newType, refTypeName, modelTypes, modelFileCon
     if alreadyCreatedType is not None:
         return alreadyCreatedType
     dummyReference = ComplexType()
+    dummyReference.domain = modelFileContainer.domain
     dummyReference.name = refTypeName
     dummyReference.source = modelFileContainer.fileName
     modelTypes.append(dummyReference)
@@ -555,6 +557,7 @@ def _extractComplexType(newType, newProperty, propDict, modelTypes, modelFileCon
 
     innerTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name)
     newInnerType = ComplexType()
+    newInnerType.domain = modelFileContainer.domain
     newInnerType.name = innerTypeName
     newInnerType.source = modelFileContainer.fileName
     modelTypes.append(newInnerType)
@@ -620,6 +623,7 @@ def _extractEnumType(newType, newProperty, enumValue, modelTypes, modelFileConta
 
     enumTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name + 'Enum')
     enumType = EnumType()
+    enumType.domain = modelFileContainer.domain
     enumType.name = enumTypeName
     enumType.values = enumValue
     enumType.source = modelFileContainer.fileName
