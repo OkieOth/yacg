@@ -22,6 +22,21 @@ if ! pipenv run python3 yacg.py --models \
     exit 1
 fi
 
+echo "create config model classes ..."
+if ! pipenv run python3 yacg.py --models \
+    resources/models/json/yacg_config_schema.json \
+    --output ${scriptPos}/../yacg/model/config.py \
+             ${scriptPos}/../tests/model/test_config.py \
+             ${scriptPos}/../docs/puml/yacg_config_schema.puml \
+    --templates pythonBeans \
+                pythonBeansTests \
+                plantUml \
+    --templateParameters modelPackage=yacg.model.config \
+                         title="yacg configuration model"; then
+    echo "    ERROR while create config model classes"
+    exit 1
+fi
+
 echo "create openapi model classes ..."
 if ! pipenv run python3 yacg.py --models \
     resources/models/json/yacg_openapi_paths.json \

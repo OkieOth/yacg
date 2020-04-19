@@ -47,7 +47,7 @@
         "type": {
           "description": "how is the name to be interpreted. If type is missing, then 'type' is expected",
           "type": "string",
-          "enum": ["type", "tag", "containedAttrib", "notContainedAttrib"]
+          "enum": ["type", "tag", "containedAttrib", "notContainedAttrib", "domain"]
         }
       },
       "required": [
@@ -119,6 +119,27 @@
         "value": {
           "description": "value of the custom parameter",
           "type": "string"
+        },
+        "requiredDomains": {
+          "description": "if set then this parameter only effected types of the specific domains",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requiredTags": {
+          "description": "if set then this parameter only effected types or attributes with the specific tag",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requiredNames": {
+          "description": "if set then this parameter only effected types or attributes with the specific name",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": ["name", "value"]
@@ -166,11 +187,11 @@
       "type": "object",
       "description": "A model that should be used",
       "properties": {
-        "jsonSchema": {
+        "schema": {
           "description": "path to the jsonSchema file",
           "type": "string"
         },
-        "nameSpace": {
+        "domain": {
           "description": "optional nameSpace string for the model, if not set the file name/path are used as namespace",
           "type": "string"
         },
@@ -190,7 +211,7 @@
         }
       },
       "required": [
-        "jsonSchema"
+        "schema"
       ]
     }
   }
