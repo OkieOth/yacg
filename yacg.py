@@ -88,21 +88,23 @@ def _getJobConfigurationsFromArgs(args):
         job.models.append(model)
     templateParameters = _getTemplateParameters(args)
 
-    for templateFile in args.singleFileTemplates:
-        task = config.Task()
-        task.name = templateFile
-        task.singleFileTask = config.SingleFileTask()
-        (task.singleFileTask.template, task.singleFileTask.destFile) = _splitTemplateAndDestination(templateFile)
-        task.singleFileTask.templateParameters = templateParameters
-        job.tasks.append(task)
+    if args.singleFileTemplates is not None:
+        for templateFile in args.singleFileTemplates:
+            task = config.Task()
+            task.name = templateFile
+            task.singleFileTask = config.SingleFileTask()
+            (task.singleFileTask.template, task.singleFileTask.destFile) = _splitTemplateAndDestination(templateFile)
+            task.singleFileTask.templateParameters = templateParameters
+            job.tasks.append(task)
 
-    for templateFile in args.multiFileTemplates:
-        task = config.Task()
-        task.name = templateFile
-        task.multiFileTask = config.MultiFileTask()
-        (task.multiFileTask.template, task.multiFileTask.destDir) = _splitTemplateAndDestination(templateFile)
-        task.multiFileTask.templateParameters = templateParameters
-        job.tasks.append(task)
+    if args.multiFileTemplates is not None:
+        for templateFile in args.multiFileTemplates:
+            task = config.Task()
+            task.name = templateFile
+            task.multiFileTask = config.MultiFileTask()
+            (task.multiFileTask.template, task.multiFileTask.destDir) = _splitTemplateAndDestination(templateFile)
+            task.multiFileTask.templateParameters = templateParameters
+            job.tasks.append(task)
     return [job]
 
 
