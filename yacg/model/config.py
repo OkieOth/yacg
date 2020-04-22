@@ -149,6 +149,6 @@ class MultiFileTask:
         self.destFileExt = None
 
         #: parameter of a code generation task that creates one file per model type
-        self.templateParams = {}
+        self.templateParams = []
 
 

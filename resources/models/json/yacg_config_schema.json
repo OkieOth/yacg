@@ -68,7 +68,10 @@
         },
         "templateParams": {
           "description": "custom parameter that are passed to the template, while it is processed",
-          "type": "object"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TemplateParam"
+          }
         }
       }
     },
