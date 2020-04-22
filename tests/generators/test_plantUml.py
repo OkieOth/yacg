@@ -3,13 +3,17 @@ import os.path
 from mako.template import Template
 from yacg.builder.jsonBuilder import getModelFromJson
 
+import yacg.model.config as config
+
 
 class TestPlantUml (unittest.TestCase):
     def testSingleTypeSchema(self):
         modelFile = 'tests/resources/models/json/examples/single_type_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
@@ -26,7 +30,9 @@ class TestPlantUml (unittest.TestCase):
         modelFile = 'tests/resources/models/json/examples/single_type_schema2.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
@@ -43,7 +49,9 @@ class TestPlantUml (unittest.TestCase):
         modelFile = 'resources/models/json/yacg_config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
@@ -60,7 +68,9 @@ class TestPlantUml (unittest.TestCase):
         modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         templateFile = 'yacg/generators/templates/plantUml.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)

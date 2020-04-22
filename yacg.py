@@ -43,7 +43,7 @@ def readModels(configJob):
     loadedTypes = []
     yamlExtensions = set(['.yaml', '.yml'])
     for model in configJob.models:
-        fileExt = getFileExt(model)
+        fileExt = getFileExt(model.schema)
         if fileExt.lower() in yamlExtensions:
             loadedTypes = getModelFromYaml(model, loadedTypes)
         else:

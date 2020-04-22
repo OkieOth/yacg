@@ -5,41 +5,55 @@ from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.model.model import ComplexType
 
+import yacg.model.config as config
+
 
 class TestSwagger (unittest.TestCase):
     def test_swaggerV2Json(self):
         modelFile = 'tests/resources/models/json/examples/swagger_v2_example.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self._checkUpTypes(modelTypes)
 
     def test_openApiV3Json(self):
         modelFile = 'tests/resources/models/json/examples/openapi_v3_example.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self._checkUpTypes(modelTypes)
 
     def test_swaggerV2Yaml(self):
         modelFile = 'tests/resources/models/yaml/examples/swagger_v2_example.yaml'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromYaml(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
         self._checkUpTypes(modelTypes)
 
     def test_openApiV3Yaml(self):
         modelFile = 'tests/resources/models/yaml/examples/openapi_v3_example.yaml'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromYaml(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
         self._checkUpTypes(modelTypes)
 
     def test_compareSwaggerV2(self):
         modelFileJson = 'tests/resources/models/json/examples/swagger_v2_example.json'
-        modelTypesJson = getModelFromJson(modelFileJson, [])
+        modelJson = config.Model()
+        modelJson.schema = modelFileJson
+        modelTypesJson = getModelFromJson(modelJson, [])
         modelFileYaml = 'tests/resources/models/yaml/examples/swagger_v2_example.yaml'
-        modelTypesYaml = getModelFromYaml(modelFileYaml, [])
+        modelYaml = config.Model()
+        modelYaml.schema = modelFileYaml
+        modelTypesYaml = getModelFromYaml(modelYaml, [])
         self.assertEqual(len(modelTypesJson), len(modelTypesYaml))
         for i in range(len(modelTypesJson)):
             typeJson = modelTypesJson[i]

@@ -7,13 +7,17 @@ from yacg.model.model import DateTimeType
 from yacg.model.model import EnumType, ComplexType
 from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
 
+import yacg.model.config as config
+
 
 class TestJsonBuilder (unittest.TestCase):
     def testSingleTypeSchema(self):
         modelFile = 'tests/resources/models/json/examples/single_type_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(4, len(modelTypes))
 
@@ -50,7 +54,9 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'resources/models/json/yacg_config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(8, len(modelTypes))
 
@@ -67,7 +73,9 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(3, len(modelTypes))
         self._checkUpType(0, 'OneType', 2, modelTypes)
@@ -78,7 +86,9 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(5, len(modelTypes))
 
@@ -92,7 +102,9 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'tests/resources/models/json/examples/simple_allof.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(3, len(modelTypes))
         self._checkUpType(0, 'SimpleAllOfSchema', 1, modelTypes)
@@ -103,7 +115,9 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'tests/resources/models/json/examples/more_sophisticated_allof.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(5, len(modelTypes))
         type = self._checkUpType(0, 'MoreSophisticatedAllOf', 1, modelTypes)
@@ -118,7 +132,9 @@ class TestJsonBuilder (unittest.TestCase):
         modelFile = 'resources/models/json/yacg_model_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         metaModelTypes = []
         self.assertIsNotNone(modelTypes)
         tagType = None
