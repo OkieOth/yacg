@@ -8,7 +8,6 @@ from yacg.util.outputUtils import printError, getErrorTxt, getOkTxt
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
-from yacg.util.fileUtils import getInternalTemplatePath
 
 import yacg.model.config as config
 
@@ -131,7 +130,7 @@ def _foundAllTemplates(codeGenerationJobs):
         print('  template for job {}:'.format(job.name))
         for task in job.tasks:
             fileExists = False
-            if (task.singleFileTask is not None) and (task.singleFileTask.template is not None):                
+            if (task.singleFileTask is not None) and (task.singleFileTask.template is not None):
                 (fileExists, task.singleFileTask.template) = _tryToFindTemplate(task.singleFileTask.template)
             elif (task.multiFileTask is not None) and (task.multiFileTask.template is not None):
                 (fileExists, task.multiFileTask.template) = _tryToFindTemplate(task.multiFileTask.template)
@@ -188,7 +187,7 @@ def _isConfigurationValid(codeGenerationJobs):
     """
 
     isValid = True
-    if (codeGenerationJobs is None) or (len(codeGenerationJobs) == 0 ):
+    if (codeGenerationJobs is None) or (len(codeGenerationJobs) == 0):
         errorMsg = getErrorTxt('no generation jobs are given - cancel')
         print(errorMsg)
         return False
@@ -214,8 +213,6 @@ def main():
                     task.singleFileTask.template,
                     task.singleFileTask.destFile,
                     task.singleFileTask.templateParams)
-
-                pass
                 # TODO
             elif task.multiFileTask is not None:
                 pass
