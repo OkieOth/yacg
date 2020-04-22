@@ -214,7 +214,7 @@ def main():
                     loadedTypes,
                     task.singleFileTask.template,
                     task.singleFileTask.destFile,
-                    task.singleFileTask.templateParams)
+                    task.singleFileTask.templateParameters)
                 # TODO
             elif task.multiFileTask is not None:
                 pass
