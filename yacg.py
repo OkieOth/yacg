@@ -207,17 +207,19 @@ def main():
         sys.exit(1)
     for job in codeGenerationJobs:
         loadedTypes = readModels(job)
-        i = 0
-        for template in args.templates: # TODO remove args
-            internalTemplateName = 'generators/templates/{}.mako'.format(template)
-            isInternalTemplate = doesFileExist('yacg/{}'.format(internalTemplateName))
-            if isInternalTemplate is True:
-                templateFile = getInternalTemplatePath(internalTemplateName)
-                output = args.output[i] # TODO remove args
-                renderSingleFileTemplate(loadedTypes, templateFile, output, templateParameters)
-            else:
-                printError('template not found: {}'.format(template))
-            i = i + 1
+        for task in job.tasks:
+            if task.singleFileTask is not None:
+                renderSingleFileTemplate(
+                    loadedTypes,
+                    task.singleFileTask.template,
+                    task.singleFileTask.destFile,
+                    task.singleFileTask.templateParams)
+
+                pass
+                # TODO
+            elif task.multiFileTask is not None:
+                pass
+                # TODO
 
 
 if __name__ == '__main__':
