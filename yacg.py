@@ -1,16 +1,13 @@
 import argparse
 import sys
 import logging
-import json
-import yaml
-
 
 from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError, getErrorTxt, getOkTxt
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
-
+import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 
 
@@ -71,21 +68,6 @@ def _getTemplateParameters(args):
     return templateParameters
 
 
-def _getJobConfigurationsFromConfigFile(configFile):
-    if not doesFileExist(configFile):
-        printError('\ncan not find config file: {}'.format(configFile))
-        return []
-    if configFile.endswith('.json'):
-        with open(configFile) as config:
-            return json.load(config)
-    elif configFile.endswith('.yaml') or configFile.endswith('.yaml'):
-        with open(configFile) as config:
-            return yaml.load(config)
-    else:
-        printError('\nunknown config file extension, only json or yaml are supportted')
-        return []
-
-
 def _splitTemplateAndDestination(templateArg):
     keyValueArray = templateArg.split('=')
     if (len(keyValueArray) > 1):
@@ -129,7 +111,7 @@ def getJobConfigurations(args):
     """
 
     if args.config is not None:
-        return _getJobConfigurationsFromConfigFile(args.config)
+        return yacg_utils.getJobConfigurationsFromConfigFile(args.config)
     else:
         return _getJobConfigurationsFromArgs(args)
 

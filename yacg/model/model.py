@@ -162,7 +162,7 @@ class Property:
         self.name = None
 
         #: a property of a type
-        self.isArray = None
+        self.isArray = False
 
         #: a property of a type
         self.type = None
@@ -172,6 +172,8 @@ class Property:
 
         #: a property of a type
         self.description = None
+
+        self.default = None
 
 
 class Tag:

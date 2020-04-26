@@ -23,6 +23,24 @@ class Job:
         #: base object that describes a complete code generation process
         self.tasks = []
 
+    @classmethod
+    def dictToObject(cls, dict):
+        obj = Job()
+        obj.name = dict.get('name', None)
+        obj.description = dict.get('description', None)
+        
+        for elemDict in dict.get('models', []):
+            newObj = Model.dictToObj(elemDict)
+            obj.models.append(newObj)
+        for elem in dict.get('tasks', []):
+            newObj = Task.dictToObj(elemDict)
+            obj.tasks.append(newObj)
+            
+        return obj
+
+    def objectToDict(self, dict):
+        pass
+
 
 class Model:
     """ A model that should be used
