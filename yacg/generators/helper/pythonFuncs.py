@@ -3,6 +3,7 @@ Python code
 """
 
 import yacg.model.model as model
+import yacg.util.stringUtils as stringUtils
 
 
 def getDefaultPythonValue(propertyObj):
@@ -25,6 +26,8 @@ def getPythonValueForType(type, value):
             return 'True'
         else:
             return 'False'
+    elif (isinstance(type, model.EnumType)):
+        return '''{}.{}'''.format(type.name, stringUtils.toUpperCaseName(value))
     elif (isinstance(type, model.StringType)):
         return '''{}'''.format(str(value))
     else:

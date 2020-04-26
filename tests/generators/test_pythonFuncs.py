@@ -78,3 +78,16 @@ class TestPythonFuncs (unittest.TestCase):
         self.assertEqual(
             '0',
             pythonFuncs.getPythonValueForType(type, '0'))
+
+    def testGetPythonValueForTypeEnumType(self):
+        type = model.EnumType()
+        type.name = 'TestEnum'
+        self.assertEqual(
+            'None',
+            pythonFuncs.getPythonValueForType(type, None))
+        self.assertEqual(
+            'None',
+            pythonFuncs.getPythonValueForType(type, 'None'))
+        self.assertEqual(
+            'TestEnum.TEST',
+            pythonFuncs.getPythonValueForType(type, 'test'))
