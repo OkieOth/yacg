@@ -173,6 +173,7 @@ class Property:
         #: a property of a type
         self.description = None
 
+        #: a property of a type
         self.default = None
 
 

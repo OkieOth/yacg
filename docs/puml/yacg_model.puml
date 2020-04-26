@@ -96,6 +96,7 @@ class Property {
     Type type 
     Tag[] tags 
     StringType description 
+    StringType default 
 }
  
 note top: a property of a type
