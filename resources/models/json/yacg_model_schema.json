@@ -261,6 +261,10 @@
                 "description": {
                     "description": "optional description from the model file",
                     "type": "string"
+                },
+                "default": {
+                    "description": "default value for this attribute as string",
+                    "type": "string"
                 }
             }
         },
