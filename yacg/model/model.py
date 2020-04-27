@@ -12,6 +12,13 @@ class Type:
     def __init__(self):
         pass
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Type()
+        return obj
+
 
 class IntegerType (Type):
     """ integer values
@@ -24,6 +31,17 @@ class IntegerType (Type):
 
         #: integer values
         self.default = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = IntegerType()
+
+        obj.format = IntegerTypeFormatEnum.valueForString(dict.get('format', None))
+
+        obj.default = dict.get('default', None)
+        return obj
 
 
 class IntegerTypeFormatEnum(Enum):
@@ -54,6 +72,17 @@ class NumberType (Type):
         #: floating point values
         self.default = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = NumberType()
+
+        obj.format = NumberTypeFormatEnum.valueForString(dict.get('format', None))
+
+        obj.default = dict.get('default', None)
+        return obj
+
 
 class NumberTypeFormatEnum(Enum):
     FLOAT = 'float'
@@ -80,6 +109,15 @@ class BooleanType (Type):
         #: boolean values
         self.default = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = BooleanType()
+
+        obj.default = dict.get('default', None)
+        return obj
+
 
 class StringType (Type):
     """ integer values
@@ -90,6 +128,15 @@ class StringType (Type):
         #: integer values
         self.default = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = StringType()
+
+        obj.default = dict.get('default', None)
+        return obj
+
 
 class UuidType (Type):
     """ UUID values
@@ -99,6 +146,15 @@ class UuidType (Type):
 
         #: UUID values
         self.default = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = UuidType()
+
+        obj.default = dict.get('default', None)
+        return obj
 
 
 class EnumType (Type):
@@ -119,6 +175,23 @@ class EnumType (Type):
         #: type for enum values - fixed value types
         self.default = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = EnumType()
+
+        obj.name = dict.get('name', None)
+
+        obj.domain = dict.get('domain', None)
+
+        arrayValues = dict.get('values', [])
+        for elemValues in arrayValues:
+            obj.values.append(elemValues)
+
+        obj.default = dict.get('default', None)
+        return obj
+
 
 class DateType (Type):
     """ type for date values
@@ -129,6 +202,15 @@ class DateType (Type):
         #: type for date values
         self.default = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = DateType()
+
+        obj.default = dict.get('default', None)
+        return obj
+
 
 class DateTimeType (Type):
     """ type for timestamp values
@@ -138,6 +220,15 @@ class DateTimeType (Type):
 
         #: type for timestamp values
         self.default = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = DateTimeType()
+
+        obj.default = dict.get('default', None)
+        return obj
 
 
 class ComplexType (Type):
@@ -173,6 +264,43 @@ class ComplexType (Type):
         #: complex type description
         self.tags = []
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = ComplexType()
+
+        obj.name = dict.get('name', None)
+
+        obj.description = dict.get('description', None)
+
+        obj.domain = dict.get('domain', None)
+
+        obj.source = dict.get('source', None)
+
+        obj.extendsType = ComplexType.dictToObject(dict.get('extendsType', None))
+
+        arrayExtendedBy = dict.get('extendedBy', [])
+        for elemExtendedBy in arrayExtendedBy:
+            obj.extendedBy.append(
+                ComplexType.dictToObject(elemExtendedBy))
+
+        arrayReferencedBy = dict.get('referencedBy', [])
+        for elemReferencedBy in arrayReferencedBy:
+            obj.referencedBy.append(
+                ComplexType.dictToObject(elemReferencedBy))
+
+        arrayProperties = dict.get('properties', [])
+        for elemProperties in arrayProperties:
+            obj.properties.append(
+                Property.dictToObject(elemProperties))
+
+        arrayTags = dict.get('tags', [])
+        for elemTags in arrayTags:
+            obj.tags.append(
+                Tag.dictToObject(elemTags))
+        return obj
+
 
 class Property:
     """ a property of a type
@@ -198,6 +326,28 @@ class Property:
         #: a property of a type
         self.default = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Property()
+
+        obj.name = dict.get('name', None)
+
+        obj.isArray = dict.get('isArray', None)
+
+        obj.type = Type.dictToObject(dict.get('type', None))
+
+        arrayTags = dict.get('tags', [])
+        for elemTags in arrayTags:
+            obj.tags.append(
+                Tag.dictToObject(elemTags))
+
+        obj.description = dict.get('description', None)
+
+        obj.default = dict.get('default', None)
+        return obj
+
 
 class Tag:
     """ a tag type
@@ -210,5 +360,16 @@ class Tag:
 
         #: a tag type
         self.value = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Tag()
+
+        obj.name = dict.get('name', None)
+
+        obj.value = dict.get('value', None)
+        return obj
 
 

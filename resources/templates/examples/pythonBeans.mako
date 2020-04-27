@@ -87,7 +87,7 @@ class ${type.name}${ ' ({})'.format(type.extendsType.name) if type.extendsType i
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
             obj.${property.name}.append(
-                ${property.type.name}.valueForString(elem${stringUtils.toUpperCamelCase(property.name)})
+                ${property.type.name}.valueForString(elem${stringUtils.toUpperCamelCase(property.name)}))
                 % endif
             % else:
                 % if not property.isArray:
@@ -96,7 +96,7 @@ class ${type.name}${ ' ({})'.format(type.extendsType.name) if type.extendsType i
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
-        for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:            
+        for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
             obj.${property.name}.append(
                 ${property.type.name}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
                 % endif

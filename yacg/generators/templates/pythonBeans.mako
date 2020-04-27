@@ -62,6 +62,48 @@ class ${type.name}${ ' ({})'.format(type.extendsType.name) if type.extendsType i
             % endfor
         % endif
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = ${type.name}()
+        % for property in type.properties:
+            % if modelFuncs.isBaseType(property.type):
+                % if not property.isArray:
+
+        obj.${property.name} = dict.get('${property.name}', None)
+                % else:
+
+        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
+            obj.${property.name}.append(elem${stringUtils.toUpperCamelCase(property.name)})
+                % endif
+            % elif modelFuncs.isEnumType(property.type):
+                % if not property.isArray:
+
+        obj.${property.name} = ${property.type.name}.valueForString(dict.get('${property.name}', None))
+                % else:
+
+        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
+            obj.${property.name}.append(
+                ${property.type.name}.valueForString(elem${stringUtils.toUpperCamelCase(property.name)}))
+                % endif
+            % else:
+                % if not property.isArray:
+
+        obj.${property.name} = ${property.type.name}.dictToObject(dict.get('${property.name}', None))
+                % else:
+
+        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
+            obj.${property.name}.append(
+                ${property.type.name}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
+                % endif
+            % endif
+        % endfor
+        return obj
+
     % endif
 
 % endfor

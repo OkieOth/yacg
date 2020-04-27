@@ -23,6 +23,27 @@ class Job:
         #: base object that describes a complete code generation process
         self.tasks = []
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Job()
+
+        obj.name = dict.get('name', None)
+
+        obj.description = dict.get('description', None)
+
+        arrayModels = dict.get('models', [])
+        for elemModels in arrayModels:
+            obj.models.append(
+                Model.dictToObject(elemModels))
+
+        arrayTasks = dict.get('tasks', [])
+        for elemTasks in arrayTasks:
+            obj.tasks.append(
+                Task.dictToObject(elemTasks))
+        return obj
+
 
 class Model:
     """ A model that should be used
@@ -41,6 +62,27 @@ class Model:
 
         #: A model that should be used
         self.whiteListed = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Model()
+
+        obj.schema = dict.get('schema', None)
+
+        obj.domain = dict.get('domain', None)
+
+        arrayBlackListed = dict.get('blackListed', [])
+        for elemBlackListed in arrayBlackListed:
+            obj.blackListed.append(
+                BlackWhiteListEntry.dictToObject(elemBlackListed))
+
+        arrayWhiteListed = dict.get('whiteListed', [])
+        for elemWhiteListed in arrayWhiteListed:
+            obj.whiteListed.append(
+                BlackWhiteListEntry.dictToObject(elemWhiteListed))
+        return obj
 
 
 class Task:
@@ -67,6 +109,31 @@ class Task:
         #: A task to run
         self.multiFileTask = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Task()
+
+        obj.name = dict.get('name', None)
+
+        obj.description = dict.get('description', None)
+
+        arrayBlackListed = dict.get('blackListed', [])
+        for elemBlackListed in arrayBlackListed:
+            obj.blackListed.append(
+                BlackWhiteListEntry.dictToObject(elemBlackListed))
+
+        arrayWhiteListed = dict.get('whiteListed', [])
+        for elemWhiteListed in arrayWhiteListed:
+            obj.whiteListed.append(
+                BlackWhiteListEntry.dictToObject(elemWhiteListed))
+
+        obj.singleFileTask = SingleFileTask.dictToObject(dict.get('singleFileTask', None))
+
+        obj.multiFileTask = MultiFileTask.dictToObject(dict.get('multiFileTask', None))
+        return obj
+
 
 class BlackWhiteListEntry:
     """ entry of a type back/white list
@@ -79,6 +146,17 @@ class BlackWhiteListEntry:
 
         #: entry of a type back/white list
         self.type = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = BlackWhiteListEntry()
+
+        obj.name = dict.get('name', None)
+
+        obj.type = BlackWhiteListEntryTypeEnum.valueForString(dict.get('type', None))
+        return obj
 
 
 class BlackWhiteListEntryTypeEnum(Enum):
@@ -121,6 +199,22 @@ class SingleFileTask:
         #: parameter of a code generation task that creates one file
         self.templateParams = []
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = SingleFileTask()
+
+        obj.template = dict.get('template', None)
+
+        obj.destFile = dict.get('destFile', None)
+
+        arrayTemplateParams = dict.get('templateParams', [])
+        for elemTemplateParams in arrayTemplateParams:
+            obj.templateParams.append(
+                TemplateParam.dictToObject(elemTemplateParams))
+        return obj
+
 
 class TemplateParam:
     """ additional, template specific custom parameter for codegen task
@@ -142,6 +236,29 @@ class TemplateParam:
 
         #: additional, template specific custom parameter for codegen task
         self.requiredNames = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = TemplateParam()
+
+        obj.name = dict.get('name', None)
+
+        obj.value = dict.get('value', None)
+
+        arrayRequiredDomains = dict.get('requiredDomains', [])
+        for elemRequiredDomains in arrayRequiredDomains:
+            obj.requiredDomains.append(elemRequiredDomains)
+
+        arrayRequiredTags = dict.get('requiredTags', [])
+        for elemRequiredTags in arrayRequiredTags:
+            obj.requiredTags.append(elemRequiredTags)
+
+        arrayRequiredNames = dict.get('requiredNames', [])
+        for elemRequiredNames in arrayRequiredNames:
+            obj.requiredNames.append(elemRequiredNames)
+        return obj
 
 
 class MultiFileTask:
@@ -167,5 +284,27 @@ class MultiFileTask:
 
         #: parameter of a code generation task that creates one file per model type
         self.templateParams = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = MultiFileTask()
+
+        obj.template = dict.get('template', None)
+
+        obj.destDir = dict.get('destDir', None)
+
+        obj.destFilePrefix = dict.get('destFilePrefix', None)
+
+        obj.destFilePostfix = dict.get('destFilePostfix', None)
+
+        obj.destFileExt = dict.get('destFileExt', None)
+
+        arrayTemplateParams = dict.get('templateParams', [])
+        for elemTemplateParams in arrayTemplateParams:
+            obj.templateParams.append(
+                TemplateParam.dictToObject(elemTemplateParams))
+        return obj
 
 
