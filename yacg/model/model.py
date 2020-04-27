@@ -30,6 +30,17 @@ class IntegerTypeFormatEnum(Enum):
     INT32 = 'int32'
     INT64 = 'int64'
 
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'int32':
+            return IntegerTypeFormatEnum.INT32
+        elif stringValue == 'int64':
+            return IntegerTypeFormatEnum.INT64
+        else:
+            return None
+
 
 class NumberType (Type):
     """ floating point values
@@ -47,6 +58,17 @@ class NumberType (Type):
 class NumberTypeFormatEnum(Enum):
     FLOAT = 'float'
     DOUBLE = 'double'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'float':
+            return NumberTypeFormatEnum.FLOAT
+        elif stringValue == 'double':
+            return NumberTypeFormatEnum.DOUBLE
+        else:
+            return None
 
 
 class BooleanType (Type):

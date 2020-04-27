@@ -62,15 +62,54 @@ class CommandCommandEnum(Enum):
     DELETE = 'DELETE'
     OPTIONS = 'OPTIONS'
 
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'GET':
+            return CommandCommandEnum.GET
+        elif stringValue == 'PUT':
+            return CommandCommandEnum.PUT
+        elif stringValue == 'POST':
+            return CommandCommandEnum.POST
+        elif stringValue == 'DELETE':
+            return CommandCommandEnum.DELETE
+        elif stringValue == 'OPTIONS':
+            return CommandCommandEnum.OPTIONS
+        else:
+            return None
+
 
 class CommandConsumesEnum(Enum):
     APPLICATION_JSON = 'application/json'
     APPLICATION_XML = 'application/xml'
 
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'application/json':
+            return CommandConsumesEnum.APPLICATION_JSON
+        elif stringValue == 'application/xml':
+            return CommandConsumesEnum.APPLICATION_XML
+        else:
+            return None
+
 
 class CommandProducesEnum(Enum):
     APPLICATION_JSON = 'application/json'
     APPLICATION_XML = 'application/xml'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'application/json':
+            return CommandProducesEnum.APPLICATION_JSON
+        elif stringValue == 'application/xml':
+            return CommandProducesEnum.APPLICATION_XML
+        else:
+            return None
 
 
 class Parameter:
@@ -148,5 +187,20 @@ class ParameterInTypeEnum(Enum):
     QUERY = 'query'
     HEADER = 'header'
     COOKIE = 'cookie'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'path':
+            return ParameterInTypeEnum.PATH
+        elif stringValue == 'query':
+            return ParameterInTypeEnum.QUERY
+        elif stringValue == 'header':
+            return ParameterInTypeEnum.HEADER
+        elif stringValue == 'cookie':
+            return ParameterInTypeEnum.COOKIE
+        else:
+            return None
 
 

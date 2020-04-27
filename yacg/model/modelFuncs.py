@@ -54,4 +54,9 @@ def getTypeName(type):
 
 
 def isBaseType(type):
-    return (not isinstance(type, model.EnumType)) and (not isinstance(type, model.ComplexType))
+    if isinstance(type, model.EnumType):
+        return False
+    elif isinstance(type, model.ComplexType):
+        return False
+    else:
+        return True

@@ -88,6 +88,23 @@ class BlackWhiteListEntryTypeEnum(Enum):
     NOTCONTAINEDATTRIB = 'notContainedAttrib'
     DOMAIN = 'domain'
 
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'type':
+            return BlackWhiteListEntryTypeEnum.TYPE
+        elif stringValue == 'tag':
+            return BlackWhiteListEntryTypeEnum.TAG
+        elif stringValue == 'containedAttrib':
+            return BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB
+        elif stringValue == 'notContainedAttrib':
+            return BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB
+        elif stringValue == 'domain':
+            return BlackWhiteListEntryTypeEnum.DOMAIN
+        else:
+            return None
+
 
 class SingleFileTask:
     """ parameter of a code generation task that creates one file

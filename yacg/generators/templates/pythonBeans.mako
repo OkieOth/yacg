@@ -31,6 +31,17 @@ class ${type.name}(Enum):
     ${stringUtils.toUpperCaseName(value)} = '${value}'
         % endfor
 
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        % for value in type.values:
+        elif stringValue == '${value}':
+            return ${type.name}.${stringUtils.toUpperCaseName(value)}
+        % endfor
+        else:
+            return None
+
     % else:
 class ${type.name}${ ' ({})'.format(type.extendsType.name) if type.extendsType is not None else ''}:
         % if type.description != None:
