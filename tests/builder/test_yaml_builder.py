@@ -3,13 +3,17 @@ import os.path
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.model.model import EnumType, Type
 
+import yacg.model.config as config
+
 
 class TestYamlBuilder (unittest.TestCase):
     def testSingleTypeSchema(self):
         modelFile = 'resources/models/yaml/yacg_config_schema.yaml'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromYaml(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(8, len(modelTypes))
 

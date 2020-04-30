@@ -43,8 +43,7 @@ pipenv shell
 pipenv run python3 yacg.py \
     --models resources/models/json/yacg_config_schema.json \
              resources/models/json/yacg_model_schema.json \
-    --output stdout \
-    --templates plantUml
+    --singleFileTemplates plantUml=stdout
 
 # run a test
 pipenv run python3 -m unittest -v tests/model/test_model.py
@@ -62,8 +61,7 @@ cd REPO_PATH
 docker run -v `pwd`/resources:/resources --rm -t okieoth/yacg:0.0.1 \
     --models /resources/models/json/yacg_config_schema.json \
              /resources/models/json/yacg_model_schema.json \
-    --output stdout \
-    --templates plantUml
+    --singleFileTemplates plantUml=stdout
 
 ```
 

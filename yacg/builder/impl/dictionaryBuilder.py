@@ -237,6 +237,7 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
         newProperty.name = propName
         if description is not None:
             newProperty.description = description
+        newProperty.default = propDict.get('default', None)
         newProperty.type = _extractAttribType(type, newProperty, propDict, modelTypes, modelFileContainer)
         tags = propDict.get('__tags', None)
         if tags is not None:

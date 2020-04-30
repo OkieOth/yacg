@@ -17,6 +17,20 @@ class Path:
         #: base type that contains all REST path information
         self.commands = []
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Path()
+
+        obj.pathPattern = dict.get('pathPattern', None)
+
+        arrayCommands = dict.get('commands', [])
+        for elemCommands in arrayCommands:
+            obj.commands.append(
+                Command.dictToObject(elemCommands))
+        return obj
+
 
 class Command:
     """ information to a specific HTTP command
@@ -54,6 +68,47 @@ class Command:
         #: information to a specific HTTP command
         self.responses = []
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Command()
+
+        obj.command = CommandCommandEnum.valueForString(dict.get('command', None))
+
+        arrayTags = dict.get('tags', [])
+        for elemTags in arrayTags:
+            obj.tags.append(elemTags)
+
+        obj.summary = dict.get('summary', None)
+
+        obj.description = dict.get('description', None)
+
+        obj.operationId = dict.get('operationId', None)
+
+        arrayConsumes = dict.get('consumes', [])
+        for elemConsumes in arrayConsumes:
+            obj.consumes.append(
+                CommandConsumesEnum.valueForString(elemConsumes))
+
+        arrayProduces = dict.get('produces', [])
+        for elemProduces in arrayProduces:
+            obj.produces.append(
+                CommandProducesEnum.valueForString(elemProduces))
+
+        arrayParameters = dict.get('parameters', [])
+        for elemParameters in arrayParameters:
+            obj.parameters.append(
+                Parameter.dictToObject(elemParameters))
+
+        obj.requestBody = RequestBody.dictToObject(dict.get('requestBody', None))
+
+        arrayResponses = dict.get('responses', [])
+        for elemResponses in arrayResponses:
+            obj.responses.append(
+                Response.dictToObject(elemResponses))
+        return obj
+
 
 class CommandCommandEnum(Enum):
     GET = 'GET'
@@ -62,15 +117,54 @@ class CommandCommandEnum(Enum):
     DELETE = 'DELETE'
     OPTIONS = 'OPTIONS'
 
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'GET':
+            return CommandCommandEnum.GET
+        elif stringValue == 'PUT':
+            return CommandCommandEnum.PUT
+        elif stringValue == 'POST':
+            return CommandCommandEnum.POST
+        elif stringValue == 'DELETE':
+            return CommandCommandEnum.DELETE
+        elif stringValue == 'OPTIONS':
+            return CommandCommandEnum.OPTIONS
+        else:
+            return None
+
 
 class CommandConsumesEnum(Enum):
     APPLICATION_JSON = 'application/json'
     APPLICATION_XML = 'application/xml'
 
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'application/json':
+            return CommandConsumesEnum.APPLICATION_JSON
+        elif stringValue == 'application/xml':
+            return CommandConsumesEnum.APPLICATION_XML
+        else:
+            return None
+
 
 class CommandProducesEnum(Enum):
     APPLICATION_JSON = 'application/json'
     APPLICATION_XML = 'application/xml'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'application/json':
+            return CommandProducesEnum.APPLICATION_JSON
+        elif stringValue == 'application/xml':
+            return CommandProducesEnum.APPLICATION_XML
+        else:
+            return None
 
 
 class Parameter:
@@ -94,6 +188,23 @@ class Parameter:
         #: definition of a parameter that is used in the request
         self.type = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Parameter()
+
+        obj.inType = ParameterInTypeEnum.valueForString(dict.get('inType', None))
+
+        obj.name = dict.get('name', None)
+
+        obj.description = dict.get('description', None)
+
+        obj.required = dict.get('required', None)
+
+        obj.type = Type.dictToObject(dict.get('type', None))
+        return obj
+
 
 class RequestBody:
     """ definition of a parameter that is used in the request
@@ -109,6 +220,22 @@ class RequestBody:
 
         #: definition of a parameter that is used in the request
         self.content = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = RequestBody()
+
+        obj.description = dict.get('description', None)
+
+        obj.required = dict.get('required', None)
+
+        arrayContent = dict.get('content', [])
+        for elemContent in arrayContent:
+            obj.content.append(
+                RequestBodyContent.dictToObject(elemContent))
+        return obj
 
 
 class Response:
@@ -126,6 +253,19 @@ class Response:
         #: description of a response option for a request
         self.type = None
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Response()
+
+        obj.returnCode = dict.get('returnCode', None)
+
+        obj.description = dict.get('description', None)
+
+        obj.type = Type.dictToObject(dict.get('type', None))
+        return obj
+
 
 class RequestBodyContent:
     def __init__(self):
@@ -133,6 +273,17 @@ class RequestBodyContent:
         self.mimeType = None
 
         self.type = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = RequestBodyContent()
+
+        obj.mimeType = dict.get('mimeType', None)
+
+        obj.type = Type.dictToObject(dict.get('type', None))
+        return obj
 
 
 class Type:
@@ -142,11 +293,33 @@ class Type:
     def __init__(self):
         pass
 
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Type()
+        return obj
+
 
 class ParameterInTypeEnum(Enum):
     PATH = 'path'
     QUERY = 'query'
     HEADER = 'header'
     COOKIE = 'cookie'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'path':
+            return ParameterInTypeEnum.PATH
+        elif stringValue == 'query':
+            return ParameterInTypeEnum.QUERY
+        elif stringValue == 'header':
+            return ParameterInTypeEnum.HEADER
+        elif stringValue == 'cookie':
+            return ParameterInTypeEnum.COOKIE
+        else:
+            return None
 
 

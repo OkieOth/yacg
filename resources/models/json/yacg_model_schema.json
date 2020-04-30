@@ -25,6 +25,18 @@
                         },
                         "default": {
                             "type": "integer"
+                        },
+                        "minimum": {
+                            "type": "integer"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "integer"
+                        },
+                        "maximum": {
+                            "type": "integer"
+                        },
+                        "maximumMaximum": {
+                            "type": "integer"
                         }
                     }
                 }
@@ -46,8 +58,19 @@
                         },
                         "default": {
                             "type": "number"
-                        }
-                    }
+                        },
+                        "minimum": {
+                            "type": "number"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "number"
+                        },
+                        "maximum": {
+                            "type": "number"
+                        },
+                        "maximumMaximum": {
+                            "type": "number"
+                        }                    }
                 }
             ],
             "__tags": ["metaModelType"]
@@ -144,7 +167,24 @@
                 {
                     "properties": {
                         "default": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "minimum": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "maximum": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "maximumMaximum": {
+                            "type": "string",
+                            "format": "date"
                         }
                     }
                 }
@@ -161,7 +201,24 @@
                 {
                     "properties": {
                         "default": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "minimum": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "maximum": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "maximumMaximum": {
+                            "type": "string",
+                            "format": "date-time"
                         }
                     }
                 }
@@ -260,6 +317,10 @@
                 },
                 "description": {
                     "description": "optional description from the model file",
+                    "type": "string"
+                },
+                "default": {
+                    "description": "default value for this attribute as string",
                     "type": "string"
                 }
             }
