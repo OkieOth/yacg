@@ -48,3 +48,24 @@ class TestDictToObject (unittest.TestCase):
         f = open(testOutputFile, "w+")
         f.write(renderResult)
         f.close()
+
+    def testModelSchemaTests(self):
+        modelFile = 'resources/models/json/yacg_model_schema.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        templateFile = 'resources/templates/examples/pythonBeansTests.mako'
+        template = Template(filename=templateFile)
+        templateFileExists = os.path.isfile(modelFile)
+        self.assertTrue('template file exists: ' + templateFile, templateFileExists)
+        templateParameterDict = {}
+        templateParameterDict['modelPackage'] = 'yacg.model.model'
+        renderResult = template.render(modelTypes=modelTypes, templateParameters=templateParameterDict)
+        self.assertIsNotNone(renderResult)
+
+        testOutputFile = "tmp/test_model.py"
+        f = open(testOutputFile, "w+")
+        f.write(renderResult)
+        f.close()
