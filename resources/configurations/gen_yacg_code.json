@@ -75,7 +75,7 @@
         "name": "openapi models types",
         "description": "code gen configuration for openapi model types",
         "models": [ {
-            "schema": "resources/models/json/yacg_openapi_schema.json"
+            "schema": "resources/models/json/yacg_openapi_paths.json"
             }
         ],
         "tasks": [
@@ -83,19 +83,19 @@
                 "name": "create Python types",
                 "singleFileTask": {
                     "template": "pythonBeans",
-                    "destFile": "tmp/openapi.py",
-                    "templateParams": [ {
-                        "name": "modelPackage",
-                        "value": "yacg.model.openapi"
-                        }
-                    ]
+                    "destFile": "tmp/openapi.py"
                 }
             },
             {
                 "name": "create tests for Python types",
                 "singleFileTask": {
                     "template": "pythonBeansTests",
-                    "destFile": "tmp/test_openapi.py"
+                    "destFile": "tmp/test_openapi.py",
+                    "templateParams": [ {
+                        "name": "modelPackage",
+                        "value": "yacg.model.openapi"
+                        }
+                    ]
                 }
             },
             {
