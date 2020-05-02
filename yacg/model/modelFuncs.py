@@ -60,3 +60,37 @@ def isBaseType(type):
         return False
     else:
         return True
+
+
+def getTypesWithTag(types, tags):
+    """function returns all types that have a specific tag
+
+    Keyword arguments:
+    types -- list of model.Type instances
+    tags -- list of strings with tag names
+    """
+
+    typesWithTag = []
+    for type in types:
+        for tag in tags:
+            if hasTag(tag, type):
+                typesWithTag.append(type)
+                break
+    return typesWithTag
+
+
+def getTypesWithName(types, names):
+    """function returns all types that have a specific name
+
+    Keyword arguments:
+    types -- list of model.Type instances
+    names -- list of strings with names
+    """
+
+    typesWithName = []
+    for type in types:
+        for name in names:
+            if type.name == name:
+                typesWithName.append(type)
+                break
+    return typesWithName
