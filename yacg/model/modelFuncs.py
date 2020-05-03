@@ -94,3 +94,17 @@ def getTypesWithName(types, names):
                 typesWithName.append(type)
                 break
     return typesWithName
+
+
+def getNonEnumModelType(types):
+    """function returns all types that are not EnumTypes
+
+    Keyword arguments:
+    types -- list of model.Type instances
+    """
+
+    nonEnumTypes = []
+    for type in types:
+        if not isEnumType(type):
+            nonEnumTypes.append(type)
+    return nonEnumTypes
