@@ -91,7 +91,7 @@ def _getJobConfigurationsFromArgs(args):
             task.name = templateFile
             task.singleFileTask = config.SingleFileTask()
             (task.singleFileTask.template, task.singleFileTask.destFile) = _splitTemplateAndDestination(templateFile)
-            task.singleFileTask.templateParameters = templateParameters
+            task.singleFileTask.templateParams = templateParameters
             job.tasks.append(task)
 
     if args.multiFileTemplates is not None:
