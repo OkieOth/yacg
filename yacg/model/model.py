@@ -32,6 +32,18 @@ class IntegerType (Type):
         #: integer values
         self.default = None
 
+        #: integer values
+        self.minimum = None
+
+        #: integer values
+        self.exclusiveMinimum = None
+
+        #: integer values
+        self.maximum = None
+
+        #: integer values
+        self.maximumMaximum = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -41,6 +53,14 @@ class IntegerType (Type):
         obj.format = IntegerTypeFormatEnum.valueForString(dict.get('format', None))
 
         obj.default = dict.get('default', None)
+
+        obj.minimum = dict.get('minimum', None)
+
+        obj.exclusiveMinimum = dict.get('exclusiveMinimum', None)
+
+        obj.maximum = dict.get('maximum', None)
+
+        obj.maximumMaximum = dict.get('maximumMaximum', None)
         return obj
 
 
@@ -72,6 +92,18 @@ class NumberType (Type):
         #: floating point values
         self.default = None
 
+        #: floating point values
+        self.minimum = None
+
+        #: floating point values
+        self.exclusiveMinimum = None
+
+        #: floating point values
+        self.maximum = None
+
+        #: floating point values
+        self.maximumMaximum = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -81,6 +113,14 @@ class NumberType (Type):
         obj.format = NumberTypeFormatEnum.valueForString(dict.get('format', None))
 
         obj.default = dict.get('default', None)
+
+        obj.minimum = dict.get('minimum', None)
+
+        obj.exclusiveMinimum = dict.get('exclusiveMinimum', None)
+
+        obj.maximum = dict.get('maximum', None)
+
+        obj.maximumMaximum = dict.get('maximumMaximum', None)
         return obj
 
 
@@ -202,6 +242,18 @@ class DateType (Type):
         #: type for date values
         self.default = None
 
+        #: type for date values
+        self.minimum = None
+
+        #: type for date values
+        self.exclusiveMinimum = None
+
+        #: type for date values
+        self.maximum = None
+
+        #: type for date values
+        self.maximumMaximum = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -209,6 +261,14 @@ class DateType (Type):
         obj = DateType()
 
         obj.default = dict.get('default', None)
+
+        obj.minimum = dict.get('minimum', None)
+
+        obj.exclusiveMinimum = dict.get('exclusiveMinimum', None)
+
+        obj.maximum = dict.get('maximum', None)
+
+        obj.maximumMaximum = dict.get('maximumMaximum', None)
         return obj
 
 
@@ -221,6 +281,18 @@ class DateTimeType (Type):
         #: type for timestamp values
         self.default = None
 
+        #: type for timestamp values
+        self.minimum = None
+
+        #: type for timestamp values
+        self.exclusiveMinimum = None
+
+        #: type for timestamp values
+        self.maximum = None
+
+        #: type for timestamp values
+        self.maximumMaximum = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -228,6 +300,14 @@ class DateTimeType (Type):
         obj = DateTimeType()
 
         obj.default = dict.get('default', None)
+
+        obj.minimum = dict.get('minimum', None)
+
+        obj.exclusiveMinimum = dict.get('exclusiveMinimum', None)
+
+        obj.maximum = dict.get('maximum', None)
+
+        obj.maximumMaximum = dict.get('maximumMaximum', None)
         return obj
 
 

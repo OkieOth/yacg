@@ -9,6 +9,10 @@ note top: Dummy base class to implement\nstrong typed references
 class IntegerType {
     IntegerTypeFormatEnum format 
     IntegerType default 
+    IntegerType minimum 
+    IntegerType exclusiveMinimum 
+    IntegerType maximum 
+    IntegerType maximumMaximum 
 }
  
 note top: integer values
@@ -21,6 +25,10 @@ class IntegerTypeFormatEnum {
 class NumberType {
     NumberTypeFormatEnum format 
     NumberType default 
+    NumberType minimum 
+    NumberType exclusiveMinimum 
+    NumberType maximum 
+    NumberType maximumMaximum 
 }
  
 note top: floating point values
@@ -62,14 +70,22 @@ note top: type for enum values -\nfixed value types
 
 EnumType --|> Type
 class DateType {
-    IntegerType default 
+    DateType default 
+    DateType minimum 
+    DateType exclusiveMinimum 
+    DateType maximum 
+    DateType maximumMaximum 
 }
  
 note top: type for date values
 
 DateType --|> Type
 class DateTimeType {
-    IntegerType default 
+    DateTimeType default 
+    DateTimeType minimum 
+    DateTimeType exclusiveMinimum 
+    DateTimeType maximum 
+    DateTimeType maximumMaximum 
 }
  
 note top: type for timestamp values
