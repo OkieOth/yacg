@@ -4,80 +4,10 @@
     import yacg.templateHelper as templateHelper
     import yacg.model.modelFuncs as modelFuncs
     import yacg.util.stringUtils as stringUtils
-    import yacg.generators.helper.pythonFuncs as pythonFuncs
+    import yacg.generators.helper.jsonFuncs as jsonFuncs
 
     templateFile = 'openApiJson.mako'
     templateVersion = '1.0.0'
-
-    def printJsonType(type):
-        if type is None:
-            return '???'
-        elif isinstance(type, model.IntegerType):
-            return '"type": "integer"'
-        elif isinstance(type, model.NumberType):
-            return '"type": "number"'
-        elif isinstance(type, model.BooleanType):
-            return '"type": "boolean"'
-        elif isinstance(type, model.StringType):
-            return '"type": "string"'
-        elif isinstance(type, model.UuidType):
-            return '"type": "string"'
-        elif isinstance(type, model.EnumType):
-            return '"type": "string"'
-        elif isinstance(type, model.DateType):
-            return '"type": "string"'
-        elif isinstance(type, model.DateTimeType):
-            return '"type": "string"'
-        elif isinstance(type, model.ComplexType):
-            return '"$ref": "#/components/schemas/{}"'.format(type.name)
-        else:
-            return '"type": "???"'
-
-    def isFormatRequired(type):
-        if type is None:
-            return False
-        elif isinstance(type, model.IntegerType) and (type.format is not None):
-            return True
-        elif isinstance(type, model.NumberType) and (type.format is not None):
-            return True
-        elif isinstance(type, model.UuidType):
-            return True
-        elif isinstance(type, model.DateType):
-            return True
-        elif isinstance(type, model.DateTimeType):
-            return True
-        else:
-            return False
-
-    def printFormat(type):
-        if type is None:
-            return ''
-        elif isinstance(type, model.IntegerType) and (type.format is not None):
-            return ',"format": "{}"'.format(type.format)
-        elif isinstance(type, model.NumberType) and (type.format is not None):
-            return ',"format": "{}"'.format(type.format)
-        elif isinstance(type, model.UuidType):
-            return ',"format": "uuid"'
-        elif isinstance(type, model.DateType):
-            return ',"format": "date"'
-        elif isinstance(type, model.DateTimeType):
-            return ',"format": "date-time"'
-        else:
-            return ''
-
-    def isMinRequired(type):
-        if type is None:
-            return False
-        elif isinstance(type, model.IntegerType) and (type.format is not None):
-            return True
-        elif isinstance(type, model.NumberType) and (type.format is not None):
-            return True
-        elif isinstance(type, model.DateType):
-            return True
-        elif isinstance(type, model.DateTimeType):
-            return True
-        else:
-            return False
 
     title = templateParameters.get('title',"If you set a template param called 'title', then this text appears here")
     description = templateParameters.get('description','This is a simple template that create an OpenApi file')
@@ -135,16 +65,52 @@
                         % if property.isArray:
                                 "type": "array",
                                 "items": {
-                                    ${printJsonType(property.type)}
-                            % if isFormatRequired(property.type):
-                                    ${printFormat(property.type)}
+                                    ${jsonFuncs.printOpenApiJsonTypeEntry(property.type)}
+                            % if jsonFuncs.isEnumRequired(property.type):
+                                    ,${jsonFuncs.printOpenApiJsonEnumEntry(property.type)}
                             % endif    
+                            % if jsonFuncs.isFormatRequired(property.type):
+                                    ${jsonFuncs.printOpenApiJsonFormatEntry(property.type)}
+                            % endif
+                            % if jsonFuncs.isMinRequired(property.type):
+                                    ,"minimum": "${property.type.minimum}"
+                            % endif
+                            % if jsonFuncs.isExclusiveMinRequired(property.type):
+                                    ,"exclusiveMinimum": "${property.type.exclusiveMinimum}"
+                            % endif
+                            % if jsonFuncs.isMaxRequired(property.type):
+                                    ,"maximum": "${property.type.maximum}"
+                            % endif
+                            % if jsonFuncs.isExclusiveMaxRequired(property.type):
+                                    ,"exclusiveMaximum": "${property.type.exclusiveMaximum}"
+                            % endif
+                            % if jsonFuncs.isDefaultRequired(property.type):
+                                    ,"default": "${property.type.default}"
+                            % endif
                                 }
                         % else:
-                                ${printJsonType(property.type)}
-                            % if isFormatRequired(property.type):
-                                ${printFormat(property.type)}
+                                ${jsonFuncs.printOpenApiJsonTypeEntry(property.type)}
+                            % if jsonFuncs.isEnumRequired(property.type):
+                                ,${jsonFuncs.printOpenApiJsonEnumEntry(property.type)}
                             % endif    
+                            % if jsonFuncs.isFormatRequired(property.type):
+                                ${jsonFuncs.printOpenApiJsonFormatEntry(property.type)}
+                            % endif    
+                            % if jsonFuncs.isMinRequired(property.type):
+                                ,"minimum": "${property.type.minimum}"
+                            % endif
+                            % if jsonFuncs.isExclusiveMinRequired(property.type):
+                                ,"exclusiveMinimum": "${property.type.exclusiveMinimum}"
+                            % endif
+                            % if jsonFuncs.isMaxRequired(property.type):
+                                ,"maximum": "${property.type.maximum}"
+                            % endif
+                            % if jsonFuncs.isExclusiveMaxRequired(property.type):
+                                ,"exclusiveMaximum": "${property.type.exclusiveMaximum}"
+                            % endif
+                            % if jsonFuncs.isDefaultRequired(property.type):
+                                ,"default": "${property.type.default}"
+                            % endif
                         % endif    
                             }${',' if property != type.properties[-1] else ''}
                     % endfor
@@ -163,16 +129,52 @@
                         % if property.isArray:
                         "type": "array",
                         "items": {
-                            ${printJsonType(property.type)}
-                            % if isFormatRequired(property.type):
-                            ${printFormat(property.type)}
+                            ${jsonFuncs.printOpenApiJsonTypeEntry(property.type)}
+                            % if jsonFuncs.isEnumRequired(property.type):
+                            ,${jsonFuncs.printOpenApiJsonEnumEntry(property.type)}
                             % endif    
+                            % if jsonFuncs.isFormatRequired(property.type):
+                            ${jsonFuncs.printOpenApiJsonFormatEntry(property.type)}
+                            % endif    
+                            % if jsonFuncs.isMinRequired(property.type):
+                            ,"minimum": "${property.type.minimum}"
+                            % endif
+                            % if jsonFuncs.isExclusiveMinRequired(property.type):
+                            ,"exclusiveMinimum": "${property.type.exclusiveMinimum}"
+                            % endif
+                            % if jsonFuncs.isMaxRequired(property.type):
+                            ,"maximum": "${property.type.maximum}"
+                            % endif
+                            % if jsonFuncs.isExclusiveMaxRequired(property.type):
+                            ,"exclusiveMaximum": "${property.type.exclusiveMaximum}"
+                            % endif
+                            % if jsonFuncs.isDefaultRequired(property.type):
+                            ,"default": "${property.type.default}"
+                            % endif
                         }
                         % else:
-                        ${printJsonType(property.type)}
-                            % if isFormatRequired(property.type):
-                        ${printFormat(property.type)}
+                        ${jsonFuncs.printOpenApiJsonTypeEntry(property.type)}
+                            % if jsonFuncs.isEnumRequired(property.type):
+                        ,${jsonFuncs.printOpenApiJsonEnumEntry(property.type)}
                             % endif    
+                            % if jsonFuncs.isFormatRequired(property.type):
+                        ${jsonFuncs.printOpenApiJsonFormatEntry(property.type)}
+                            % endif    
+                            % if jsonFuncs.isMinRequired(property.type):
+                        ,"minimum": "${property.type.minimum}"
+                            % endif
+                            % if jsonFuncs.isExclusiveMinRequired(property.type):
+                        ,"exclusiveMinimum": "${property.type.exclusiveMinimum}"
+                            % endif
+                            % if jsonFuncs.isMaxRequired(property.type):
+                        ,"maximum": "${property.type.maximum}"
+                            % endif
+                            % if jsonFuncs.isExclusiveMaxRequired(property.type):
+                        ,"exclusiveMaximum": "${property.type.exclusiveMaximum}"
+                            % endif
+                            % if jsonFuncs.isDefaultRequired(property.type):
+                        ,"default": "${property.type.default}"
+                            % endif
                         % endif    
                     }${',' if property != type.properties[-1] else ''}
                     % endfor

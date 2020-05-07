@@ -42,7 +42,7 @@ class IntegerType (Type):
         self.maximum = None
 
         #: integer values
-        self.maximumMaximum = None
+        self.exclusiveMaximum = None
 
     @classmethod
     def dictToObject(cls, dict):
@@ -60,7 +60,7 @@ class IntegerType (Type):
 
         obj.maximum = dict.get('maximum', None)
 
-        obj.maximumMaximum = dict.get('maximumMaximum', None)
+        obj.exclusiveMaximum = dict.get('exclusiveMaximum', None)
         return obj
 
 
@@ -102,7 +102,7 @@ class NumberType (Type):
         self.maximum = None
 
         #: floating point values
-        self.maximumMaximum = None
+        self.exclusiveMaximum = None
 
     @classmethod
     def dictToObject(cls, dict):
@@ -120,7 +120,7 @@ class NumberType (Type):
 
         obj.maximum = dict.get('maximum', None)
 
-        obj.maximumMaximum = dict.get('maximumMaximum', None)
+        obj.exclusiveMaximum = dict.get('exclusiveMaximum', None)
         return obj
 
 
@@ -252,7 +252,7 @@ class DateType (Type):
         self.maximum = None
 
         #: type for date values
-        self.maximumMaximum = None
+        self.exclusiveMaximum = None
 
     @classmethod
     def dictToObject(cls, dict):
@@ -268,7 +268,7 @@ class DateType (Type):
 
         obj.maximum = dict.get('maximum', None)
 
-        obj.maximumMaximum = dict.get('maximumMaximum', None)
+        obj.exclusiveMaximum = dict.get('exclusiveMaximum', None)
         return obj
 
 
@@ -291,7 +291,7 @@ class DateTimeType (Type):
         self.maximum = None
 
         #: type for timestamp values
-        self.maximumMaximum = None
+        self.exclusiveMaximum = None
 
     @classmethod
     def dictToObject(cls, dict):
@@ -307,7 +307,7 @@ class DateTimeType (Type):
 
         obj.maximum = dict.get('maximum', None)
 
-        obj.maximumMaximum = dict.get('maximumMaximum', None)
+        obj.exclusiveMaximum = dict.get('exclusiveMaximum', None)
         return obj
 
 

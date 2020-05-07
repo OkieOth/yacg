@@ -35,7 +35,7 @@
                         "maximum": {
                             "type": "integer"
                         },
-                        "maximumMaximum": {
+                        "exclusiveMaximum": {
                             "type": "integer"
                         }
                     }
@@ -68,7 +68,7 @@
                         "maximum": {
                             "type": "number"
                         },
-                        "maximumMaximum": {
+                        "exclusiveMaximum": {
                             "type": "number"
                         }                    }
                 }
@@ -182,7 +182,7 @@
                             "type": "string",
                             "format": "date"
                         },
-                        "maximumMaximum": {
+                        "exclusiveMaximum": {
                             "type": "string",
                             "format": "date"
                         }
@@ -216,7 +216,7 @@
                             "type": "string",
                             "format": "date-time"
                         },
-                        "maximumMaximum": {
+                        "exclusiveMaximum": {
                             "type": "string",
                             "format": "date-time"
                         }

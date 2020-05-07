@@ -12,7 +12,7 @@ class IntegerType {
     IntegerType minimum 
     IntegerType exclusiveMinimum 
     IntegerType maximum 
-    IntegerType maximumMaximum 
+    IntegerType exclusiveMaximum 
 }
  
 note top: integer values
@@ -28,7 +28,7 @@ class NumberType {
     NumberType minimum 
     NumberType exclusiveMinimum 
     NumberType maximum 
-    NumberType maximumMaximum 
+    NumberType exclusiveMaximum 
 }
  
 note top: floating point values
@@ -74,7 +74,7 @@ class DateType {
     DateType minimum 
     DateType exclusiveMinimum 
     DateType maximum 
-    DateType maximumMaximum 
+    DateType exclusiveMaximum 
 }
  
 note top: type for date values
@@ -85,7 +85,7 @@ class DateTimeType {
     DateTimeType minimum 
     DateTimeType exclusiveMinimum 
     DateTimeType maximum 
-    DateTimeType maximumMaximum 
+    DateTimeType exclusiveMaximum 
 }
  
 note top: type for timestamp values
