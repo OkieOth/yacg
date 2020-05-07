@@ -1,3 +1,18 @@
+def toLowerCamelCase(text):
+    """converts a given Text to a lower camel case text
+    this is a example -> thisIsAExample"""
+
+    splittedText = text.split()
+    lowerCamelCase = None
+    for t in splittedText:
+        if lowerCamelCase is None:
+            lowerCamelCase = t[0:1].lower()
+            lowerCamelCase += t[1:]
+        else:
+            lowerCamelCase += t[0:1].capitalize()
+            lowerCamelCase += t[1:]
+    return lowerCamelCase
+
 
 def toUpperCamelCase(text):
     """converts a given Text to a upper camel case text

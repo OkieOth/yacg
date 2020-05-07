@@ -40,6 +40,36 @@
     ],
     "paths": {
         % for type in restTypes:
+        "/${stringUtils.toLowerCamelCase(type.name)}": {
+            "get": {
+                "tags": [
+                    "${type.name}"
+                ],
+                "description": "Returns a list of ${type.name} entries",
+                "operationId": "get${type.name}",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                        "application/xml": {
+                            "schema": {
+                            "$ref": "#/components/schemas/${type.name}"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                            "$ref": "#/components/schemas/${type.name}"
+                            }
+                        }
+                        }
+                    },
+                    "500": {
+                        "description": "in case of errors",
+                        "content": {}
+                    }
+                },
+            }
+        }${',' if type != restTypes[-1] else ''}
         % endfor
     },
     "components": {
@@ -52,7 +82,7 @@
                 "type": "object"
             % if type.extendsType is not None:
                 ,"allOf": [{
-                        "$ref": "#/components/schemas/${type.extendsType.name}}"
+                        "$ref": "#/components/schemas/${type.extendsType.name}"
                     }
                 % if len(type.properties) > 0:
                     ,{
