@@ -50,6 +50,9 @@ class ${type.name}${ ' ({})'.format(type.extendsType.name) if type.extendsType i
 
         % endif
     def __init__(self):
+        % if type.extendsType is not None:
+        super(${type.extendsType.name}, self).__init__()
+        % endif
         % if len(type.properties) == 0:
         pass
         % else:

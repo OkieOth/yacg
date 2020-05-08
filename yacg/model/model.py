@@ -25,6 +25,7 @@ class IntegerType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: integer values
         self.format = None
@@ -85,6 +86,7 @@ class NumberType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: floating point values
         self.format = None
@@ -145,6 +147,7 @@ class BooleanType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: boolean values
         self.default = None
@@ -164,6 +167,7 @@ class StringType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: integer values
         self.default = None
@@ -183,6 +187,7 @@ class UuidType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: UUID values
         self.default = None
@@ -202,6 +207,7 @@ class EnumType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: type for enum values - fixed value types
         self.name = None
@@ -238,6 +244,7 @@ class DateType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: type for date values
         self.default = None
@@ -277,6 +284,7 @@ class DateTimeType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: type for timestamp values
         self.default = None
@@ -316,6 +324,7 @@ class ComplexType (Type):
     """
 
     def __init__(self):
+        super(Type, self).__init__()
 
         #: complex type description
         self.name = None
