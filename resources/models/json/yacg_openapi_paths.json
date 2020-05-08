@@ -5,21 +5,28 @@
     "version": "0.0.1",
     "__domain": "yacgOpenApi",
     "definitions": {
-        "Path": {
+        "PathType": {
             "type": "object",
             "description": "base type that contains all REST path information",
-            "properties": {
-                "pathPattern": {
-                    "description": "REST path with parameter pattern if existing",
-                    "type": "string"
+            "allOf": [
+                { 
+                  "$ref": "yacg_model_schema.json#/definitions/ComplexType" 
                 },
-                "commands": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Command"
+                { 
+                    "properties": {
+                        "pathPattern": {
+                            "description": "REST path with parameter pattern if existing",
+                            "type": "string"
+                        },
+                        "commands": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Command"
+                            }
+                        }
                     }
                 }
-            }
+            ]
         },
         "Command": {
             "type": "object",
