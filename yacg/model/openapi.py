@@ -4,8 +4,10 @@
 
 from enum import Enum
 
+import yacg.model.model as model
 
-class Path:
+
+class Path(model.ComplexType):
     """ base type that contains all REST path information
     """
 
