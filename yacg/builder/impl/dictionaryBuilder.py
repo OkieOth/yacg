@@ -193,8 +193,6 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
             if (propertiesEntry is not None):
                 _extractAttributes(newType, propertiesEntry, modelTypes, modelFileContainer)
             elif refEntry is not None:
-                # TODO extract reference to the base class
-                # TODO load external file and set
                 newType.extendsType = _extractReferenceType(newType, refEntry, modelTypes, modelFileContainer)
     if (hasattr(newType, 'properties')) and (len(newType.properties) == 0):
         _extractAttributes(newType, properties, modelTypes, modelFileContainer)
@@ -346,13 +344,28 @@ def _extractFileNameFromRefEntry(refEntry, fileExt):
     return refEntry[:endPosOfFileName]
 
 
-def _extractDesiredTypeNameFromRefEntry(refEntry, fileName):
+def _extractDesiredTypeNameFromRefEntry(refEntry, fileName, fullPathToFile):
     fileNameLen = len(fileName)
     if len(refEntry) == fileNameLen:
         # e.g.: "$ref": "../aFile.json"
-        return None
-    lastSlash = refEntry.rfind('/', fileNameLen)
-    return refEntry[lastSlash + 1:]
+        # in cases where the referenced type is the top-level type of a schema
+        parsedSchema = None
+        if fileName.find('.json') != -1:
+            # load a new model from a json file
+            parsedSchema = getParsedSchemaFromJson(fullPathToFile)
+        elif (fileName.find('.yaml') != -1) or (fileName.find('.yml') != -1):
+            # load new model from a yaml file
+            parsedSchema = getParsedSchemaFromYaml(fullPathToFile)
+        else:
+            return None
+        titleStr = parsedSchema.get('title', None)
+        if titleStr is None:
+            return None
+        else:
+            return toUpperCamelCase(titleStr) 
+    else:
+        lastSlash = refEntry.rfind('/', fileNameLen)
+        return refEntry[lastSlash + 1:]
 
 
 def _extractExternalReferenceTypeFromJson(refEntry, modelTypes, originModelFileContainer):
@@ -366,11 +379,8 @@ def _extractExternalReferenceTypeFromJson(refEntry, modelTypes, originModelFileC
     originModelFileContainer -- file name and path to the model to load
     """
 
-    fileName = _extractFileNameFromRefEntry(refEntry, '.json')
-    desiredTypeName = _extractDesiredTypeNameFromRefEntry(refEntry, fileName)
-    alreadyLoadedType = _getTypeIfAlreadyLoaded(desiredTypeName, fileName, modelTypes)
-    if alreadyLoadedType is not None:
-        return alreadyLoadedType
+    refEntryFileName = _extractFileNameFromRefEntry(refEntry, '.json')
+    fileName = refEntryFileName
     if not os.path.isfile(fileName):
         # maybe the path is relative to the current type file
         originPathLength = originModelFileContainer.fileName.rfind('/')
@@ -382,6 +392,11 @@ def _extractExternalReferenceTypeFromJson(refEntry, modelTypes, originModelFileC
                 % (originModelFileContainer.fileName, refEntry, fileName))
             return None
         fileName = os.path.abspath(fileName)
+
+    desiredTypeName = _extractDesiredTypeNameFromRefEntry(refEntry, refEntryFileName, fileName)
+    alreadyLoadedType = _getTypeIfAlreadyLoaded(desiredTypeName, fileName, modelTypes)
+    if alreadyLoadedType is not None:
+        return alreadyLoadedType
     alreadyLoadedType = _getAlreadyLoadedType(desiredTypeName, fileName, modelTypes)
     if alreadyLoadedType is not None:
         return alreadyLoadedType
@@ -404,10 +419,9 @@ def _extractExternalReferenceTypeFromYaml(refEntry, modelTypes, originModelFileC
 
     fileExt = '.yaml' if refEntry.find('.yaml') != -1 else '.yml'
     fileName = _extractFileNameFromRefEntry(refEntry, fileExt)
-    desiredTypeName = _extractDesiredTypeNameFromRefEntry(refEntry, fileName)
-    alreadyLoadedType = _getTypeIfAlreadyLoaded(desiredTypeName, fileName, modelTypes)
-    if alreadyLoadedType is not None:
-        return alreadyLoadedType
+
+    refEntryFileName = _extractFileNameFromRefEntry(refEntry, '.json')
+    fileName = refEntryFileName
     if not os.path.isfile(fileName):
         # maybe the path is relative to the current type file
         originPathLength = originModelFileContainer.fileName.rfind('/')
@@ -418,6 +432,13 @@ def _extractExternalReferenceTypeFromYaml(refEntry, modelTypes, originModelFileC
                 "can't find external model file: modelFile=%s, refStr=%s, desiredFile=%s"
                 % (originModelFileContainer.fileName, refEntry, fileName))
             return None
+        fileName = os.path.abspath(fileName)
+
+    desiredTypeName = _extractDesiredTypeNameFromRefEntry(refEntry, refEntryFileName, fileName)
+
+    alreadyLoadedType = _getTypeIfAlreadyLoaded(desiredTypeName, fileName, modelTypes)
+    if alreadyLoadedType is not None:
+        return alreadyLoadedType
     # to handle circular dependencies
     alreadyLoadedType = _getAlreadyLoadedType(desiredTypeName, fileName, modelTypes)
     if alreadyLoadedType is not None:
