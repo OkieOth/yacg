@@ -78,6 +78,48 @@ def _splitTemplateAndDestination(templateArg):
         return (keyValueArray[0], 'stdout')
 
 
+def __getSingleFileTemplates(args, job, templateParameters, blackList, whiteList):
+    if args.singleFileTemplates is not None:
+        for templateFile in args.singleFileTemplates:
+            task = config.Task()
+            task.name = templateFile
+            task.singleFileTask = config.SingleFileTask()
+            (task.singleFileTask.template, task.singleFileTask.destFile) = _splitTemplateAndDestination(templateFile)
+            task.singleFileTask.templateParams = templateParameters
+            task.blackListed = blackList
+            task.whiteListed = whiteList
+            job.tasks.append(task)
+
+
+def __getMultiFileTemplates(args, job, templateParameters, blackList, whiteList):
+    if args.multiFileTemplates is not None:
+        for templateFile in args.multiFileTemplates:
+            task = config.Task()
+            task.name = templateFile
+            task.multiFileTask = config.MultiFileTask()
+            (task.multiFileTask.template, task.multiFileTask.destDir) = _splitTemplateAndDestination(templateFile)
+            task.multiFileTask.templateParameters = templateParameters
+            task.blackListed = blackList
+            task.whiteListed = whiteList
+            job.tasks.append(task)
+
+
+def __blackWhiteListEntries2Objects(argsList):
+    entryObjList = []
+    if argsList is None:
+        return []
+    for entry in argsList:
+        entryObj = config.BlackWhiteListEntry()
+        keyValueArray = entry.split('=')
+        entryObj.name = keyValueArray[0]
+        if (len(keyValueArray) == 2):
+            entryObj.type = config.BlackWhiteListEntryTypeEnum.valueForString(keyValueArray[1])
+        else:
+            entryObj.type = config.BlackWhiteListEntryTypeEnum.TYPE
+        entryObjList.append(entryObj)
+    return entryObjList
+
+
 def _getJobConfigurationsFromArgs(args):
     job = config.Job()
     job.name = 'default'
@@ -86,24 +128,10 @@ def _getJobConfigurationsFromArgs(args):
         model.schema = modelFile
         job.models.append(model)
     templateParameters = _getTemplateParameters(args)
-
-    if args.singleFileTemplates is not None:
-        for templateFile in args.singleFileTemplates:
-            task = config.Task()
-            task.name = templateFile
-            task.singleFileTask = config.SingleFileTask()
-            (task.singleFileTask.template, task.singleFileTask.destFile) = _splitTemplateAndDestination(templateFile)
-            task.singleFileTask.templateParams = templateParameters
-            job.tasks.append(task)
-
-    if args.multiFileTemplates is not None:
-        for templateFile in args.multiFileTemplates:
-            task = config.Task()
-            task.name = templateFile
-            task.multiFileTask = config.MultiFileTask()
-            (task.multiFileTask.template, task.multiFileTask.destDir) = _splitTemplateAndDestination(templateFile)
-            task.multiFileTask.templateParameters = templateParameters
-            job.tasks.append(task)
+    blackList = __blackWhiteListEntries2Objects(args.blackListed)
+    whiteList = __blackWhiteListEntries2Objects(args.whiteListed)
+    __getSingleFileTemplates(args, job, templateParameters, blackList, whiteList)
+    __getMultiFileTemplates(args, job, templateParameters, blackList, whiteList)
     return [job]
 
 

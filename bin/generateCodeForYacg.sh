@@ -37,7 +37,11 @@ if ! pipenv run python3 yacg.py --models \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/openapi.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_openapi.py \
                 plantUml=${scriptPos}/../docs/puml/yacg_openapi.puml \
+    --blackListed yacgCore=domain \
     --templateParameters modelPackage=yacg.model.openapi \
+                         baseModelDomain=yacgCore \
+                         baseModelPackage=yacg.model.model \
+                         baseModelPackageShort=model \
                          title="yacg openapi model"; then
     echo "    ERROR while create openapi model classes"
     exit 1

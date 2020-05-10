@@ -15,12 +15,30 @@
                 return True
         return False
 
+    def printExtendsType(type):
+        if baseModelDomain is None:
+            return type.extendsType.name            
+        elif type.extendsType.domain != baseModelDomain: 
+            return type.extendsType.name
+        else:
+            ret = baseModelPackageShort + '.' + type.extendsType.name
+            return '{}.{}'.format(baseModelPackageShort, type.extendsType.name)
+
+    baseModelDomain = templateParameters.get('baseModelDomain',None)
+    baseModelPackage = templateParameters.get('baseModelPackage',None)
+    baseModelPackageShort = templateParameters.get('baseModelPackageShort','<<"baseModelPackageShort" template param is missing>>')
+
+
 %># Attention, this file is generated. Manual changes get lost with the next
 # run of the code generation.
 # created by yacg (template: ${templateFile} v${templateVersion})
 
 % if hasEnumTypes(modelTypes):
 from enum import Enum
+
+% endif
+% if baseModelPackage is not None:
+import ${baseModelPackage} as ${baseModelPackageShort}
 
 % endif
 
@@ -43,7 +61,7 @@ class ${type.name}(Enum):
             return None
 
     % else:
-class ${type.name}${ ' ({})'.format(type.extendsType.name) if type.extendsType is not None else ''}:
+class ${type.name}${ ' ({})'.format(printExtendsType(type)) if type.extendsType is not None else ''}:
         % if type.description != None:
     """${templateHelper.addLineBreakToDescription(type.description,4)}
     """
