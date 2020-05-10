@@ -4,6 +4,7 @@ from mako.template import Template
 from yacg.builder.jsonBuilder import getModelFromJson
 
 import yacg.model.config as config
+import yacg.generators.helper.generatorHelperFuncs as generatorHelperFuncs
 
 
 class TestDictToObject (unittest.TestCase):
@@ -62,18 +63,23 @@ class TestDictToObject (unittest.TestCase):
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
         templateParameterDict = {}
         templateParameterDict['modelPackage'] = 'yacg.model.model'
+
+        templateParameterDict['baseModelDomain'] = 'yacgCore'
+        templateParameterDict['baseModelPackage'] = 'yacg.model.model'
+        templateParameterDict['baseModelPackageShort'] = 'model'
+
         blackListList = []
-        # all types from the main model should be igrnored ... 
+        # all types from the main model should be igrnored ...
         # blacklisted by domain example
         entryTag = config.BlackWhiteListEntry()
         entryTag.name = 'yacgCore'
         entryTag.type = config.BlackWhiteListEntryTypeEnum.DOMAIN
         blackListList.append(entryTag)
+        trimmedTypes = generatorHelperFuncs.trimModelTypes(modelTypes, blackListList, None)
 
         renderResult = template.render(
-            modelTypes=modelTypes,
-            templateParameters=templateParameterDict,
-            blackListed=blackListList)
+            modelTypes=trimmedTypes,
+            templateParameters=templateParameterDict)
         self.assertIsNotNone(renderResult)
 
         testOutputFile = "tmp/openapi.py"
@@ -88,13 +94,16 @@ class TestDictToObject (unittest.TestCase):
         model = config.Model()
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
+
         templateFile = 'resources/templates/examples/pythonBeansTests.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
         templateParameterDict = {}
         templateParameterDict['modelPackage'] = 'yacg.model.model'
-        renderResult = template.render(modelTypes=modelTypes, templateParameters=templateParameterDict)
+        renderResult = template.render(
+            modelTypes=modelTypes,
+            templateParameters=templateParameterDict)
         self.assertIsNotNone(renderResult)
 
         testOutputFile = "tmp/test_model.py"

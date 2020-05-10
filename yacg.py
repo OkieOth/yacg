@@ -28,6 +28,7 @@ parser.add_argument('--multiFileTemplates', nargs='+', help='templates to proces
 parser.add_argument_group('additional')
 parser.add_argument('--templateParameters', nargs='+', help='additional parameters passed to the templates')
 parser.add_argument('--blackListed', nargs='+', help='types that should not be handled in the template')
+parser.add_argument('--whiteListed', nargs='+', help='types that should be handled in the template')
 
 
 def getFileExt(fileName):

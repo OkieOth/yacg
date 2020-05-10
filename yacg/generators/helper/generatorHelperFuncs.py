@@ -3,9 +3,9 @@ import yacg.model.modelFuncs as modelFuncs
 
 
 def trimModelTypes(modelTypes, blackList, whiteList):
-    if (blackList is not None) and (len(blackList)>1):
+    if (blackList is not None) and (len(blackList) > 0):
         return _trimModelTypesWithBlackList(modelTypes, blackList)
-    elif (whiteList is not None) and (len(whiteList)>1):
+    elif (whiteList is not None) and (len(whiteList) > 0):
         return _trimModelTypesWithWhiteList(modelTypes, whiteList)
     else:
         return modelTypes
@@ -18,19 +18,19 @@ def _trimModelTypesWithBlackList(modelTypes, blackList):
         if blackListedText is None:
             continue
         if blackListEntry.type is None:
-            _skipTypeIfTypeNameMatch(modelTypes, trimModelTypes, blackListedText)
+            _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.DOMAIN:
-            _skipTypeIfDomainNameMatch(modelTypes, trimModelTypes, blackListedText)
+            _skipTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB:
-            _addTypeIfAttribNameIsContained(modelTypes, trimModelTypes, blackListedText)
+            _addTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB:
-            _skipTypeIfAttribNameIsContained(modelTypes, trimModelTypes, blackListedText)
+            _skipTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.TAG:
-            _skipTypeIfTagNameMatch(modelTypes, trimModelTypes, blackListedText)
+            _skipTypeIfTagNameMatch(modelTypes, trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.TYPE:
-            _skipTypeIfTypeNameMatch(modelTypes, trimModelTypes, blackListedText)
+            _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, blackListedText)
         else:
-            _skipTypeIfTypeNameMatch(modelTypes, trimModelTypes, blackListedText)
+            _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, blackListedText)
     return trimmedModelTypes
 
 
@@ -41,19 +41,19 @@ def _trimModelTypesWithWhiteList(modelTypes, whiteList):
         if whiteListedText is None:
             continue
         if whiteListEntry.type is None:
-            _addTypeIfTypeNameMatch(modelTypes, trimModelTypes, whiteListedText)
+            _addTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, whiteListedText)
         elif whiteListEntry.type is config.BlackWhiteListEntryTypeEnum.DOMAIN:
-            _addTypeIfDomainNameMatch(modelTypes, trimModelTypes, whiteListedText)
+            _addTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, whiteListedText)
         elif whiteListEntry.type is config.BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB:
-            _skipTypeIfAttribNameIsContained(modelTypes, trimModelTypes, whiteListedText)
+            _skipTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, whiteListedText)
         elif whiteListEntry.type is config.BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB:
-            _addTypeIfAttribNameIsContained(modelTypes, trimModelTypes, whiteListedText)
+            _addTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, whiteListedText)
         elif whiteListEntry.type is config.BlackWhiteListEntryTypeEnum.TAG:
-            _addTypeIfTagNameMatch(modelTypes, trimModelTypes, whiteListedText)
+            _addTypeIfTagNameMatch(modelTypes, trimmedModelTypes, whiteListedText)
         elif whiteListEntry.type is config.BlackWhiteListEntryTypeEnum.TYPE:
-            _addTypeIfTypeNameMatch(modelTypes, trimModelTypes, whiteListedText)
+            _addTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, whiteListedText)
         else:
-            _skipTypeIfTypeNameMatch(modelTypes, trimModelTypes, whiteListedText)
+            _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, whiteListedText)
     return trimmedModelTypes
 
 
@@ -61,49 +61,49 @@ def _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if (type.name is not None) and (type.name == textToTest):
             continue
-        trimModelTypes.append(type)
+        trimmedModelTypes.append(type)
 
 
 def _addTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if (type.name is not None) and (type.name == textToTest):
-            trimModelTypes.append(type)
+            trimmedModelTypes.append(type)
 
 
-def _skipTypeIfDomainNameMatch(modelTypes, trimModelTypes, textToTest):
+def _skipTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if (hasattr(type, 'domain')) and (textToTest == type.domain):
             continue
-        trimModelTypes.append(type)
+        trimmedModelTypes.append(type)
 
 
-def _addTypeIfDomainNameMatch(modelTypes, trimModelTypes, textToTest):
+def _addTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if (hasattr(type, 'domain')) and (textToTest == type.domain):
-            trimModelTypes.append(type)
+            trimmedModelTypes.append(type)
 
 
-def _addTypeIfAttribNameIsContained(modelTypes, trimModelTypes, textToTest):
+def _addTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if modelFuncs.hasProperty(textToTest, type):
-            trimModelTypes.append(type)
+            trimmedModelTypes.append(type)
 
 
-def _skipTypeIfAttribNameIsContained(modelTypes, trimModelTypes, textToTest):
+def _skipTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if modelFuncs.hasProperty(textToTest, type):
             continue
-        trimModelTypes.append(type)
+        trimmedModelTypes.append(type)
 
 
-def _skipTypeIfTagNameMatch(modelTypes, trimModelTypes, textToTest):
+def _skipTypeIfTagNameMatch(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if modelFuncs.hasTag(textToTest, type):
             continue
-        trimModelTypes.append(type)
+        trimmedModelTypes.append(type)
 
 
-def _addTypeIfTagNameMatch(modelTypes, trimModelTypes, textToTest):
+def _addTypeIfTagNameMatch(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if modelFuncs.hasTag(textToTest, type):
-            trimModelTypes.append(type)
+            trimmedModelTypes.append(type)
