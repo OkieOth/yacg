@@ -1,13 +1,14 @@
 
 @startuml
 
-class Path {
+class PathType {
     StringType pathPattern 
     Command[] commands 
 }
  
 note top: base type that contains all\nREST path information
 
+PathType --|> ComplexType
 class Command {
     CommandCommandEnum command 
     StringType[] tags 
@@ -67,18 +68,13 @@ class RequestBodyContent {
 }
  
 
-class Type {
-}
- 
-note top: Dummy base class to implement\nstrong typed references
-
 class ParameterInTypeEnum {
 }
  
 
 
     
-Path "0" *-- "n" Command        
+PathType "0" *-- "n" Command        
             
     
 Command  *--  CommandCommandEnum        
@@ -110,7 +106,6 @@ Response  *--  Type
     
 RequestBodyContent  *--  Type        
             
-    
     
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

@@ -4,12 +4,15 @@
 
 from enum import Enum
 
+import yacg.model.model as model
 
-class Path:
+
+class PathType (model.ComplexType):
     """ base type that contains all REST path information
     """
 
     def __init__(self):
+        super(model.ComplexType, self).__init__()
 
         #: base type that contains all REST path information
         self.pathPattern = None
@@ -21,7 +24,7 @@ class Path:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Path()
+        obj = PathType()
 
         obj.pathPattern = dict.get('pathPattern', None)
 
@@ -283,21 +286,6 @@ class RequestBodyContent:
         obj.mimeType = dict.get('mimeType', None)
 
         obj.type = Type.dictToObject(dict.get('type', None))
-        return obj
-
-
-class Type:
-    """ Dummy base class to implement strong typed references
-    """
-
-    def __init__(self):
-        pass
-
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = Type()
         return obj
 
 
