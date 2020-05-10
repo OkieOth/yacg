@@ -27,6 +27,7 @@ parser.add_argument('--singleFileTemplates', nargs='+', help='templates to proce
 parser.add_argument('--multiFileTemplates', nargs='+', help='templates to process that creates one file per type')
 parser.add_argument_group('additional')
 parser.add_argument('--templateParameters', nargs='+', help='additional parameters passed to the templates')
+parser.add_argument('--blackListed', nargs='+', help='types that should not be handled in the template')
 
 
 def getFileExt(fileName):
@@ -211,7 +212,9 @@ def main():
                     loadedTypes,
                     task.singleFileTask.template,
                     task.singleFileTask.destFile,
-                    task.singleFileTask.templateParams)
+                    task.singleFileTask.templateParams,
+                    task.blackListed,
+                    task.whiteListed)
                 # TODO
             elif task.multiFileTask is not None:
                 pass

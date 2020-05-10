@@ -49,6 +49,38 @@ class TestDictToObject (unittest.TestCase):
         f.write(renderResult)
         f.close()
 
+    def testOpenApiSchema(self):
+        modelFile = 'resources/models/json/yacg_openapi_paths.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        templateFile = 'resources/templates/examples/pythonBeans.mako'
+        template = Template(filename=templateFile)
+        templateFileExists = os.path.isfile(modelFile)
+        self.assertTrue('template file exists: ' + templateFile, templateFileExists)
+        templateParameterDict = {}
+        templateParameterDict['modelPackage'] = 'yacg.model.model'
+        blackListList = []
+        # all types from the main model should be igrnored ... 
+        # blacklisted by domain example
+        entryTag = config.BlackWhiteListEntry()
+        entryTag.name = 'yacgCore'
+        entryTag.type = config.BlackWhiteListEntryTypeEnum.DOMAIN
+        blackListList.append(entryTag)
+
+        renderResult = template.render(
+            modelTypes=modelTypes,
+            templateParameters=templateParameterDict,
+            blackListed=blackListList)
+        self.assertIsNotNone(renderResult)
+
+        testOutputFile = "tmp/openapi.py"
+        f = open(testOutputFile, "w+")
+        f.write(renderResult)
+        f.close()
+
     def testModelSchemaTests(self):
         modelFile = 'resources/models/json/yacg_model_schema.json'
         modelFileExists = os.path.isfile(modelFile)

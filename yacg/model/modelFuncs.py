@@ -20,6 +20,23 @@ def hasTag(tagName, typeOrPropertyObj):
     return False
 
 
+def hasProperty(propertyName, typeObj):
+    """check up if the as parameter given type has a property with the
+    given name
+
+    Keyword arguments:
+    propertyName -- name of the property to look for
+    typeObj -- type object to check up
+    """
+
+    if not hasattr(typeObj, 'properties'):
+        return False
+    for property in typeObj.properties:
+        if property.name == propertyName:
+            return True
+    return False
+
+
 def getPropertiesThatHasTag(tagName, typeObj):
     """check up if the as parameter given type has attributes that
     contain tag with the given name
