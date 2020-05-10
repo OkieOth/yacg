@@ -69,7 +69,7 @@ class ${type.name}${ ' ({})'.format(printExtendsType(type)) if type.extendsType 
         % endif
     def __init__(self):
         % if type.extendsType is not None:
-        super(${type.extendsType.name}, self).__init__()
+        super(${printExtendsType(type)}, self).__init__()
         % endif
         % if len(type.properties) == 0:
         pass
