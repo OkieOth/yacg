@@ -7,12 +7,12 @@ from enum import Enum
 import yacg.model.model as model
 
 
-class PathType (model.ComplexType):
+class PathType (model.Type):
     """ base type that contains all REST path information
     """
 
     def __init__(self):
-        super(model.ComplexType, self).__init__()
+        super(model.Type, self).__init__()
 
         #: base type that contains all REST path information
         self.pathPattern = None

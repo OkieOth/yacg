@@ -8,7 +8,7 @@ class PathType {
  
 note top: base type that contains all\nREST path information
 
-PathType --|> ComplexType
+PathType --|> Type
 class Command {
     CommandCommandEnum command 
     StringType[] tags 

@@ -13,3 +13,9 @@ def extractOpenApiPathTypes(modelTypes, parsedSchema):
         pathType = openapi.PathType()
         pathType.pathPattern = pathKey
         commandDict = pathDict[pathKey]
+        _extractCommandsForPath(pathType, commandDict)
+        modelTypes.append(pathType)
+
+
+def _extractCommandsForPath(pathType, commandDict):
+    pass
