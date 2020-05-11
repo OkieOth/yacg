@@ -53,26 +53,6 @@
                 "operationId": {
                     "type": "string"
                 },
-                "consumes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": [
-                            "application/json",
-                            "application/xml"
-                        ]
-                    }
-                },
-                "produces": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": [
-                            "application/json",
-                            "application/xml"
-                        ]
-                    }
-                },
                 "parameters": {
                     "type": "array",
                     "items": {
@@ -106,18 +86,21 @@
                 "content": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "mimeType": {
-                                "description": "mime type that is passed as request body",
-                                "type": "string"
-                            },
-                            "type": {
-                                "description": "meta model type that is passed in the body",
-                                "$ref": "./yacg_model_schema.json#/definitions/Type"
-                            }
-                        }
+                        "$ref": "#/definitions/ContentEntry"
                     }
+                }
+            }
+        },
+        "ContentEntry": {
+            "type": "object",
+            "properties": {
+                "mimeType": {
+                    "description": "mime type that is passed as request body",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "meta model type that is passed in the body",
+                    "$ref": "./yacg_model_schema.json#/definitions/Type"
                 }
             }
         },
@@ -160,9 +143,11 @@
                 "description": {
                     "type": "string"
                 },
-                "type": {
-                    "description": "type that is returned in the specific case",
-                    "$ref": "./yacg_model_schema.json#/definitions/Type"
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ContentEntry"
+                    }
                 }
             }
         }
