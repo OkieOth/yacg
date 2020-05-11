@@ -7,12 +7,10 @@ import unittest
 from yacg.model.openapi import PathType
 from yacg.model.openapi import Command
 from yacg.model.openapi import CommandCommandEnum
-from yacg.model.openapi import CommandConsumesEnum
-from yacg.model.openapi import CommandProducesEnum
 from yacg.model.openapi import Parameter
 from yacg.model.openapi import RequestBody
 from yacg.model.openapi import Response
-from yacg.model.openapi import RequestBodyContent
+from yacg.model.openapi import ContentEntry
 from yacg.model.openapi import ParameterInTypeEnum
 
 
@@ -32,14 +30,6 @@ class TestYacgOpenapiModel (unittest.TestCase):
         self.assertIsNotNone(CommandCommandEnum.DELETE)
         self.assertIsNotNone(CommandCommandEnum.OPTIONS)
 
-    def testCommandConsumesEnum(self):
-        self.assertIsNotNone(CommandConsumesEnum.APPLICATION_JSON)
-        self.assertIsNotNone(CommandConsumesEnum.APPLICATION_XML)
-
-    def testCommandProducesEnum(self):
-        self.assertIsNotNone(CommandProducesEnum.APPLICATION_JSON)
-        self.assertIsNotNone(CommandProducesEnum.APPLICATION_XML)
-
     def testParameter(self):
         x = Parameter()
         self.assertIsNotNone(x)
@@ -52,8 +42,8 @@ class TestYacgOpenapiModel (unittest.TestCase):
         x = Response()
         self.assertIsNotNone(x)
 
-    def testRequestBodyContent(self):
-        x = RequestBodyContent()
+    def testContentEntry(self):
+        x = ContentEntry()
         self.assertIsNotNone(x)
 
     def testParameterInTypeEnum(self):

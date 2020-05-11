@@ -57,12 +57,6 @@ class Command:
         self.operationId = None
 
         #: information to a specific HTTP command
-        self.consumes = []
-
-        #: information to a specific HTTP command
-        self.produces = []
-
-        #: information to a specific HTTP command
         self.parameters = []
 
         #: information to a specific HTTP command
@@ -88,16 +82,6 @@ class Command:
         obj.description = dict.get('description', None)
 
         obj.operationId = dict.get('operationId', None)
-
-        arrayConsumes = dict.get('consumes', [])
-        for elemConsumes in arrayConsumes:
-            obj.consumes.append(
-                CommandConsumesEnum.valueForString(elemConsumes))
-
-        arrayProduces = dict.get('produces', [])
-        for elemProduces in arrayProduces:
-            obj.produces.append(
-                CommandProducesEnum.valueForString(elemProduces))
 
         arrayParameters = dict.get('parameters', [])
         for elemParameters in arrayParameters:
@@ -134,38 +118,6 @@ class CommandCommandEnum(Enum):
             return CommandCommandEnum.DELETE
         elif stringValue == 'OPTIONS':
             return CommandCommandEnum.OPTIONS
-        else:
-            return None
-
-
-class CommandConsumesEnum(Enum):
-    APPLICATION_JSON = 'application/json'
-    APPLICATION_XML = 'application/xml'
-
-    @classmethod
-    def valueForString(cls, stringValue):
-        if stringValue is None:
-            return None
-        elif stringValue == 'application/json':
-            return CommandConsumesEnum.APPLICATION_JSON
-        elif stringValue == 'application/xml':
-            return CommandConsumesEnum.APPLICATION_XML
-        else:
-            return None
-
-
-class CommandProducesEnum(Enum):
-    APPLICATION_JSON = 'application/json'
-    APPLICATION_XML = 'application/xml'
-
-    @classmethod
-    def valueForString(cls, stringValue):
-        if stringValue is None:
-            return None
-        elif stringValue == 'application/json':
-            return CommandProducesEnum.APPLICATION_JSON
-        elif stringValue == 'application/xml':
-            return CommandProducesEnum.APPLICATION_XML
         else:
             return None
 
@@ -237,7 +189,7 @@ class RequestBody:
         arrayContent = dict.get('content', [])
         for elemContent in arrayContent:
             obj.content.append(
-                RequestBodyContent.dictToObject(elemContent))
+                ContentEntry.dictToObject(elemContent))
         return obj
 
 
@@ -254,7 +206,7 @@ class Response:
         self.description = None
 
         #: description of a response option for a request
-        self.type = None
+        self.content = []
 
     @classmethod
     def dictToObject(cls, dict):
@@ -266,11 +218,14 @@ class Response:
 
         obj.description = dict.get('description', None)
 
-        obj.type = Type.dictToObject(dict.get('type', None))
+        arrayContent = dict.get('content', [])
+        for elemContent in arrayContent:
+            obj.content.append(
+                ContentEntry.dictToObject(elemContent))
         return obj
 
 
-class RequestBodyContent:
+class ContentEntry:
     def __init__(self):
 
         self.mimeType = None
@@ -281,7 +236,7 @@ class RequestBodyContent:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = RequestBodyContent()
+        obj = ContentEntry()
 
         obj.mimeType = dict.get('mimeType', None)
 

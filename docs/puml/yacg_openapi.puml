@@ -15,8 +15,6 @@ class Command {
     StringType summary 
     StringType description 
     StringType operationId 
-    CommandConsumesEnum[] consumes 
-    CommandProducesEnum[] produces 
     Parameter[] parameters 
     RequestBody requestBody 
     Response[] responses 
@@ -25,14 +23,6 @@ class Command {
 note top: information to a specific HTTP\ncommand
 
 class CommandCommandEnum {
-}
- 
-
-class CommandConsumesEnum {
-}
- 
-
-class CommandProducesEnum {
 }
  
 
@@ -49,7 +39,7 @@ note top: definition of a parameter that\nis used in the request
 class RequestBody {
     StringType description 
     BooleanType required 
-    RequestBodyContent[] content 
+    ContentEntry[] content 
 }
  
 note top: definition of a parameter that\nis used in the request
@@ -57,12 +47,12 @@ note top: definition of a parameter that\nis used in the request
 class Response {
     IntegerType returnCode 
     StringType description 
-    Type type 
+    ContentEntry[] content 
 }
  
 note top: description of a response option\nfor a request
 
-class RequestBodyContent {
+class ContentEntry {
     StringType mimeType 
     Type type 
 }
@@ -79,10 +69,6 @@ PathType "0" *-- "n" Command
     
 Command  *--  CommandCommandEnum        
             
-Command "0" *-- "n" CommandConsumesEnum        
-            
-Command "0" *-- "n" CommandProducesEnum        
-            
 Command "0" *-- "n" Parameter        
             
 Command  *--  RequestBody        
@@ -91,20 +77,18 @@ Command "0" *-- "n" Response
             
     
     
-    
-    
 Parameter  *--  ParameterInTypeEnum        
             
 Parameter  *--  Type        
             
     
-RequestBody "0" *-- "n" RequestBodyContent        
+RequestBody "0" *-- "n" ContentEntry        
             
     
-Response  *--  Type        
+Response "0" *-- "n" ContentEntry        
             
     
-RequestBodyContent  *--  Type        
+ContentEntry  *--  Type        
             
     
 
