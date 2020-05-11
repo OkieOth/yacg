@@ -10,7 +10,7 @@
             "description": "base type that contains all REST path information",
             "allOf": [
                 { 
-                  "$ref": "yacg_model_schema.json#/definitions/ComplexType" 
+                  "$ref": "yacg_model_schema.json#/definitions/Type" 
                 },
                 { 
                     "properties": {

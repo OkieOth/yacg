@@ -16,6 +16,8 @@ from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, Tag
 
+import yacg.builder.impl.openApiPathBuilder as openApiPathBuilder
+
 
 class ModelFileContainer:
     def __init__(self, fileName, parsedSchema):
@@ -97,6 +99,10 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
                 parsedSchema = getParsedSchemaFromYaml(sourceFile)
             modelFileContainer = ModelFileContainer(sourceFile, parsedSchema)
             _getTypeFromParsedSchema(modelFileContainer, type.name, modelTypes)
+    
+    # load additional types, e.g. openapi.PathType
+    if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
+        openApiPathBuilder.extractOpenApiPathTypes(modelTypes, parsedSchema)
     return modelTypes
 
 
