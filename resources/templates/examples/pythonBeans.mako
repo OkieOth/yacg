@@ -18,15 +18,13 @@
     def printExtendsType(type):
         if baseModelDomain is None:
             return type.extendsType.name            
-        elif type.extendsType.domain != baseModelDomain: 
-            return type.extendsType.name
+        elif (type.extendsType.domain is not None) and (type.extendsType.domain != baseModelDomain): 
+            return '{}.{}'.format(type.extendsType.domain, type.extendsType.name)
         else:
-            ret = baseModelPackageShort + '.' + type.extendsType.name
-            return '{}.{}'.format(baseModelPackageShort, type.extendsType.name)
+            return type.extendsType.name
 
     baseModelDomain = templateParameters.get('baseModelDomain',None)
-    baseModelPackage = templateParameters.get('baseModelPackage',None)
-    baseModelPackageShort = templateParameters.get('baseModelPackageShort','<<"baseModelPackageShort" template param is missing>>')
+    domainList = modelFuncs.getDomainsAsList(modelTypes)
 
 
 %># Attention, this file is generated. Manual changes get lost with the next
@@ -37,10 +35,11 @@
 from enum import Enum
 
 % endif
-% if baseModelPackage is not None:
-import ${baseModelPackage} as ${baseModelPackageShort}
-
-% endif
+% for domain in domainList:
+    % if baseModelDomain != domain:
+import ${domain}
+    % endif
+% endfor
 
 % for type in modelTypes:
     % if isinstance(type, model.EnumType):    

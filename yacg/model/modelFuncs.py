@@ -125,3 +125,17 @@ def getNonEnumModelType(types):
         if not isEnumType(type):
             nonEnumTypes.append(type)
     return nonEnumTypes
+
+
+def getDomainsAsList(modelTypes):
+    """returns a list of domain strings from the model types
+
+    Keyword arguments:
+    modelTypes -- types of that model
+    """
+
+    domainList = []
+    for type in modelTypes:
+        if (type.domain is not None) and (type.domain not in domainList):
+            domainList.append(type.domain)
+    return domainList

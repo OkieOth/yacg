@@ -20,7 +20,7 @@ class TestDictToObject (unittest.TestCase):
         templateFileExists = os.path.isfile(modelFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
         templateParameterDict = {}
-        templateParameterDict['modelPackage'] = 'yacg.model.config'
+        templateParameterDict['baseModelDomain'] = 'yacg.model.config'
         renderResult = template.render(modelTypes=modelTypes, templateParameters=templateParameterDict)
         self.assertIsNotNone(renderResult)
 
@@ -41,7 +41,7 @@ class TestDictToObject (unittest.TestCase):
         templateFileExists = os.path.isfile(modelFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
         templateParameterDict = {}
-        templateParameterDict['modelPackage'] = 'yacg.model.model'
+        templateParameterDict['baseModelDomain'] = 'yacg.model.model'
         renderResult = template.render(modelTypes=modelTypes, templateParameters=templateParameterDict)
         self.assertIsNotNone(renderResult)
 
@@ -62,11 +62,7 @@ class TestDictToObject (unittest.TestCase):
         templateFileExists = os.path.isfile(modelFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
         templateParameterDict = {}
-        templateParameterDict['modelPackage'] = 'yacg.model.model'
-
-        templateParameterDict['baseModelDomain'] = 'yacgCore'
-        templateParameterDict['baseModelPackage'] = 'yacg.model.model'
-        templateParameterDict['baseModelPackageShort'] = 'model'
+        templateParameterDict['baseModelDomain'] = 'yacg.model.openapi'
 
         blackListList = []
         # all types from the main model should be igrnored ...
