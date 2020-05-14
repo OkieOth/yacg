@@ -138,4 +138,16 @@ def getDomainsAsList(modelTypes):
     for type in modelTypes:
         if (type.domain is not None) and (type.domain not in domainList):
             domainList.append(type.domain)
+        if (hasattr(type, 'extendsType')) and (type.extendsType is not None):
+            if (type.extendsType.domain is not None) and (type.extendsType.domain not in domainList):
+                domainList.append(type.extendsType.domain)
+        if not hasattr(type, 'property'):
+            continue
+        for property in type.properties:
+            if property.type is None:
+                continue
+            propDomain = property.type.domain
+            if (propDomain is not None) and (propDomain not in domainList):
+                domainList.append(propDomain)
+
     return domainList

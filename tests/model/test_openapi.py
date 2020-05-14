@@ -4,14 +4,14 @@
 
 import unittest
 
-from yacg.model.openapi import PathType
-from yacg.model.openapi import Command
-from yacg.model.openapi import CommandCommandEnum
-from yacg.model.openapi import Parameter
-from yacg.model.openapi import RequestBody
-from yacg.model.openapi import Response
-from yacg.model.openapi import ContentEntry
-from yacg.model.openapi import ParameterInTypeEnum
+from <<"modelPackage" template param is missing>> import PathType
+from <<"modelPackage" template param is missing>> import Command
+from <<"modelPackage" template param is missing>> import CommandCommandEnum
+from <<"modelPackage" template param is missing>> import Parameter
+from <<"modelPackage" template param is missing>> import RequestBody
+from <<"modelPackage" template param is missing>> import Response
+from <<"modelPackage" template param is missing>> import ContentEntry
+from <<"modelPackage" template param is missing>> import ParameterInTypeEnum
 
 
 class TestYacgOpenapiModel (unittest.TestCase):

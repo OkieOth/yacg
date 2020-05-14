@@ -13,7 +13,7 @@ if ! pipenv run python3 yacg.py --models \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/model.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_model.py \
                 plantUml=${scriptPos}/../docs/puml/yacg_model.puml \
-    --templateParameters modelPackage=yacg.model.model \
+    --templateParameters baseModelDomain=yacg.model.model \
                          title="yacg model"; then
     echo "    ERROR while create meta model classes"
     exit 1
@@ -25,7 +25,7 @@ if ! pipenv run python3 yacg.py --models \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/config.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_config.py \
                 plantUml=${scriptPos}/../docs/puml/yacg_config_schema.puml \
-    --templateParameters modelPackage=yacg.model.config \
+    --templateParameters baseModelDomain=yacg.model.config \
                          title="yacg configuration model"; then
     echo "    ERROR while create config model classes"
     exit 1
@@ -37,11 +37,8 @@ if ! pipenv run python3 yacg.py --models \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/openapi.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_openapi.py \
                 plantUml=${scriptPos}/../docs/puml/yacg_openapi.puml \
-    --blackListed yacgCore=domain \
-    --templateParameters modelPackage=yacg.model.openapi \
-                         baseModelDomain=yacgCore \
-                         baseModelPackage=yacg.model.model \
-                         baseModelPackageShort=model \
+    --blackListed yacg.model.model=domain \
+    --templateParameters baseModelDomain=yacg.model.openapi \
                          title="yacg openapi model"; then
     echo "    ERROR while create openapi model classes"
     exit 1

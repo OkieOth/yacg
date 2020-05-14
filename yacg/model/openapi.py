@@ -3,16 +3,15 @@
 # created by yacg (template: pythonBeans.mako v1.0.0)
 
 from enum import Enum
+import yacg.model.model
 
-import yacg.model.model as model
 
-
-class PathType (model.Type):
+class PathType (yacg.model.model.Type):
     """ base type that contains all REST path information
     """
 
     def __init__(self):
-        super(model.Type, self).__init__()
+        super(yacg.model.model.Type, self).__init__()
 
         #: base type that contains all REST path information
         self.pathPattern = None
@@ -157,7 +156,7 @@ class Parameter:
 
         obj.required = dict.get('required', None)
 
-        obj.type = Type.dictToObject(dict.get('type', None))
+        obj.type = yacg.model.model.Type.dictToObject(dict.get('type', None))
         return obj
 
 
@@ -240,7 +239,7 @@ class ContentEntry:
 
         obj.mimeType = dict.get('mimeType', None)
 
-        obj.type = Type.dictToObject(dict.get('type', None))
+        obj.type = yacg.model.model.Type.dictToObject(dict.get('type', None))
         return obj
 
 

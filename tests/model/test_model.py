@@ -4,20 +4,20 @@
 
 import unittest
 
-from yacg.model.model import Type
-from yacg.model.model import IntegerType
-from yacg.model.model import IntegerTypeFormatEnum
-from yacg.model.model import NumberType
-from yacg.model.model import NumberTypeFormatEnum
-from yacg.model.model import BooleanType
-from yacg.model.model import StringType
-from yacg.model.model import UuidType
-from yacg.model.model import EnumType
-from yacg.model.model import DateType
-from yacg.model.model import DateTimeType
-from yacg.model.model import ComplexType
-from yacg.model.model import Property
-from yacg.model.model import Tag
+from <<"modelPackage" template param is missing>> import Type
+from <<"modelPackage" template param is missing>> import IntegerType
+from <<"modelPackage" template param is missing>> import IntegerTypeFormatEnum
+from <<"modelPackage" template param is missing>> import NumberType
+from <<"modelPackage" template param is missing>> import NumberTypeFormatEnum
+from <<"modelPackage" template param is missing>> import BooleanType
+from <<"modelPackage" template param is missing>> import StringType
+from <<"modelPackage" template param is missing>> import UuidType
+from <<"modelPackage" template param is missing>> import EnumType
+from <<"modelPackage" template param is missing>> import DateType
+from <<"modelPackage" template param is missing>> import DateTimeType
+from <<"modelPackage" template param is missing>> import ComplexType
+from <<"modelPackage" template param is missing>> import Property
+from <<"modelPackage" template param is missing>> import Tag
 
 
 class TestYacgModel (unittest.TestCase):

@@ -4,14 +4,14 @@
 
 import unittest
 
-from yacg.model.config import Job
-from yacg.model.config import Model
-from yacg.model.config import Task
-from yacg.model.config import BlackWhiteListEntry
-from yacg.model.config import BlackWhiteListEntryTypeEnum
-from yacg.model.config import SingleFileTask
-from yacg.model.config import TemplateParam
-from yacg.model.config import MultiFileTask
+from <<"modelPackage" template param is missing>> import Job
+from <<"modelPackage" template param is missing>> import Model
+from <<"modelPackage" template param is missing>> import Task
+from <<"modelPackage" template param is missing>> import BlackWhiteListEntry
+from <<"modelPackage" template param is missing>> import BlackWhiteListEntryTypeEnum
+from <<"modelPackage" template param is missing>> import SingleFileTask
+from <<"modelPackage" template param is missing>> import TemplateParam
+from <<"modelPackage" template param is missing>> import MultiFileTask
 
 
 class TestYacgConfigurationModel (unittest.TestCase):
