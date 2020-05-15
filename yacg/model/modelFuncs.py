@@ -55,6 +55,13 @@ def getPropertiesThatHasTag(tagName, typeObj):
     return propertiesWithTag
 
 
+def hasEnumTypes(modelTypes):
+    for type in modelTypes:
+        if isEnumType(type):
+            return True
+    return False
+
+
 def isEnumType(typeObj):
     """checks if the given type object is an EnumType. If that's the
     case then True is returned, else the return is false

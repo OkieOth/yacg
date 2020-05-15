@@ -4,77 +4,64 @@
 
 import unittest
 
-from <<"modelPackage" template param is missing>> import Type
-from <<"modelPackage" template param is missing>> import IntegerType
-from <<"modelPackage" template param is missing>> import IntegerTypeFormatEnum
-from <<"modelPackage" template param is missing>> import NumberType
-from <<"modelPackage" template param is missing>> import NumberTypeFormatEnum
-from <<"modelPackage" template param is missing>> import BooleanType
-from <<"modelPackage" template param is missing>> import StringType
-from <<"modelPackage" template param is missing>> import UuidType
-from <<"modelPackage" template param is missing>> import EnumType
-from <<"modelPackage" template param is missing>> import DateType
-from <<"modelPackage" template param is missing>> import DateTimeType
-from <<"modelPackage" template param is missing>> import ComplexType
-from <<"modelPackage" template param is missing>> import Property
-from <<"modelPackage" template param is missing>> import Tag
+import yacg.model.model
 
 
 class TestYacgModel (unittest.TestCase):
     def testType(self):
-        x = Type()
+        x = yacg.model.model.Type()
         self.assertIsNotNone(x)
 
     def testIntegerType(self):
-        x = IntegerType()
+        x = yacg.model.model.IntegerType()
         self.assertIsNotNone(x)
 
     def testIntegerTypeFormatEnum(self):
-        self.assertIsNotNone(IntegerTypeFormatEnum.INT32)
-        self.assertIsNotNone(IntegerTypeFormatEnum.INT64)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT32)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT64)
 
     def testNumberType(self):
-        x = NumberType()
+        x = yacg.model.model.NumberType()
         self.assertIsNotNone(x)
 
     def testNumberTypeFormatEnum(self):
-        self.assertIsNotNone(NumberTypeFormatEnum.FLOAT)
-        self.assertIsNotNone(NumberTypeFormatEnum.DOUBLE)
+        self.assertIsNotNone(yacg.model.model.NumberTypeFormatEnum.FLOAT)
+        self.assertIsNotNone(yacg.model.model.NumberTypeFormatEnum.DOUBLE)
 
     def testBooleanType(self):
-        x = BooleanType()
+        x = yacg.model.model.BooleanType()
         self.assertIsNotNone(x)
 
     def testStringType(self):
-        x = StringType()
+        x = yacg.model.model.StringType()
         self.assertIsNotNone(x)
 
     def testUuidType(self):
-        x = UuidType()
+        x = yacg.model.model.UuidType()
         self.assertIsNotNone(x)
 
     def testEnumType(self):
-        x = EnumType()
+        x = yacg.model.model.EnumType()
         self.assertIsNotNone(x)
 
     def testDateType(self):
-        x = DateType()
+        x = yacg.model.model.DateType()
         self.assertIsNotNone(x)
 
     def testDateTimeType(self):
-        x = DateTimeType()
+        x = yacg.model.model.DateTimeType()
         self.assertIsNotNone(x)
 
     def testComplexType(self):
-        x = ComplexType()
+        x = yacg.model.model.ComplexType()
         self.assertIsNotNone(x)
 
     def testProperty(self):
-        x = Property()
+        x = yacg.model.model.Property()
         self.assertIsNotNone(x)
 
     def testTag(self):
-        x = Tag()
+        x = yacg.model.model.Tag()
         self.assertIsNotNone(x)
 
 

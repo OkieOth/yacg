@@ -4,50 +4,43 @@
 
 import unittest
 
-from <<"modelPackage" template param is missing>> import Job
-from <<"modelPackage" template param is missing>> import Model
-from <<"modelPackage" template param is missing>> import Task
-from <<"modelPackage" template param is missing>> import BlackWhiteListEntry
-from <<"modelPackage" template param is missing>> import BlackWhiteListEntryTypeEnum
-from <<"modelPackage" template param is missing>> import SingleFileTask
-from <<"modelPackage" template param is missing>> import TemplateParam
-from <<"modelPackage" template param is missing>> import MultiFileTask
+import yacg.model.config
 
 
 class TestYacgConfigurationModel (unittest.TestCase):
     def testJob(self):
-        x = Job()
+        x = yacg.model.config.Job()
         self.assertIsNotNone(x)
 
     def testModel(self):
-        x = Model()
+        x = yacg.model.config.Model()
         self.assertIsNotNone(x)
 
     def testTask(self):
-        x = Task()
+        x = yacg.model.config.Task()
         self.assertIsNotNone(x)
 
     def testBlackWhiteListEntry(self):
-        x = BlackWhiteListEntry()
+        x = yacg.model.config.BlackWhiteListEntry()
         self.assertIsNotNone(x)
 
     def testBlackWhiteListEntryTypeEnum(self):
-        self.assertIsNotNone(BlackWhiteListEntryTypeEnum.TYPE)
-        self.assertIsNotNone(BlackWhiteListEntryTypeEnum.TAG)
-        self.assertIsNotNone(BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB)
-        self.assertIsNotNone(BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB)
-        self.assertIsNotNone(BlackWhiteListEntryTypeEnum.DOMAIN)
+        self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.TYPE)
+        self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.TAG)
+        self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB)
+        self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB)
+        self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.DOMAIN)
 
     def testSingleFileTask(self):
-        x = SingleFileTask()
+        x = yacg.model.config.SingleFileTask()
         self.assertIsNotNone(x)
 
     def testTemplateParam(self):
-        x = TemplateParam()
+        x = yacg.model.config.TemplateParam()
         self.assertIsNotNone(x)
 
     def testMultiFileTask(self):
-        x = MultiFileTask()
+        x = yacg.model.config.MultiFileTask()
         self.assertIsNotNone(x)
 
 

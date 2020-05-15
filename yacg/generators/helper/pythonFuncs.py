@@ -32,3 +32,29 @@ def getPythonValueForType(type, value):
         return '''{}'''.format(str(value))
     else:
         return str(value)
+
+
+def getExtendsType(type, modelTypes, baseModelDomain):
+    return getTypeWithPackage(type.extendsType, modelTypes, baseModelDomain)
+
+
+def getTypeWithPackage(type, modelTypes, baseModelDomain):
+    for t in modelTypes:
+        if (t.name == type.name):
+            sameSource = True
+            if (hasattr(type, 'source') and (hasattr(t, 'source'))):
+                if type.source != t.source:
+                    sameSource = False
+            if sameSource:
+                return type.name
+
+    return getTypeWithPackageEnforced(type, baseModelDomain)
+
+
+def getTypeWithPackageEnforced(type, baseModelDomain):
+    if baseModelDomain is None:
+        return type.name
+    elif (type.domain is not None) and (type.domain != baseModelDomain):
+        return '{}.{}'.format(type.domain, type.name)
+    else:
+        return type.name

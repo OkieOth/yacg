@@ -15,13 +15,25 @@
                 return True
         return False
 
-    def printExtendsType(type):
+    def getExtendsType(type):
+        return getTypeWithPackage(type.extendsType)
+
+    def getTypeWithPackage(type):
+        for t in modelTypes:
+            if (t.name == type.name):
+                sameSource = True 
+                if (hasattr(type, 'source') and (hasattr(t, 'source'))):
+                    if type.source != t.source:
+                        sameSource = False
+                if sameSource:
+                    return type.name
+
         if baseModelDomain is None:
-            return type.extendsType.name            
-        elif (type.extendsType.domain is not None) and (type.extendsType.domain != baseModelDomain): 
-            return '{}.{}'.format(type.extendsType.domain, type.extendsType.name)
+            return type.name            
+        elif (type.domain is not None) and (type.domain != baseModelDomain): 
+            return '{}.{}'.format(type.domain, type.name)
         else:
-            return type.extendsType.name
+            return type.name
 
     baseModelDomain = templateParameters.get('baseModelDomain',None)
     domainList = modelFuncs.getDomainsAsList(modelTypes)
@@ -33,13 +45,13 @@
 
 % if hasEnumTypes(modelTypes):
 from enum import Enum
-
 % endif
 % for domain in domainList:
     % if baseModelDomain != domain:
 import ${domain}
     % endif
 % endfor
+
 
 % for type in modelTypes:
     % if isinstance(type, model.EnumType):    
@@ -60,7 +72,7 @@ class ${type.name}(Enum):
             return None
 
     % else:
-class ${type.name}${ ' ({})'.format(printExtendsType(type)) if type.extendsType is not None else ''}:
+class ${type.name}${ ' ({})'.format(getExtendsType(type)) if type.extendsType is not None else ''}:
         % if type.description != None:
     """${templateHelper.addLineBreakToDescription(type.description,4)}
     """
@@ -68,7 +80,7 @@ class ${type.name}${ ' ({})'.format(printExtendsType(type)) if type.extendsType 
         % endif
     def __init__(self):
         % if type.extendsType is not None:
-        super(${printExtendsType(type)}, self).__init__()
+        super(${getExtendsType(type)}, self).__init__()
         % endif
         % if len(type.properties) == 0:
         pass
@@ -112,13 +124,13 @@ class ${type.name}${ ' ({})'.format(printExtendsType(type)) if type.extendsType 
             % else:
                 % if not property.isArray:
 
-        obj.${property.name} = ${property.type.name}.dictToObject(dict.get('${property.name}', None))
+        obj.${property.name} = ${getTypeWithPackage(property.type)}.dictToObject(dict.get('${property.name}', None))
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
             obj.${property.name}.append(
-                ${property.type.name}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
+                ${getTypeWithPackage(property.type)}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
                 % endif
             % endif
         % endfor

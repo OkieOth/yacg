@@ -4,53 +4,47 @@
 
 import unittest
 
-from <<"modelPackage" template param is missing>> import PathType
-from <<"modelPackage" template param is missing>> import Command
-from <<"modelPackage" template param is missing>> import CommandCommandEnum
-from <<"modelPackage" template param is missing>> import Parameter
-from <<"modelPackage" template param is missing>> import RequestBody
-from <<"modelPackage" template param is missing>> import Response
-from <<"modelPackage" template param is missing>> import ContentEntry
-from <<"modelPackage" template param is missing>> import ParameterInTypeEnum
+import yacg.model.openapi
+import yacg.model.model
 
 
 class TestYacgOpenapiModel (unittest.TestCase):
     def testPathType(self):
-        x = PathType()
+        x = yacg.model.openapi.PathType()
         self.assertIsNotNone(x)
 
     def testCommand(self):
-        x = Command()
+        x = yacg.model.openapi.Command()
         self.assertIsNotNone(x)
 
     def testCommandCommandEnum(self):
-        self.assertIsNotNone(CommandCommandEnum.GET)
-        self.assertIsNotNone(CommandCommandEnum.PUT)
-        self.assertIsNotNone(CommandCommandEnum.POST)
-        self.assertIsNotNone(CommandCommandEnum.DELETE)
-        self.assertIsNotNone(CommandCommandEnum.OPTIONS)
+        self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.GET)
+        self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.PUT)
+        self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.POST)
+        self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.DELETE)
+        self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.OPTIONS)
 
     def testParameter(self):
-        x = Parameter()
+        x = yacg.model.openapi.Parameter()
         self.assertIsNotNone(x)
 
     def testRequestBody(self):
-        x = RequestBody()
+        x = yacg.model.openapi.RequestBody()
         self.assertIsNotNone(x)
 
     def testResponse(self):
-        x = Response()
+        x = yacg.model.openapi.Response()
         self.assertIsNotNone(x)
 
     def testContentEntry(self):
-        x = ContentEntry()
+        x = yacg.model.openapi.ContentEntry()
         self.assertIsNotNone(x)
 
     def testParameterInTypeEnum(self):
-        self.assertIsNotNone(ParameterInTypeEnum.PATH)
-        self.assertIsNotNone(ParameterInTypeEnum.QUERY)
-        self.assertIsNotNone(ParameterInTypeEnum.HEADER)
-        self.assertIsNotNone(ParameterInTypeEnum.COOKIE)
+        self.assertIsNotNone(yacg.model.openapi.ParameterInTypeEnum.PATH)
+        self.assertIsNotNone(yacg.model.openapi.ParameterInTypeEnum.QUERY)
+        self.assertIsNotNone(yacg.model.openapi.ParameterInTypeEnum.HEADER)
+        self.assertIsNotNone(yacg.model.openapi.ParameterInTypeEnum.COOKIE)
 
 
 if __name__ == '__main__':
