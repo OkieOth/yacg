@@ -686,7 +686,7 @@ def _extractTags(tagArray):
 
 
 def extractOpenApiPathTypes(modelTypes, modelFileContainer):
-    pathDict = modelFileContainer.parsedSchema.get('path', None)
+    pathDict = modelFileContainer.parsedSchema.get('paths', None)
     if pathDict is None:
         return
     for pathKey in pathDict:
@@ -706,8 +706,8 @@ def _extractOpenApiCommandsForPath(pathType, commandsDict, modelTypes, modelFile
         command.summary = commandDict.get('summary', None)
         command.operationId = commandDict.get('operationId', None)
         command.tags = commandDict.get('tags', [])
-        __extractOpenApiCommandParameters(command, commandDict.get('parameters', []), modelTypes)
-        __extractOpenApiRequestBody(command, commandDict.get('requestBody', None), modelTypes)
+        __extractOpenApiCommandParameters(command, commandDict.get('parameters', []), modelTypes, modelFileContainer)
+        __extractOpenApiRequestBody(command, commandDict.get('requestBody', None), modelTypes, modelFileContainer)
         pathType.commands.append(command)
 
 
@@ -738,9 +738,9 @@ def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileC
         if refEntry is not None:
             contentEntry.type = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
         else:
-            logging.error("missing refEntry for requestBody entry")
+            logging.error("Missing refEntry for requestBody entry! Attention, inner type declarations are currently not implemented for PathTypes.")
 
-        requestBodyDict.content.append(contentEntry)
+        requestBody.content.append(contentEntry)
 
 
 def __extractOpenApiCommandParameters(command, parametersList, modelTypes, modelFileContainer):
@@ -753,8 +753,8 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
             pass
         else:
             parameter.inType = openapi.ParameterInTypeEnum.valueForString(originalInType)
-            parameter.name = dict.get('name', None)
-            parameter.description = dict.get('description', None)
-            parameter.required = dict.get('required', False)
+            parameter.name = param.get('name', None)
+            parameter.description = param.get('description', None)
+            parameter.required = param.get('required', False)
             # TODO extract type
             # self.type = None
