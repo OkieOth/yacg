@@ -16,7 +16,7 @@ from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, Tag
 
-import yacg.builder.impl.openApiPathBuilder as openApiPathBuilder
+import yacg.model.openapi as openapi
 
 
 class ModelFileContainer:
@@ -99,10 +99,11 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
                 parsedSchema = getParsedSchemaFromYaml(sourceFile)
             modelFileContainer = ModelFileContainer(sourceFile, parsedSchema)
             _getTypeFromParsedSchema(modelFileContainer, type.name, modelTypes)
-    
+
     # load additional types, e.g. openapi.PathType
     if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
-        openApiPathBuilder.extractOpenApiPathTypes(modelTypes, parsedSchema)
+        modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
+        extractOpenApiPathTypes(modelTypes, modelFileContainer)
     return modelTypes
 
 
@@ -199,7 +200,7 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
             if (propertiesEntry is not None):
                 _extractAttributes(newType, propertiesEntry, modelTypes, modelFileContainer)
             elif refEntry is not None:
-                newType.extendsType = _extractReferenceType(newType, refEntry, modelTypes, modelFileContainer)
+                newType.extendsType = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
     if (hasattr(newType, 'properties')) and (len(newType.properties) == 0):
         _extractAttributes(newType, properties, modelTypes, modelFileContainer)
     return newType
@@ -279,7 +280,7 @@ def _extractAttribType(newType, newProperty, propDict, modelTypes, modelFileCont
         if enumEntry is not None:
             return _extractEnumType(newType, newProperty, enumEntry, modelTypes, modelFileContainer)
         elif refEntry is not None:
-            return _extractReferenceType(newType, refEntry, modelTypes, modelFileContainer)
+            return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
         elif type == 'array':
             return _extractArrayType(newType, newProperty, propDict, modelTypes, modelFileContainer)
         else:
@@ -309,12 +310,11 @@ def _extractArrayType(newType, newProperty, propDict, modelTypes, modelFileConta
     pass
 
 
-def _extractReferenceType(newType, refEntry, modelTypes, modelFileContainer):
+def _extractReferenceType(refEntry, modelTypes, modelFileContainer):
     """build or reload a type reference
     and return it
 
     Keyword arguments:
-    newType -- current Type
     refEntry -- $ref entry from the model file
     modelTypes -- list of already loaded models
     modelFileContainer -- file name and path to the model to load
@@ -325,11 +325,11 @@ def _extractReferenceType(newType, refEntry, modelTypes, modelFileContainer):
     if refEntry.startswith(localDefinitionsStr):
         # internal reference
         typeName = refEntry[len(localDefinitionsStr):]
-        return _extractInternalReferenceType(newType, typeName, modelTypes, modelFileContainer)
+        return _extractInternalReferenceType(typeName, modelTypes, modelFileContainer)
     elif refEntry.startswith(openApiComponentsStr):
         # internal reference
         typeName = refEntry[len(openApiComponentsStr):]
-        return _extractInternalReferenceType(newType, typeName, modelTypes, modelFileContainer)
+        return _extractInternalReferenceType(typeName, modelTypes, modelFileContainer)
     else:
         if refEntry.find('.json') != -1:
             # load a new model from a json file
@@ -340,7 +340,7 @@ def _extractReferenceType(newType, refEntry, modelTypes, modelFileContainer):
         else:
             logging.error(
                 "external reference from unknown type: %s, type=%s" %
-                (refEntry, newType.name))
+                (refEntry))
     pass
 
 
@@ -368,7 +368,7 @@ def _extractDesiredTypeNameFromRefEntry(refEntry, fileName, fullPathToFile):
         if titleStr is None:
             return None
         else:
-            return toUpperCamelCase(titleStr) 
+            return toUpperCamelCase(titleStr)
     else:
         lastSlash = refEntry.rfind('/', fileNameLen)
         return refEntry[lastSlash + 1:]
@@ -547,7 +547,7 @@ def _getTypeIfAlreadyLoaded(typeName, fileName, modelTypes):
     return None
 
 
-def _extractInternalReferenceType(newType, refTypeName, modelTypes, modelFileContainer):
+def _extractInternalReferenceType(refTypeName, modelTypes, modelFileContainer):
     """builds or relaod a type reference in the current file
     and return it.
 
@@ -614,7 +614,7 @@ def _extractStringType(newType, newProperty, propDict, modelTypes, modelFileCont
     newProperty -- current property
     propDict -- dict of the property from the model file
     modelTypes -- list of already loaded models
-    modelFileContaier -- file name and stuff, instance of ModelFileContainer
+    modelFileContainer -- file name and stuff, instance of ModelFileContainer
     """
 
     formatValue = propDict.get('format', None)
@@ -683,3 +683,78 @@ def _extractTags(tagArray):
                 tagObj.value = tagValue
                 tags.append(tagObj)
     return tags
+
+
+def extractOpenApiPathTypes(modelTypes, modelFileContainer):
+    pathDict = modelFileContainer.parsedSchema.get('path', None)
+    if pathDict is None:
+        return
+    for pathKey in pathDict:
+        pathType = openapi.PathType()
+        pathType.pathPattern = pathKey
+        commandDict = pathDict[pathKey]
+        _extractOpenApiCommandsForPath(pathType, commandDict, modelTypes, modelFileContainer)
+        modelTypes.append(pathType)
+
+
+def _extractOpenApiCommandsForPath(pathType, commandsDict, modelTypes, modelFileContainer):
+    for commandKey in commandsDict:
+        commandDict = commandsDict[commandKey]
+        command = openapi.Command()
+        command.command = openapi.CommandCommandEnum.valueForString(commandKey)
+        command.description = commandDict.get('description', None)
+        command.summary = commandDict.get('summary', None)
+        command.operationId = commandDict.get('operationId', None)
+        command.tags = commandDict.get('tags', [])
+        __extractOpenApiCommandParameters(command, commandDict.get('parameters', []), modelTypes)
+        __extractOpenApiRequestBody(command, commandDict.get('requestBody', None), modelTypes)
+        pathType.commands.append(command)
+
+
+def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileContainer):
+    if requestBodyDict is None:
+        return
+    requestBody = openapi.RequestBody()
+    command.requestBody = requestBody
+    requestBody.description = requestBodyDict.get('description', None)
+    requestBody.required = requestBodyDict.get('required', None)
+    contentDict = requestBodyDict.get('content', None)
+    if contentDict is None:
+        return
+    for contentDictKey in contentDict.keys():
+        content = contentDict[contentDictKey]
+        contentEntry = openapi.ContentEntry()
+        contentEntry.mimeType = contentDictKey
+        schema = content.get('schema', None)
+        if schema is None:
+            continue
+        itemsEntry = schema.get("items", None)
+        refEntry = None
+        if (itemsEntry is not None):
+            contentEntry.isArray = True
+            refEntry = itemsEntry.get('$ref', None)
+        else:
+            refEntry = schema.get('$ref', None)
+        if refEntry is not None:
+            contentEntry.type = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+        else:
+            logging.error("missing refEntry for requestBody entry")
+
+        requestBodyDict.content.append(contentEntry)
+
+
+def __extractOpenApiCommandParameters(command, parametersList, modelTypes, modelFileContainer):
+    for param in parametersList:
+        parameter = openapi.Parameter()
+        originalInType = param.get('in', None)
+        if originalInType == 'body':
+            # swagger v2
+            # TODO extract body param
+            pass
+        else:
+            parameter.inType = openapi.ParameterInTypeEnum.valueForString(originalInType)
+            parameter.name = dict.get('name', None)
+            parameter.description = dict.get('description', None)
+            parameter.required = dict.get('required', False)
+            # TODO extract type
+            # self.type = None

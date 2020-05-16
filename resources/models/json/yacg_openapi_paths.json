@@ -101,6 +101,10 @@
                 "type": {
                     "description": "meta model type that is passed in the body",
                     "$ref": "./yacg_model_schema.json#/definitions/Type"
+                },
+                "isArray": {
+                    "type": "boolean",
+                    "default": false
                 }
             }
         },

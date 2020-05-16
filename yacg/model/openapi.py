@@ -148,7 +148,7 @@ class Parameter:
             return None
         obj = Parameter()
 
-        obj.inType = ParameterInTypeEnum.valueForString(dict.get('inType', None))
+        obj.inType = ParameterInTypeEnum.valueForString()
 
         obj.name = dict.get('name', None)
 
@@ -231,6 +231,8 @@ class ContentEntry:
 
         self.type = None
 
+        self.isArray = False
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -263,5 +265,3 @@ class ParameterInTypeEnum(Enum):
             return ParameterInTypeEnum.COOKIE
         else:
             return None
-
-
