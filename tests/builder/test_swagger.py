@@ -15,7 +15,7 @@ class TestSwagger (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
-        modelTypes = getModelFromJson(model, [])
+        modelTypes = getModelFromJson(model, [], True) # ingnore PathTypes
         self._checkUpTypes(modelTypes)
 
     def test_openApiV3Json(self):
@@ -24,7 +24,7 @@ class TestSwagger (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
-        modelTypes = getModelFromJson(model, [])
+        modelTypes = getModelFromJson(model, [], True) # ignore PathTypes
         self._checkUpTypes(modelTypes)
 
     def test_swaggerV2Yaml(self):
@@ -33,7 +33,7 @@ class TestSwagger (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
-        modelTypes = getModelFromYaml(model, [])
+        modelTypes = getModelFromYaml(model, [], True)
         self._checkUpTypes(modelTypes)
 
     def test_openApiV3Yaml(self):
@@ -42,18 +42,18 @@ class TestSwagger (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
-        modelTypes = getModelFromYaml(model, [])
+        modelTypes = getModelFromYaml(model, [], True)
         self._checkUpTypes(modelTypes)
 
     def test_compareSwaggerV2(self):
         modelFileJson = 'tests/resources/models/json/examples/swagger_v2_example.json'
         modelJson = config.Model()
         modelJson.schema = modelFileJson
-        modelTypesJson = getModelFromJson(modelJson, [])
+        modelTypesJson = getModelFromJson(modelJson, [], True)
         modelFileYaml = 'tests/resources/models/yaml/examples/swagger_v2_example.yaml'
         modelYaml = config.Model()
         modelYaml.schema = modelFileYaml
-        modelTypesYaml = getModelFromYaml(modelYaml, [])
+        modelTypesYaml = getModelFromYaml(modelYaml, [], True)
         self.assertEqual(len(modelTypesJson), len(modelTypesYaml))
         for i in range(len(modelTypesJson)):
             typeJson = modelTypesJson[i]

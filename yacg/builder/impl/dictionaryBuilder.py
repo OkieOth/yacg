@@ -50,13 +50,14 @@ def getParsedSchemaFromYaml(modelFile):
         return yaml.load(json_schema, Loader=yaml.FullLoader)
 
 
-def extractTypes(parsedSchema, modelFile, modelTypes):
+def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     """extract the types from the parsed schema
 
 
     Keyword arguments:
     parsedSchema -- dictionary with the loaded schema
     modelFile -- file name and path to the model to load
+    skipOpenApi -- if true, then openApi paths are not extracted for the model
     """
 
     modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
@@ -101,9 +102,10 @@ def extractTypes(parsedSchema, modelFile, modelTypes):
             _getTypeFromParsedSchema(modelFileContainer, type.name, modelTypes)
 
     # load additional types, e.g. openapi.PathType
-    if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
-        modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
-        extractOpenApiPathTypes(modelTypes, modelFileContainer)
+    if not skipOpenApi:
+        if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
+            modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
+            extractOpenApiPathTypes(modelTypes, modelFileContainer)
     return modelTypes
 
 
