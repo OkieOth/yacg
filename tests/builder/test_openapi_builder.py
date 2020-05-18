@@ -13,7 +13,7 @@ class TestOpenApiParsing (unittest.TestCase):
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(12, len(modelTypes))
+        self.assertEqual(13, len(modelTypes))
         pathTypes = []
         for type in modelTypes:
             if isinstance(type, openapi.PathType):

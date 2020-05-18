@@ -122,6 +122,9 @@
                     "description": "name of the parameter",
                     "type": "string"
                 },
+                "isArray": {
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "some more words to explain for what this parameter is good for",
                     "type": "string"

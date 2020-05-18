@@ -245,19 +245,19 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
         if description is not None:
             newProperty.description = description
         newProperty.default = propDict.get('default', None)
-        newProperty.type = _extractAttribType(type, newProperty, propDict, modelTypes, modelFileContainer)
+        newProperty.type = _extractAttribType(type.name, newProperty, propDict, modelTypes, modelFileContainer)
         tags = propDict.get('__tags', None)
         if tags is not None:
             newProperty.tags = _extractTags(tags)
         type.properties.append(newProperty)
 
 
-def _extractAttribType(newType, newProperty, propDict, modelTypes, modelFileContainer):
+def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer):
     """extract the type from the parsed model file and
     returns the type of the property.
 
     Keyword arguments:
-    newType -- current Type
+    newTypeName -- current Type
     newProperty -- current property
     propDict -- dict of the property from the model file
     modelTypes -- list of already loaded models
@@ -273,31 +273,31 @@ def _extractAttribType(newType, newProperty, propDict, modelTypes, modelFileCont
         return BooleanType()
     elif type == 'string':
         # DateType, DateTimeType, StringType, EnumType
-        return _extractStringType(newType, newProperty, propDict, modelTypes, modelFileContainer)
+        return _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
     elif type == 'object':
-        return _extractComplexType(newType, newProperty, propDict, modelTypes, modelFileContainer)
+        return _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
     else:
         refEntry = propDict.get('$ref', None)
         enumEntry = propDict.get('enum', None)
         if enumEntry is not None:
-            return _extractEnumType(newType, newProperty, enumEntry, modelTypes, modelFileContainer)
+            return _extractEnumType(newTypeName, newProperty, enumEntry, modelTypes, modelFileContainer)
         elif refEntry is not None:
             return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
         elif type == 'array':
-            return _extractArrayType(newType, newProperty, propDict, modelTypes, modelFileContainer)
+            return _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
         else:
             logging.error(
                 "modelFile: %s, type=%s, property=%s: unknown property type: %s" %
-                (modelFileContainer.fileName, newType.name, newProperty.name, type))
+                (modelFileContainer.fileName, newTypeName, newProperty.name, type))
             return None
 
 
-def _extractArrayType(newType, newProperty, propDict, modelTypes, modelFileContainer):
+def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer):
     """build array type reference
     and return it
 
     Keyword arguments:
-    newType -- current Type
+    newTypeName -- current type name
     newProperty -- current property
     propDict -- dict of the property from the model file
     modelTypes -- list of already loaded models
@@ -306,7 +306,7 @@ def _extractArrayType(newType, newProperty, propDict, modelTypes, modelFileConta
     itemsDict = propDict.get('items', None)
     if itemsDict is not None:
         newProperty.isArray = True
-        return _extractAttribType(newType, newProperty, itemsDict, modelTypes, modelFileContainer)
+        return _extractAttribType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
 
     # TODO
     pass
@@ -573,19 +573,19 @@ def _extractInternalReferenceType(refTypeName, modelTypes, modelFileContainer):
     return dummyReference
 
 
-def _extractComplexType(newType, newProperty, propDict, modelTypes, modelFileContainer):
+def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer):
     """builds a new inner complex type for that property
     and return it
 
     Keyword arguments:
-    newType -- current Type
+    newTypeName -- current type name
     newProperty -- current property
     propDict -- dict of the property from the model file
     modelTypes -- list of already loaded models
     modelFileContainer -- file name and path to the model to load
     """
 
-    innerTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name)
+    innerTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name)
     newInnerType = ComplexType()
     newInnerType.domain = modelFileContainer.domain
     newInnerType.name = innerTypeName
@@ -603,16 +603,16 @@ def _extractComplexType(newType, newProperty, propDict, modelTypes, modelFileCon
     else:
         logging.error(
             "modelFile: %s, type=%s, property=%s: inner complex type without properties"
-            % (modelFileContainer.fileName, newType.name, newProperty.name))
+            % (modelFileContainer.fileName, newTypeName, newProperty.name))
     return newInnerType
 
 
-def _extractStringType(newType, newProperty, propDict, modelTypes, modelFileContainer):
+def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer):
     """extract the specific string type depending on the given format
     and return the specific type
 
     Keyword arguments:
-    newType -- current Type
+    newType -- current type name
     newProperty -- current property
     propDict -- dict of the property from the model file
     modelTypes -- list of already loaded models
@@ -624,7 +624,7 @@ def _extractStringType(newType, newProperty, propDict, modelTypes, modelFileCont
     if (formatValue is None) and (enumValue is None):
         return StringType()
     elif enumValue is not None:
-        return _extractEnumType(newType, newProperty, enumValue, modelTypes, modelFileContainer)
+        return _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileContainer)
     elif formatValue == 'date':
         return DateType()
     elif formatValue == 'date-time':
@@ -635,23 +635,23 @@ def _extractStringType(newType, newProperty, propDict, modelTypes, modelFileCont
         # TODO logging
         logging.error(
             "modelFile: %s, type=%s, property=%s: unknown string type format: %s"
-            % (modelFileContainer.fileName, newType.name, newProperty.name, formatValue))
+            % (modelFileContainer.fileName, newTypeName, newProperty.name, formatValue))
         return StringType()
 
 
-def _extractEnumType(newType, newProperty, enumValue, modelTypes, modelFileContainer):
+def _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileContainer):
     """extract the specific string type depending on the given format
     and return the specific type
 
     Keyword arguments:
-    newType -- current Type
+    newType -- current type name
     newProperty -- current property
     enumValues -- list with allowed values
     modelTypes -- list of already loaded models
     modelFileContainer -- file name and path to the model to load
     """
 
-    enumTypeName = toUpperCamelCase(newType.name + ' ' + newProperty.name + 'Enum')
+    enumTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name + 'Enum')
     enumType = EnumType()
     enumType.domain = modelFileContainer.domain
     enumType.name = enumTypeName
@@ -769,21 +769,20 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
                     (modelFileContainer.fileName, command.path))
                 continue
             if paramSchema is not None:
-                __extractOpenApiCommandParameterSchema(command, paramSchema, modelTypes, modelFileContainer)
-                pass
+                parameter.type = _extractAttribType(
+                    command.operationId.capitalize(),
+                    parameter,
+                    paramSchema,
+                    modelTypes,
+                    modelFileContainer)
             elif paramType is not None:
-                __extractOpenApiCommandParameterType(command, paramType, param, modelTypes, modelFileContainer)
+                parameter.type = _extractAttribType(
+                    command.operationId.capitalize(),
+                    parameter,
+                    param,
+                    modelTypes,
+                    modelFileContainer)
         command.parameters.append(parameter)
-
-
-def __extractOpenApiCommandParameterType(command, paramTypeStr, parameterDict, modelTypes, modelFileContainer):
-    # TODO
-    pass
-
-
-def __extractOpenApiCommandParameterSchema(command, schemaDict, modelTypes, modelFileContainer):
-    # TODO
-    pass
 
 
 def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFileContainer):

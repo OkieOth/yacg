@@ -134,6 +134,9 @@ class Parameter:
         self.name = None
 
         #: definition of a parameter that is used in the request
+        self.isArray = None
+
+        #: definition of a parameter that is used in the request
         self.description = None
 
         #: definition of a parameter that is used in the request
@@ -148,9 +151,11 @@ class Parameter:
             return None
         obj = Parameter()
 
-        obj.inType = ParameterInTypeEnum.valueForString()
+        obj.inType = ParameterInTypeEnum.valueForString(dict.get('inType', None))
 
         obj.name = dict.get('name', None)
+
+        obj.isArray = dict.get('isArray', None)
 
         obj.description = dict.get('description', None)
 
@@ -242,6 +247,8 @@ class ContentEntry:
         obj.mimeType = dict.get('mimeType', None)
 
         obj.type = yacg.model.model.Type.dictToObject(dict.get('type', None))
+
+        obj.isArray = dict.get('isArray', None)
         return obj
 
 
@@ -265,3 +272,5 @@ class ParameterInTypeEnum(Enum):
             return ParameterInTypeEnum.COOKIE
         else:
             return None
+
+

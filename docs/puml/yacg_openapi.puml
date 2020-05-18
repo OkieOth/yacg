@@ -29,6 +29,7 @@ class CommandCommandEnum {
 class Parameter {
     ParameterInTypeEnum inType 
     StringType name 
+    BooleanType isArray 
     StringType description 
     BooleanType required 
     Type type 
@@ -55,6 +56,7 @@ note top: description of a response option\nfor a request
 class ContentEntry {
     StringType mimeType 
     Type type 
+    BooleanType isArray 
 }
  
 

@@ -46,7 +46,7 @@ def getPropertiesThatHasTag(tagName, typeObj):
     typeObj -- type or property object to check up
     """
 
-    prtypeStropertiesWithTag = []
+    propertiesWithTag = []
     if typeObj.properties is None:
         return propertiesWithTag
     for property in typeObj.properties:
