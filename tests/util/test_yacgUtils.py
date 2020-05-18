@@ -13,5 +13,3 @@ class TestYacgUtils (unittest.TestCase):
         self.assertEqual(3, len(jobArray[1].tasks))
         self.assertEqual(1, len(jobArray[2].models))
         self.assertEqual(3, len(jobArray[2].tasks))
-
-        

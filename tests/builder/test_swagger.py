@@ -15,7 +15,8 @@ class TestSwagger (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
-        modelTypes = getModelFromJson(model, [], True) # ingnore PathTypes
+        ignorePathTypes = True
+        modelTypes = getModelFromJson(model, [], ignorePathTypes)
         self._checkUpTypes(modelTypes)
 
     def test_openApiV3Json(self):
@@ -24,7 +25,8 @@ class TestSwagger (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
-        modelTypes = getModelFromJson(model, [], True) # ignore PathTypes
+        ignorePathTypes = True
+        modelTypes = getModelFromJson(model, [], ignorePathTypes)
         self._checkUpTypes(modelTypes)
 
     def test_swaggerV2Yaml(self):

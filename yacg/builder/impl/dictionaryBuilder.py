@@ -710,6 +710,7 @@ def _extractOpenApiCommandsForPath(pathType, commandsDict, modelTypes, modelFile
         command.tags = commandDict.get('tags', [])
         __extractOpenApiCommandParameters(command, commandDict.get('parameters', []), modelTypes, modelFileContainer)
         __extractOpenApiRequestBody(command, commandDict.get('requestBody', None), modelTypes, modelFileContainer)
+        __extractOpenApiCommandResponses(command, commandDict.get('responses', []), modelTypes, modelFileContainer)
         pathType.commands.append(command)
 
 
@@ -740,7 +741,9 @@ def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileC
         if refEntry is not None:
             contentEntry.type = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
         else:
-            logging.error("Missing refEntry for requestBody entry! Attention, inner type declarations are currently not implemented for PathTypes.")
+            errorMsg = 'Missing refEntry for requestBody entry!'
+            errorMsg2 = ' Attention, inner type declarations are currently not implemented for PathTypes.'
+            logging.error(errorMsg + errorMsg2)
 
         requestBody.content.append(contentEntry)
 
@@ -758,5 +761,33 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
             parameter.name = param.get('name', None)
             parameter.description = param.get('description', None)
             parameter.required = param.get('required', False)
-            # TODO extract type
-            # self.type = None
+            paramSchema = param.get('schema', None)
+            paramType = param.get('type', None)
+            if (paramSchema is None) and (paramType is None):
+                logging.error(
+                    "modelFile: %s, path=%s: missing schema or type entry" %
+                    (modelFileContainer.fileName, command.path))
+                continue
+            if paramSchema is not None:
+                __extractOpenApiCommandParameterSchema(command, paramSchema, modelTypes, modelFileContainer)
+                pass
+            elif paramType is not None:
+                __extractOpenApiCommandParameterType(command, paramType, param, modelTypes, modelFileContainer)
+        command.parameters.append(parameter)
+
+
+def __extractOpenApiCommandParameterType(command, paramTypeStr, parameterDict, modelTypes, modelFileContainer):
+    # TODO
+    pass
+
+
+def __extractOpenApiCommandParameterSchema(command, schemaDict, modelTypes, modelFileContainer):
+    # TODO
+    pass
+
+
+def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFileContainer):
+    if responsesDict is None:
+        return
+    # TODO
+    pass
