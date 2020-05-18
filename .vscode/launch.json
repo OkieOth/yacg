@@ -6,6 +6,7 @@
     "configurations": [
 
 
+
         {
             "name": "Python: Aktuelle Datei",
             "type": "python",
@@ -46,7 +47,8 @@
             "name": "all tests",
             "type": "python",
             "request": "launch",
-            "module": "unittest"
+            "module": "unittest",
+            "args": ["-v"]
         },
         {
             "name": "current tests",

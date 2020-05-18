@@ -74,6 +74,16 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
             if tags is not None:
                 mainType.tags = _extractTags(tags)
 
+    enumEntry = parsedSchema.get('enum', None)
+    if enumEntry is not None:
+        titleStr = parsedSchema.get('title', None)
+        typeNameStr = toUpperCamelCase(titleStr)
+        mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
+        if len(mainType.tags) == 0:
+            tags = parsedSchema.get('__tags', None)
+            if tags is not None:
+                mainType.tags = _extractTags(tags)
+
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -131,6 +141,16 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
                 if tags is not None:
                     type.tags = _extractTags(tags)
 
+    enumEntry = modelFileContainer.parsedSchema.get('enum', None)
+    if enumEntry is not None:
+        titleStr = modelFileContainer.parsedSchema.get('title', None)
+        typeNameStr = toUpperCamelCase(titleStr)
+        mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
+        if len(mainType.tags) == 0:
+            tags = modelFileContainer.parsedSchema.get('__tags', None)
+            if tags is not None:
+                mainType.tags = _extractTags(tags)
+
     schemaDefinitions = modelFileContainer.parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -161,11 +181,20 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
         description = object.get('description', None)
-        type = _extractObjectType(key, properties, allOfEntry, description, modelTypes, modelFileContainer)
-        if len(type.tags) == 0:
-            tags = object.get('__tags', None)
-            if tags is not None:
-                type.tags = _extractTags(tags)
+
+        enumEntry = object.get('enum', None)
+        if enumEntry is not None:
+            mainType = _extractEnumType(key, None, enumEntry, modelTypes, modelFileContainer)
+            if len(mainType.tags) == 0:
+                tags = modelFileContainer.parsedSchema.get('__tags', None)
+                if tags is not None:
+                    mainType.tags = _extractTags(tags)
+        else:
+            type = _extractObjectType(key, properties, allOfEntry, description, modelTypes, modelFileContainer)
+            if len(type.tags) == 0:
+                tags = object.get('__tags', None)
+                if tags is not None:
+                    type.tags = _extractTags(tags)
 
 
 def _extractObjectType(typeNameStr, properties, allOfEntries, description, modelTypes, modelFileContainer):
@@ -651,7 +680,11 @@ def _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileC
     modelFileContainer -- file name and path to the model to load
     """
 
-    enumTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name + 'Enum')
+    enumTypeName = None
+    if newProperty is not None: 
+        enumTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name + 'Enum')
+    else:
+        enumTypeName = toUpperCamelCase(newTypeName)
     enumType = EnumType()
     enumType.domain = modelFileContainer.domain
     enumType.name = enumTypeName
