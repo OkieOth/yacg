@@ -216,10 +216,16 @@ class EnumType (Type):
         self.domain = None
 
         #: type for enum values - fixed value types
+        self.description = None
+
+        #: type for enum values - fixed value types
         self.values = []
 
         #: type for enum values - fixed value types
         self.default = None
+
+        #: type for enum values - fixed value types
+        self.tags = []
 
     @classmethod
     def dictToObject(cls, dict):
@@ -231,11 +237,42 @@ class EnumType (Type):
 
         obj.domain = dict.get('domain', None)
 
+        obj.description = dict.get('description', None)
+
         arrayValues = dict.get('values', [])
         for elemValues in arrayValues:
             obj.values.append(elemValues)
 
         obj.default = dict.get('default', None)
+
+        arrayTags = dict.get('tags', [])
+        for elemTags in arrayTags:
+            obj.tags.append(
+                Tag.dictToObject(elemTags))
+        return obj
+
+
+class Tag:
+    """ a tag type
+    """
+
+    def __init__(self):
+
+        #: a tag type
+        self.name = None
+
+        #: a tag type
+        self.value = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = Tag()
+
+        obj.name = dict.get('name', None)
+
+        obj.value = dict.get('value', None)
         return obj
 
 
@@ -435,30 +472,6 @@ class Property:
         obj.description = dict.get('description', None)
 
         obj.default = dict.get('default', None)
-        return obj
-
-
-class Tag:
-    """ a tag type
-    """
-
-    def __init__(self):
-
-        #: a tag type
-        self.name = None
-
-        #: a tag type
-        self.value = None
-
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = Tag()
-
-        obj.name = dict.get('name', None)
-
-        obj.value = dict.get('value', None)
         return obj
 
 

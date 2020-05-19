@@ -62,13 +62,22 @@ UuidType --|> Type
 class EnumType {
     StringType name 
     StringType domain 
+    StringType description 
     StringType[] values 
     StringType default 
+    Tag[] tags 
 }
  
 note top: type for enum values -\nfixed value types
 
 EnumType --|> Type
+class Tag {
+    StringType name 
+    StringType value 
+}
+ 
+note top: a tag type
+
 class DateType {
     DateType default 
     DateType minimum 
@@ -117,13 +126,6 @@ class Property {
  
 note top: a property of a type
 
-class Tag {
-    StringType name 
-    StringType value 
-}
- 
-note top: a tag type
-
 
     
     
@@ -137,6 +139,9 @@ NumberType  *--  NumberTypeFormatEnum
     
     
     
+    
+EnumType "0" *-- "n" Tag        
+            
     
     
     
@@ -152,7 +157,6 @@ Property  *--  Type
             
 Property "0" *-- "n" Tag        
             
-    
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
 @enduml

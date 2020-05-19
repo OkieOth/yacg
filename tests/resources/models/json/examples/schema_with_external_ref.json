@@ -30,6 +30,10 @@
                     "$ref": "./single_type_schema.json#/definitions/AnotherType"
                 }
             }
+        },
+        "DemoEnum": {
+            "type": "string",
+            "enum": ["X", "Y", "Z"]
         }
     }
 }

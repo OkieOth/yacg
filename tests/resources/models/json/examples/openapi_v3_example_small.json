@@ -382,13 +382,7 @@
               "format": "date-time"
             },
             "status": {
-              "type": "string",
-              "description": "Order Status",
-              "enum": [
-                "placed",
-                "approved",
-                "delivered"
-              ]
+              "$ref":"#/components/schemas/OrderStatusEnum"
             },
             "complete": {
               "type": "boolean",
@@ -398,6 +392,15 @@
           "xml": {
             "name": "Order"
           }
+        },
+        "OrderStatusEnum": {
+          "type": "string",
+          "description": "Order Status",
+          "enum": [
+            "placed",
+            "approved",
+            "delivered"
+          ]
         },
         "Category": {
           "type": "object",
@@ -440,9 +443,7 @@
               "type": "string"
             },
             "userStatus": {
-              "type": "integer",
-              "description": "User Status",
-              "format": "int32"
+              "$ref": "./ExternalEnum.json"
             }
           },
           "xml": {
@@ -463,6 +464,15 @@
           "xml": {
             "name": "Tag"
           }
+        },
+        "PetStatusEnum": {
+          "type": "string",
+          "description": "pet status in the store",
+          "enum": [
+            "available",
+            "pending",
+            "sold"
+          ]
         },
         "Pet": {
           "required": [
@@ -503,13 +513,12 @@
               }
             },
             "status": {
-              "type": "string",
               "description": "pet status in the store",
-              "enum": [
-                "available",
-                "pending",
-                "sold"
-              ]
+              "$ref":"#/components/schemas/PetStatusEnum"
+            },
+            "externalEnum": {
+              "description": "a enum field, that reference to another model",
+              "$ref":"schema_with_external_ref.json#/definitions/DemoEnum"
             }
           },
           "xml": {

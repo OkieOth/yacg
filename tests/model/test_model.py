@@ -44,6 +44,10 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.EnumType()
         self.assertIsNotNone(x)
 
+    def testTag(self):
+        x = yacg.model.model.Tag()
+        self.assertIsNotNone(x)
+
     def testDateType(self):
         x = yacg.model.model.DateType()
         self.assertIsNotNone(x)
@@ -58,10 +62,6 @@ class TestYacgModel (unittest.TestCase):
 
     def testProperty(self):
         x = yacg.model.model.Property()
-        self.assertIsNotNone(x)
-
-    def testTag(self):
-        x = yacg.model.model.Tag()
         self.assertIsNotNone(x)
 
 

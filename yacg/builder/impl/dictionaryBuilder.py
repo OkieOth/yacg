@@ -248,7 +248,9 @@ def _getAlreadyCreatedTypesWithThatName(typeNameStr, modelTypes, modelFileContai
     """
 
     for alreadyCreatedType in modelTypes:
-        if alreadyCreatedType.name == typeNameStr and alreadyCreatedType.source == modelFileContainer.fileName:
+        if not hasattr(alreadyCreatedType, 'name'):
+            continue
+        if (alreadyCreatedType.name == typeNameStr) and (alreadyCreatedType.source == modelFileContainer.fileName):
             return alreadyCreatedType
     return None
 
@@ -681,17 +683,38 @@ def _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileC
     """
 
     enumTypeName = None
-    if newProperty is not None: 
+    if newProperty is not None:
         enumTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name + 'Enum')
     else:
         enumTypeName = toUpperCamelCase(newTypeName)
+    alreadyCreatedType = _getAlreadyCreatedTypesWithThatName(enumTypeName, modelTypes, modelFileContainer)
+    if alreadyCreatedType is not None:
+        if isinstance(alreadyCreatedType, EnumType):
+            # the enum type is already created
+            return alreadyCreatedType
+        else:
+            # a dummy type was pre-created. now it has been filled with the real values
+            pass
     enumType = EnumType()
     enumType.domain = modelFileContainer.domain
     enumType.name = enumTypeName
     enumType.values = enumValue
     enumType.source = modelFileContainer.fileName
-    modelTypes.append(enumType)
+    if alreadyCreatedType is not None:
+        _replaceAllCurrentAppearencesOfAlreadyCreatedType(alreadyCreatedType, enumType, modelTypes)
+    else:
+        modelTypes.append(enumType)
     return enumType
+
+
+def _replaceAllCurrentAppearencesOfAlreadyCreatedType(alreadyCreatedType, enumType, modelTypes):
+    for n, type in enumerate(modelTypes):
+        if type == alreadyCreatedType:
+            modelTypes[n] = enumType
+        elif isinstance(type, ComplexType):
+            for property in type.properties:
+                if property.type == alreadyCreatedType:
+                    property.type = enumType
 
 
 def _extractTags(tagArray):
