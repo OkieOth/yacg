@@ -6,8 +6,16 @@ import yacg.model.openapi as openapi
 
 
 class TestOpenApiParsing (unittest.TestCase):
-    def test_defaultOpenApiExample(self):
+
+    def xxxxxtest_openApiExample(self):
         modelFile = 'tests/resources/models/json/examples/openapi_v3_example_small.json'
+        self.__doTest(modelFile)
+
+    def test_swaggerExample(self):
+        modelFile = 'tests/resources/models/json/examples/swagger_v2_example_small.json'
+        self.__doTest(modelFile, True)
+
+    def __doTest(self, modelFile, requestBodyMimeTypeCanBeNone=False):
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
@@ -34,15 +42,16 @@ class TestOpenApiParsing (unittest.TestCase):
                     self.assertIsNotNone(param.name)
                     self.assertIsNotNone(param.type)
                 if command.requestBody is not None:
-                    self._checkContent(command.requestBody)
+                    self._checkContent(command.requestBody, requestBodyMimeTypeCanBeNone)
                 self.assertTrue(len(command.responses) > 0)
                 for response in command.responses:
                     self.assertIsNotNone(response.returnCode)
                     if response.returnCode == '200':
-                        self._checkContent(response)
+                        self._checkContent(response, requestBodyMimeTypeCanBeNone)
 
-    def _checkContent(self, contentHost):
+    def _checkContent(self, contentHost, requestBodyMimeTypeCanBeNone):
         self.assertTrue(len(contentHost.content) > 0)
         for cont in contentHost.content:
-            self.assertIsNotNone(cont.mimeType)
+            if not requestBodyMimeTypeCanBeNone:
+                self.assertIsNotNone(cont.mimeType)
             self.assertIsNotNone(cont.type)

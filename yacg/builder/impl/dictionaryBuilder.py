@@ -789,33 +789,45 @@ def __extractOpenApiContentSectionAndAppend(contentDict, contentHost, modelTypes
         contentEntry = openapi.ContentEntry()
         contentEntry.mimeType = contentDictKey
         schema = content.get('schema', None)
-        if schema is None:
-            continue
-        itemsEntry = schema.get("items", None)
-        refEntry = None
-        if (itemsEntry is not None):
-            contentEntry.isArray = True
-            refEntry = itemsEntry.get('$ref', None)
-        else:
-            refEntry = schema.get('$ref', None)
-        if refEntry is not None:
-            contentEntry.type = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
-        else:
-            errorMsg = 'Missing refEntry for requestBody entry!'
-            errorMsg2 = ' Attention, inner type declarations are currently not implemented for PathTypes.'
-            logging.error(errorMsg + errorMsg2)
+        __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
         contentHost.content.append(contentEntry)
+
+
+def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileContainer):
+    if schema is None:
+        return
+    itemsEntry = schema.get("items", None)
+    refEntry = None
+    if (itemsEntry is not None):
+        typeHost.isArray = True
+        refEntry = itemsEntry.get('$ref', None)
+    else:
+        refEntry = schema.get('$ref', None)
+    if refEntry is not None:
+        typeHost.type = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+    else:
+        errorMsg = 'Missing refEntry for requestBody entry!'
+        errorMsg2 = ' Attention, inner type declarations are currently not implemented for PathTypes.'
+        logging.error(errorMsg + errorMsg2)
 
 
 def __extractOpenApiCommandParameters(command, parametersList, modelTypes, modelFileContainer):
     for param in parametersList:
-        parameter = openapi.Parameter()
         originalInType = param.get('in', None)
         if originalInType == 'body':
             # swagger v2
-            # TODO extract body param
-            pass
+            requestBody = openapi.RequestBody()
+            command.requestBody = requestBody
+            requestBody.description = param.get('description', None)
+            requestBody.required = param.get('required', 'True')
+            schema = param.get('schema', None)
+            if schema is not None:
+                contentEntry = openapi.ContentEntry()
+                requestBody.content.append(contentEntry)
+                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
         else:
+            parameter = openapi.Parameter()
+            command.parameters.append(parameter)
             parameter.inType = openapi.ParameterInTypeEnum.valueForString(originalInType)
             parameter.name = param.get('name', None)
             parameter.description = param.get('description', None)
@@ -841,7 +853,6 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
                     param,
                     modelTypes,
                     modelFileContainer)
-        command.parameters.append(parameter)
 
 
 def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFileContainer):
@@ -854,4 +865,12 @@ def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFi
         response.returnCode = key
         response.description = responseDict.get('description', None)
         contentDict = responseDict.get('content', None)
-        __extractOpenApiContentSectionAndAppend(contentDict, response, modelTypes, modelFileContainer)
+        if contentDict is not None:
+            __extractOpenApiContentSectionAndAppend(contentDict, response, modelTypes, modelFileContainer)
+        else:
+            # swagger v2
+            schema = responseDict.get('schema', None)
+            if schema is not None:
+                contentEntry = openapi.ContentEntry()
+                response.content.append(contentEntry)
+                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
