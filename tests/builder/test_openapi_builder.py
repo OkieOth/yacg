@@ -34,10 +34,15 @@ class TestOpenApiParsing (unittest.TestCase):
                     self.assertIsNotNone(param.name)
                     self.assertIsNotNone(param.type)
                 if command.requestBody is not None:
-                    self.assertTrue(len(command.requestBody.content) > 0)
-                    for cont in command.requestBody.content:
-                        self.assertIsNotNone(cont.mimeType)
-                        self.assertIsNotNone(cont.type)
-
+                    self._checkContent(command.requestBody)
                 self.assertTrue(len(command.responses) > 0)
+                for response in command.responses:
+                    self.assertIsNotNone(response.returnCode)
+                    if response.returnCode == '200':
+                        self._checkContent(response)
 
+    def _checkContent(self, contentHost):
+        self.assertTrue(len(contentHost.content) > 0)
+        for cont in contentHost.content:
+            self.assertIsNotNone(cont.mimeType)
+            self.assertIsNotNone(cont.type)
