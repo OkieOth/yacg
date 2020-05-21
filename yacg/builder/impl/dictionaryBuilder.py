@@ -778,6 +778,10 @@ def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileC
     requestBody.description = requestBodyDict.get('description', None)
     requestBody.required = requestBodyDict.get('required', None)
     contentDict = requestBodyDict.get('content', None)
+    __extractOpenApiContentSectionAndAppend(contentDict, requestBody, modelTypes, modelFileContainer)
+
+
+def __extractOpenApiContentSectionAndAppend(contentDict, contentHost, modelTypes, modelFileContainer):
     if contentDict is None:
         return
     for contentDictKey in contentDict.keys():
@@ -800,8 +804,7 @@ def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileC
             errorMsg = 'Missing refEntry for requestBody entry!'
             errorMsg2 = ' Attention, inner type declarations are currently not implemented for PathTypes.'
             logging.error(errorMsg + errorMsg2)
-
-        requestBody.content.append(contentEntry)
+        contentHost.content.append(contentEntry)
 
 
 def __extractOpenApiCommandParameters(command, parametersList, modelTypes, modelFileContainer):
@@ -844,5 +847,11 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
 def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFileContainer):
     if responsesDict is None:
         return
-    # TODO
-    pass
+    for key in responsesDict.keys():
+        responseDict = responsesDict[key]
+        response = openapi.Response()
+        command.responses.append(response)
+        response.returnCode = key
+        response.description = responseDict.get('description', None)
+        contentDict = responseDict.get('content', None)
+        __extractOpenApiContentSectionAndAppend(contentDict, response, modelTypes, modelFileContainer)
