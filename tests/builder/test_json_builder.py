@@ -7,13 +7,17 @@ from yacg.model.model import DateTimeType
 from yacg.model.model import EnumType, ComplexType
 from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
 
+import yacg.model.config as config
+
 
 class TestJsonBuilder (unittest.TestCase):
-    def testSingleTypeSchema(self):
-        modelFile = 'resources/models/json/examples/single_type_schema.json'
+    def _testSingleTypeSchema(self):
+        modelFile = 'tests/resources/models/json/examples/single_type_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(4, len(modelTypes))
 
@@ -46,11 +50,13 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(isinstance(innerComplexType.properties[2].type, ComplexType))
         self.assertEqual(anotherType, innerComplexType.properties[2].type)
 
-    def testSingleTypeSchema2(self):
-        modelFile = 'resources/models/json/config_schema.json'
+    def _testSingleTypeSchema2(self):
+        modelFile = 'resources/models/json/yacg_config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(8, len(modelTypes))
 
@@ -63,22 +69,26 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(6, 'TemplateParam', 2, modelTypes)
         self._checkUpType(7, 'MultiFileTask', 6, modelTypes)
 
-    def testSchemaWithExternalRef(self):
-        modelFile = 'resources/models/json/examples/schema_with_external_ref.json'
+    def _testSchemaWithExternalRef(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(3, len(modelTypes))
         self._checkUpType(0, 'OneType', 2, modelTypes)
         self._checkUpType(1, 'TwoType', 3, modelTypes)
         self._checkUpType(2, 'AnotherType', 2, modelTypes)
 
-    def testSchemaWithExternalCircularRefs(self):
-        modelFile = 'resources/models/json/examples/schema_with_circular_deps.json'
+    def _testSchemaWithExternalCircularRefs(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(5, len(modelTypes))
 
@@ -88,11 +98,13 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(3, 'TwoType', 3, modelTypes)
         self._checkUpType(4, 'AnotherType', 2, modelTypes)
 
-    def testSimpleAllOf(self):
-        modelFile = 'resources/models/json/examples/simple_allof.json'
+    def _testSimpleAllOf(self):
+        modelFile = 'tests/resources/models/json/examples/simple_allof.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(3, len(modelTypes))
         self._checkUpType(0, 'SimpleAllOfSchema', 1, modelTypes)
@@ -100,25 +112,29 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(2, 'SimpleAllOfSchemaTypeEnum', 0, modelTypes)
 
     def testSophisticatedAllOf(self):
-        modelFile = 'resources/models/json/examples/more_sophisticated_allof.json'
+        modelFile = 'tests/resources/models/json/examples/more_sophisticated_allof.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(5, len(modelTypes))
+        self.assertEqual(7, len(modelTypes))
         type = self._checkUpType(0, 'MoreSophisticatedAllOf', 1, modelTypes)
         self.assertIsNotNone(type.extendsType)
         address = self._checkUpType(1, 'Address', 3, modelTypes)
         self.assertEqual(type.extendsType, address)
         self._checkUpType(2, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes)
         self._checkUpType(3, 'MainAddress', 2, modelTypes)
-        self._checkUpType(4, 'MainAddressComplex', 3, modelTypes)
+        self._checkUpType(6, 'MainAddressComplex', 3, modelTypes)
 
-    def testTags(self):
+    def _testTags(self):
         modelFile = 'resources/models/json/yacg_model_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        modelTypes = getModelFromJson(modelFile, [])
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
         metaModelTypes = []
         self.assertIsNotNone(modelTypes)
         tagType = None
@@ -133,6 +149,7 @@ class TestJsonBuilder (unittest.TestCase):
                 propertyType = type
             elif type.name == 'ComplexType':
                 complexTypeType = type
+            self.assertEqual('yacgCore', type.domain)
         self.assertIsNotNone(tagType)
         constructorValueProps1 = getPropertiesThatHasTag('constructorValue', tagType)
         self.assertEqual(2, len(constructorValueProps1))
@@ -167,6 +184,7 @@ class TestJsonBuilder (unittest.TestCase):
         if isinstance(type, EnumType) or isinstance(type, Type):
             return type
         self.assertEqual(propCount, len(type.properties))
+        self.assertIsNotNone(type.domain)
         for prop in type.properties:
             self.assertIsNotNone(prop.type, "property w/o a type: %s.%s" % (typeName, prop.name))
             if prop.name.endswith('s') or prop.name.endswith('ed'):

@@ -1,0 +1,162 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "yacg type for openapi support",
+    "description": "the yacg standard model included the type spefic aspects, this model cares about path definitions",
+    "version": "0.0.1",
+    "__domain": "yacg.model.openapi",
+    "definitions": {
+        "PathType": {
+            "type": "object",
+            "description": "base type that contains all REST path information",
+            "allOf": [
+                { 
+                  "$ref": "yacg_model_schema.json#/definitions/Type" 
+                },
+                { 
+                    "properties": {
+                        "pathPattern": {
+                            "description": "REST path with parameter pattern if existing",
+                            "type": "string"
+                        },
+                        "commands": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Command"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "Command": {
+            "type": "object",
+            "description": "information to a specific HTTP command",
+            "properties": {
+                "command": {
+                    "description": "HTTP command that is executed on the path",
+                    "type": "string",
+                    "enum": ["GET","PUT","POST","DELETE","OPTIONS"]
+                },
+                "tags": {
+                    "description": "tags array of the open api path section",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "operationId": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Parameter"
+                    }
+                },
+                "requestBody": {
+                    "description": "content of the request body that is passed to the back-end",
+                    "$ref": "#/definitions/RequestBody"
+                },
+                "responses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Response"
+                    }
+                }
+            }
+        },
+        "RequestBody": {
+            "type": "object",
+            "description": "definition of a parameter that is used in the request",
+            "properties": {
+                "description": {
+                    "description": "some more words to explain for what this parameter is good for",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "tells if is this parameter optional",
+                    "type": "boolean"
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ContentEntry"
+                    }
+                }
+            }
+        },
+        "ContentEntry": {
+            "type": "object",
+            "properties": {
+                "mimeType": {
+                    "description": "mime type that is passed as request body",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "meta model type that is passed in the body",
+                    "$ref": "./yacg_model_schema.json#/definitions/Type"
+                },
+                "isArray": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "Parameter": {
+            "type": "object",
+            "description": "definition of a parameter that is used in the request",
+            "properties": {
+                "inType": {
+                    "description": "how is the parameter passed to the back-end, attention",
+                    "$comment": "attention, the request body gots its own attribute in the command type",
+                    "type": "string",
+                    "enum": ["path", "query", "header", "cookie"]
+                },
+                "name": {
+                    "description": "name of the parameter",
+                    "type": "string"
+                },
+                "isArray": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "some more words to explain for what this parameter is good for",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "tells if is this parameter optional",
+                    "type": "boolean"
+                },
+                "type": {
+                    "description": "type that is passed as parameter",
+                    "$ref": "./yacg_model_schema.json#/definitions/Type"
+                }
+            }
+        },
+        "Response": {
+            "type": "object",
+            "description": "description of a response option for a request",
+            "properties": {
+                "returnCode": {
+                    "description": "HTTP return code for the specific case",
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ContentEntry"
+                    }
+                }
+            }
+        }
+    }
+}

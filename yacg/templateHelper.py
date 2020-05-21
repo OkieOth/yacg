@@ -16,3 +16,4 @@ def addLineBreakToDescription(textLine, indent):
             breakedText = breakedText + ' '
         breakedText = breakedText + t
     return breakedText
+

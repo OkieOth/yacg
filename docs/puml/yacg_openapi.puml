@@ -1,0 +1,98 @@
+
+@startuml
+
+class PathType {
+    StringType pathPattern 
+    Command[] commands 
+}
+ 
+note top: base type that contains all\nREST path information
+
+PathType --|> Type
+class Command {
+    CommandCommandEnum command 
+    StringType[] tags 
+    StringType summary 
+    StringType description 
+    StringType operationId 
+    Parameter[] parameters 
+    RequestBody requestBody 
+    Response[] responses 
+}
+ 
+note top: information to a specific HTTP\ncommand
+
+class CommandCommandEnum {
+}
+ 
+
+class Parameter {
+    ParameterInTypeEnum inType 
+    StringType name 
+    BooleanType isArray 
+    StringType description 
+    BooleanType required 
+    Type type 
+}
+ 
+note top: definition of a parameter that\nis used in the request
+
+class RequestBody {
+    StringType description 
+    BooleanType required 
+    ContentEntry[] content 
+}
+ 
+note top: definition of a parameter that\nis used in the request
+
+class Response {
+    IntegerType returnCode 
+    StringType description 
+    ContentEntry[] content 
+}
+ 
+note top: description of a response option\nfor a request
+
+class ContentEntry {
+    StringType mimeType 
+    Type type 
+    BooleanType isArray 
+}
+ 
+
+class ParameterInTypeEnum {
+}
+ 
+
+
+    
+PathType "0" *-- "n" Command        
+            
+    
+Command  *--  CommandCommandEnum        
+            
+Command "0" *-- "n" Parameter        
+            
+Command  *--  RequestBody        
+            
+Command "0" *-- "n" Response        
+            
+    
+    
+Parameter  *--  ParameterInTypeEnum        
+            
+Parameter  *--  Type        
+            
+    
+RequestBody "0" *-- "n" ContentEntry        
+            
+    
+Response "0" *-- "n" ContentEntry        
+            
+    
+ContentEntry  *--  Type        
+            
+    
+
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
+@enduml

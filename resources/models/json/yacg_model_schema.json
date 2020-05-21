@@ -3,6 +3,7 @@
     "title": "yacg inner type model",
     "description": "model types used internally to provide loaded models for the code generators",
     "version": "0.0.1",
+    "__domain": "yacg.model.model",
     "definitions": {
         "Type": {
             "type": "object",
@@ -23,6 +24,18 @@
                             "enum": ["int32", "int64"]
                         },
                         "default": {
+                            "type": "integer"
+                        },
+                        "minimum": {
+                            "type": "integer"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "integer"
+                        },
+                        "maximum": {
+                            "type": "integer"
+                        },
+                        "exclusiveMaximum": {
                             "type": "integer"
                         }
                     }
@@ -45,8 +58,19 @@
                         },
                         "default": {
                             "type": "number"
-                        }
-                    }
+                        },
+                        "minimum": {
+                            "type": "number"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "number"
+                        },
+                        "maximum": {
+                            "type": "number"
+                        },
+                        "exclusiveMaximum": {
+                            "type": "number"
+                        }                    }
                 }
             ],
             "__tags": ["metaModelType"]
@@ -119,6 +143,14 @@
                             "$comment": "optional, can be used for domain driven modelling",
                             "type": "string"
                         },
+                        "source": {
+                            "description": "from what file the Type was loaded",
+                            "$comment": "basically a nomalized fileName with path",
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
                         "values": {
                             "type": "array",
                             "items": {
@@ -127,6 +159,14 @@
                         },
                         "default": {
                             "type": "string"
+                        },
+                        "tags": {
+                            "description": "additional flags to mark a type",
+                            "$comment": "custom extension marked with '__tags'",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Tag"
+                            }
                         }
                     }
                 }
@@ -143,7 +183,24 @@
                 {
                     "properties": {
                         "default": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "minimum": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "maximum": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "exclusiveMaximum": {
+                            "type": "string",
+                            "format": "date"
                         }
                     }
                 }
@@ -160,7 +217,24 @@
                 {
                     "properties": {
                         "default": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "minimum": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "maximum": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "exclusiveMaximum": {
+                            "type": "string",
+                            "format": "date-time"
                         }
                     }
                 }
@@ -259,6 +333,10 @@
                 },
                 "description": {
                     "description": "optional description from the model file",
+                    "type": "string"
+                },
+                "default": {
+                    "description": "default value for this attribute as string",
                     "type": "string"
                 }
             }

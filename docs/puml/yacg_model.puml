@@ -9,6 +9,10 @@ note top: Dummy base class to implement\nstrong typed references
 class IntegerType {
     IntegerTypeFormatEnum format 
     IntegerType default 
+    IntegerType minimum 
+    IntegerType exclusiveMinimum 
+    IntegerType maximum 
+    IntegerType exclusiveMaximum 
 }
  
 note top: integer values
@@ -21,6 +25,10 @@ class IntegerTypeFormatEnum {
 class NumberType {
     NumberTypeFormatEnum format 
     NumberType default 
+    NumberType minimum 
+    NumberType exclusiveMinimum 
+    NumberType maximum 
+    NumberType exclusiveMaximum 
 }
  
 note top: floating point values
@@ -54,22 +62,39 @@ UuidType --|> Type
 class EnumType {
     StringType name 
     StringType domain 
+    StringType description 
     StringType[] values 
     StringType default 
+    Tag[] tags 
 }
  
 note top: type for enum values -\nfixed value types
 
 EnumType --|> Type
+class Tag {
+    StringType name 
+    StringType value 
+}
+ 
+note top: a tag type
+
 class DateType {
-    IntegerType default 
+    DateType default 
+    DateType minimum 
+    DateType exclusiveMinimum 
+    DateType maximum 
+    DateType exclusiveMaximum 
 }
  
 note top: type for date values
 
 DateType --|> Type
 class DateTimeType {
-    IntegerType default 
+    DateTimeType default 
+    DateTimeType minimum 
+    DateTimeType exclusiveMinimum 
+    DateTimeType maximum 
+    DateTimeType exclusiveMaximum 
 }
  
 note top: type for timestamp values
@@ -96,16 +121,10 @@ class Property {
     Type type 
     Tag[] tags 
     StringType description 
+    StringType default 
 }
  
 note top: a property of a type
-
-class Tag {
-    StringType name 
-    StringType value 
-}
- 
-note top: a tag type
 
 
     
@@ -121,6 +140,9 @@ NumberType  *--  NumberTypeFormatEnum
     
     
     
+EnumType "0" *-- "n" Tag        
+            
+    
     
     
     
@@ -135,7 +157,6 @@ Property  *--  Type
             
 Property "0" *-- "n" Tag        
             
-    
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
 @enduml

@@ -1,14 +1,13 @@
 <%
+    import yacg.model.model as model
+    import yacg.templateHelper as templateHelper
     import yacg.model.modelFuncs as modelFuncs
     import yacg.util.stringUtils as stringUtils
-    import yacg.generators.helper.pythonFuncs as pythonFuncs
 
     templateFile = 'pythonBeans.mako'
     templateVersion = '1.0.0'
 
-    baseModelDomain = templateParameters.get('baseModelDomain',None)
-    domainList = modelFuncs.getDomainsAsList(modelTypes)
-
+    modelPackage = templateParameters.get('modelPackage','<<"modelPackage" template param is missing>>')
     testClassName = templateParameters.get('title','Model')
     testClassName = stringUtils.toUpperCamelCase(testClassName) 
 
@@ -18,8 +17,8 @@
 
 import unittest
 
-% for domain in domainList:
-import ${domain}
+% for type in modelTypes:
+from ${modelPackage} import ${type.name}
 % endfor
 
 
@@ -27,11 +26,11 @@ class Test${testClassName} (unittest.TestCase):
 % for type in modelTypes:
     def test${type.name}(self):
     % if not modelFuncs.isEnumType(type):
-        x = ${pythonFuncs.getTypeWithPackageEnforced(type, 'dummy')}()
+        x = ${type.name}()
         self.assertIsNotNone(x)
     % else:
         % for value in type.values:
-        self.assertIsNotNone(${pythonFuncs.getTypeWithPackageEnforced(type, 'dummy')}.${stringUtils.toUpperCaseName(value)})
+        self.assertIsNotNone(${type.name}.${stringUtils.toUpperCaseName(value)})
         % endfor
     % endif
 

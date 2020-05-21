@@ -1,5 +1,6 @@
 ## Template to create a Python file with type beans of the model types
 <%
+    import yacg.model.model as model
     import yacg.templateHelper as templateHelper
     import yacg.model.modelFuncs as modelFuncs
     import yacg.util.stringUtils as stringUtils
@@ -7,6 +8,32 @@
 
     templateFile = 'pythonBeans.mako'
     templateVersion = '1.0.0'
+
+    def hasEnumTypes(modelTypes):
+        for type in modelTypes:
+            if isinstance(type,model.EnumType):
+                return True
+        return False
+
+    def getExtendsType(type):
+        return getTypeWithPackage(type.extendsType)
+
+    def getTypeWithPackage(type):
+        for t in modelTypes:
+            if (t.name == type.name):
+                sameSource = True 
+                if (hasattr(type, 'source') and (hasattr(t, 'source'))):
+                    if type.source != t.source:
+                        sameSource = False
+                if sameSource:
+                    return type.name
+
+        if baseModelDomain is None:
+            return type.name            
+        elif (type.domain is not None) and (type.domain != baseModelDomain): 
+            return '{}.{}'.format(type.domain, type.name)
+        else:
+            return type.name
 
     baseModelDomain = templateParameters.get('baseModelDomain',None)
     domainList = modelFuncs.getDomainsAsList(modelTypes)
@@ -16,7 +43,7 @@
 # run of the code generation.
 # created by yacg (template: ${templateFile} v${templateVersion})
 
-% if modelFuncs.hasEnumTypes(modelTypes):
+% if hasEnumTypes(modelTypes):
 from enum import Enum
 % endif
 % for domain in domainList:
@@ -27,7 +54,7 @@ import ${domain}
 
 
 % for type in modelTypes:
-    % if modelFuncs.isEnumType(type):    
+    % if isinstance(type, model.EnumType):    
 class ${type.name}(Enum):
         % for value in type.values:
     ${stringUtils.toUpperCaseName(value)} = '${value}'
@@ -45,7 +72,7 @@ class ${type.name}(Enum):
             return None
 
     % else:
-class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)) if type.extendsType is not None else ''}:
+class ${type.name}${ ' ({})'.format(getExtendsType(type)) if type.extendsType is not None else ''}:
         % if type.description != None:
     """${templateHelper.addLineBreakToDescription(type.description,4)}
     """
@@ -53,7 +80,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % endif
     def __init__(self):
         % if type.extendsType is not None:
-        super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
+        super(${getExtendsType(type)}, self).__init__()
         % endif
         % if len(type.properties) == 0:
         pass
@@ -97,13 +124,13 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % else:
                 % if not property.isArray:
 
-        obj.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(dict.get('${property.name}', None))
+        obj.${property.name} = ${getTypeWithPackage(property.type)}.dictToObject(dict.get('${property.name}', None))
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
             obj.${property.name}.append(
-                ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
+                ${getTypeWithPackage(property.type)}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
                 % endif
             % endif
         % endfor
