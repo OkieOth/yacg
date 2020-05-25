@@ -35,3 +35,9 @@ jobs:
     - name: Test with pytest
       run: |
         pipenv run python3 -m unittest discover tests "test_*.py"
+    - name: Test run from command line
+      run: |
+        pipenv run python3 yacg.py \
+            --models resources/models/json/yacg_config_schema.json \
+                    resources/models/json/yacg_model_schema.json \
+            --singleFileTemplates plantUml=stdout
