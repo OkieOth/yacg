@@ -58,7 +58,7 @@ pipenv run python3 -m unittest discover tests "test_*.py"
 
 # run the docker image
 cd REPO_PATH
-docker run -v `pwd`/resources:/resources --rm -t okieoth/yacg:0.2.0 \
+docker run -v `pwd`/resources:/resources --rm -t okieoth/yacg:0.2.1 \
     --models /resources/models/json/yacg_config_schema.json \
              /resources/models/json/yacg_model_schema.json \
     --singleFileTemplates plantUml=stdout
