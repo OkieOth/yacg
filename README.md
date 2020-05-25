@@ -35,7 +35,7 @@ docker pull okieoth/yacg
 # basic preparation
 pip install --user pipenv
 
-pipenv --python 3.7
+pipenv --python 3.8
 pipenv --three install
 pipenv shell
 
