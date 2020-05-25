@@ -58,15 +58,16 @@ def _getTemplateParameters(args):
     """
 
     templateParameters = []
-    for parameter in args.templateParameters:
-        keyValueArray = parameter.split('=')
-        if (len(keyValueArray) == 2):
-            templateParam = config.TemplateParam()
-            templateParam.name = keyValueArray[0]
-            templateParam.value = keyValueArray[1]
-            templateParameters.append(templateParam)
-        else:
-            printError('\ntemplate param with wrong structure found ... skipped: {}'.format(parameter))
+    if args.templateParameters is not None:
+        for parameter in args.templateParameters:
+            keyValueArray = parameter.split('=')
+            if (len(keyValueArray) == 2):
+                templateParam = config.TemplateParam()
+                templateParam.name = keyValueArray[0]
+                templateParam.value = keyValueArray[1]
+                templateParameters.append(templateParam)
+            else:
+                printError('\ntemplate param with wrong structure found ... skipped: {}'.format(parameter))
     return templateParameters
 
 
