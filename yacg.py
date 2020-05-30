@@ -7,6 +7,7 @@ from yacg.util.outputUtils import printError, getErrorTxt, getOkTxt
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
+from yacg.generators.multiFileGenerator import renderMultiFileTemplate
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 
@@ -245,10 +246,17 @@ def main():
                     task.singleFileTask.templateParams,
                     task.blackListed,
                     task.whiteListed)
-                # TODO
             elif task.multiFileTask is not None:
-                pass
-                # TODO
+                renderMultiFileTemplate(
+                    loadedTypes,
+                    task.multiFileTask.template,
+                    task.multiFileTask.destDir,
+                    task.multiFileTask.destFilePrefix,
+                    task.multiFileTask.destFilePostfix,
+                    task.multiFileTask.destFileExt,
+                    task.multiFileTask.templateParams,
+                    task.blackListed,
+                    task.whiteListed)
 
 
 if __name__ == '__main__':

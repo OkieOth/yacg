@@ -1,12 +1,20 @@
-"""A generator that creates from the model types and the given template
-one single output file"""
+"""A generator that creates from the model types one output file per type"""
 
 import yacg.generators.helper.generatorHelperFuncs as generatorHelper
 
 from mako.template import Template
 
 
-def renderSingleFileTemplate(modelTypes, templateFile, output, templateParameterList, blackList, whiteList):
+def renderMultiFileTemplate(
+        modelTypes,
+        templateFile,
+        destDir,
+        destFilePrefix,
+        destFilePostfix,
+        destFileExt,
+        templateParameterList,
+        blackList,
+        whiteList):
     """render a template that produce one output file. This file contains content based
     on every type of the model.
     A possible example is the creation of a plantUml diagram from a model
@@ -14,7 +22,10 @@ def renderSingleFileTemplate(modelTypes, templateFile, output, templateParameter
     Keyword arguments:
     modelTypes -- list of types that build the model, list of yacg.model.model.Type instances (mostly Enum- and ComplexTypes)
     templateFile -- template file to use
-    output -- output file to create
+    destDir -- output directory for the file to create
+    destFilePrefix -- possible prefix to the type name based dest file name
+    destFilePostfix -- possible postfix to the type name based dest file name
+    destFileExt -- file extension
     templateParameterList -- list of yacg.model.config.TemplateParam instances, these parameters are passed to the template
     blackList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be excluded
     whiteList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be included
@@ -25,13 +36,17 @@ def renderSingleFileTemplate(modelTypes, templateFile, output, templateParameter
     templateParameterDict = {}
     for templateParam in templateParameterList:
         templateParameterDict[templateParam.name] = templateParam.value
-    renderResult = template.render(
-        modelTypes=modelTypesToUse,
-        templateParameters=templateParameterDict)
-    if (output == 'stdout'):
-        print(renderResult)
-    else:
-        outputFile = output
+    for type in modelTypesToUse:
+        renderResult = template.render(
+            currentType=type,
+            modelTypes=modelTypesToUse,
+            templateParameters=templateParameterDict)
+        outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, type)
         f = open(outputFile, "w+")
         f.write(renderResult)
         f.close()
+
+
+def __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, type):
+    fileNameBase = type.name if hasattr(type, 'name') and (type.name is not None) else type(type).__name__
+    return '{}/{}{}{}.{}'.format(destDir, destFilePrefix, fileNameBase, destFilePostfix, destFileExt)
