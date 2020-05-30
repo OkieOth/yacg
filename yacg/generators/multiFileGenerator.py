@@ -4,6 +4,8 @@ import yacg.generators.helper.generatorHelperFuncs as generatorHelper
 
 from mako.template import Template
 
+from pathlib import Path
+
 
 def renderMultiFileTemplate(
         modelTypes,
@@ -30,6 +32,16 @@ def renderMultiFileTemplate(
     blackList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be excluded
     whiteList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be included
     """
+
+    Path(destDir).mkdir(parents=True, exist_ok=True)
+    if destDir is None:
+        destDir = '.'
+    if destFilePrefix is None:
+        destFilePrefix = ''
+    if destFilePostfix is None:
+        destFilePostfix = ''
+    if destFileExt is None:
+        destFileExt = 'txt'
 
     template = Template(filename=templateFile)
     modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, whiteList)
