@@ -100,10 +100,20 @@ def __getMultiFileTemplates(args, job, templateParameters, blackList, whiteList)
             task.name = templateFile
             task.multiFileTask = config.MultiFileTask()
             (task.multiFileTask.template, task.multiFileTask.destDir) = _splitTemplateAndDestination(templateFile)
-            task.multiFileTask.templateParameters = templateParameters
+            task.multiFileTask.templateParams = templateParameters
+            task.multiFileTask.destFilePrefix = __extractFromTemplateParameters('destFilePrefix', templateParameters)
+            task.multiFileTask.destFilePostfix = __extractFromTemplateParameters('destFilePostfix', templateParameters)
+            task.multiFileTask.destFileExt = __extractFromTemplateParameters('destFileExt', templateParameters)
             task.blackListed = blackList
             task.whiteListed = whiteList
             job.tasks.append(task)
+
+
+def __extractFromTemplateParameters(parameterName, templateParameters):
+    for param in templateParameters:
+        if param.name == parameterName:
+            return param.value
+    return None
 
 
 def __blackWhiteListEntries2Objects(argsList):
