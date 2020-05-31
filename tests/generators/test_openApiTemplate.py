@@ -15,11 +15,11 @@ class TestOpenApi (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         templateFile = 'resources/templates/examples/openApiJson.mako'
-        template = Template(filename=templateFile)
-        templateFileExists = os.path.isfile(modelFile)
+        templateFileExists = os.path.isfile(templateFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
         templateParameters = {}
         templateParameters['restTypes'] = 'ComplexType,Tag'
+        template = Template(filename=templateFile)
         renderResult = template.render(modelTypes=modelTypes, templateParameters=templateParameters)
         self.assertIsNotNone(renderResult)
 
