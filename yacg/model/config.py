@@ -165,6 +165,7 @@ class BlackWhiteListEntryTypeEnum(Enum):
     CONTAINEDATTRIB = 'containedAttrib'
     NOTCONTAINEDATTRIB = 'notContainedAttrib'
     DOMAIN = 'domain'
+    TYPETYPE = 'typeType'
 
     @classmethod
     def valueForString(cls, stringValue):
@@ -180,6 +181,8 @@ class BlackWhiteListEntryTypeEnum(Enum):
             return BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB
         elif stringValue == 'domain':
             return BlackWhiteListEntryTypeEnum.DOMAIN
+        elif stringValue == 'typeType':
+            return BlackWhiteListEntryTypeEnum.TYPETYPE
         else:
             return None
 

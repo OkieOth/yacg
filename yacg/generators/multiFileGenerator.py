@@ -48,17 +48,18 @@ def renderMultiFileTemplate(
     templateParameterDict = {}
     for templateParam in templateParameterList:
         templateParameterDict[templateParam.name] = templateParam.value
-    for type in modelTypesToUse:
+    for typeObj in modelTypesToUse:
         renderResult = template.render(
-            currentType=type,
+            currentType=typeObj,
             modelTypes=modelTypesToUse,
+            availableTypes=modelTypes,
             templateParameters=templateParameterDict)
-        outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, type)
+        outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj)
         f = open(outputFile, "w+")
         f.write(renderResult)
         f.close()
 
 
-def __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, type):
-    fileNameBase = type.name if hasattr(type, 'name') and (type.name is not None) else type(type).__name__
+def __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj):
+    fileNameBase = typeObj.name if hasattr(typeObj, 'name') and (typeObj.name is not None) else str(type(type))
     return '{}/{}{}{}.{}'.format(destDir, destFilePrefix, fileNameBase, destFilePostfix, destFileExt)

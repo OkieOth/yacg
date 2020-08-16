@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "<2.0.0"
+flake8 = "*"
 
 [packages]
 argparse = "*"

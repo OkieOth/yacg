@@ -27,6 +27,7 @@ def renderSingleFileTemplate(modelTypes, templateFile, output, templateParameter
         templateParameterDict[templateParam.name] = templateParam.value
     renderResult = template.render(
         modelTypes=modelTypesToUse,
+        availableTypes=modelTypes,
         templateParameters=templateParameterDict)
     if (output == 'stdout'):
         print(renderResult)

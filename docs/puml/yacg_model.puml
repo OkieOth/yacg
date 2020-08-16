@@ -62,6 +62,7 @@ UuidType --|> Type
 class EnumType {
     StringType name 
     StringType domain 
+    StringType source 
     StringType description 
     StringType[] values 
     StringType default 
