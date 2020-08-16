@@ -1,4 +1,4 @@
-"""A generator that creates from the model types and the given template
+    """A generator that creates from the model types and the given template
 one single output file"""
 
 import yacg.generators.helper.generatorHelperFuncs as generatorHelper

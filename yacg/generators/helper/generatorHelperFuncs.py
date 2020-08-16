@@ -29,6 +29,8 @@ def _trimModelTypesWithBlackList(modelTypes, blackList):
             _skipTypeIfTagNameMatch(modelTypes, trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.TYPE:
             _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, blackListedText)
+        elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.TYPETYPE:
+            _skipTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, blackListedText)
         else:
             _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, blackListedText)
     return trimmedModelTypes
@@ -52,6 +54,8 @@ def _trimModelTypesWithWhiteList(modelTypes, whiteList):
             _addTypeIfTagNameMatch(modelTypes, trimmedModelTypes, whiteListedText)
         elif whiteListEntry.type is config.BlackWhiteListEntryTypeEnum.TYPE:
             _addTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, whiteListedText)
+        elif whiteListEntry.type is config.BlackWhiteListEntryTypeEnum.TYPETYPE:
+            _addTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, whiteListedText)
         else:
             _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, whiteListedText)
     return trimmedModelTypes
@@ -64,9 +68,24 @@ def _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
         trimmedModelTypes.append(type)
 
 
+def _skipTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, textToTest):
+    for type in modelTypes:
+        typeTypeStr = str(type(type))
+        if (textToTest is not None) and (typeTypeStr == textToTest):
+            continue
+        trimmedModelTypes.append(type)
+
+
 def _addTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
     for type in modelTypes:
         if (type.name is not None) and (type.name == textToTest):
+            trimmedModelTypes.append(type)
+
+
+def _addTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, textToTest):
+    for type in modelTypes:
+        typeTypeStr = str(type(type))
+        if (textToTest is not None) and (typeTypeStr == textToTest):
             trimmedModelTypes.append(type)
 
 
