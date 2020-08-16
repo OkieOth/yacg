@@ -10,12 +10,16 @@
     "tasks": [
       {
         "name": "type classes",
-        "blackListed": {
-
-        },
-        "multiFileTask": {
+        "blackListed": [
+          {
+            "$comment": "ignore swagger paths",
+            "name": "yacg.model.openapi.PathType"
+          }
+        ],
+        "multiFileTask": {  
           "template": "resources/templates/examples/javaBeans.mako",
           "destDir": "tmp/javaBeans2",
+          "destFilePostfix": "java",
           "templateParams": [
             {
               "name": "modelPackage",

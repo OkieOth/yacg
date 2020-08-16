@@ -62,67 +62,67 @@ def _trimModelTypesWithWhiteList(modelTypes, whiteList):
 
 
 def _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        if (type.name is not None) and (type.name == textToTest):
+    for typeObj in modelTypes:
+        if (typeObj.name is not None) and (typeObj.name == textToTest):
             continue
-        trimmedModelTypes.append(type)
+        trimmedModelTypes.append(typeObj)
 
 
 def _skipTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        typeTypeStr = str(type(type))
+    for typeObj in modelTypes:
+        typeTypeStr = type(typeObj).__name__
         if (textToTest is not None) and (typeTypeStr == textToTest):
             continue
-        trimmedModelTypes.append(type)
+        trimmedModelTypes.append(typeObj)
 
 
 def _addTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        if (type.name is not None) and (type.name == textToTest):
-            trimmedModelTypes.append(type)
+    for typeObj in modelTypes:
+        if (typeObj.name is not None) and (typeObj.name == textToTest):
+            trimmedModelTypes.append(typeObj)
 
 
 def _addTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        typeTypeStr = str(type(type))
+    for typeObj in modelTypes:
+        typeTypeStr = type(typeObj).__name__
         if (textToTest is not None) and (typeTypeStr == textToTest):
-            trimmedModelTypes.append(type)
+            trimmedModelTypes.append(typeObj)
 
 
 def _skipTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        if (hasattr(type, 'domain')) and (textToTest == type.domain):
+    for typeObj in modelTypes:
+        if (hasattr(typeObj, 'domain')) and (textToTest == typeObj.domain):
             continue
-        trimmedModelTypes.append(type)
+        trimmedModelTypes.append(typeObj)
 
 
 def _addTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        if (hasattr(type, 'domain')) and (textToTest == type.domain):
-            trimmedModelTypes.append(type)
+    for typeObj in modelTypes:
+        if (hasattr(typeObj, 'domain')) and (textToTest == typeObj.domain):
+            trimmedModelTypes.append(typeObj)
 
 
 def _addTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        if modelFuncs.hasProperty(textToTest, type):
-            trimmedModelTypes.append(type)
+    for typeObj in modelTypes:
+        if modelFuncs.hasProperty(textToTest, typeObj):
+            trimmedModelTypes.append(typeObj)
 
 
 def _skipTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        if modelFuncs.hasProperty(textToTest, type):
+    for typeObj in modelTypes:
+        if modelFuncs.hasProperty(textToTest, typeObj):
             continue
-        trimmedModelTypes.append(type)
+        trimmedModelTypes.append(typeObj)
 
 
 def _skipTypeIfTagNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        if modelFuncs.hasTag(textToTest, type):
+    for typeObj in modelTypes:
+        if modelFuncs.hasTag(textToTest, typeObj):
             continue
-        trimmedModelTypes.append(type)
+        trimmedModelTypes.append(typeObj)
 
 
 def _addTypeIfTagNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for type in modelTypes:
-        if modelFuncs.hasTag(textToTest, type):
-            trimmedModelTypes.append(type)
+    for typeObj in modelTypes:
+        if modelFuncs.hasTag(textToTest, typeObj):
+            trimmedModelTypes.append(typeObj)
