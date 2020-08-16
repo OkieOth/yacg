@@ -1,0 +1,466 @@
+swagger: "2.0"
+info:
+  title: "Operation message"
+  description: "Basic data type to save user specific values/configurations"
+  version: "0"
+host: "please.change.com"
+schemes:
+  - "http"
+  - "https"
+basePath: "/userConfig"
+paths:
+  /userConfig:
+    options:
+      tags:
+        - userConfig
+      summary: Provides meta data of the related type
+      description: return a meta data object
+      operationId: "optionsUserConfig"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: filter
+          type: string
+          description: Defines a criteria for selecting specific objects
+      responses:
+        200:
+          description: "in case of success"
+          schema:
+            $ref: "#/definitions/OptionsListResponse"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/LisaError"
+    get:
+      tags:
+        - userConfig
+      summary: "Basically a key value pair"
+      description: "returns object list, contains optional query parameter for defining offset, limit, object filter and object order"
+      operationId: "getUserConfig"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: query
+          name: offset
+          type: integer
+          description: The number of objects to skip before starting to collect the result set.
+        - in: query
+          name: limit
+          type: integer
+          description: The numbers of objects to return.
+        - in: query
+          name: filter
+          type: string
+          description: Defines a criteria for selecting specific objects
+        - in: query
+          name: sort
+          type: string
+          description: Defines a sorting order for the objects
+      responses:
+        200:
+          description: "in case of success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserConfig"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/LisaError"
+    post:
+      tags:
+        - userConfig
+      summary: "add a new UserConfig"
+      description: ""
+      operationId: "addUserConfig"
+      produces:
+        - "application/json"
+        - "application/xml"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - name: "bodyParam"
+          in: "body"
+          description: "object to save"
+          required: true
+          schema:
+            $ref: "#/definitions/UserConfig"
+      responses:
+        200:
+          description: "in case of success"
+          schema:
+            $ref: "#/definitions/UserConfig"
+        404:
+          description: "if the object to process was not found"
+          schema:
+            $ref: "#/definitions/LisaError"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/LisaError"
+  /userConfig/{userConfigGuid}:
+    options:
+      tags:
+        - userConfig
+      summary: Provides meta data of the related type
+      description: return a meta data object
+      operationId: "optionsUserConfigId"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - name: "userConfigGuid"
+          in: "path"
+          description: "Basically a key value pair"
+          required: true
+          type: "string"
+          format: "uuid"
+      responses:
+        200:
+          description: "in case of success"
+          schema:
+            $ref: "#/definitions/OptionsResponse"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/LisaError"
+    get:
+      tags:
+        - userConfig
+      summary: Basically a key value pair
+      description: "returns object by id"
+      operationId: "getUserConfigId"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - name: "userConfigGuid"
+          in: "path"
+          description: "Basically a key value pair"
+          required: true
+          type: "string"
+          format: "uuid"
+      responses:
+        200:
+          description: "in case of success"
+          schema:
+            $ref: "#/definitions/UserConfig"
+        404:
+          description: "Requested object was not found"
+          schema:
+            $ref: "#/definitions/LisaError"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/LisaError"
+    put:
+      tags:
+        - userConfig
+      summary: "update UserConfig"
+      description: "update existing UserConfig"
+      operationId: "updateUserConfigId"
+      produces:
+        - "application/json"
+        - "application/xml"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - name: "userConfigGuid"
+          in: "path"
+          description: "Basically a key value pair"
+          required: true
+          type: "string"
+          format: "uuid"
+        - name: "bodyParam"
+          in: "body"
+          description: "object to save"
+          required: true
+          schema:
+            $ref: "#/definitions/UserConfig"
+      responses:
+        200:
+          description: "in case of success"
+          schema:
+            $ref: "#/definitions/UserConfig"
+        404:
+          description: "if the object to process was not found"
+          schema:
+            $ref: "#/definitions/LisaError"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/LisaError"
+    patch:
+      tags:
+        - userConfig
+      summary: "partial update UserConfig"
+      description: "partial update existing UserConfig"
+      operationId: "patchUserConfigId"
+      produces:
+        - "application/json"
+        - "application/xml"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - name: "userConfigGuid"
+          in: "path"
+          description: "Basically a key value pair"
+          required: true
+          type: "string"
+          format: "uuid"
+        - name: "bodyParam"
+          in: "body"
+          description: "object to save"
+          required: true
+          schema:
+            $ref: "#/definitions/UserConfig"
+      responses:
+        200:
+          description: "in case of success"
+          schema:
+            $ref: "#/definitions/UserConfig"
+        404:
+          description: "if the object to process was not found"
+          schema:
+            $ref: "#/definitions/LisaError"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/LisaError"
+    delete:
+      tags:
+        - userConfig
+      summary: "delete UserConfig"
+      description: "delete existing UserConfig"
+      operationId: "deleteUserConfigId"
+      parameters:
+        - name: "userConfigGuid"
+          in: "path"
+          description: "Basically a key value pair"
+          required: true
+          type: "string"
+          format: "uuid"
+      responses:
+        200:
+          description: "in case of success"
+          schema:
+            $ref: "#/definitions/IdObj"
+        404:
+          description: "if the object to delete was not found"
+          schema:
+            $ref: "#/definitions/LisaError"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/LisaError"
+definitions:
+  Tenant:
+    type: object
+    properties:
+      active:
+        description: "is this entry still active"
+        type: "boolean"
+      description:
+        description: "some words to explain"
+        type: "string"
+      guid:
+        description: "global identifier"
+        type: "string"
+      name:
+        description: "Tenant name"
+        type: "string"
+  UserConfig:
+    type: object
+    properties:
+      appId:
+        description: "identify the application for that entry"
+        type: "string"
+      defaultValue:
+        description: "if this is set to true, an entry can act as an default value"
+        type: "boolean"
+      guid:
+        description: "global identifier of the entry"
+        type: "string"
+      key:
+        description: "key to detect a specific value"
+        type: "string"
+      moduleId:
+        description: "identify the application-module for that entry"
+        type: "string"
+      tenantId:
+        description: "what is the related domain"
+        type: "string"
+      userId:
+        description: "identify the user for that entry"
+        type: "string"
+      value:
+        description: "the saved value"
+        type: "string"
+  FeatureAreaGeometry:
+    type: object
+    properties:
+      coordinates:
+        type: array
+        items:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+      projection:
+        type: "string"
+      type:
+        type: "string"
+  FeatureCoordinate:
+    type: object
+    properties:
+      lat:
+        type: "number"
+      lon:
+        type: "number"
+  FeaturePointGeometry:
+    type: object
+    properties:
+      coordinates:
+        type: array
+        items:
+          type: number
+      projection:
+        type: "string"
+      type:
+        type: "string"
+  FeatureRouteGeometry:
+    type: object
+    properties:
+      coordinates:
+        type: array
+        items:
+          type: array
+          items:
+            type: number
+      projection:
+        type: "string"
+      type:
+        type: "string"
+  FieldEntry:
+    type: object
+    properties:
+      childs:
+        type: array
+        items:
+          $ref: "#/definitions/FieldEntry"
+      display:
+        $ref: "#/definitions/FieldEntryDisplay"
+      meta:
+        $ref: "#/definitions/FieldEntryMeta"
+      modify:
+        $ref: "#/definitions/FieldEntryModify"
+  FieldEntryDisplay:
+    type: object
+    properties:
+      caption:
+        $ref: "#/definitions/TextResource"
+      format:
+        type: "string"
+      icon:
+        $ref: "#/definitions/IconResource"
+      visible:
+        type: "boolean"
+  FieldEntryMeta:
+    type: object
+    properties:
+      format:
+        type: "string"
+      name:
+        type: "string"
+      type:
+        type: "string"
+  FieldEntryModify:
+    type: object
+    properties:
+      changeble:
+        type: "boolean"
+      needed:
+        type: "boolean"
+      possibleValues:
+        $ref: "#/definitions/FieldEntryModifyValues"
+  FieldEntryModifyValues:
+    type: object
+    properties:
+      queryLink:
+        type: "string"
+      values:
+        type: array
+        items:
+          type: string
+  IconResource:
+    type: object
+    properties:
+      link:
+        type: "string"
+      resId:
+        type: "string"
+  IdObj:
+    type: object
+    properties:
+      id:
+        type: "string"
+  LisaError:
+    type: object
+    properties:
+      code:
+        type: "integer"
+      fields:
+        type: "string"
+      message:
+        type: "string"
+  NavTreeNode:
+    type: object
+    properties:
+      children:
+        type: array
+        items:
+          $ref: "#/definitions/NavTreeNode"
+      id:
+        type: "string"
+      label:
+        type: "string"
+      link:
+        type: "string"
+      tags:
+        type: array
+        items:
+          type: string
+  OptionsListResponse:
+    type: object
+    properties:
+      availableEntries:
+        type: "integer"
+      optionsResponse:
+        $ref: "#/definitions/OptionsResponse"
+  OptionsResponse:
+    type: object
+    properties:
+      array:
+        type: "boolean"
+      caption:
+        $ref: "#/definitions/TextResource"
+      commands:
+        type: "string"
+      fields:
+        type: array
+        items:
+          $ref: "#/definitions/FieldEntry"
+  TextResource:
+    type: object
+    properties:
+      resId:
+        type: "string"
+      text:
+        type: "string"

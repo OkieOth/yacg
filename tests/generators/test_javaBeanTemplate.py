@@ -5,6 +5,8 @@ import os
 
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.generators.multiFileGenerator import renderMultiFileTemplate
+from yacg.builder.jsonBuilder import getModelFromJson
+
 
 import yacg.model.config as config
 

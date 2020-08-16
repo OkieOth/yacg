@@ -1,0 +1,31 @@
+[
+  {
+    "name": "Create Broker Communication Stubs from Swagger",
+    "description": "This is a simple example",
+    "models": [
+      {
+        "schema": "resources/models/yaml/userConfig.swagger.yaml"
+      }
+    ],
+    "tasks": [
+      {
+        "name": "type classes",
+        "blackListed": {
+
+        },
+        "multiFileTask": {
+          "template": "resources/templates/examples/javaBeans.mako",
+          "destDir": "tmp/javaBeans2",
+          "templateParams": [
+            {
+              "name": "modelPackage",
+              "value": "de.test.model"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
+
+  

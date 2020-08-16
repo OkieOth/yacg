@@ -5,8 +5,6 @@
     "version": "0.2.0",
     "configurations": [
 
-
-
         {
             "name": "Python: Aktuelle Datei",
             "type": "python",
@@ -27,6 +25,17 @@
                 "stdout",
                 "--template",
                 "plantuml"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "special debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/yacg.py",
+            "args": [
+                "--config",
+                "resources/configurations/java_bean_example.json"
             ],
             "console": "integratedTerminal"
         },
