@@ -30,6 +30,7 @@ class TestYacgConfigurationModel (unittest.TestCase):
         self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB)
         self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB)
         self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.DOMAIN)
+        self.assertIsNotNone(yacg.model.config.BlackWhiteListEntryTypeEnum.TYPETYPE)
 
     def testSingleFileTask(self):
         x = yacg.model.config.SingleFileTask()

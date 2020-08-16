@@ -216,6 +216,9 @@ class EnumType (Type):
         self.domain = None
 
         #: type for enum values - fixed value types
+        self.source = None
+
+        #: type for enum values - fixed value types
         self.description = None
 
         #: type for enum values - fixed value types
@@ -236,6 +239,8 @@ class EnumType (Type):
         obj.name = dict.get('name', None)
 
         obj.domain = dict.get('domain', None)
+
+        obj.source = dict.get('source', None)
 
         obj.description = dict.get('description', None)
 
