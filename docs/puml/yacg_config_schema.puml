@@ -65,6 +65,7 @@ class MultiFileTask {
     StringType destFilePrefix 
     StringType destFilePostfix 
     StringType destFileExt 
+    BooleanType upperCaseStartedDestFileName 
     MultiFileTaskFileFilterTypeEnum fileFilterType 
     TemplateParam[] templateParams 
 }

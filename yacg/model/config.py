@@ -286,7 +286,10 @@ class MultiFileTask:
         self.destFileExt = None
 
         #: parameter of a code generation task that creates one file per model type
-        self.fileFilterType = None
+        self.upperCaseStartedDestFileName = False
+
+        #: parameter of a code generation task that creates one file per model type
+        self.fileFilterType = MultiFileTaskFileFilterTypeEnum.TYPE
 
         #: parameter of a code generation task that creates one file per model type
         self.templateParams = []
@@ -306,6 +309,8 @@ class MultiFileTask:
         obj.destFilePostfix = dict.get('destFilePostfix', None)
 
         obj.destFileExt = dict.get('destFileExt', None)
+
+        obj.upperCaseStartedDestFileName = dict.get('upperCaseStartedDestFileName', None)
 
         obj.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(dict.get('fileFilterType', None))
 
