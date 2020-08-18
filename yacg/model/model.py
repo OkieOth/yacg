@@ -81,6 +81,18 @@ class IntegerTypeFormatEnum(Enum):
         else:
             return None
 
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return None
+        elif enumValue == IntegerTypeFormatEnum.INT32:
+            return 'int32'
+        elif enumValue == IntegerTypeFormatEnum.INT64:
+            return 'int64'
+        else:
+            return None
+
+
 
 class NumberType (Type):
     """ floating point values
@@ -142,6 +154,18 @@ class NumberTypeFormatEnum(Enum):
             return NumberTypeFormatEnum.DOUBLE
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return None
+        elif enumValue == NumberTypeFormatEnum.FLOAT:
+            return 'float'
+        elif enumValue == NumberTypeFormatEnum.DOUBLE:
+            return 'double'
+        else:
+            return None
+
 
 
 class BooleanType (Type):

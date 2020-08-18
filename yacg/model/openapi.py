@@ -121,6 +121,24 @@ class CommandCommandEnum(Enum):
         else:
             return None
 
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return None
+        elif enumValue == CommandCommandEnum.GET:
+            return 'GET'
+        elif enumValue == CommandCommandEnum.PUT:
+            return 'PUT'
+        elif enumValue == CommandCommandEnum.POST:
+            return 'POST'
+        elif enumValue == CommandCommandEnum.DELETE:
+            return 'DELETE'
+        elif enumValue == CommandCommandEnum.OPTIONS:
+            return 'OPTIONS'
+        else:
+            return None
+
+
 
 class Parameter:
     """ definition of a parameter that is used in the request
@@ -274,5 +292,21 @@ class ParameterInTypeEnum(Enum):
             return ParameterInTypeEnum.COOKIE
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return None
+        elif enumValue == ParameterInTypeEnum.PATH:
+            return 'path'
+        elif enumValue == ParameterInTypeEnum.QUERY:
+            return 'query'
+        elif enumValue == ParameterInTypeEnum.HEADER:
+            return 'header'
+        elif enumValue == ParameterInTypeEnum.COOKIE:
+            return 'cookie'
+        else:
+            return None
+
 
 

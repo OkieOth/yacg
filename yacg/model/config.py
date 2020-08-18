@@ -187,6 +187,26 @@ class BlackWhiteListEntryTypeEnum(Enum):
         else:
             return None
 
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return None
+        elif enumValue == BlackWhiteListEntryTypeEnum.TYPE:
+            return 'type'
+        elif enumValue == BlackWhiteListEntryTypeEnum.TAG:
+            return 'tag'
+        elif enumValue == BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB:
+            return 'containedAttrib'
+        elif enumValue == BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB:
+            return 'notContainedAttrib'
+        elif enumValue == BlackWhiteListEntryTypeEnum.DOMAIN:
+            return 'domain'
+        elif enumValue == BlackWhiteListEntryTypeEnum.TYPETYPE:
+            return 'typeType'
+        else:
+            return None
+
+
 
 class SingleFileTask:
     """ parameter of a code generation task that creates one file
@@ -337,5 +357,17 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
             return MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return None
+        elif enumValue == MultiFileTaskFileFilterTypeEnum.TYPE:
+            return 'type'
+        elif enumValue == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
+            return 'openApiOperationId'
+        else:
+            return None
+
 
 

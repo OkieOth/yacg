@@ -45,6 +45,18 @@ class ${type.name}(Enum):
         else:
             return None
 
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return None
+        % for value in type.values:
+        elif enumValue == ${type.name}.${stringUtils.toUpperCaseName(value)}:
+            return '${value}'
+        % endfor
+        else:
+            return None
+
+
     % else:
 class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)) if type.extendsType is not None else ''}:
         % if type.description != None:
