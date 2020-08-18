@@ -56,7 +56,7 @@ class TestJavaBean (unittest.TestCase):
         blackListEntry.type = BlackWhiteListEntryTypeEnum.TYPETYPE
         blackList.append(blackListEntry)
         modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, ())
-        self.assertEquals(18, len(modelTypesToUse))
+        self.assertEqual(18, len(modelTypesToUse))
 
     def testWhiteListedPathTypes(self):
         modelFile = 'resources/models/yaml/userConfig.swagger.yaml'
@@ -71,4 +71,4 @@ class TestJavaBean (unittest.TestCase):
         whiteListEntry.type = BlackWhiteListEntryTypeEnum.TYPETYPE
         whiteList.append(whiteListEntry)
         modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, (), whiteList)
-        self.assertEquals(2, len(modelTypesToUse))
+        self.assertEqual(2, len(modelTypesToUse))

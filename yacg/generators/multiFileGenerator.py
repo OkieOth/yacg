@@ -5,7 +5,7 @@ import yacg.generators.helper.generatorHelperFuncs as generatorHelper
 from mako.template import Template
 
 from pathlib import Path
-
+from yacg.model.config import MultiFileTaskFileFilterTypeEnum
 
 def renderMultiFileTemplate(
         modelTypes,
@@ -16,7 +16,8 @@ def renderMultiFileTemplate(
         destFileExt,
         templateParameterList,
         blackList,
-        whiteList):
+        whiteList,
+        fileFilter=MultiFileTaskFileFilterTypeEnum.TYPE):
     """render a template that produce one output file. This file contains content based
     on every type of the model.
     A possible example is the creation of a plantUml diagram from a model
@@ -31,6 +32,7 @@ def renderMultiFileTemplate(
     templateParameterList -- list of yacg.model.config.TemplateParam instances, these parameters are passed to the template
     blackList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be excluded
     whiteList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be included
+    fileFilter -- how the model should be filtered to create the files, default per model type
     """
 
     Path(destDir).mkdir(parents=True, exist_ok=True)

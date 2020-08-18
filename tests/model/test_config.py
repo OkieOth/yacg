@@ -44,6 +44,10 @@ class TestYacgConfigurationModel (unittest.TestCase):
         x = yacg.model.config.MultiFileTask()
         self.assertIsNotNone(x)
 
+    def testMultiFileTaskFileFilterTypeEnum(self):
+        self.assertIsNotNone(yacg.model.config.MultiFileTaskFileFilterTypeEnum.TYPE)
+        self.assertIsNotNone(yacg.model.config.MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID)
+
 
 if __name__ == '__main__':
     unittest.main()

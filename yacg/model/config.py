@@ -286,6 +286,9 @@ class MultiFileTask:
         self.destFileExt = None
 
         #: parameter of a code generation task that creates one file per model type
+        self.fileFilterType = None
+
+        #: parameter of a code generation task that creates one file per model type
         self.templateParams = []
 
     @classmethod
@@ -304,10 +307,28 @@ class MultiFileTask:
 
         obj.destFileExt = dict.get('destFileExt', None)
 
+        obj.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(dict.get('fileFilterType', None))
+
         arrayTemplateParams = dict.get('templateParams', [])
         for elemTemplateParams in arrayTemplateParams:
             obj.templateParams.append(
                 TemplateParam.dictToObject(elemTemplateParams))
         return obj
+
+
+class MultiFileTaskFileFilterTypeEnum(Enum):
+    TYPE = 'type'
+    OPENAPIOPERATIONID = 'openApiOperationId'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        if stringValue is None:
+            return None
+        elif stringValue == 'type':
+            return MultiFileTaskFileFilterTypeEnum.TYPE
+        elif stringValue == 'openApiOperationId':
+            return MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID
+        else:
+            return None
 
 

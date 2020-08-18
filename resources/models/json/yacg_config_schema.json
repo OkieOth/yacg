@@ -100,6 +100,12 @@
           "description": "file extention for the created files",
           "type": "string"
         },
+        "fileFilterType": {
+          "description": "this defines how the model is splitted to create the multiple files",
+          "$comment": "the filter by type is the default",
+          "type": "string",
+          "enum": ["type", "openApiOperationId"]
+        },
         "templateParams": {
           "description": "custom parameter that are passed to the template, while it is processed",
           "type": "array",
