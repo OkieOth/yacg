@@ -190,7 +190,7 @@ class BlackWhiteListEntryTypeEnum(Enum):
     @classmethod
     def valueAsString(cls, enumValue):
         if enumValue is None:
-            return None
+            return ''
         elif enumValue == BlackWhiteListEntryTypeEnum.TYPE:
             return 'type'
         elif enumValue == BlackWhiteListEntryTypeEnum.TAG:
@@ -204,7 +204,7 @@ class BlackWhiteListEntryTypeEnum(Enum):
         elif enumValue == BlackWhiteListEntryTypeEnum.TYPETYPE:
             return 'typeType'
         else:
-            return None
+            return ''
 
 
 
@@ -361,13 +361,13 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
     @classmethod
     def valueAsString(cls, enumValue):
         if enumValue is None:
-            return None
+            return ''
         elif enumValue == MultiFileTaskFileFilterTypeEnum.TYPE:
             return 'type'
         elif enumValue == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
             return 'openApiOperationId'
         else:
-            return None
+            return ''
 
 
 

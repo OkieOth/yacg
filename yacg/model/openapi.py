@@ -102,6 +102,7 @@ class CommandCommandEnum(Enum):
     POST = 'POST'
     DELETE = 'DELETE'
     OPTIONS = 'OPTIONS'
+    PATCH = 'PATCH'
 
     @classmethod
     def valueForString(cls, stringValue):
@@ -118,13 +119,15 @@ class CommandCommandEnum(Enum):
             return CommandCommandEnum.DELETE
         elif lowerStringValue == 'options':
             return CommandCommandEnum.OPTIONS
+        elif lowerStringValue == 'patch':
+            return CommandCommandEnum.PATCH
         else:
             return None
 
     @classmethod
     def valueAsString(cls, enumValue):
         if enumValue is None:
-            return None
+            return ''
         elif enumValue == CommandCommandEnum.GET:
             return 'GET'
         elif enumValue == CommandCommandEnum.PUT:
@@ -135,8 +138,10 @@ class CommandCommandEnum(Enum):
             return 'DELETE'
         elif enumValue == CommandCommandEnum.OPTIONS:
             return 'OPTIONS'
+        elif enumValue == CommandCommandEnum.PATCH:
+            return 'PATCH'
         else:
-            return None
+            return ''
 
 
 
@@ -296,7 +301,7 @@ class ParameterInTypeEnum(Enum):
     @classmethod
     def valueAsString(cls, enumValue):
         if enumValue is None:
-            return None
+            return ''
         elif enumValue == ParameterInTypeEnum.PATH:
             return 'path'
         elif enumValue == ParameterInTypeEnum.QUERY:
@@ -306,7 +311,7 @@ class ParameterInTypeEnum(Enum):
         elif enumValue == ParameterInTypeEnum.COOKIE:
             return 'cookie'
         else:
-            return None
+            return ''
 
 
 

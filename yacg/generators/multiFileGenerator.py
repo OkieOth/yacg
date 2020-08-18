@@ -121,4 +121,5 @@ def __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, t
         fileNameBase = typeObj
     if upperCaseFileNames is True:
         fileNameBase = toUpperCamelCase(fileNameBase)
+    fileNameBase = ''.join([i if (ord(i) < 123) and (ord(i) > 47) else '_' for i in fileNameBase])
     return '{}/{}{}{}.{}'.format(destDir, destFilePrefix, fileNameBase, destFilePostfix, destFileExt)

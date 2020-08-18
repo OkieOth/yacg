@@ -84,13 +84,13 @@ class IntegerTypeFormatEnum(Enum):
     @classmethod
     def valueAsString(cls, enumValue):
         if enumValue is None:
-            return None
+            return ''
         elif enumValue == IntegerTypeFormatEnum.INT32:
             return 'int32'
         elif enumValue == IntegerTypeFormatEnum.INT64:
             return 'int64'
         else:
-            return None
+            return ''
 
 
 
@@ -158,13 +158,13 @@ class NumberTypeFormatEnum(Enum):
     @classmethod
     def valueAsString(cls, enumValue):
         if enumValue is None:
-            return None
+            return ''
         elif enumValue == NumberTypeFormatEnum.FLOAT:
             return 'float'
         elif enumValue == NumberTypeFormatEnum.DOUBLE:
             return 'double'
         else:
-            return None
+            return ''
 
 
 

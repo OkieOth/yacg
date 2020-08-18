@@ -48,13 +48,13 @@ class ${type.name}(Enum):
     @classmethod
     def valueAsString(cls, enumValue):
         if enumValue is None:
-            return None
+            return ''
         % for value in type.values:
         elif enumValue == ${type.name}.${stringUtils.toUpperCaseName(value)}:
             return '${value}'
         % endfor
         else:
-            return None
+            return ''
 
 
     % else:
