@@ -14,5 +14,5 @@ def swaggerFilterByOperationId(pathTypes):
     ret = {}
     for pathType in pathTypes:
         for command in pathType.commands:
-            ret[command.operationId] = pathTypes
+            ret[command.operationId] = pathType
     return ret
