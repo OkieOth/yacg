@@ -764,9 +764,9 @@ def _extractOpenApiCommandsForPath(pathType, commandsDict, modelTypes, modelFile
         command.summary = commandDict.get('summary', None)
         command.operationId = commandDict.get('operationId', None)
         command.tags = commandDict.get('tags', [])
-        __extractOpenApiCommandParameters(command, commandDict.get('parameters', []), modelTypes, modelFileContainer)
+        __extractOpenApiCommandParameters(command, commandDict.get('parameters', {}), modelTypes, modelFileContainer)
         __extractOpenApiRequestBody(command, commandDict.get('requestBody', None), modelTypes, modelFileContainer)
-        __extractOpenApiCommandResponses(command, commandDict.get('responses', []), modelTypes, modelFileContainer)
+        __extractOpenApiCommandResponses(command, commandDict.get('responses', {}), modelTypes, modelFileContainer)
         pathType.commands.append(command)
 
 

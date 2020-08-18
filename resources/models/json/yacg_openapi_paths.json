@@ -35,7 +35,7 @@
                 "command": {
                     "description": "HTTP command that is executed on the path",
                     "type": "string",
-                    "enum": ["GET","PUT","POST","DELETE","OPTIONS"]
+                    "enum": ["GET","PUT","POST","DELETE","OPTIONS","PATCH"]
                 },
                 "tags": {
                     "description": "tags array of the open api path section",

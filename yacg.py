@@ -259,14 +259,9 @@ def main():
             elif task.multiFileTask is not None:
                 renderMultiFileTemplate(
                     loadedTypes,
-                    task.multiFileTask.template,
-                    task.multiFileTask.destDir,
-                    task.multiFileTask.destFilePrefix,
-                    task.multiFileTask.destFilePostfix,
-                    task.multiFileTask.destFileExt,
-                    task.multiFileTask.templateParams,
                     task.blackListed,
-                    task.whiteListed)
+                    task.whiteListed,
+                    task.multiFileTask)
 
 
 if __name__ == '__main__':

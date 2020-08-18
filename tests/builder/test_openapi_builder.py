@@ -34,6 +34,7 @@ class TestOpenApiParsing (unittest.TestCase):
             self.assertTrue(len(path.commands) > 0)
             self.assertIsNotNone(path.pathPattern)
             for command in path.commands:
+                self.assertIsNotNone(command.command)
                 self.assertTrue(len(command.tags) > 0)
                 self.assertTrue(
                     (len(command.parameters) > 0) or

@@ -102,23 +102,47 @@ class CommandCommandEnum(Enum):
     POST = 'POST'
     DELETE = 'DELETE'
     OPTIONS = 'OPTIONS'
+    PATCH = 'PATCH'
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'GET':
+        elif lowerStringValue == 'get':
             return CommandCommandEnum.GET
-        elif stringValue == 'PUT':
+        elif lowerStringValue == 'put':
             return CommandCommandEnum.PUT
-        elif stringValue == 'POST':
+        elif lowerStringValue == 'post':
             return CommandCommandEnum.POST
-        elif stringValue == 'DELETE':
+        elif lowerStringValue == 'delete':
             return CommandCommandEnum.DELETE
-        elif stringValue == 'OPTIONS':
+        elif lowerStringValue == 'options':
             return CommandCommandEnum.OPTIONS
+        elif lowerStringValue == 'patch':
+            return CommandCommandEnum.PATCH
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        elif enumValue == CommandCommandEnum.GET:
+            return 'GET'
+        elif enumValue == CommandCommandEnum.PUT:
+            return 'PUT'
+        elif enumValue == CommandCommandEnum.POST:
+            return 'POST'
+        elif enumValue == CommandCommandEnum.DELETE:
+            return 'DELETE'
+        elif enumValue == CommandCommandEnum.OPTIONS:
+            return 'OPTIONS'
+        elif enumValue == CommandCommandEnum.PATCH:
+            return 'PATCH'
+        else:
+            return ''
+
 
 
 class Parameter:
@@ -260,17 +284,34 @@ class ParameterInTypeEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'path':
+        elif lowerStringValue == 'path':
             return ParameterInTypeEnum.PATH
-        elif stringValue == 'query':
+        elif lowerStringValue == 'query':
             return ParameterInTypeEnum.QUERY
-        elif stringValue == 'header':
+        elif lowerStringValue == 'header':
             return ParameterInTypeEnum.HEADER
-        elif stringValue == 'cookie':
+        elif lowerStringValue == 'cookie':
             return ParameterInTypeEnum.COOKIE
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        elif enumValue == ParameterInTypeEnum.PATH:
+            return 'path'
+        elif enumValue == ParameterInTypeEnum.QUERY:
+            return 'query'
+        elif enumValue == ParameterInTypeEnum.HEADER:
+            return 'header'
+        elif enumValue == ParameterInTypeEnum.COOKIE:
+            return 'cookie'
+        else:
+            return ''
+
 
 

@@ -23,6 +23,7 @@ class TestYacgOpenapiModel (unittest.TestCase):
         self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.POST)
         self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.DELETE)
         self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.OPTIONS)
+        self.assertIsNotNone(yacg.model.openapi.CommandCommandEnum.PATCH)
 
     def testParameter(self):
         x = yacg.model.openapi.Parameter()

@@ -169,22 +169,43 @@ class BlackWhiteListEntryTypeEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'type':
+        elif lowerStringValue == 'type':
             return BlackWhiteListEntryTypeEnum.TYPE
-        elif stringValue == 'tag':
+        elif lowerStringValue == 'tag':
             return BlackWhiteListEntryTypeEnum.TAG
-        elif stringValue == 'containedAttrib':
+        elif lowerStringValue == 'containedattrib':
             return BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB
-        elif stringValue == 'notContainedAttrib':
+        elif lowerStringValue == 'notcontainedattrib':
             return BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB
-        elif stringValue == 'domain':
+        elif lowerStringValue == 'domain':
             return BlackWhiteListEntryTypeEnum.DOMAIN
-        elif stringValue == 'typeType':
+        elif lowerStringValue == 'typetype':
             return BlackWhiteListEntryTypeEnum.TYPETYPE
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        elif enumValue == BlackWhiteListEntryTypeEnum.TYPE:
+            return 'type'
+        elif enumValue == BlackWhiteListEntryTypeEnum.TAG:
+            return 'tag'
+        elif enumValue == BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB:
+            return 'containedAttrib'
+        elif enumValue == BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB:
+            return 'notContainedAttrib'
+        elif enumValue == BlackWhiteListEntryTypeEnum.DOMAIN:
+            return 'domain'
+        elif enumValue == BlackWhiteListEntryTypeEnum.TYPETYPE:
+            return 'typeType'
+        else:
+            return ''
+
 
 
 class SingleFileTask:
@@ -286,6 +307,12 @@ class MultiFileTask:
         self.destFileExt = None
 
         #: parameter of a code generation task that creates one file per model type
+        self.upperCaseStartedDestFileName = False
+
+        #: parameter of a code generation task that creates one file per model type
+        self.fileFilterType = MultiFileTaskFileFilterTypeEnum.TYPE
+
+        #: parameter of a code generation task that creates one file per model type
         self.templateParams = []
 
     @classmethod
@@ -304,10 +331,43 @@ class MultiFileTask:
 
         obj.destFileExt = dict.get('destFileExt', None)
 
+        obj.upperCaseStartedDestFileName = dict.get('upperCaseStartedDestFileName', None)
+
+        obj.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(dict.get('fileFilterType', None))
+
         arrayTemplateParams = dict.get('templateParams', [])
         for elemTemplateParams in arrayTemplateParams:
             obj.templateParams.append(
                 TemplateParam.dictToObject(elemTemplateParams))
         return obj
+
+
+class MultiFileTaskFileFilterTypeEnum(Enum):
+    TYPE = 'type'
+    OPENAPIOPERATIONID = 'openApiOperationId'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
+            return None
+        elif lowerStringValue == 'type':
+            return MultiFileTaskFileFilterTypeEnum.TYPE
+        elif lowerStringValue == 'openapioperationid':
+            return MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID
+        else:
+            return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        elif enumValue == MultiFileTaskFileFilterTypeEnum.TYPE:
+            return 'type'
+        elif enumValue == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
+            return 'openApiOperationId'
+        else:
+            return ''
+
 
 

@@ -35,14 +35,27 @@ class ${type.name}(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
         % for value in type.values:
-        elif stringValue == '${value}':
+        elif lowerStringValue == '${value.lower()}':
             return ${type.name}.${stringUtils.toUpperCaseName(value)}
         % endfor
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        % for value in type.values:
+        elif enumValue == ${type.name}.${stringUtils.toUpperCaseName(value)}:
+            return '${value}'
+        % endfor
+        else:
+            return ''
+
 
     % else:
 class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)) if type.extendsType is not None else ''}:

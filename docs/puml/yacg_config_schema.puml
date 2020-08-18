@@ -65,10 +65,16 @@ class MultiFileTask {
     StringType destFilePrefix 
     StringType destFilePostfix 
     StringType destFileExt 
+    BooleanType upperCaseStartedDestFileName 
+    MultiFileTaskFileFilterTypeEnum fileFilterType 
     TemplateParam[] templateParams 
 }
  
 note top: parameter of a code generation\ntask that creates one file\nper model type
+
+class MultiFileTaskFileFilterTypeEnum {
+}
+ 
 
 
     
@@ -95,8 +101,11 @@ SingleFileTask "0" *-- "n" TemplateParam
             
     
     
+MultiFileTask  *--  MultiFileTaskFileFilterTypeEnum        
+            
 MultiFileTask "0" *-- "n" TemplateParam        
             
+    
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
 @enduml

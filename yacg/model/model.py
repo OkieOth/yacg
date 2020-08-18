@@ -71,14 +71,27 @@ class IntegerTypeFormatEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'int32':
+        elif lowerStringValue == 'int32':
             return IntegerTypeFormatEnum.INT32
-        elif stringValue == 'int64':
+        elif lowerStringValue == 'int64':
             return IntegerTypeFormatEnum.INT64
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        elif enumValue == IntegerTypeFormatEnum.INT32:
+            return 'int32'
+        elif enumValue == IntegerTypeFormatEnum.INT64:
+            return 'int64'
+        else:
+            return ''
+
 
 
 class NumberType (Type):
@@ -132,14 +145,27 @@ class NumberTypeFormatEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'float':
+        elif lowerStringValue == 'float':
             return NumberTypeFormatEnum.FLOAT
-        elif stringValue == 'double':
+        elif lowerStringValue == 'double':
             return NumberTypeFormatEnum.DOUBLE
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        elif enumValue == NumberTypeFormatEnum.FLOAT:
+            return 'float'
+        elif enumValue == NumberTypeFormatEnum.DOUBLE:
+            return 'double'
+        else:
+            return ''
+
 
 
 class BooleanType (Type):
