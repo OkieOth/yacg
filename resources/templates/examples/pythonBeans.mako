@@ -62,10 +62,11 @@ class ${type.name}(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        upperStringValue = stringUtils.toUpperCaseName(stringValue) if stringValue is not None else None
+        if upperStringValue is None:
             return None
         % for value in type.values:
-        elif stringValue == '${value}':
+        elif upperStringValue == '${value}':
             return ${type.name}.${stringUtils.toUpperCaseName(value)}
         % endfor
         else:

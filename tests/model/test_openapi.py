@@ -13,6 +13,10 @@ class TestYacgOpenapiModel (unittest.TestCase):
         x = yacg.model.openapi.PathType()
         self.assertIsNotNone(x)
 
+    def testType(self):
+        x = yacg.model.model.Type()
+        self.assertIsNotNone(x)
+
     def testCommand(self):
         x = yacg.model.openapi.Command()
         self.assertIsNotNone(x)
