@@ -17,7 +17,6 @@
 # created by yacg (template: ${templateFile} v${templateVersion})
 
 % if modelFuncs.hasEnumTypes(modelTypes):
-import yacg.util.stringUtils as stringUtils
 from enum import Enum
 % endif
 % for domain in domainList:
