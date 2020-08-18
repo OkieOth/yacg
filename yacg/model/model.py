@@ -71,11 +71,12 @@ class IntegerTypeFormatEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'int32':
+        elif lowerStringValue == 'int32':
             return IntegerTypeFormatEnum.INT32
-        elif stringValue == 'int64':
+        elif lowerStringValue == 'int64':
             return IntegerTypeFormatEnum.INT64
         else:
             return None
@@ -132,11 +133,12 @@ class NumberTypeFormatEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'float':
+        elif lowerStringValue == 'float':
             return NumberTypeFormatEnum.FLOAT
-        elif stringValue == 'double':
+        elif lowerStringValue == 'double':
             return NumberTypeFormatEnum.DOUBLE
         else:
             return None

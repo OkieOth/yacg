@@ -105,17 +105,18 @@ class CommandCommandEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'GET':
+        elif lowerStringValue == 'get':
             return CommandCommandEnum.GET
-        elif stringValue == 'PUT':
+        elif lowerStringValue == 'put':
             return CommandCommandEnum.PUT
-        elif stringValue == 'POST':
+        elif lowerStringValue == 'post':
             return CommandCommandEnum.POST
-        elif stringValue == 'DELETE':
+        elif lowerStringValue == 'delete':
             return CommandCommandEnum.DELETE
-        elif stringValue == 'OPTIONS':
+        elif lowerStringValue == 'options':
             return CommandCommandEnum.OPTIONS
         else:
             return None
@@ -260,15 +261,16 @@ class ParameterInTypeEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'path':
+        elif lowerStringValue == 'path':
             return ParameterInTypeEnum.PATH
-        elif stringValue == 'query':
+        elif lowerStringValue == 'query':
             return ParameterInTypeEnum.QUERY
-        elif stringValue == 'header':
+        elif lowerStringValue == 'header':
             return ParameterInTypeEnum.HEADER
-        elif stringValue == 'cookie':
+        elif lowerStringValue == 'cookie':
             return ParameterInTypeEnum.COOKIE
         else:
             return None

@@ -35,11 +35,11 @@ class ${type.name}(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        upperStringValue = stringValue.upper() if stringValue is not None else None
-        if upperStringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
         % for value in type.values:
-        elif upperStringValue == '${value}':
+        elif lowerStringValue == '${value.lower()}':
             return ${type.name}.${stringUtils.toUpperCaseName(value)}
         % endfor
         else:

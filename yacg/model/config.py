@@ -169,19 +169,20 @@ class BlackWhiteListEntryTypeEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'type':
+        elif lowerStringValue == 'type':
             return BlackWhiteListEntryTypeEnum.TYPE
-        elif stringValue == 'tag':
+        elif lowerStringValue == 'tag':
             return BlackWhiteListEntryTypeEnum.TAG
-        elif stringValue == 'containedAttrib':
+        elif lowerStringValue == 'containedattrib':
             return BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB
-        elif stringValue == 'notContainedAttrib':
+        elif lowerStringValue == 'notcontainedattrib':
             return BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB
-        elif stringValue == 'domain':
+        elif lowerStringValue == 'domain':
             return BlackWhiteListEntryTypeEnum.DOMAIN
-        elif stringValue == 'typeType':
+        elif lowerStringValue == 'typetype':
             return BlackWhiteListEntryTypeEnum.TYPETYPE
         else:
             return None
@@ -327,11 +328,12 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        if stringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
-        elif stringValue == 'type':
+        elif lowerStringValue == 'type':
             return MultiFileTaskFileFilterTypeEnum.TYPE
-        elif stringValue == 'openApiOperationId':
+        elif lowerStringValue == 'openapioperationid':
             return MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID
         else:
             return None
