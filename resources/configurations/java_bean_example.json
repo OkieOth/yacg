@@ -13,13 +13,14 @@
         "blackListed": [
           {
             "$comment": "ignore swagger paths",
-            "name": "yacg.model.openapi.PathType"
+            "name": "yacg.model.openapi.PathType",
+            "type": "typeType"
           }
         ],
         "multiFileTask": {  
           "template": "resources/templates/examples/javaBeans.mako",
           "destDir": "tmp/javaBeans2",
-          "destFilePostfix": "java",
+          "destFileExt": "java",
           "templateParams": [
             {
               "name": "modelPackage",
