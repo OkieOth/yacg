@@ -1,7 +1,7 @@
 """A generator that creates from the model types one output file per type"""
-
 import yacg.generators.helper.generatorHelperFuncs as generatorHelper
 
+from os import path
 from mako.template import Template
 
 from pathlib import Path
@@ -21,50 +21,36 @@ def renderMultiFileTemplate(
 
     Keyword arguments:
     modelTypes -- list of types that build the model, list of yacg.model.model.Type instances (mostly Enum- and ComplexTypes)
-    multiFileTask -- container object with the parameters
-    templateFile -- template file to use
-    destDir -- output directory for the file to create
-    destFilePrefix -- possible prefix to the type name based dest file name
-    destFilePostfix -- possible postfix to the type name based dest file name
-    destFileExt -- file extension
-    templateParameterList -- list of yacg.model.config.TemplateParam instances, these parameters are passed to the template
     blackList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be excluded
     whiteList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be included
-    fileFilter -- how the model should be filtered to create the files, default per model type
+    multiFileTask -- container object with the parameters
     """
 
-    templateFile = multiFileTask.template
-    destDir = multiFileTask.destDir
-    destFilePrefix = multiFileTask.destFilePrefix
-    destFilePostfix = multiFileTask.destFilePostfix
-    destFileExt = multiFileTask.destFileExt
-    templateParameterList = multiFileTask.templateParams
-    fileFilter = multiFileTask.fileFilterType
-    upperCaseFileNames = multiFileTask.upperCaseStartedDestFileName
-
-    Path(destDir).mkdir(parents=True, exist_ok=True)
-    if destDir is None:
-        destDir = '.'
-    if destFilePrefix is None:
-        destFilePrefix = ''
-    if destFilePostfix is None:
-        destFilePostfix = ''
-    if destFileExt is None:
-        destFileExt = 'txt'
-
-    template = Template(filename=templateFile)
+    template = Template(filename=multiFileTask.template)
     modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, whiteList)
     templateParameterDict = {}
-    for templateParam in templateParameterList:
+    for templateParam in multiFileTask.templateParams:
         templateParameterDict[templateParam.name] = templateParam.value
-    if fileFilter == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
+
+    if multiFileTask.destDir is None:
+        multiFileTask.destDir = '.'
+    if multiFileTask.destFilePrefix is None:
+        multiFileTask.destFilePrefix = ''
+    if multiFileTask.destFilePostfix is None:
+        multiFileTask.destFilePostfix = ''
+    if multiFileTask.destFileExt is None:
+        multiFileTask.destFileExt = 'txt'
+
+    Path(multiFileTask.destDir).mkdir(parents=True, exist_ok=True)
+
+    if multiFileTask.fileFilterType == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
         __renderOneFilePerOpenApiOperationId(
             modelTypesToUse, modelTypes, templateParameterDict,
-            template, destDir, destFilePrefix, destFilePostfix, destFileExt, upperCaseFileNames)
+            template, multiFileTask)
     else:
         __renderOneFilePerType(
             modelTypesToUse, modelTypes, templateParameterDict,
-            template, destDir, destFilePrefix, destFilePostfix, destFileExt, upperCaseFileNames)
+            template, multiFileTask)
 
 
 def __renderOneFilePerOpenApiOperationId(
@@ -72,11 +58,13 @@ def __renderOneFilePerOpenApiOperationId(
         modelTypes,
         templateParameterDict,
         template,
-        destDir,
-        destFilePrefix,
-        destFilePostfix,
-        destFileExt,
-        upperCaseFileNames):
+        multiFileTask):
+
+    destDir = multiFileTask.destDir
+    destFilePrefix = multiFileTask.destFilePrefix
+    destFilePostfix = multiFileTask.destFilePostfix
+    destFileExt = multiFileTask.destFileExt
+    upperCaseFileNames = multiFileTask.upperCaseStartedDestFileName
 
     operationIdEntries = swaggerFilterByOperationId(modelTypesToUse)
     for key in operationIdEntries:
@@ -88,9 +76,7 @@ def __renderOneFilePerOpenApiOperationId(
             availableTypes=modelTypes,
             templateParameters=templateParameterDict)
         outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, key, upperCaseFileNames)
-        f = open(outputFile, "w+")
-        f.write(renderResult)
-        f.close()
+        __writeRenderResult(outputFile, multiFileTask, renderResult)
 
 
 def __renderOneFilePerType(
@@ -98,11 +84,14 @@ def __renderOneFilePerType(
         modelTypes,
         templateParameterDict,
         template,
-        destDir,
-        destFilePrefix,
-        destFilePostfix,
-        destFileExt,
-        upperCaseFileNames):
+        multiFileTask):
+
+    destDir = multiFileTask.destDir
+    destFilePrefix = multiFileTask.destFilePrefix
+    destFilePostfix = multiFileTask.destFilePostfix
+    destFileExt = multiFileTask.destFileExt
+    upperCaseFileNames = multiFileTask.upperCaseStartedDestFileName
+
     for typeObj in modelTypesToUse:
         renderResult = template.render(
             currentType=typeObj,
@@ -110,6 +99,17 @@ def __renderOneFilePerType(
             availableTypes=modelTypes,
             templateParameters=templateParameterDict)
         outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames)
+        __writeRenderResult(outputFile, multiFileTask, renderResult)
+
+
+def __writeRenderResult(outputFile, multiFileTask, renderResult):
+    if path.exists(outputFile) and multiFileTask.createOnlyIfNotExist:
+        if multiFileTask.createTmpFileIfAlreadyExist:
+            outputFile = outputFile + ".tmp"
+            f = open(outputFile, "w+")
+            f.write(renderResult)
+            f.close()
+    else:
         f = open(outputFile, "w+")
         f.write(renderResult)
         f.close()

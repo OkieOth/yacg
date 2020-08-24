@@ -315,6 +315,12 @@ class MultiFileTask:
         #: parameter of a code generation task that creates one file per model type
         self.templateParams = []
 
+        #: parameter of a code generation task that creates one file per model type
+        self.createOnlyIfNotExist = False
+
+        #: parameter of a code generation task that creates one file per model type
+        self.createTmpFileIfAlreadyExist = False
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -339,6 +345,10 @@ class MultiFileTask:
         for elemTemplateParams in arrayTemplateParams:
             obj.templateParams.append(
                 TemplateParam.dictToObject(elemTemplateParams))
+
+        obj.createOnlyIfNotExist = dict.get('createOnlyIfNotExist', None)
+
+        obj.createTmpFileIfAlreadyExist = dict.get('createTmpFileIfAlreadyExist', None)
         return obj
 
 
