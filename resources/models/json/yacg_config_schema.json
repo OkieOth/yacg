@@ -117,6 +117,16 @@
           "items": {
             "$ref": "#/definitions/TemplateParam"
           }
+        },
+        "createOnlyIfNotExist": {
+          "description": "create the new file only if it not already exists",
+          "type": "boolean",
+          "default": false
+        },
+        "createTmpFileIfAlreadyExist": {
+          "description": "instead of creation of the orininal file it will be created with a '.tmp' extention, if the file aleady exists",
+          "type": "boolean",
+          "default": false
         }
       }
     },

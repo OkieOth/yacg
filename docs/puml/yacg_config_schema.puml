@@ -68,6 +68,8 @@ class MultiFileTask {
     BooleanType upperCaseStartedDestFileName 
     MultiFileTaskFileFilterTypeEnum fileFilterType 
     TemplateParam[] templateParams 
+    BooleanType createOnlyIfNotExist 
+    BooleanType createTmpFileIfAlreadyExist 
 }
  
 note top: parameter of a code generation\ntask that creates one file\nper model type
