@@ -153,7 +153,18 @@ def getJobConfigurations(args):
     """
 
     if args.config is not None:
-        return yacg_utils.getJobConfigurationsFromConfigFile(args.config)
+        templateParameters = _getTemplateParameters(args)
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config)
+        if len(templateParameters) == 0:
+            return jobArray
+        # mix in of command line parameters to increase flexibility
+        for job in jobArray:
+            for task in job.tasks:
+                if task.singleFileTask is not None:
+                    task.singleFileTask = task.templateParams + templateParameters
+                elif task.multiFileTask is not None:
+                    task.multiFileTask = task.templateParams + templateParameters
+        return jobArray
     else:
         return _getJobConfigurationsFromArgs(args)
 
