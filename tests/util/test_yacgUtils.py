@@ -14,6 +14,41 @@ class TestYacgUtils (unittest.TestCase):
         self.assertEqual(1, len(jobArray[2].models))
         self.assertEqual(3, len(jobArray[2].tasks))
 
+    def testGetJobConfigurationsFromConfigFileWithVarReplace(self):
+        varDict = {
+            'modelPath': 'resources/models',
+            'modelFile': 'yacg_model_schema',
+            'language': 'python',
+            'destFile': 'model.py',
+            'tmpDir': 'tmp',
+            'modelPackage': 'de.vars.model'
+        }
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(
+            'resources/configurations/conf_with_vars.json',
+            varDict)
+        self.assertIsNotNone(jobArray)
+        self.assertEqual(3, len(jobArray))
+        self.assertEqual(1, len(jobArray[0].models))
+        self.assertEqual('resources/models/json/yacg_model_schema.json', jobArray[0].models[0].schema)
+        self.assertEqual(
+            'pythonBeans',
+            jobArray[0].tasks[0].singleFileTask.template)
+        self.assertEqual(
+            'tmp/model.py',
+            jobArray[0].tasks[0].singleFileTask.destFile)
+        self.assertEqual(
+            'tmp/javaBeans2',
+            jobArray[0].tasks[1].multiFileTask.destDir)
+        self.assertEqual(
+            'de.vars.model',
+            jobArray[0].tasks[1].multiFileTask.templateParams[0].value)
+
+        self.assertEqual(2, len(jobArray[0].tasks))
+        self.assertEqual(1, len(jobArray[1].models))
+        self.assertEqual(3, len(jobArray[1].tasks))
+        self.assertEqual(1, len(jobArray[2].models))
+        self.assertEqual(3, len(jobArray[2].tasks))
+
     def testGetVarList(self):
         result1 = yacg_utils.getVarList('i{Am}AString{With}Variables')
         self.assertEqual(2, len(result1))

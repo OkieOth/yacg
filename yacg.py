@@ -30,6 +30,7 @@ parser.add_argument_group('additional')
 parser.add_argument('--templateParameters', nargs='+', help='additional parameters passed to the templates')
 parser.add_argument('--blackListed', nargs='+', help='types that should not be handled in the template')
 parser.add_argument('--whiteListed', nargs='+', help='types that should be handled in the template')
+parser.add_argument('--vars', nargs='+', help='variables that are passed to the processing')
 
 
 def getFileExt(fileName):
@@ -154,7 +155,7 @@ def getJobConfigurations(args):
 
     if args.config is not None:
         templateParameters = _getTemplateParameters(args)
-        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config)
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config, args.vars)
         if len(templateParameters) == 0:
             return jobArray
         # mix in of command line parameters to increase flexibility
