@@ -13,3 +13,62 @@ class TestYacgUtils (unittest.TestCase):
         self.assertEqual(3, len(jobArray[1].tasks))
         self.assertEqual(1, len(jobArray[2].models))
         self.assertEqual(3, len(jobArray[2].tasks))
+
+    def testGetJobConfigurationsFromConfigFileWithVarReplace(self):
+        varDict = {
+            'modelPath': 'resources/models',
+            'modelFile': 'yacg_model_schema',
+            'language': 'python',
+            'destFile': 'model.py',
+            'tmpDir': 'tmp',
+            'modelPackage': 'de.vars.model'
+        }
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(
+            'resources/configurations/conf_with_vars.json',
+            varDict)
+        self.assertIsNotNone(jobArray)
+        self.assertEqual(3, len(jobArray))
+        self.assertEqual(1, len(jobArray[0].models))
+        self.assertEqual('resources/models/json/yacg_model_schema.json', jobArray[0].models[0].schema)
+        self.assertEqual(
+            'pythonBeans',
+            jobArray[0].tasks[0].singleFileTask.template)
+        self.assertEqual(
+            'tmp/model.py',
+            jobArray[0].tasks[0].singleFileTask.destFile)
+        self.assertEqual(
+            'tmp/javaBeans2',
+            jobArray[0].tasks[1].multiFileTask.destDir)
+        self.assertEqual(
+            'de.vars.model',
+            jobArray[0].tasks[1].multiFileTask.templateParams[0].value)
+
+        self.assertEqual(2, len(jobArray[0].tasks))
+        self.assertEqual(1, len(jobArray[1].models))
+        self.assertEqual(3, len(jobArray[1].tasks))
+        self.assertEqual(1, len(jobArray[2].models))
+        self.assertEqual(3, len(jobArray[2].tasks))
+
+    def testGetVarList(self):
+        result1 = yacg_utils.getVarList('i{Am}AString{With}Variables')
+        self.assertEqual(2, len(result1))
+        self.assertEqual('Am', result1[0])
+        self.assertEqual('With', result1[1])
+
+        result2 = yacg_utils.getVarList('{TEST}i{AM}AString{With}Variables{}')
+        self.assertEqual(3, len(result2))
+        self.assertEqual('TEST', result2[0])
+        self.assertEqual('AM', result2[1])
+        self.assertEqual('With', result2[2])
+
+        result3 = yacg_utils.getVarList('{TEST}i{AM}AString{With}{y}Variables{XXX}')
+        self.assertEqual(5, len(result3))
+        self.assertEqual('TEST', result3[0])
+        self.assertEqual('AM', result3[1])
+        self.assertEqual('With', result3[2])
+        self.assertEqual('y', result3[3])
+        self.assertEqual('XXX', result3[4])
+
+    def testReplaceVar(self):
+        result1 = yacg_utils.replaceVar('i{Am}AString{With}Variables', 'Am', 'AM')
+        self.assertEqual('iAMAString{With}Variables', result1)

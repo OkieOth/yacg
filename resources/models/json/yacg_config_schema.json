@@ -60,11 +60,11 @@
       "description": "parameter of a code generation task that creates one file",
       "properties": {
         "template": {
-          "description": "template to use for that task, either the name of a built in template, or a file system path",
+          "description": "template to use for that task, either the name of a built in template, or a file system path, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
           "type": "string"
         },
         "destFile": {
-          "description": "name and path for the file to create",
+          "description": "name and path for the file to create, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
           "type": "string"
         },
         "templateParams": {
@@ -81,11 +81,11 @@
       "description": "parameter of a code generation task that creates one file per model type",
       "properties": {
         "template": {
-          "description": "template to use for that task, either the name of a built in template, or a file system path",
+          "description": "template to use for that task, either the name of a built in template, or a file system path, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
           "type": "string"
         },
         "destDir": {
-          "description": "path where the files will be created",
+          "description": "path where the files will be created, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
           "type": "string"
         },
         "destFilePrefix": {
@@ -210,7 +210,7 @@
       "description": "A model that should be used",
       "properties": {
         "schema": {
-          "description": "path to the jsonSchema file",
+          "description": "path to the jsonSchema file, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
           "type": "string"
         },
         "domain": {
