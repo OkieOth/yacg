@@ -33,3 +33,7 @@ class TestYacgUtils (unittest.TestCase):
         self.assertEqual('With', result3[2])
         self.assertEqual('y', result3[3])
         self.assertEqual('XXX', result3[4])
+
+    def testReplaceVar(self):
+        result1 = yacg_utils.replaceVar('i{Am}AString{With}Variables', 'Am', 'AM')
+        self.assertEqual('iAMAString{With}Variables', result1)
