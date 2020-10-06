@@ -54,6 +54,18 @@ def readModels(configJob):
     return loadedTypes
 
 
+def _getVars(args):
+    vars = {}
+    if args.vars is not None:
+        for v in args.vars:
+            keyValueArray = v.split('=')
+            if (len(keyValueArray) == 2):
+                vars[keyValueArray[0]] = keyValueArray[1]
+            else:
+                printError('\nvar param with wrong structure found ... skipped: {}'.format(v))
+    return vars
+
+
 def _getTemplateParameters(args):
     """extracts the per command line given template parameters, copies them
     into a dictionary and return this dictonary
@@ -155,16 +167,17 @@ def getJobConfigurations(args):
 
     if args.config is not None:
         templateParameters = _getTemplateParameters(args)
-        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config, args.vars)
+        vars = _getVars(args)
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config, vars)
         if len(templateParameters) == 0:
             return jobArray
         # mix in of command line parameters to increase flexibility
         for job in jobArray:
             for task in job.tasks:
                 if task.singleFileTask is not None:
-                    task.singleFileTask = task.templateParams + templateParameters
+                    task.singleFileTask.templateParams = task.singleFileTask.templateParams + templateParameters
                 elif task.multiFileTask is not None:
-                    task.multiFileTask = task.templateParams + templateParameters
+                    task.multiFileTask.templateParams = task.multiFileTask.templateParams + templateParameters
         return jobArray
     else:
         return _getJobConfigurationsFromArgs(args)
