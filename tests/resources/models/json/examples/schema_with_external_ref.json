@@ -28,6 +28,11 @@
                 },
                 "aRef": {
                     "$ref": "./single_type_schema.json#/definitions/AnotherType"
+                },
+                "implicitRef": {
+                    "type": "string",
+                    "format": "uuid",
+                    "__ref": "./single_type_schema.json#/definitions/AnotherType"
                 }
             }
         },

@@ -11,7 +11,7 @@ import yacg.model.config as config
 
 
 class TestJsonBuilder (unittest.TestCase):
-    def _testSingleTypeSchema(self):
+    def testSingleTypeSchema(self):
         modelFile = 'tests/resources/models/json/examples/single_type_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
@@ -50,7 +50,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(isinstance(innerComplexType.properties[2].type, ComplexType))
         self.assertEqual(anotherType, innerComplexType.properties[2].type)
 
-    def _testSingleTypeSchema2(self):
+    def testSingleTypeSchema2(self):
         modelFile = 'resources/models/json/yacg_config_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
@@ -58,7 +58,7 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(8, len(modelTypes))
+        self.assertEqual(9, len(modelTypes))
 
         self._checkUpType(0, 'Job', 4, modelTypes)
         self._checkUpType(1, 'Model', 4, modelTypes)
@@ -68,8 +68,9 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(5, 'SingleFileTask', 3, modelTypes)
         self._checkUpType(6, 'TemplateParam', 2, modelTypes)
         self._checkUpType(7, 'MultiFileTask', 6, modelTypes)
+        self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes)
 
-    def _testSchemaWithExternalRef(self):
+    def testSchemaWithExternalRef(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
@@ -77,12 +78,16 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(3, len(modelTypes))
+        self.assertEqual(4, len(modelTypes))
         self._checkUpType(0, 'OneType', 2, modelTypes)
         self._checkUpType(1, 'TwoType', 3, modelTypes)
+        # TwoType->implicitRef
+        self.assertIsNotNone(modelTypes[1].properties[3].implicitReference)
+        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].implicitReference)
         self._checkUpType(2, 'AnotherType', 2, modelTypes)
+        self._checkUpType(3, 'DemoEnum', 0, modelTypes)
 
-    def _testSchemaWithExternalCircularRefs(self):
+    def testSchemaWithExternalCircularRefs(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
@@ -98,7 +103,7 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(3, 'TwoType', 3, modelTypes)
         self._checkUpType(4, 'AnotherType', 2, modelTypes)
 
-    def _testSimpleAllOf(self):
+    def testSimpleAllOf(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
