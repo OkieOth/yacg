@@ -483,6 +483,9 @@ class Property:
         #: a property of a type
         self.default = None
 
+        #: a property of a type
+        self.implicitReference = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -503,6 +506,8 @@ class Property:
         obj.description = dict.get('description', None)
 
         obj.default = dict.get('default', None)
+
+        obj.implicitReference = Type.dictToObject(dict.get('implicitReference', None))
         return obj
 
 

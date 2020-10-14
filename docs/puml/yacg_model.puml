@@ -123,6 +123,7 @@ class Property {
     Tag[] tags 
     StringType description 
     StringType default 
+    Type implicitReference 
 }
  
 note top: a property of a type
