@@ -1,5 +1,5 @@
 """Set of functions to smooth model handling for templates that create
-Python code
+Json code
 """
 
 import yacg.model.model as model
