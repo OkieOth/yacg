@@ -97,16 +97,15 @@ class TestJavaBean (unittest.TestCase):
         multiFileTask.destDir = 'tmp/javaBeans3/de/test/model'
         multiFileTask.destFileExt = 'java'
         multiFileTask.upperCaseStartedDestFileName = True
-        multiFileTask.fileFilterType = MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID
         multiFileTask.templateParams = templateParameters
-        whiteList = []
-        whiteListEntry = BlackWhiteListEntry()
-        whiteListEntry.name = 'PathType'
-        whiteListEntry.type = BlackWhiteListEntryTypeEnum.TYPETYPE
-        whiteList.append(whiteListEntry)
+        blackList = []
+        blackListEntry = BlackWhiteListEntry()
+        blackListEntry.name = 'PathType'
+        blackListEntry.type = BlackWhiteListEntryTypeEnum.TYPETYPE
+        blackList.append(blackListEntry)
 
         renderMultiFileTemplate(
             modelTypes,
+            blackList,
             (),
-            whiteList,
             multiFileTask)
