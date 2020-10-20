@@ -1,3 +1,6 @@
+# 0.9.0
+* include implicit references for properties
+
 # 0.8.1
 * fix error in initializing additional vars from command line
 * fix error for usages of global command line give template parameters
