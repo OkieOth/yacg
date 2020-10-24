@@ -17,13 +17,13 @@ def getJavaType(type, isArray):
     elif isinstance(type, model.StringType):
         return 'String' if not isArray else 'java.util.List<String>'
     elif isinstance(type, model.UuidType):
-        return 'java.util.UUID' if not isArray else 'java.util.List<UUID>'
+        return 'java.util.UUID' if not isArray else 'java.util.List<java.util.UUID>'
     elif isinstance(type, model.EnumType):
         return type.name if not isArray else 'java.util.List<{}>'.format(type.name)
     elif isinstance(type, model.DateType):
-        return 'java.time.LocalDate' if not isArray else 'java.util.List<LocalData>'
+        return 'java.time.LocalDate' if not isArray else 'java.util.List<java.time.LocalData>'
     elif isinstance(type, model.DateTimeType):
-        return 'java.time.LocalDateTime' if not isArray else 'java.util.List<LocalDataTime>'
+        return 'java.time.LocalDateTime' if not isArray else 'java.util.List<java.time.LocalDataTime>'
     elif isinstance(type, model.ComplexType):
         return type.name if not isArray else 'java.util.List<{}>'.format(type.name)
     else:
