@@ -34,5 +34,3 @@ def printExtendsType(type):
     if (not hasattr(type, 'extendsType')) or (type.extendsType is None):
         return ''
     return 'extends {} '.format(type.extendsType.name)
-
-

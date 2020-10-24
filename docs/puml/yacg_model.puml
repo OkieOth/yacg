@@ -121,6 +121,7 @@ class Property {
     BooleanType isArray 
     IntegerType arrayMinItems 
     IntegerType arrayMaxItems 
+    BooleanType arrayUniqueItems 
     Type type 
     Tag[] tags 
     StringType description 

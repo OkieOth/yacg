@@ -326,6 +326,10 @@
                     "description": "defined maximum of elements in the array/list",
                     "type": "integer"
                 },
+                "arrayUniqueItems": {
+                    "description": "the elements in the array/list have to be unique",
+                    "type": "boolean"
+                },
                 "type": {
                     "description": "either a basic or a complex type",
                     "$ref": "#/definitions/Type",                                              

@@ -478,6 +478,9 @@ class Property:
         self.arrayMaxItems = None
 
         #: a property of a type
+        self.arrayUniqueItems = None
+
+        #: a property of a type
         self.type = None
 
         #: a property of a type
@@ -505,6 +508,8 @@ class Property:
         obj.arrayMinItems = dict.get('arrayMinItems', None)
 
         obj.arrayMaxItems = dict.get('arrayMaxItems', None)
+
+        obj.arrayUniqueItems = dict.get('arrayUniqueItems', None)
 
         obj.type = Type.dictToObject(dict.get('type', None))
 
