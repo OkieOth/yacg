@@ -119,6 +119,8 @@ ComplexType --|> Type
 class Property {
     StringType name 
     BooleanType isArray 
+    IntegerType arrayMinSize 
+    IntegerType arrayMaxSize 
     Type type 
     Tag[] tags 
     StringType description 

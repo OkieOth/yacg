@@ -93,6 +93,7 @@ class IntegerTypeFormatEnum(Enum):
             return ''
 
 
+
 class NumberType (Type):
     """ floating point values
     """
@@ -164,6 +165,7 @@ class NumberTypeFormatEnum(Enum):
             return 'double'
         else:
             return ''
+
 
 
 class BooleanType (Type):
@@ -470,6 +472,12 @@ class Property:
         self.isArray = False
 
         #: a property of a type
+        self.arrayMinSize = None
+
+        #: a property of a type
+        self.arrayMaxSize = None
+
+        #: a property of a type
         self.type = None
 
         #: a property of a type
@@ -493,6 +501,10 @@ class Property:
         obj.name = dict.get('name', None)
 
         obj.isArray = dict.get('isArray', None)
+
+        obj.arrayMinSize = dict.get('arrayMinSize', None)
+
+        obj.arrayMaxSize = dict.get('arrayMaxSize', None)
 
         obj.type = Type.dictToObject(dict.get('type', None))
 
