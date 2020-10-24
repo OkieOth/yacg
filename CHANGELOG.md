@@ -1,6 +1,6 @@
 # 0.11.0
 * fix error in the javaFuncs helper
-* extend internal model with restrictions for arrays
+* extend internal model with minItems and maxItems restrictions for arrays
 
 # 0.10.0
 * improvements for the Java bean template

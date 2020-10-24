@@ -318,11 +318,11 @@
                     "type": "boolean",
                     "default": false
                 },
-                "arrayMinSize": {
+                "arrayMinItems": {
                     "description": "defined minimum of elements in the array/list",
                     "type": "integer"
                 },
-                "arrayMaxSize": {
+                "arrayMaxItems": {
                     "description": "defined maximum of elements in the array/list",
                     "type": "integer"
                 },

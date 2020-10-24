@@ -472,10 +472,10 @@ class Property:
         self.isArray = False
 
         #: a property of a type
-        self.arrayMinSize = None
+        self.arrayMinItems = None
 
         #: a property of a type
-        self.arrayMaxSize = None
+        self.arrayMaxItems = None
 
         #: a property of a type
         self.type = None
@@ -502,9 +502,9 @@ class Property:
 
         obj.isArray = dict.get('isArray', None)
 
-        obj.arrayMinSize = dict.get('arrayMinSize', None)
+        obj.arrayMinItems = dict.get('arrayMinItems', None)
 
-        obj.arrayMaxSize = dict.get('arrayMaxSize', None)
+        obj.arrayMaxItems = dict.get('arrayMaxItems', None)
 
         obj.type = Type.dictToObject(dict.get('type', None))
 
