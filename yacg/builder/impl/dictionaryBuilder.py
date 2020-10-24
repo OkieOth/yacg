@@ -339,9 +339,11 @@ def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileC
     """
     itemsDict = propDict.get('items', None)
     if itemsDict is not None:
+        newProperty.arrayMinItems = propDict.get('minItems', None)
+        newProperty.arrayMaxItems = propDict.get('maxItems', None)
+        newProperty.arrayUniqueItems = propDict.get('uniqueItems', None)
         newProperty.isArray = True
         return _extractAttribType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
-
     # TODO
     pass
 

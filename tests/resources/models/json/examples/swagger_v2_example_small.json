@@ -204,6 +204,9 @@
               "description": "Tags to filter by",
               "required": true,
               "type": "array",
+              "$comment": "the array size constraints are only examples",
+              "minItems": 0,
+              "maxItems": 100,
               "items": {
                 "type": "string"
               },

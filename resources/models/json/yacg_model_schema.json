@@ -314,9 +314,21 @@
                     "__tags": ["constructorValue"]
                 },
                 "isArray": {
-                    "description": "trure - if the property is an array",
+                    "description": "true - if the property is an array",
                     "type": "boolean",
                     "default": false
+                },
+                "arrayMinItems": {
+                    "description": "defined minimum of elements in the array/list",
+                    "type": "integer"
+                },
+                "arrayMaxItems": {
+                    "description": "defined maximum of elements in the array/list",
+                    "type": "integer"
+                },
+                "arrayUniqueItems": {
+                    "description": "the elements in the array/list have to be unique",
+                    "type": "boolean"
                 },
                 "type": {
                     "description": "either a basic or a complex type",
