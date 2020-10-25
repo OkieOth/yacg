@@ -782,7 +782,8 @@ def __extractOpenApiCommandSecurity(command, securityDict, modelTypes, modelFile
         return
     command.security = openapi.CommandSecurity()
     for scope in scopes:
-        command.security.sopes.append(scope)
+        command.security.scopes.append(scope)
+
 
 def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileContainer):
     if requestBodyDict is None:

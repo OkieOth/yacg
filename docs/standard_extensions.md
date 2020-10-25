@@ -76,7 +76,7 @@ with resources authorization.
       operationId: getTag
       # extention ...
       x-security:
-        # roles defined to get access
+        # scopes defined to get access
         scopes: 
           - 'test'
           - 'schnulli'
