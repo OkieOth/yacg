@@ -149,6 +149,7 @@ class CommandCommandEnum(Enum):
             return ''
 
 
+
 class Parameter:
     """ definition of a parameter that is used in the request
     """
@@ -260,7 +261,7 @@ class Response:
 class CommandSecurity:
     def __init__(self):
 
-        self.roles = []
+        self.scopes = []
 
     @classmethod
     def dictToObject(cls, dict):
@@ -268,9 +269,9 @@ class CommandSecurity:
             return None
         obj = CommandSecurity()
 
-        arrayRoles = dict.get('roles', [])
-        for elemRoles in arrayRoles:
-            obj.roles.append(elemRoles)
+        arrayScopes = dict.get('scopes', [])
+        for elemScopes in arrayScopes:
+            obj.scopes.append(elemScopes)
         return obj
 
 
@@ -333,4 +334,6 @@ class ParameterInTypeEnum(Enum):
             return 'cookie'
         else:
             return ''
+
+
 

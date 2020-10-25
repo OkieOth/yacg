@@ -772,8 +772,17 @@ def _extractOpenApiCommandsForPath(pathType, commandsDict, modelTypes, modelFile
         __extractOpenApiCommandParameters(command, commandDict.get('parameters', {}), modelTypes, modelFileContainer)
         __extractOpenApiRequestBody(command, commandDict.get('requestBody', None), modelTypes, modelFileContainer)
         __extractOpenApiCommandResponses(command, commandDict.get('responses', {}), modelTypes, modelFileContainer)
+        __extractOpenApiCommandSecurity(command, commandDict.get('x-security', {}), modelTypes, modelFileContainer)
         pathType.commands.append(command)
 
+
+def __extractOpenApiCommandSecurity(command, securityDict, modelTypes, modelFileContainer):
+    scopes = securityDict.get("scopes", None)
+    if scopes is None:
+        return
+    command.security = openapi.CommandSecurity()
+    for scope in scopes:
+        command.security.sopes.append(scope)
 
 def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileContainer):
     if requestBodyDict is None:

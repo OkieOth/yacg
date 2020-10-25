@@ -72,7 +72,7 @@
                 "security": {
                     "type": "object",
                     "properties": {
-                        "roles": {
+                        "scopes": {
                             "type": "array",
                             "items": {
                                 "type": "string"
