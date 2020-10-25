@@ -68,6 +68,17 @@
                     "items": {
                         "$ref": "#/definitions/Response"
                     }
+                },
+                "security": {
+                    "type": "object",
+                    "properties": {
+                        "scopes": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
                 }
             }
         },

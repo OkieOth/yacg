@@ -18,6 +18,7 @@ class Command {
     Parameter[] parameters 
     RequestBody requestBody 
     Response[] responses 
+    CommandSecurity security 
 }
  
 note top: information to a specific HTTP\ncommand
@@ -53,6 +54,11 @@ class Response {
  
 note top: description of a response option\nfor a request
 
+class CommandSecurity {
+    StringType[] scopes 
+}
+ 
+
 class ContentEntry {
     StringType mimeType 
     Type type 
@@ -77,6 +83,8 @@ Command  *--  RequestBody
             
 Command "0" *-- "n" Response        
             
+Command  *--  CommandSecurity        
+            
     
     
 Parameter  *--  ParameterInTypeEnum        
@@ -89,6 +97,7 @@ RequestBody "0" *-- "n" ContentEntry
     
 Response "0" *-- "n" ContentEntry        
             
+    
     
 ContentEntry  *--  Type        
             

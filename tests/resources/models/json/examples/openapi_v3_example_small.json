@@ -308,6 +308,12 @@
               "content": {}
             }
           },
+          "x-security": {
+            "scopes": [
+              "scope1",
+              "scope2"
+            ]
+          },
           "security": [
             {
               "api_key": []

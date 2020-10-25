@@ -64,6 +64,9 @@ class Command:
         #: information to a specific HTTP command
         self.responses = []
 
+        #: information to a specific HTTP command
+        self.security = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -93,6 +96,8 @@ class Command:
         for elemResponses in arrayResponses:
             obj.responses.append(
                 Response.dictToObject(elemResponses))
+
+        obj.security = CommandSecurity.dictToObject(dict.get('security', None))
         return obj
 
 
@@ -142,7 +147,6 @@ class CommandCommandEnum(Enum):
             return 'PATCH'
         else:
             return ''
-
 
 
 class Parameter:
@@ -253,6 +257,23 @@ class Response:
         return obj
 
 
+class CommandSecurity:
+    def __init__(self):
+
+        self.scopes = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = CommandSecurity()
+
+        arrayScopes = dict.get('scopes', [])
+        for elemScopes in arrayScopes:
+            obj.scopes.append(elemScopes)
+        return obj
+
+
 class ContentEntry:
     def __init__(self):
 
@@ -312,6 +333,3 @@ class ParameterInTypeEnum(Enum):
             return 'cookie'
         else:
             return ''
-
-
-

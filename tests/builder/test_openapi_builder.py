@@ -7,15 +7,15 @@ import yacg.model.openapi as openapi
 
 class TestOpenApiParsing (unittest.TestCase):
 
-    def xxxxxtest_openApiExample(self):
+    def test_openApiExample(self):
         modelFile = 'tests/resources/models/json/examples/openapi_v3_example_small.json'
-        self.__doTest(modelFile)
+        self.__doTest(modelFile, False)
 
     def test_swaggerExample(self):
         modelFile = 'tests/resources/models/json/examples/swagger_v2_example_small.json'
-        self.__doTest(modelFile, True)
+        self.__doTest(modelFile, True, True)
 
-    def __doTest(self, modelFile, requestBodyMimeTypeCanBeNone=False):
+    def __doTest(self, modelFile, skipScopeTest, requestBodyMimeTypeCanBeNone=False):
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
@@ -24,6 +24,7 @@ class TestOpenApiParsing (unittest.TestCase):
         self.assertEqual(15, len(modelTypes))
         pathTypes = []
         coreModelTypes = []
+        foundScopedCommand = False
         for type in modelTypes:
             if isinstance(type, openapi.PathType):
                 pathTypes.append(type)
@@ -49,6 +50,15 @@ class TestOpenApiParsing (unittest.TestCase):
                     self.assertIsNotNone(response.returnCode)
                     if response.returnCode == '200':
                         self._checkContent(response, requestBodyMimeTypeCanBeNone)
+                if skipScopeTest:
+                    continue
+                if (path.pathPattern == '/pet/{petId}') and (command.command == openapi.CommandCommandEnum.GET):
+                    foundScopedCommand = True
+                    self.assertEqual(2, len(command.security.scopes))
+                    self.assertEqual('scope1', command.security.scopes[0])
+                    self.assertEqual('scope2', command.security.scopes[1])
+        if not skipScopeTest:
+            self.assertTrue(foundScopedCommand)
 
     def _checkContent(self, contentHost, requestBodyMimeTypeCanBeNone):
         self.assertTrue(len(contentHost.content) > 0)
