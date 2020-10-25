@@ -149,7 +149,6 @@ class CommandCommandEnum(Enum):
             return ''
 
 
-
 class Parameter:
     """ definition of a parameter that is used in the request
     """
@@ -334,6 +333,4 @@ class ParameterInTypeEnum(Enum):
             return 'cookie'
         else:
             return ''
-
-
 
