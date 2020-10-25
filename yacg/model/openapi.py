@@ -64,6 +64,9 @@ class Command:
         #: information to a specific HTTP command
         self.responses = []
 
+        #: information to a specific HTTP command
+        self.security = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -93,6 +96,8 @@ class Command:
         for elemResponses in arrayResponses:
             obj.responses.append(
                 Response.dictToObject(elemResponses))
+
+        obj.security = CommandSecurity.dictToObject(dict.get('security', None))
         return obj
 
 
@@ -250,6 +255,23 @@ class Response:
         for elemContent in arrayContent:
             obj.content.append(
                 ContentEntry.dictToObject(elemContent))
+        return obj
+
+
+class CommandSecurity:
+    def __init__(self):
+
+        self.roles = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = CommandSecurity()
+
+        arrayRoles = dict.get('roles', [])
+        for elemRoles in arrayRoles:
+            obj.roles.append(elemRoles)
         return obj
 
 

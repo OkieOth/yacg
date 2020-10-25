@@ -37,6 +37,10 @@ class TestYacgOpenapiModel (unittest.TestCase):
         x = yacg.model.openapi.Response()
         self.assertIsNotNone(x)
 
+    def testCommandSecurity(self):
+        x = yacg.model.openapi.CommandSecurity()
+        self.assertIsNotNone(x)
+
     def testContentEntry(self):
         x = yacg.model.openapi.ContentEntry()
         self.assertIsNotNone(x)
