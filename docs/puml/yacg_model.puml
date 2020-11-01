@@ -127,6 +127,7 @@ class Property {
     StringType description 
     StringType default 
     Type implicitReference 
+    BooleanType required 
 }
  
 note top: a property of a type

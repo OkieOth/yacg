@@ -73,7 +73,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
             tags = parsedSchema.get('__tags', None)
             if tags is not None:
                 mainType.tags = _extractTags(tags)
-
+        _markRequiredAttributes(mainType, parsedSchema.get('required', []))
     enumEntry = parsedSchema.get('enum', None)
     if enumEntry is not None:
         titleStr = parsedSchema.get('title', None)
@@ -83,7 +83,6 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
             tags = parsedSchema.get('__tags', None)
             if tags is not None:
                 mainType.tags = _extractTags(tags)
-
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -99,7 +98,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
     for type in modelTypes:
-        if (hasattr(type, 'property')) and (len(type.properties) == 0):
+        if (hasattr(type, 'properties')) and (len(type.properties) == 0):
             sourceFile = type.source
             parsedSchema = None
             if sourceFile.find('.json') != -1:
@@ -140,6 +139,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
                 tags = modelFileContainer.parsedSchema.get('__tags', None)
                 if tags is not None:
                     type.tags = _extractTags(tags)
+            _markRequiredAttributes(type, modelFileContainer.parsedSchema.get('required', []))
 
     enumEntry = modelFileContainer.parsedSchema.get('enum', None)
     if enumEntry is not None:
@@ -195,6 +195,7 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
                 tags = object.get('__tags', None)
                 if tags is not None:
                     type.tags = _extractTags(tags)
+            _markRequiredAttributes(type, object.get('required', []))
 
 
 def _extractObjectType(typeNameStr, properties, allOfEntries, description, modelTypes, modelFileContainer):
@@ -230,6 +231,7 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
             propertiesEntry = allOfEntry.get('properties', None)
             if (propertiesEntry is not None):
                 _extractAttributes(newType, propertiesEntry, modelTypes, modelFileContainer)
+                _markRequiredAttributes(type, allOfEntry.get('required', []))
             elif refEntry is not None:
                 newType.extendsType = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
     if (hasattr(newType, 'properties')) and (len(newType.properties) == 0):
@@ -636,11 +638,28 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
     properties = propDict.get('properties', None)
     if properties is not None:
         _extractAttributes(newInnerType, properties, modelTypes, modelFileContainer)
+        _markRequiredAttributes(newInnerType, propDict.get('required', []))
     else:
         logging.error(
             "modelFile: %s, type=%s, property=%s: inner complex type without properties"
             % (modelFileContainer.fileName, newTypeName, newProperty.name))
     return newInnerType
+
+
+def _markRequiredAttributes(type, requiredArray):
+    """interate over the requiredArray and mark all matching attributes
+    in the properties type.
+
+    Keyword arguments:
+    type -- type object with the properties to check
+    requiredArray -- string array with the names of the required attributes
+    """
+
+    for required in requiredArray:
+        for prop in type.properties:
+            if prop.name == required:
+                prop.required = True
+                break
 
 
 def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer):
