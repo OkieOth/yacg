@@ -496,7 +496,7 @@ class Property:
         self.implicitReference = None
 
         #: a property of a type
-        self.required = None
+        self.required = False
 
     @classmethod
     def dictToObject(cls, dict):

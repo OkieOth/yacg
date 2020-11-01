@@ -647,7 +647,18 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
 
 
 def _markRequiredAttributes(type, requiredArray):
-    pass
+    """interate over the requiredArray and mark all matching attributes
+    in the properties type.
+
+    Keyword arguments:
+    type -- type object with the properties to check
+    requiredArray -- string array with the names of the required attributes
+    """
+
+    for required in requiredArray:
+        for prop in type.properties:
+            if prop.name == 'required':
+                prop.required = true;
 
 
 def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer):
