@@ -98,7 +98,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
     for type in modelTypes:
-        if (hasattr(type, 'property')) and (len(type.properties) == 0):
+        if (hasattr(type, 'properties')) and (len(type.properties) == 0):
             sourceFile = type.source
             parsedSchema = None
             if sourceFile.find('.json') != -1:
@@ -657,8 +657,9 @@ def _markRequiredAttributes(type, requiredArray):
 
     for required in requiredArray:
         for prop in type.properties:
-            if prop.name == 'required':
-                prop.required = true;
+            if prop.name == required:
+                prop.required = True
+                break
 
 
 def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer):

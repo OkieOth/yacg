@@ -2,7 +2,7 @@ import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.model import IntegerType, NumberType
-from yacg.model.model import StringType, Type
+from yacg.model.model import StringType
 from yacg.model.model import DateTimeType
 from yacg.model.model import EnumType, ComplexType
 from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
@@ -60,15 +60,15 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes)
         self.assertEqual(9, len(modelTypes))
 
-        self._checkUpType(0, 'Job', 4, modelTypes)
-        self._checkUpType(1, 'Model', 4, modelTypes)
-        self._checkUpType(2, 'Task', 6, modelTypes)
-        self._checkUpType(3, 'BlackWhiteListEntry', 2, modelTypes)
-        self._checkUpType(4, 'BlackWhiteListEntryTypeEnum', 0, modelTypes)
-        self._checkUpType(5, 'SingleFileTask', 3, modelTypes)
-        self._checkUpType(6, 'TemplateParam', 2, modelTypes)
-        self._checkUpType(7, 'MultiFileTask', 6, modelTypes)
-        self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes)
+        self._checkUpType(0, 'Job', 4, modelTypes, ['models', 'tasks'])
+        self._checkUpType(1, 'Model', 4, modelTypes, [])
+        self._checkUpType(2, 'Task', 6, modelTypes, [])
+        self._checkUpType(3, 'BlackWhiteListEntry', 2, modelTypes, ['name'])
+        self._checkUpType(4, 'BlackWhiteListEntryTypeEnum', 0, modelTypes, [])
+        self._checkUpType(5, 'SingleFileTask', 3, modelTypes, [])
+        self._checkUpType(6, 'TemplateParam', 5, modelTypes, ['name', 'value'])
+        self._checkUpType(7, 'MultiFileTask', 10, modelTypes, [])
+        self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes, [])
 
     def testSchemaWithExternalRef(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
@@ -79,13 +79,13 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(4, len(modelTypes))
-        self._checkUpType(0, 'OneType', 2, modelTypes)
-        self._checkUpType(1, 'TwoType', 3, modelTypes)
+        self._checkUpType(0, 'OneType', 2, modelTypes, [])
+        self._checkUpType(1, 'TwoType', 4, modelTypes, [])
         # TwoType->implicitRef
         self.assertIsNotNone(modelTypes[1].properties[3].implicitReference)
         self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].implicitReference)
-        self._checkUpType(2, 'AnotherType', 2, modelTypes)
-        self._checkUpType(3, 'DemoEnum', 0, modelTypes)
+        self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
+        self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
     def testSchemaWithExternalCircularRefs(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
@@ -97,11 +97,11 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes)
         self.assertEqual(5, len(modelTypes))
 
-        self._checkUpType(0, 'OneType', 2, modelTypes)
-        self._checkUpType(1, 'RefBackType', 4, modelTypes)
-        self._checkUpType(2, 'RefBackType2', 3, modelTypes)
-        self._checkUpType(3, 'TwoType', 3, modelTypes)
-        self._checkUpType(4, 'AnotherType', 2, modelTypes)
+        self._checkUpType(0, 'OneType', 2, modelTypes, [])
+        self._checkUpType(1, 'RefBackType', 4, modelTypes, [])
+        self._checkUpType(2, 'RefBackType2', 3, modelTypes, [])
+        self._checkUpType(3, 'TwoType', 3, modelTypes, [])
+        self._checkUpType(4, 'AnotherType', 2, modelTypes, [])
 
     def testSimpleAllOf(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof.json'
@@ -112,9 +112,9 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(3, len(modelTypes))
-        self._checkUpType(0, 'SimpleAllOfSchema', 1, modelTypes)
-        self._checkUpType(1, 'Address', 3, modelTypes)
-        self._checkUpType(2, 'SimpleAllOfSchemaTypeEnum', 0, modelTypes)
+        self._checkUpType(0, 'SimpleAllOfSchema', 1, modelTypes, [])
+        self._checkUpType(1, 'Address', 3, modelTypes, [])
+        self._checkUpType(2, 'SimpleAllOfSchemaTypeEnum', 0, modelTypes, [])
 
     def testSophisticatedAllOf(self):
         modelFile = 'tests/resources/models/json/examples/more_sophisticated_allof.json'
@@ -125,13 +125,13 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(7, len(modelTypes))
-        type = self._checkUpType(0, 'MoreSophisticatedAllOf', 1, modelTypes)
+        type = self._checkUpType(0, 'MoreSophisticatedAllOf', 1, modelTypes, [])
         self.assertIsNotNone(type.extendsType)
-        address = self._checkUpType(1, 'Address', 3, modelTypes)
+        address = self._checkUpType(1, 'Address', 3, modelTypes, [])
         self.assertEqual(type.extendsType, address)
-        self._checkUpType(2, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes)
-        self._checkUpType(3, 'MainAddress', 2, modelTypes)
-        self._checkUpType(6, 'MainAddressComplex', 3, modelTypes)
+        self._checkUpType(2, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes, [])
+        self._checkUpType(3, 'MainAddress', 2, modelTypes, [])
+        self._checkUpType(6, 'MainAddressComplex', 3, modelTypes, [])
 
     def _testTags(self):
         modelFile = 'resources/models/json/yacg_model_schema.json'
@@ -179,23 +179,31 @@ class TestJsonBuilder (unittest.TestCase):
         ]
         self.assertEqual(expectedMetaModelTypes, metaModelTypes)
 
-    def _checkUpType(self, position, typeName, propCount, modelTypes):
+    def _checkUpType(self, position, typeName, propCount, modelTypes, requiredArray):
         type = modelTypes[position]
         self.assertIsNotNone(type)
         self.assertIsNotNone(type.source)
         sourceExists = os.path.isfile(type.source)
         self.assertTrue('source file exists: ' + type.source, sourceExists)
         self.assertEqual(typeName, type.name)
-        if isinstance(type, EnumType) or isinstance(type, Type):
+        if isinstance(type, EnumType):
             return type
         self.assertEqual(propCount, len(type.properties))
-        self.assertIsNotNone(type.domain)
         for prop in type.properties:
             self.assertIsNotNone(prop.type, "property w/o a type: %s.%s" % (typeName, prop.name))
             if prop.name.endswith('s') or prop.name.endswith('ed'):
                 self.assertTrue(prop.isArray, "property has to be an array: %s.%s" % (typeName, prop.name))
             else:
                 self.assertFalse(prop.isArray, "property should be no array: %s.%s" % (typeName, prop.name))
+        if len(requiredArray) > 0:
+            for required in requiredArray:
+                found = False
+                for prop in type.properties:
+                    if prop.name == required:
+                        found = True
+                        self.assertTrue(prop.required)
+                        break
+                self.assertTrue(found)
         return type
 
 
