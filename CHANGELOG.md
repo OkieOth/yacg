@@ -1,3 +1,9 @@
+# 0.14.0
+* implement required constraint for model attributes
+
+# 0.13.0
+* add krakend example
+
 # 0.11.0
 * fix error in the javaFuncs helper
 * extend internal model with minItems and maxItems restrictions for array properties
