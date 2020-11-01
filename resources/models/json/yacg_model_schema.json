@@ -354,6 +354,10 @@
                 "implicitReference": {
                     "description": "content of the '__ref' entry of a property, points to an implicit referenced type, e.g. for IDs",
                     "$ref": "#/definitions/Type"                                              
+                },
+                "required": {
+                    "description": "is set to true if the attribute is marked as required in the model",
+                    "type": "boolean"
                 }
             }
         },
