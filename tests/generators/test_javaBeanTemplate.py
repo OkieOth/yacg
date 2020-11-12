@@ -9,7 +9,7 @@ import yacg.generators.helper.generatorHelperFuncs as generatorHelper
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.multiFileGenerator import renderMultiFileTemplate
-from yacg.model.config import MultiFileTask, MultiFileTaskFileFilterTypeEnum, BlackWhiteListEntry, BlackWhiteListEntryTypeEnum
+from yacg.model.config import MultiFileTask, BlackWhiteListEntry, BlackWhiteListEntryTypeEnum
 
 
 import yacg.model.config as config
