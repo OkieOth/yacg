@@ -7,9 +7,18 @@
       "Address": {
         "type": "object",
         "properties": {
-          "street_addr":    { "type": "string" },
-          "city":           { "type": "string" },
-          "state":          { "type": "string" }
+          "street_addr": { 
+            "type": "string",
+            "__ordinal": 4 
+          },
+          "city": {
+             "type": "string", 
+             "__ordinal": 5
+            },
+          "state": { 
+            "type": "string", 
+            "__ordinal": 6
+          }
         },
         "required": ["street_address", "city", "state"]
       }

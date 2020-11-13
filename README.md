@@ -39,11 +39,18 @@ pipenv --python 3.8
 pipenv --three install
 pipenv shell
 
-# do a demo run
+# do a demo run ... and create plantuml
 pipenv run python3 yacg.py \
     --models resources/models/json/yacg_config_schema.json \
              resources/models/json/yacg_model_schema.json \
     --singleFileTemplates plantUml=stdout
+
+# demo run with protobuf example output
+pipenv run python3 yacg.py \
+    --models resources/models/json/yacg_config_schema.json \
+             resources/models/json/yacg_model_schema.json \
+    --singleFileTemplates protobuf=stdout
+
 
 # run a test
 pipenv run python3 -m unittest -v tests/model/test_model.py

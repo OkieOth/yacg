@@ -116,6 +116,11 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(1, 'Address', 3, modelTypes, [])
         self._checkUpType(2, 'SimpleAllOfSchemaTypeEnum', 0, modelTypes, [])
 
+        addressType = modelTypes[1]
+        self.assertEqual(4, addressType.properties[0].ordinal)
+        self.assertEqual(5, addressType.properties[1].ordinal)
+        self.assertEqual(6, addressType.properties[2].ordinal)
+
     def testSophisticatedAllOf(self):
         modelFile = 'tests/resources/models/json/examples/more_sophisticated_allof.json'
         modelFileExists = os.path.isfile(modelFile)

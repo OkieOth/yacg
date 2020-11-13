@@ -23,7 +23,7 @@ class PathType (yacg.model.model.Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = PathType()
+        obj = cls()
 
         obj.pathPattern = dict.get('pathPattern', None)
 
@@ -71,7 +71,7 @@ class Command:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Command()
+        obj = cls()
 
         obj.command = CommandCommandEnum.valueForString(dict.get('command', None))
 
@@ -178,7 +178,7 @@ class Parameter:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Parameter()
+        obj = cls()
 
         obj.inType = ParameterInTypeEnum.valueForString(dict.get('inType', None))
 
@@ -213,7 +213,7 @@ class RequestBody:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = RequestBody()
+        obj = cls()
 
         obj.description = dict.get('description', None)
 
@@ -245,7 +245,7 @@ class Response:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Response()
+        obj = cls()
 
         obj.returnCode = dict.get('returnCode', None)
 
@@ -267,7 +267,7 @@ class CommandSecurity:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = CommandSecurity()
+        obj = cls()
 
         arrayScopes = dict.get('scopes', [])
         for elemScopes in arrayScopes:
@@ -288,7 +288,7 @@ class ContentEntry:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = ContentEntry()
+        obj = cls()
 
         obj.mimeType = dict.get('mimeType', None)
 

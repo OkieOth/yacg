@@ -276,11 +276,9 @@ def main():
             if task.singleFileTask is not None:
                 renderSingleFileTemplate(
                     loadedTypes,
-                    task.singleFileTask.template,
-                    task.singleFileTask.destFile,
-                    task.singleFileTask.templateParams,
                     task.blackListed,
-                    task.whiteListed)
+                    task.whiteListed,
+                    task.singleFileTask)
             elif task.multiFileTask is not None:
                 renderMultiFileTemplate(
                     loadedTypes,

@@ -61,6 +61,35 @@ To specify a domain for a model use the '__domain' entry.
   "definitions": {
  ```
 
+## Property Ordinal Number
+A custom keyword '__ordinal' can be used to add some kind of an index to 
+a property definition. This index can be used for instance as field number when utilize yacg to generate protobuffer.
+
+```json
+        ...
+        "TwoType": {
+            "type": "object",
+            "properties": {
+                "aDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },                
+                "aBool": {
+                    "type": "boolean"
+                },
+                "aRef": {
+                    "$ref": "./single_type_schema.json#/definitions/AnotherType"
+                },
+                "implicitRef": {
+                    "type": "string",
+                    "format": "uuid",
+                    "__ref": "./single_type_schema.json#/definitions/AnotherType"
+                }
+            }
+            ...
+```
+
+
 # OpenApi Extensions
 ## Authorization
 On command level is it possible to specify roles that are allowed to access

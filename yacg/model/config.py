@@ -27,7 +27,7 @@ class Job:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Job()
+        obj = cls()
 
         obj.name = dict.get('name', None)
 
@@ -67,7 +67,7 @@ class Model:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Model()
+        obj = cls()
 
         obj.schema = dict.get('schema', None)
 
@@ -113,7 +113,7 @@ class Task:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Task()
+        obj = cls()
 
         obj.name = dict.get('name', None)
 
@@ -151,7 +151,7 @@ class BlackWhiteListEntry:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = BlackWhiteListEntry()
+        obj = cls()
 
         obj.name = dict.get('name', None)
 
@@ -227,7 +227,7 @@ class SingleFileTask:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = SingleFileTask()
+        obj = cls()
 
         obj.template = dict.get('template', None)
 
@@ -265,7 +265,7 @@ class TemplateParam:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = TemplateParam()
+        obj = cls()
 
         obj.name = dict.get('name', None)
 
@@ -325,7 +325,7 @@ class MultiFileTask:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = MultiFileTask()
+        obj = cls()
 
         obj.template = dict.get('template', None)
 

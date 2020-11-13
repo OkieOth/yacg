@@ -128,6 +128,7 @@ class Property {
     StringType default 
     Type implicitReference 
     BooleanType required 
+    IntegerType ordinal 
 }
  
 note top: a property of a type
