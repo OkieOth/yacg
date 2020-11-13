@@ -16,7 +16,7 @@ class Type:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Type()
+        obj = cls()
         return obj
 
 
@@ -49,7 +49,7 @@ class IntegerType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = IntegerType()
+        obj = cls()
 
         obj.format = IntegerTypeFormatEnum.valueForString(dict.get('format', None))
 
@@ -93,6 +93,7 @@ class IntegerTypeFormatEnum(Enum):
             return ''
 
 
+
 class NumberType (Type):
     """ floating point values
     """
@@ -122,7 +123,7 @@ class NumberType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = NumberType()
+        obj = cls()
 
         obj.format = NumberTypeFormatEnum.valueForString(dict.get('format', None))
 
@@ -166,6 +167,7 @@ class NumberTypeFormatEnum(Enum):
             return ''
 
 
+
 class BooleanType (Type):
     """ boolean values
     """
@@ -180,7 +182,7 @@ class BooleanType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = BooleanType()
+        obj = cls()
 
         obj.default = dict.get('default', None)
         return obj
@@ -200,7 +202,7 @@ class StringType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = StringType()
+        obj = cls()
 
         obj.default = dict.get('default', None)
         return obj
@@ -220,7 +222,7 @@ class UuidType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = UuidType()
+        obj = cls()
 
         obj.default = dict.get('default', None)
         return obj
@@ -258,7 +260,7 @@ class EnumType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = EnumType()
+        obj = cls()
 
         obj.name = dict.get('name', None)
 
@@ -297,7 +299,7 @@ class Tag:
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Tag()
+        obj = cls()
 
         obj.name = dict.get('name', None)
 
@@ -331,7 +333,7 @@ class DateType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = DateType()
+        obj = cls()
 
         obj.default = dict.get('default', None)
 
@@ -371,7 +373,7 @@ class DateTimeType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = DateTimeType()
+        obj = cls()
 
         obj.default = dict.get('default', None)
 
@@ -423,7 +425,7 @@ class ComplexType (Type):
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = ComplexType()
+        obj = cls()
 
         obj.name = dict.get('name', None)
 
@@ -496,11 +498,14 @@ class Property:
         #: a property of a type
         self.required = False
 
+        #: a property of a type
+        self.ordinal = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
             return None
-        obj = Property()
+        obj = cls()
 
         obj.name = dict.get('name', None)
 
@@ -526,4 +531,8 @@ class Property:
         obj.implicitReference = Type.dictToObject(dict.get('implicitReference', None))
 
         obj.required = dict.get('required', None)
+
+        obj.ordinal = dict.get('ordinal', None)
         return obj
+
+
