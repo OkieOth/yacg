@@ -72,18 +72,22 @@ a property definition. This index can be used for instance as field number when 
             "properties": {
                 "aDate": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "__ordinal": 1
                 },                
                 "aBool": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "__ordinal": 2
                 },
                 "aRef": {
-                    "$ref": "./single_type_schema.json#/definitions/AnotherType"
+                    "$ref": "./single_type_schema.json#/definitions/AnotherType",
+                    "__ordinal": 3
                 },
                 "implicitRef": {
                     "type": "string",
                     "format": "uuid",
-                    "__ref": "./single_type_schema.json#/definitions/AnotherType"
+                    "__ref": "./single_type_schema.json#/definitions/AnotherType",
+                    "__ordinal": 4
                 }
             }
             ...
