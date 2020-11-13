@@ -285,6 +285,8 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
         tags = propDict.get('__tags', None)
         if tags is not None:
             newProperty.tags = _extractTags(tags)
+        newProperty.ordinal = propDict.get('__ordinal', None)
+
         type.properties.append(newProperty)
 
 
