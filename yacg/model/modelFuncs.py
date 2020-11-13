@@ -55,6 +55,27 @@ def getPropertiesThatHasTag(tagName, typeObj):
     return propertiesWithTag
 
 
+def getFlattenProperties(typeObj):
+    """provides all properties of the type and all the properties of its base
+    classes in a single list
+
+    Keyword arguments:
+    typeObj -- type or property object to check up
+    """
+
+    flattenProperties = []
+    if typeObj.properties is not None:
+        for property in typeObj.properties:
+            flattenProperties.append(property)
+    baseType = typeObj.extendsType
+    while baseType is not None:
+        for property in baseType.properties:
+            flattenProperties.append(property)
+        baseType = baseType.extendsType
+
+    return flattenProperties
+
+
 def hasEnumTypes(modelTypes):
     for type in modelTypes:
         if isEnumType(type):

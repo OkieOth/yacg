@@ -56,16 +56,6 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/date.proto";
 
-<%def name="printProperties(t)">
-    % for i in range(len(t.properties)):
-        % if t.description != None:
-        // ${t.description}
-        % endif
-        ${printArray(t.properties[i])}${getType(t.properties[i])} ${t.properties[i].name} = ${i+1};
-        
-    % endfor
-</%def>
-
 % for type in modelTypes:
     % if modelFuncs.isEnumType(type):    
 enum ${type.name} {
@@ -81,13 +71,12 @@ enum ${type.name} {
 */
         % endif
 message ${type.name} {
-    <%self:printProperties t="${type}">
-    </%self:printProperties>
-        % for i in range(len(type.properties)):
+    <% flattenProperties = modelFuncs.getFlattenProperties(type) %>
+        % for i in range(len(flattenProperties)):
                 % if type.description != None:
         // ${type.description}
                 % endif
-        ${printArray(type.properties[i])}${getType(type.properties[i])} ${type.properties[i].name} = ${i+1};
+        ${printArray(flattenProperties[i])}${getType(flattenProperties[i])} ${flattenProperties[i].name} = ${i+1};
 
         % endfor
 }
