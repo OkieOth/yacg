@@ -1,3 +1,10 @@
+# 0.16.0
+* enable generation of test data
+
+# 0.15.0
+* add protobuffer template
+* add ordinal attribute to complex type properties
+
 # 0.14.0
 * implement required constraint for model attributes
 
