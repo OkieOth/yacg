@@ -381,3 +381,19 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
 
 
 
+class RandomDataTask (MultiFileTask):
+    def __init__(self):
+        super(MultiFileTask, self).__init__()
+
+        self.maxArraySize = 5
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        obj.maxArraySize = dict.get('maxArraySize', None)
+        return obj
+
+

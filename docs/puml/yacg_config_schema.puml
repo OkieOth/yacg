@@ -78,6 +78,12 @@ class MultiFileTaskFileFilterTypeEnum {
 }
  
 
+class RandomDataTask {
+    IntegerType maxArraySize 
+}
+ 
+
+RandomDataTask --|> MultiFileTask
 
     
 Job "0" *-- "n" Model        
@@ -107,6 +113,7 @@ MultiFileTask  *--  MultiFileTaskFileFilterTypeEnum
             
 MultiFileTask "0" *-- "n" TemplateParam        
             
+    
     
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

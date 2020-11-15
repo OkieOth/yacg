@@ -130,6 +130,24 @@
         }
       }
     },
+    "RandomDataTask": {
+      "type": "object",
+      "allOf": [
+        { 
+          "$ref": "#/definitions/MultiFileTask" 
+        },
+        { 
+            "properties": {
+                "maxArraySize": {
+                    "description": "maximum number of array elements for created data",
+                    "type": "integer",
+                    "default": 5
+                }
+            }
+        }
+    ]
+
+    },
     "TemplateParam": {
       "type": "object",
       "description": "additional, template specific custom parameter for codegen task", 
