@@ -53,6 +53,49 @@ def renderMultiFileTemplate(
             template, multiFileTask)
 
 
+def renderRandomDataTemplate(
+        modelTypes,
+        blackList,
+        whiteList,
+        multiFileTask):
+    """render a template that produce one output file. This file contains content based
+    on every type of the model.
+    A possible example is the creation of a plantUml diagram from a model
+
+    Keyword arguments:
+    modelTypes -- list of types that build the model, list of yacg.model.model.Type instances (mostly Enum- and ComplexTypes)
+    blackList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be excluded
+    whiteList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be included
+    multiFileTask -- container object with the parameters
+    """
+
+    template = Template(filename=multiFileTask.template)
+    modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, whiteList)
+    templateParameterDict = {}
+    for templateParam in multiFileTask.templateParams:
+        templateParameterDict[templateParam.name] = templateParam.value
+
+    if multiFileTask.destDir is None:
+        multiFileTask.destDir = '.'
+    if multiFileTask.destFilePrefix is None:
+        multiFileTask.destFilePrefix = ''
+    if multiFileTask.destFilePostfix is None:
+        multiFileTask.destFilePostfix = ''
+    if multiFileTask.destFileExt is None:
+        multiFileTask.destFileExt = 'txt'
+
+    Path(multiFileTask.destDir).mkdir(parents=True, exist_ok=True)
+
+    if multiFileTask.fileFilterType == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
+        __renderOneFilePerOpenApiOperationId(
+            modelTypesToUse, modelTypes, templateParameterDict,
+            template, multiFileTask)
+    else:
+        __renderOneFilePerType(
+            modelTypesToUse, modelTypes, templateParameterDict,
+            template, multiFileTask)
+
+
 def __renderOneFilePerOpenApiOperationId(
         modelTypesToUse,
         modelTypes,

@@ -62,7 +62,7 @@ class TestJsonBuilder (unittest.TestCase):
 
         self._checkUpType(0, 'Job', 4, modelTypes, ['models', 'tasks'])
         self._checkUpType(1, 'Model', 4, modelTypes, [])
-        self._checkUpType(2, 'Task', 6, modelTypes, [])
+        self._checkUpType(2, 'Task', 7, modelTypes, [])
         self._checkUpType(3, 'BlackWhiteListEntry', 2, modelTypes, ['name'])
         self._checkUpType(4, 'BlackWhiteListEntryTypeEnum', 0, modelTypes, [])
         self._checkUpType(5, 'SingleFileTask', 3, modelTypes, [])

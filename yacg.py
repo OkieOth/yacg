@@ -7,7 +7,7 @@ from yacg.util.outputUtils import printError, getErrorTxt, getOkTxt
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
-from yacg.generators.multiFileGenerator import renderMultiFileTemplate
+from yacg.generators.multiFileGenerator import renderMultiFileTemplate, renderRandomDataTemplate
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 
@@ -178,6 +178,8 @@ def getJobConfigurations(args):
                     task.singleFileTask.templateParams = task.singleFileTask.templateParams + templateParameters
                 elif task.multiFileTask is not None:
                     task.multiFileTask.templateParams = task.multiFileTask.templateParams + templateParameters
+                elif task.randomDataTask is not None:
+                    task.randomDataTask.templateParams = task.randomDataTask.templateParams + templateParameters
         return jobArray
     else:
         return _getJobConfigurationsFromArgs(args)
@@ -285,6 +287,12 @@ def main():
                     task.blackListed,
                     task.whiteListed,
                     task.multiFileTask)
+            elif task.randomDataTask is not None:
+                renderRandomDataTemplate(
+                    loadedTypes,
+                    task.blackListed,
+                    task.whiteListed,
+                    task.randomDataTask)
 
 
 if __name__ == '__main__':

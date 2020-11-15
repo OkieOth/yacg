@@ -26,6 +26,7 @@ class Task {
     BlackWhiteListEntry[] whiteListed 
     SingleFileTask singleFileTask 
     MultiFileTask multiFileTask 
+    RandomDataTask randomDataTask 
 }
  
 note top: A task to run
@@ -99,6 +100,8 @@ Task "0" *-- "n" BlackWhiteListEntry
 Task  *--  SingleFileTask        
             
 Task  *--  MultiFileTask        
+            
+Task  *--  RandomDataTask        
             
     
 BlackWhiteListEntry  *--  BlackWhiteListEntryTypeEnum        

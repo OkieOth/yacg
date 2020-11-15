@@ -109,6 +109,9 @@ class Task:
         #: A task to run
         self.multiFileTask = None
 
+        #: A task to run
+        self.randomDataTask = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -132,6 +135,8 @@ class Task:
         obj.singleFileTask = SingleFileTask.dictToObject(dict.get('singleFileTask', None))
 
         obj.multiFileTask = MultiFileTask.dictToObject(dict.get('multiFileTask', None))
+
+        obj.randomDataTask = RandomDataTask.dictToObject(dict.get('randomDataTask', None))
         return obj
 
 
