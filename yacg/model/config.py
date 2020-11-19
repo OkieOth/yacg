@@ -386,11 +386,20 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
 
 
 
-class RandomDataTask (MultiFileTask):
+class RandomDataTask:
     def __init__(self):
-        super(MultiFileTask, self).__init__()
 
-        self.maxArraySize = 5
+        self.outputType = None
+
+        self.destDir = None
+
+        self.elemCount = None
+
+        self.keyProperties = None
+
+        self.valuePools = []
+
+        self.arrays = None
 
     @classmethod
     def dictToObject(cls, dict):
@@ -398,7 +407,215 @@ class RandomDataTask (MultiFileTask):
             return None
         obj = cls()
 
-        obj.maxArraySize = dict.get('maxArraySize', None)
+        obj.outputType = RandomDataTaskOutputTypeEnum.valueForString(dict.get('outputType', None))
+
+        obj.destDir = dict.get('destDir', None)
+
+        obj.elemCount = RandomDataTaskElemCount.dictToObject(dict.get('elemCount', None))
+
+        obj.keyProperties = RandomDataTaskKeyProperties.dictToObject(dict.get('keyProperties', None))
+
+        arrayValuePools = dict.get('valuePools', [])
+        for elemValuePools in arrayValuePools:
+            obj.valuePools.append(
+                RandomDataTaskValuePools.dictToObject(elemValuePools))
+
+        obj.arrays = RandomDataTaskArrays.dictToObject(dict.get('arrays', None))
+        return obj
+
+
+class RandomDataTaskOutputTypeEnum(Enum):
+    JSON = 'JSON'
+    CSV = 'CSV'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
+            return None
+        elif lowerStringValue == 'json':
+            return RandomDataTaskOutputTypeEnum.JSON
+        elif lowerStringValue == 'csv':
+            return RandomDataTaskOutputTypeEnum.CSV
+        else:
+            return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        elif enumValue == RandomDataTaskOutputTypeEnum.JSON:
+            return 'JSON'
+        elif enumValue == RandomDataTaskOutputTypeEnum.CSV:
+            return 'CSV'
+        else:
+            return ''
+
+
+
+class RandomDataTaskElemCount:
+    def __init__(self):
+
+        self.defaultMinElemCount = None
+
+        self.defaultMaxElemCount = None
+
+        self.specialElemCounts = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        obj.defaultMinElemCount = dict.get('defaultMinElemCount', None)
+
+        obj.defaultMaxElemCount = dict.get('defaultMaxElemCount', None)
+
+        arraySpecialElemCounts = dict.get('specialElemCounts', [])
+        for elemSpecialElemCounts in arraySpecialElemCounts:
+            obj.specialElemCounts.append(
+                RandomDataTaskElemCountSpecialElemCounts.dictToObject(elemSpecialElemCounts))
+        return obj
+
+
+class RandomDataTaskElemCountSpecialElemCounts:
+    def __init__(self):
+
+        self.typeName = None
+
+        self.minElemCount = None
+
+        self.maxElemCount = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        obj.typeName = dict.get('typeName', None)
+
+        obj.minElemCount = dict.get('minElemCount', None)
+
+        obj.maxElemCount = dict.get('maxElemCount', None)
+        return obj
+
+
+class RandomDataTaskKeyProperties:
+    def __init__(self):
+
+        self.defaultKeyPropNames = []
+
+        self.specialKeyPropNames = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        arrayDefaultKeyPropNames = dict.get('defaultKeyPropNames', [])
+        for elemDefaultKeyPropNames in arrayDefaultKeyPropNames:
+            obj.defaultKeyPropNames.append(elemDefaultKeyPropNames)
+
+        arraySpecialKeyPropNames = dict.get('specialKeyPropNames', [])
+        for elemSpecialKeyPropNames in arraySpecialKeyPropNames:
+            obj.specialKeyPropNames.append(
+                RandomDataTaskKeyPropertiesSpecialKeyPropNames.dictToObject(elemSpecialKeyPropNames))
+        return obj
+
+
+class RandomDataTaskKeyPropertiesSpecialKeyPropNames:
+    def __init__(self):
+
+        self.typeName = None
+
+        self.keyPropName = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        obj.typeName = dict.get('typeName', None)
+
+        obj.keyPropName = dict.get('keyPropName', None)
+        return obj
+
+
+class RandomDataTaskValuePools:
+    def __init__(self):
+
+        self.propertyName = None
+
+        self.useAll = False
+
+        self.values = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        obj.propertyName = dict.get('propertyName', None)
+
+        obj.useAll = dict.get('useAll', None)
+
+        arrayValues = dict.get('values', [])
+        for elemValues in arrayValues:
+            obj.values.append(elemValues)
+        return obj
+
+
+class RandomDataTaskArrays:
+    def __init__(self):
+
+        self.defaultMinSize = None
+
+        self.defaultMaxSize = None
+
+        self.specialArraySizes = []
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        obj.defaultMinSize = dict.get('defaultMinSize', None)
+
+        obj.defaultMaxSize = dict.get('defaultMaxSize', None)
+
+        arraySpecialArraySizes = dict.get('specialArraySizes', [])
+        for elemSpecialArraySizes in arraySpecialArraySizes:
+            obj.specialArraySizes.append(
+                RandomDataTaskArraysSpecialArraySizes.dictToObject(elemSpecialArraySizes))
+        return obj
+
+
+class RandomDataTaskArraysSpecialArraySizes:
+    def __init__(self):
+
+        self.propertyName = None
+
+        self.minSize = None
+
+        self.maxSize = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        obj.propertyName = dict.get('propertyName', None)
+
+        obj.minSize = dict.get('minSize', None)
+
+        obj.maxSize = dict.get('maxSize', None)
         return obj
 
 

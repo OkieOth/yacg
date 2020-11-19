@@ -80,11 +80,66 @@ class MultiFileTaskFileFilterTypeEnum {
  
 
 class RandomDataTask {
-    IntegerType maxArraySize 
+    RandomDataTaskOutputTypeEnum outputType 
+    StringType destDir 
+    RandomDataTaskElemCount elemCount 
+    RandomDataTaskKeyProperties keyProperties 
+    RandomDataTaskValuePools[] valuePools 
+    RandomDataTaskArrays arrays 
 }
  
 
-RandomDataTask --|> MultiFileTask
+class RandomDataTaskOutputTypeEnum {
+}
+ 
+
+class RandomDataTaskElemCount {
+    IntegerType defaultMinElemCount 
+    IntegerType defaultMaxElemCount 
+    RandomDataTaskElemCountSpecialElemCounts[] specialElemCounts 
+}
+ 
+
+class RandomDataTaskElemCountSpecialElemCounts {
+    StringType typeName 
+    IntegerType minElemCount 
+    IntegerType maxElemCount 
+}
+ 
+
+class RandomDataTaskKeyProperties {
+    StringType[] defaultKeyPropNames 
+    RandomDataTaskKeyPropertiesSpecialKeyPropNames[] specialKeyPropNames 
+}
+ 
+
+class RandomDataTaskKeyPropertiesSpecialKeyPropNames {
+    StringType typeName 
+    StringType keyPropName 
+}
+ 
+
+class RandomDataTaskValuePools {
+    StringType propertyName 
+    BooleanType useAll 
+    StringType[] values 
+}
+ 
+
+class RandomDataTaskArrays {
+    IntegerType defaultMinSize 
+    IntegerType defaultMaxSize 
+    RandomDataTaskArraysSpecialArraySizes[] specialArraySizes 
+}
+ 
+
+class RandomDataTaskArraysSpecialArraySizes {
+    StringType propertyName 
+    IntegerType minSize 
+    IntegerType maxSize 
+}
+ 
+
 
     
 Job "0" *-- "n" Model        
@@ -117,6 +172,30 @@ MultiFileTask  *--  MultiFileTaskFileFilterTypeEnum
 MultiFileTask "0" *-- "n" TemplateParam        
             
     
+    
+RandomDataTask  *--  RandomDataTaskOutputTypeEnum        
+            
+RandomDataTask  *--  RandomDataTaskElemCount        
+            
+RandomDataTask  *--  RandomDataTaskKeyProperties        
+            
+RandomDataTask "0" *-- "n" RandomDataTaskValuePools        
+            
+RandomDataTask  *--  RandomDataTaskArrays        
+            
+    
+    
+RandomDataTaskElemCount "0" *-- "n" RandomDataTaskElemCountSpecialElemCounts        
+            
+    
+    
+RandomDataTaskKeyProperties "0" *-- "n" RandomDataTaskKeyPropertiesSpecialKeyPropNames        
+            
+    
+    
+    
+RandomDataTaskArrays "0" *-- "n" RandomDataTaskArraysSpecialArraySizes        
+            
     
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

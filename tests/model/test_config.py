@@ -52,6 +52,38 @@ class TestYacgConfigurationModel (unittest.TestCase):
         x = yacg.model.config.RandomDataTask()
         self.assertIsNotNone(x)
 
+    def testRandomDataTaskOutputTypeEnum(self):
+        self.assertIsNotNone(yacg.model.config.RandomDataTaskOutputTypeEnum.JSON)
+        self.assertIsNotNone(yacg.model.config.RandomDataTaskOutputTypeEnum.CSV)
+
+    def testRandomDataTaskElemCount(self):
+        x = yacg.model.config.RandomDataTaskElemCount()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskElemCountSpecialElemCounts(self):
+        x = yacg.model.config.RandomDataTaskElemCountSpecialElemCounts()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskKeyProperties(self):
+        x = yacg.model.config.RandomDataTaskKeyProperties()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskKeyPropertiesSpecialKeyPropNames(self):
+        x = yacg.model.config.RandomDataTaskKeyPropertiesSpecialKeyPropNames()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskValuePools(self):
+        x = yacg.model.config.RandomDataTaskValuePools()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskArrays(self):
+        x = yacg.model.config.RandomDataTaskArrays()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskArraysSpecialArraySizes(self):
+        x = yacg.model.config.RandomDataTaskArraysSpecialArraySizes()
+        self.assertIsNotNone(x)
+
 
 if __name__ == '__main__':
     unittest.main()

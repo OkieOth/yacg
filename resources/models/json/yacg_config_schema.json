@@ -131,22 +131,134 @@
       }
     },
     "RandomDataTask": {
-      "type": "object",
-      "allOf": [
-        { 
-          "$ref": "#/definitions/MultiFileTask" 
+      "type": "object",      
+      "properties": {
+        "outputType": {
+          "type": "string",
+          "enum": ["JSON", "CSV"]
         },
-        { 
-            "properties": {
-                "maxArraySize": {
-                    "description": "maximum number of array elements for created data",
-                    "type": "integer",
-                    "default": 5
+        "destDir": {
+          "description": "path where the files will be created, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
+          "type": "string"
+        },
+        "elemCount": {
+          "type": "object",
+          "properties": {
+            "defaultMinElemCount": {
+              "description": "minimum number of elements that should be created for all types",
+              "type": "integer"
+            },
+            "defaultMaxElemCount": {
+              "description": "maximum number of elements that should be created for all types",
+              "type": "integer"
+            },
+            "specialElemCounts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "typeName": {
+                    "description": "TYPENAME",
+                    "type": "string"
+                  },
+                  "minElemCount": {
+                    "description": "how many elements should be generated for that type at minimum",
+                    "type": "integer"
+                  },
+                  "maxElemCount": {
+                    "description": "how many elements should be generated for that type at maximum",
+                    "type": "integer"
+                  }
                 }
+              }    
             }
+          }
+        },
+        "keyProperties": {
+          "type": "object",
+          "properties": {
+            "defaultKeyPropNames": {
+              "description": "list of names for primary key fields in the model",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "specialKeyPropNames": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "typeName": {
+                    "description": "TYPENAME",
+                    "type": "string"
+                  },
+                  "keyPropName": {
+                    "description": "name of the attribute that represents the key for that type",
+                    "type": "string"
+                  }
+                }
+              }    
+            }
+          }
+        },
+        "valuePools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "propertyName": {
+                "description": "TYPENAME.PROPERTYNAME",
+                "type": "string"
+              },
+              "useAll": {
+                "description": "should all values from the pool be used in the data gen",
+                "type": "boolean",
+                "default": false
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }      
+              } 
+            }
+          }
+        },
+        "arrays": {
+          "type": "object",
+          "properties": {
+            "defaultMinSize": {
+              "description": "minimum size of arrays",
+              "type": "integer"
+            },
+            "defaultMaxSize": {
+              "description": "maximum size of arrays",
+              "type": "integer"
+            },
+            "specialArraySizes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "propertyName": {
+                    "description": "TYPENAME.PROPERTYNAME",
+                    "type": "string"
+                  },
+                  "minSize": {
+                    "description": "how many array elements should be generated for that attrib, at minimum",
+                    "type": "integer"
+                  },
+                  "maxSize": {
+                    "description": "how many array elements should be generated for that attrib, at maximum",
+                    "type": "integer"
+                  }
+                }
+              }    
+            }
+          }
         }
-    ]
-
+      }
     },
     "TemplateParam": {
       "type": "object",
