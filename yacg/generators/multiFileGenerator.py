@@ -38,35 +38,6 @@ def renderMultiFileTemplate(
             template, multiFileTask)
 
 
-def renderRandomDataTemplate(
-        modelTypes,
-        blackList,
-        whiteList,
-        randomDataTask):
-    """render a template that produce one output file. This file contains content based
-    on every type of the model.
-    A possible example is the creation of a plantUml diagram from a model
-
-    Keyword arguments:
-    modelTypes -- list of types that build the model, list of yacg.model.model.Type instances (mostly Enum- and ComplexTypes)
-    blackList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be excluded
-    whiteList -- list of yacg.model.config.BlackWhiteListEntry instances to describe types that should be included
-    randomDataTask -- container object with the parameters
-    """
-
-    template, modelTypesToUse, templateParameterDict = __prepareMultiFileTask(randomDataTask, modelTypes, blackList, whiteList)
-
-    # TODO add pregenerated UUIDs to the implicit referenced fields and put them to the
-    # templateParameterDict
-    #templateParameterDict = {}
-    #for templateParam in multiFileTask.templateParams:
-        #templateParameterDict[templateParam.name] = templateParam.value
-
-    __renderOneFilePerType(
-        modelTypesToUse, modelTypes, templateParameterDict,
-        template, randomDataTask)
-
-
 def __prepareMultiFileTask(multiFileTask, modelTypes, blackList, whiteList):
     template = Template(filename=multiFileTask.template)
     modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, whiteList)
@@ -109,7 +80,7 @@ def __renderOneFilePerOpenApiOperationId(
             modelTypes=modelTypesToUse,
             availableTypes=modelTypes,
             templateParameters=templateParameterDict)
-        outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, key, upperCaseFileNames)
+        outputFile = getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, key, upperCaseFileNames)
         __writeRenderResult(outputFile, multiFileTask, renderResult)
 
 
@@ -132,7 +103,7 @@ def __renderOneFilePerType(
             modelTypes=modelTypesToUse,
             availableTypes=modelTypes,
             templateParameters=templateParameterDict)
-        outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames)
+        outputFile = getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames)
         __writeRenderResult(outputFile, multiFileTask, renderResult)
 
 
@@ -149,7 +120,7 @@ def __writeRenderResult(outputFile, multiFileTask, renderResult):
         f.close()
 
 
-def __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames):
+def getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames):
     fileNameBase = typeObj.name if hasattr(typeObj, 'name') and (typeObj.name is not None) else str(type(type))
     if isinstance(typeObj, str):
         fileNameBase = typeObj

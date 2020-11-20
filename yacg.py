@@ -7,7 +7,8 @@ from yacg.util.outputUtils import printError, getErrorTxt, getOkTxt
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
-from yacg.generators.multiFileGenerator import renderMultiFileTemplate, renderRandomDataTemplate
+from yacg.generators.multiFileGenerator import renderMultiFileTemplate
+from yacg.generators.randomDataGenerator import renderRandomData
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 
@@ -288,7 +289,7 @@ def main():
                     task.whiteListed,
                     task.multiFileTask)
             elif task.randomDataTask is not None:
-                renderRandomDataTemplate(
+                renderRandomData(
                     loadedTypes,
                     task.blackListed,
                     task.whiteListed,

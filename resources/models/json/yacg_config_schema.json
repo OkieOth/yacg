@@ -146,11 +146,13 @@
           "properties": {
             "defaultMinElemCount": {
               "description": "minimum number of elements that should be created for all types",
-              "type": "integer"
+              "type": "integer",
+              "default": 5
             },
             "defaultMaxElemCount": {
               "description": "maximum number of elements that should be created for all types",
-              "type": "integer"
+              "type": "integer",
+              "default": 5
             },
             "specialElemCounts": {
               "type": "array",
