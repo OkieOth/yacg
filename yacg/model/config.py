@@ -456,9 +456,9 @@ class RandomDataTaskOutputTypeEnum(Enum):
 class RandomDataTaskElemCount:
     def __init__(self):
 
-        self.defaultMinElemCount = None
+        self.defaultMinElemCount = 1
 
-        self.defaultMaxElemCount = None
+        self.defaultMaxElemCount = 10
 
         self.specialElemCounts = []
 
