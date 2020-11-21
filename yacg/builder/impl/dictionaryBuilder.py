@@ -279,9 +279,11 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
             newProperty.description = description
         newProperty.default = propDict.get('default', None)
         newProperty.type = _extractAttribType(type.name, newProperty, propDict, modelTypes, modelFileContainer)
+        newProperty.isKey = propDict.get('__key', False)
+        newProperty.isVisualKey = propDict.get('__visualKey', False)
         implicitRefEntry = propDict.get('__ref', None)
         if implicitRefEntry is not None:
-            newProperty.implicitReference = _extractReferenceType(implicitRefEntry, modelTypes, modelFileContainer)
+            newProperty.foreignKey = _extractReferenceType(implicitRefEntry, modelTypes, modelFileContainer)
         tags = propDict.get('__tags', None)
         if tags is not None:
             newProperty.tags = _extractTags(tags)

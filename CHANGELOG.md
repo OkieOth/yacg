@@ -1,5 +1,8 @@
 # 0.16.0
 * enable generation of test data
+* rename property attrib 'implicitRef' to 'foreignKey'
+* introduce '__key' model extension, to mark properties as logical keys
+* introduce '__visualKey' model extension, to mark properties as visual key (e.g. name, label, ...) 
 
 # 0.15.0
 * add protobuffer template

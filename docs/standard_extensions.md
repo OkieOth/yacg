@@ -18,7 +18,7 @@ include a '__tag' attribute in your model. This attribute expects an array of st
                 ...
 ```
 
-## Implicit type references
+## Foreign type references
 To put a reference to an foreign key like attribute, the '__ref' entry can be used. The
 expected value it the same as for the '$ref' entry.
 
@@ -46,7 +46,47 @@ expected value it the same as for the '$ref' entry.
             ...
 ```
 
-It is internally mapped to `yacg_model_schema->Property->implicitReference`.
+It is internally mapped to `yacg_model_schema->Property->foreignKey`.
+
+## Marks type properties as key field
+To mark a property as key add the '__key' entry. 
+
+```json
+        ...
+        "TwoType": {
+            "type": "object",
+            "properties": {
+                "guid": {
+                    "type": "string",
+                    "format": "uuid"
+                    "__key": true
+                },                
+                ...
+            }
+            ...
+```
+
+## Marks type properties as visual key field
+To mark a property as visual key (e.g. label, name, caption, ...) add the '__visualKey' entry. 
+
+```json
+        ...
+        "TwoType": {
+            "type": "object",
+            "properties": {
+                "guid": {
+                    "type": "string",
+                    "format": "uuid"
+                    "__key": true
+                },                
+                "name": {
+                    "type": "string",
+                    "__visualKey": true
+                },                
+                ...
+            }
+            ...
+```
 
 ## Domain information for the model
 To specify a domain for a model use the '__domain' entry.

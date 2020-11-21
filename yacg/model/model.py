@@ -493,7 +493,7 @@ class Property:
         self.default = None
 
         #: a property of a type
-        self.implicitReference = None
+        self.foreignKey = None
 
         #: a property of a type
         self.required = False
@@ -528,7 +528,7 @@ class Property:
 
         obj.default = dict.get('default', None)
 
-        obj.implicitReference = Type.dictToObject(dict.get('implicitReference', None))
+        obj.foreignKey = Type.dictToObject(dict.get('foreignKey', None))
 
         obj.required = dict.get('required', None)
 

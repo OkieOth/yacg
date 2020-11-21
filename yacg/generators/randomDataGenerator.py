@@ -1,9 +1,9 @@
 """A generator that creates from the model types one output file per type"""
 
+import random
 from os import path
 from pathlib import Path
 
-import yacg.model.config as config
 import yacg.generators.helper.generatorHelperFuncs as generatorHelper
 from yacg.generators.multiFileGenerator import getOutputFileName
 
@@ -33,7 +33,6 @@ def renderRandomData(
     __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict)
     __fillRandomValues(randomDataTask, randomDataDict)
 
-    
 
 def __prepareTypeObjects(modelTypesToUse, randomDataTask):
     """Simply create empty dictionaries for every type and fill it with unique key values
@@ -44,20 +43,34 @@ def __prepareTypeObjects(modelTypesToUse, randomDataTask):
     for typeObj in modelTypesToUse:
         dataList = []
         setCount = __getSetCountForType(typeObj.name, randomDataTask)
+        for i in range(setCount):
+            typeDict = {}
+            __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask)
+            dataList.append(typeDict)
         randomDataDict[typeObj.name] = dataList
     return randomDataDict
+
+
+def __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask):
+    pass
 
 
 def __getSetCountForType(typeName, randomDataTask):
     """returns the number of set that should be created for that type
     """
 
-    if randomDataTask.elemCount is not None:
-        pass
+    minElemCount = randomDataTask.defaultMinElemCount
+    maxElemCount = randomDataTask.defaultMaxElemCount
+    if randomDataTask.specialElemCounts is not None:
+        for elemCount in randomDataTask.specialElemCounts:
+            if typeName == elemCount.typeName:
+                minElemCount = elemCount.minElemCount
+                maxElemCount = elemCount.maxElemCount
+                break
+    if minElemCount == maxElemCount:
+        return minElemCount
     else:
-        pass
-    # TODO
-    pass
+        return random.randint(minElemCount, maxElemCount)
 
 
 def __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict):

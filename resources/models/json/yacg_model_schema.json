@@ -351,10 +351,6 @@
                     "description": "default value for this attribute as string",
                     "type": "string"
                 },
-                "implicitReference": {
-                    "description": "content of the '__ref' entry of a property, points to an implicit referenced type, e.g. for IDs",
-                    "$ref": "#/definitions/Type"                                              
-                },
                 "required": {
                     "description": "is set to true if the attribute is marked as required in the model",
                     "type": "boolean",
@@ -363,6 +359,20 @@
                 "ordinal": {
                     "description": "ordinal number/position of that attribute. Used in protobuf e.g.",
                     "type": "integer"
+                },
+                "isKey": {
+                    "description": "is set to true if the attribute is the key of the type",
+                    "type": "boolean",
+                    "default": false
+                },
+                "isVisualKey": {
+                    "description": "is set to true if the attribute is some kind of a name, caption, label or anther kind of visual key",
+                    "type": "boolean",
+                    "default": false
+                },
+                "foreignKey": {
+                    "description": "content of the '__ref' entry of a property, points to an implicit referenced type, e.g. for IDs",
+                    "$ref": "#/definitions/Type"                                              
                 }
             }
         },
