@@ -84,7 +84,7 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(1, 'TwoType', 4, modelTypes, [])
         # TwoType->implicitRef
         self.assertIsNotNone(modelTypes[1].properties[3].foreignKey)
-        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].implicitReference)
+        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey)
         self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
