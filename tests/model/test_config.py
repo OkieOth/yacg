@@ -56,32 +56,20 @@ class TestYacgConfigurationModel (unittest.TestCase):
         self.assertIsNotNone(yacg.model.config.RandomDataTaskOutputTypeEnum.JSON)
         self.assertIsNotNone(yacg.model.config.RandomDataTaskOutputTypeEnum.CSV)
 
-    def testRandomDataTaskElemCount(self):
-        x = yacg.model.config.RandomDataTaskElemCount()
+    def testRandomDataTaskSpecialElemCounts(self):
+        x = yacg.model.config.RandomDataTaskSpecialElemCounts()
         self.assertIsNotNone(x)
 
-    def testRandomDataTaskElemCountSpecialElemCounts(self):
-        x = yacg.model.config.RandomDataTaskElemCountSpecialElemCounts()
-        self.assertIsNotNone(x)
-
-    def testRandomDataTaskKeyProperties(self):
-        x = yacg.model.config.RandomDataTaskKeyProperties()
-        self.assertIsNotNone(x)
-
-    def testRandomDataTaskKeyPropertiesSpecialKeyPropNames(self):
-        x = yacg.model.config.RandomDataTaskKeyPropertiesSpecialKeyPropNames()
+    def testRandomDataTaskSpecialKeyPropNames(self):
+        x = yacg.model.config.RandomDataTaskSpecialKeyPropNames()
         self.assertIsNotNone(x)
 
     def testRandomDataTaskValuePools(self):
         x = yacg.model.config.RandomDataTaskValuePools()
         self.assertIsNotNone(x)
 
-    def testRandomDataTaskArrays(self):
-        x = yacg.model.config.RandomDataTaskArrays()
-        self.assertIsNotNone(x)
-
-    def testRandomDataTaskArraysSpecialArraySizes(self):
-        x = yacg.model.config.RandomDataTaskArraysSpecialArraySizes()
+    def testRandomDataTaskSpecialArraySizes(self):
+        x = yacg.model.config.RandomDataTaskSpecialArraySizes()
         self.assertIsNotNone(x)
 
 

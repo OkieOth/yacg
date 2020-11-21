@@ -212,6 +212,7 @@ class BlackWhiteListEntryTypeEnum(Enum):
             return ''
 
 
+
 class SingleFileTask:
     """ parameter of a code generation task that creates one file
     """
@@ -384,6 +385,7 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
             return ''
 
 
+
 class RandomDataTask:
     def __init__(self):
 
@@ -391,13 +393,23 @@ class RandomDataTask:
 
         self.destDir = None
 
-        self.elemCount = None
+        self.defaultMinElemCount = 1
 
-        self.keyProperties = None
+        self.defaultMaxElemCount = 10
+
+        self.specialElemCounts = []
+
+        self.defaultKeyPropNames = []
+
+        self.specialKeyPropNames = []
 
         self.valuePools = []
 
-        self.arrays = None
+        self.defaultMinSize = None
+
+        self.defaultMaxSize = None
+
+        self.specialArraySizes = []
 
     @classmethod
     def dictToObject(cls, dict):
@@ -409,16 +421,37 @@ class RandomDataTask:
 
         obj.destDir = dict.get('destDir', None)
 
-        obj.elemCount = RandomDataTaskElemCount.dictToObject(dict.get('elemCount', None))
+        obj.defaultMinElemCount = dict.get('defaultMinElemCount', None)
 
-        obj.keyProperties = RandomDataTaskKeyProperties.dictToObject(dict.get('keyProperties', None))
+        obj.defaultMaxElemCount = dict.get('defaultMaxElemCount', None)
+
+        arraySpecialElemCounts = dict.get('specialElemCounts', [])
+        for elemSpecialElemCounts in arraySpecialElemCounts:
+            obj.specialElemCounts.append(
+                RandomDataTaskSpecialElemCounts.dictToObject(elemSpecialElemCounts))
+
+        arrayDefaultKeyPropNames = dict.get('defaultKeyPropNames', [])
+        for elemDefaultKeyPropNames in arrayDefaultKeyPropNames:
+            obj.defaultKeyPropNames.append(elemDefaultKeyPropNames)
+
+        arraySpecialKeyPropNames = dict.get('specialKeyPropNames', [])
+        for elemSpecialKeyPropNames in arraySpecialKeyPropNames:
+            obj.specialKeyPropNames.append(
+                RandomDataTaskSpecialKeyPropNames.dictToObject(elemSpecialKeyPropNames))
 
         arrayValuePools = dict.get('valuePools', [])
         for elemValuePools in arrayValuePools:
             obj.valuePools.append(
                 RandomDataTaskValuePools.dictToObject(elemValuePools))
 
-        obj.arrays = RandomDataTaskArrays.dictToObject(dict.get('arrays', None))
+        obj.defaultMinSize = dict.get('defaultMinSize', None)
+
+        obj.defaultMaxSize = dict.get('defaultMaxSize', None)
+
+        arraySpecialArraySizes = dict.get('specialArraySizes', [])
+        for elemSpecialArraySizes in arraySpecialArraySizes:
+            obj.specialArraySizes.append(
+                RandomDataTaskSpecialArraySizes.dictToObject(elemSpecialArraySizes))
         return obj
 
 
@@ -451,33 +484,7 @@ class RandomDataTaskOutputTypeEnum(Enum):
 
 
 
-class RandomDataTaskElemCount:
-    def __init__(self):
-
-        self.defaultMinElemCount = 1
-
-        self.defaultMaxElemCount = 10
-
-        self.specialElemCounts = []
-
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
-
-        obj.defaultMinElemCount = dict.get('defaultMinElemCount', None)
-
-        obj.defaultMaxElemCount = dict.get('defaultMaxElemCount', None)
-
-        arraySpecialElemCounts = dict.get('specialElemCounts', [])
-        for elemSpecialElemCounts in arraySpecialElemCounts:
-            obj.specialElemCounts.append(
-                RandomDataTaskElemCountSpecialElemCounts.dictToObject(elemSpecialElemCounts))
-        return obj
-
-
-class RandomDataTaskElemCountSpecialElemCounts:
+class RandomDataTaskSpecialElemCounts:
     def __init__(self):
 
         self.typeName = None
@@ -500,31 +507,7 @@ class RandomDataTaskElemCountSpecialElemCounts:
         return obj
 
 
-class RandomDataTaskKeyProperties:
-    def __init__(self):
-
-        self.defaultKeyPropNames = []
-
-        self.specialKeyPropNames = []
-
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
-
-        arrayDefaultKeyPropNames = dict.get('defaultKeyPropNames', [])
-        for elemDefaultKeyPropNames in arrayDefaultKeyPropNames:
-            obj.defaultKeyPropNames.append(elemDefaultKeyPropNames)
-
-        arraySpecialKeyPropNames = dict.get('specialKeyPropNames', [])
-        for elemSpecialKeyPropNames in arraySpecialKeyPropNames:
-            obj.specialKeyPropNames.append(
-                RandomDataTaskKeyPropertiesSpecialKeyPropNames.dictToObject(elemSpecialKeyPropNames))
-        return obj
-
-
-class RandomDataTaskKeyPropertiesSpecialKeyPropNames:
+class RandomDataTaskSpecialKeyPropNames:
     def __init__(self):
 
         self.typeName = None
@@ -568,33 +551,7 @@ class RandomDataTaskValuePools:
         return obj
 
 
-class RandomDataTaskArrays:
-    def __init__(self):
-
-        self.defaultMinSize = None
-
-        self.defaultMaxSize = None
-
-        self.specialArraySizes = []
-
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
-
-        obj.defaultMinSize = dict.get('defaultMinSize', None)
-
-        obj.defaultMaxSize = dict.get('defaultMaxSize', None)
-
-        arraySpecialArraySizes = dict.get('specialArraySizes', [])
-        for elemSpecialArraySizes in arraySpecialArraySizes:
-            obj.specialArraySizes.append(
-                RandomDataTaskArraysSpecialArraySizes.dictToObject(elemSpecialArraySizes))
-        return obj
-
-
-class RandomDataTaskArraysSpecialArraySizes:
+class RandomDataTaskSpecialArraySizes:
     def __init__(self):
 
         self.propertyName = None
