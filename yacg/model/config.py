@@ -212,7 +212,6 @@ class BlackWhiteListEntryTypeEnum(Enum):
             return ''
 
 
-
 class SingleFileTask:
     """ parameter of a code generation task that creates one file
     """
@@ -383,7 +382,6 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
             return 'openApiOperationId'
         else:
             return ''
-
 
 
 class RandomDataTask:

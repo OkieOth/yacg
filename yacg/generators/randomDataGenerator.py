@@ -3,6 +3,7 @@
 from os import path
 from pathlib import Path
 
+import yacg.model.config as config
 import yacg.generators.helper.generatorHelperFuncs as generatorHelper
 from yacg.generators.multiFileGenerator import getOutputFileName
 
@@ -51,6 +52,10 @@ def __getSetCountForType(typeName, randomDataTask):
     """returns the number of set that should be created for that type
     """
 
+    if randomDataTask.elemCount is not None:
+        pass
+    else:
+        pass
     # TODO
     pass
 
