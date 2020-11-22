@@ -1,11 +1,13 @@
 """A generator that creates from the model types one output file per type"""
 
 import random
+import uuid
 from os import path
 from pathlib import Path
 
 import yacg.generators.helper.generatorHelperFuncs as generatorHelper
 from yacg.generators.multiFileGenerator import getOutputFileName
+import yacg.model.model as model
 
 
 def renderRandomData(
@@ -41,18 +43,87 @@ def __prepareTypeObjects(modelTypesToUse, randomDataTask):
 
     randomDataDict = {}
     for typeObj in modelTypesToUse:
+        if not isinstance(typeObj, model.ComplexType):
+            continue
         dataList = []
         setCount = __getSetCountForType(typeObj.name, randomDataTask)
+        keyValueList = []
         for i in range(setCount):
             typeDict = {}
-            __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask)
+            __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask, keyValueList)
             dataList.append(typeDict)
         randomDataDict[typeObj.name] = dataList
     return randomDataDict
 
 
-def __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask):
-    pass
+def __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask, keyValueList):
+    if __initKeyAttribInTypeDictFromKeyField(typeDict, typeObj, randomDataTask, keyValueList):
+        return
+    if __initKeyAttribInTypeDictFromSpecialKeyField(typeDict, typeObj, randomDataTask, keyValueList):
+        return
+    __initKeyAttribInTypeDictFromDefaultKeyNames(typeDict, typeObj, randomDataTask, keyValueList)
+
+
+def __getRandomKeyValue(property, randomDataTask, keyValueList):
+    if property.type is None:
+        return None
+    elif isinstance(type, model.IntegerType):
+        lastKey = keyValueList[-1] if len(keyValueList)>0 else 0
+        newKey = lastKey + 1
+        keyValueList.append(newKey)
+        return newKey
+    elif isinstance(type, model.UuidType):
+        uuidValue = uuid.uuid4()
+        keyValueList.append(uuidValue)
+        return uuid
+    else:
+        return None
+
+
+def __initKeyAttribInTypeDictFromKeyField(typeDict, typeObj, randomDataTask, keyValueList):
+    # has they type a taged key field ('__key')?
+    for property in typeObj.properties:
+        if property.isKey:
+            randomValue = __getRandomKeyValue(property, randomDataTask, keyValueList)
+            if randomValue is None:
+                return True
+            typeDict[property.name] = randomValue
+            return True
+    return False
+
+
+def __initKeyAttribInTypeDictFromDefaultKeyNames(typeDict, typeObj, randomDataTask, keyValueList):
+    # if the property name in the default keyNames
+    for property in typeObj.properties:
+        if property.name in randomDataTask.defaultKeyPropNames:
+            randomValue = __getRandomKeyValue(property, randomDataTask, keyValueList)
+            if randomValue is None:
+                return True
+            typeDict[property.name] = randomValue
+            return
+
+
+def __initKeyAttribInTypeDictFromSpecialKeyField(typeDict, typeObj, randomDataTask, keyValueList):
+    # is for that type a specific field given as key?
+    keyPropName = None
+    if randomDataTask.specialKeyPropNames is not None:
+        for keyPropNameEntry in randomDataTask.specialKeyPropNames:
+            if typeObj.name == keyPropNameEntry.typeName:
+                keyPropName = keyPropNameEntry.keyPropName
+                break
+
+    if keyPropName is None:
+        return False
+
+    # if the property equals the special config or is in the default keyNames
+    for property in typeObj.properties:
+        if property.name == keyPropName:
+            randomValue = __getRandomKeyValue(property, randomDataTask, keyValueList)
+            if randomValue is None:
+                return True
+            typeDict[property.name] = randomValue
+            return True
+    return False
 
 
 def __getSetCountForType(typeName, randomDataTask):
