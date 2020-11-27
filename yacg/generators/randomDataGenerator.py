@@ -33,7 +33,7 @@ def renderRandomData(
     # TODO create dict with random data
     randomDataDict = __prepareTypeObjects(modelTypesToUse, randomDataTask)
     __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict)
-    __fillRandomValues(randomDataTask, randomDataDict)
+    return randomDataDict
 
 
 def __prepareTypeObjects(modelTypesToUse, randomDataTask):
@@ -67,15 +67,15 @@ def __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask, keyValueList):
 def __getRandomKeyValue(property, randomDataTask, keyValueList):
     if property.type is None:
         return None
-    elif isinstance(type, model.IntegerType):
+    elif isinstance(property.type, model.IntegerType):
         lastKey = keyValueList[-1] if len(keyValueList)>0 else 0
         newKey = lastKey + 1
         keyValueList.append(newKey)
         return newKey
-    elif isinstance(type, model.UuidType):
+    elif isinstance(property.type, model.UuidType):
         uuidValue = uuid.uuid4()
         keyValueList.append(uuidValue)
-        return uuid
+        return uuidValue
     else:
         return None
 

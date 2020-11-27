@@ -385,7 +385,6 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
             return ''
 
 
-
 class RandomDataTask:
     def __init__(self):
 
