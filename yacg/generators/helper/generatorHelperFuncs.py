@@ -65,18 +65,24 @@ def _trimModelTypesWithWhiteList(modelTypes, whiteList):
 
 
 def _skipTypeIfTypeNameMatch(trimmedModelTypes, textToTest):
+    typesToTest = []
     for typeObj in trimmedModelTypes:
+        typesToTest.append(typeObj)
+
+    for typeObj in typesToTest:
         if (typeObj.name is not None) and (typeObj.name == textToTest):
             trimmedModelTypes.remove(typeObj)
-            return
 
 
 def _skipTypeIfTypeTypeMatch(trimmedModelTypes, textToTest):
+    typesToTest = []
     for typeObj in trimmedModelTypes:
+        typesToTest.append(typeObj)
+
+    for typeObj in typesToTest:
         typeTypeStr = type(typeObj).__name__
         if (textToTest is not None) and (typeTypeStr == textToTest):
             trimmedModelTypes.remove(typeObj)
-            return
 
 
 def _addTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
@@ -93,10 +99,13 @@ def _addTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, textToTest):
 
 
 def _skipTypeIfDomainNameMatch(trimmedModelTypes, textToTest):
+    typesToTest = []
     for typeObj in trimmedModelTypes:
+        typesToTest.append(typeObj)
+
+    for typeObj in typesToTest:
         if (hasattr(typeObj, 'domain')) and (textToTest == typeObj.domain):
             trimmedModelTypes.remove(typeObj)
-            return
 
 
 def _addTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, textToTest):
@@ -112,17 +121,23 @@ def _addTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, textToTest):
 
 
 def _skipTypeIfAttribNameIsContained(trimmedModelTypes, textToTest):
+    typesToTest = []
     for typeObj in trimmedModelTypes:
+        typesToTest.append(typeObj)
+
+    for typeObj in typesToTest:
         if modelFuncs.hasProperty(textToTest, typeObj):
             trimmedModelTypes.remove(typeObj)
-            return
 
 
 def _skipTypeIfTagNameMatch(trimmedModelTypes, textToTest):
+    typesToTest = []
     for typeObj in trimmedModelTypes:
+        typesToTest.append(typeObj)
+
+    for typeObj in typesToTest:
         if modelFuncs.hasTag(textToTest, typeObj):
             trimmedModelTypes.remove(typeObj)
-            return
 
 
 def _addTypeIfTagNameMatch(modelTypes, trimmedModelTypes, textToTest):
