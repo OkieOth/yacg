@@ -13,26 +13,29 @@ def trimModelTypes(modelTypes, blackList, whiteList):
 
 def _trimModelTypesWithBlackList(modelTypes, blackList):
     trimmedModelTypes = []
+    for typeObj in modelTypes:
+        trimmedModelTypes.append(typeObj)
+
     for blackListEntry in blackList:
         blackListedText = blackListEntry.name
         if blackListedText is None:
             continue
         if blackListEntry.type is None:
-            _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, blackListedText)
+            _skipTypeIfTypeNameMatch(trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.DOMAIN:
-            _skipTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, blackListedText)
+            _skipTypeIfDomainNameMatch(trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.NOTCONTAINEDATTRIB:
-            _addTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, blackListedText)
+            _addTypeIfAttribNameIsContained(trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.CONTAINEDATTRIB:
-            _skipTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, blackListedText)
+            _skipTypeIfAttribNameIsContained(trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.TAG:
-            _skipTypeIfTagNameMatch(modelTypes, trimmedModelTypes, blackListedText)
+            _skipTypeIfTagNameMatch(trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.TYPE:
-            _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, blackListedText)
+            _skipTypeIfTypeNameMatch(trimmedModelTypes, blackListedText)
         elif blackListEntry.type is config.BlackWhiteListEntryTypeEnum.TYPETYPE:
-            _skipTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, blackListedText)
+            _skipTypeIfTypeTypeMatch(trimmedModelTypes, blackListedText)
         else:
-            _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, blackListedText)
+            _skipTypeIfTypeNameMatch(trimmedModelTypes, blackListedText)
     return trimmedModelTypes
 
 
@@ -61,19 +64,19 @@ def _trimModelTypesWithWhiteList(modelTypes, whiteList):
     return trimmedModelTypes
 
 
-def _skipTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for typeObj in modelTypes:
+def _skipTypeIfTypeNameMatch(trimmedModelTypes, textToTest):
+    for typeObj in trimmedModelTypes:
         if (typeObj.name is not None) and (typeObj.name == textToTest):
-            continue
-        trimmedModelTypes.append(typeObj)
+            trimmedModelTypes.remove(typeObj)
+            return
 
 
-def _skipTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, textToTest):
-    for typeObj in modelTypes:
+def _skipTypeIfTypeTypeMatch(trimmedModelTypes, textToTest):
+    for typeObj in trimmedModelTypes:
         typeTypeStr = type(typeObj).__name__
         if (textToTest is not None) and (typeTypeStr == textToTest):
-            continue
-        trimmedModelTypes.append(typeObj)
+            trimmedModelTypes.remove(typeObj)
+            return
 
 
 def _addTypeIfTypeNameMatch(modelTypes, trimmedModelTypes, textToTest):
@@ -89,11 +92,11 @@ def _addTypeIfTypeTypeMatch(modelTypes, trimmedModelTypes, textToTest):
             trimmedModelTypes.append(typeObj)
 
 
-def _skipTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for typeObj in modelTypes:
+def _skipTypeIfDomainNameMatch(trimmedModelTypes, textToTest):
+    for typeObj in trimmedModelTypes:
         if (hasattr(typeObj, 'domain')) and (textToTest == typeObj.domain):
-            continue
-        trimmedModelTypes.append(typeObj)
+            trimmedModelTypes.remove(typeObj)
+            return
 
 
 def _addTypeIfDomainNameMatch(modelTypes, trimmedModelTypes, textToTest):
@@ -108,18 +111,18 @@ def _addTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, textToTest):
             trimmedModelTypes.append(typeObj)
 
 
-def _skipTypeIfAttribNameIsContained(modelTypes, trimmedModelTypes, textToTest):
-    for typeObj in modelTypes:
+def _skipTypeIfAttribNameIsContained(trimmedModelTypes, textToTest):
+    for typeObj in trimmedModelTypes:
         if modelFuncs.hasProperty(textToTest, typeObj):
-            continue
-        trimmedModelTypes.append(typeObj)
+            trimmedModelTypes.remove(typeObj)
+            return
 
 
-def _skipTypeIfTagNameMatch(modelTypes, trimmedModelTypes, textToTest):
-    for typeObj in modelTypes:
+def _skipTypeIfTagNameMatch(trimmedModelTypes, textToTest):
+    for typeObj in trimmedModelTypes:
         if modelFuncs.hasTag(textToTest, typeObj):
-            continue
-        trimmedModelTypes.append(typeObj)
+            trimmedModelTypes.remove(typeObj)
+            return
 
 
 def _addTypeIfTagNameMatch(modelTypes, trimmedModelTypes, textToTest):
