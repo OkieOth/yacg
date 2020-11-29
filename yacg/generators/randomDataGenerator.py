@@ -80,6 +80,70 @@ def __getRandomKeyValue(property, randomDataTask, keyValueList):
         return None
 
 
+def __getRandomIntValue(property, randomDataTask, randomDataDict):
+    newInt = random.randint(-10000, 10000)
+    return newInt
+
+
+def __getRandomNumberValue(property, randomDataTask, randomDataDict):
+    return None  # TODO
+
+
+def __getRandomBooleanValue(property, randomDataTask, randomDataDict):
+    return None  # TODO
+
+
+def __getRandomStringValue(property, randomDataTask, randomDataDict):
+    return None  # TODO
+
+
+def __getRandomEnumValue(property, randomDataTask, randomDataDict):
+    return None  # TODO
+
+
+def __getRandomDateValue(property, randomDataTask, randomDataDict):
+    return None  # TODO
+
+
+def __getRandomDateTimeValue(property, randomDataTask, randomDataDict):
+    return None  # TODO
+
+
+def __getRandomComplexValue(property, randomDataTask, randomDataDict):
+    return None  # TODO
+
+
+def __getRandomValue(property, randomDataTask, randomDataDict):
+    if property.type is None:
+        return None
+    elif isinstance(property.type, model.IntegerType):
+        return __getRandomIntValue(property, randomDataTask, randomDataDict)
+    elif isinstance(type, model.NumberType):
+        return __getRandomNumberValue(property, randomDataTask, randomDataDict)
+        return None  # TODO
+    elif isinstance(type, model.BooleanType):
+        return __getRandomBooleanValue(property, randomDataTask, randomDataDict)
+        return None  # TODO
+    elif isinstance(type, model.StringType):
+        return __getRandomStringValue(property, randomDataTask, randomDataDict)
+        return None  # TODO
+    elif isinstance(property.type, model.UuidType):
+        return uuid.uuid4()
+    elif isinstance(type, model.EnumType):
+        return __getRandomEnumValue(property, randomDataTask, randomDataDict)
+        return None  # TODO
+    elif isinstance(type, model.DateType):
+        return __getRandomDateValue(property, randomDataTask, randomDataDict)
+        return None  # TODO
+    elif isinstance(type, model.DateTimeType):
+        return __getRandomDateTimeValue(property, randomDataTask, randomDataDict)
+        return None  # TODO
+    elif isinstance(type, model.ComplexType):
+        return __getRandomComplexValue(property, randomDataTask, randomDataDict)
+    else:
+        return None
+
+
 def __initKeyAttribInTypeDictFromKeyField(typeDict, typeObj, randomDataTask, keyValueList):
     # has they type a taged key field ('__key')?
     for property in typeObj.properties:
@@ -148,8 +212,18 @@ def __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict):
     """fills the type dictionaries with random values
     """
 
-    # TODO
-    pass
+    for typeObj in modelTypesToUse:
+        if not isinstance(typeObj, model.ComplexType):
+            continue        
+        dataList = randomDataDict.get(typeObj.name, [])
+        for dataListEntryDict in dataList:
+            for property in typeObj.properties:
+                if dataListEntryDict.get(property.name, None) is not None:
+                    continue
+                randomValue = __getRandomValue(property, randomDataTask, randomDataDict)
+                if randomValue is None:
+                    continue
+                dataListEntryDict[property.name] = randomValue
 
 
 def __writeRandomValues(randomDataTask, randomDataDict):
