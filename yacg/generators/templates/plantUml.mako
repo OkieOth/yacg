@@ -1,6 +1,7 @@
 ## Template to create PlantUml class diagrams from the model types
 <%
     import yacg.model.modelFuncs as modelFuncs
+    import yacg.util.stringUtils as stringUtils
 
     templateFile = 'plantUml.mako'
     templateVersion = '1.1.0'
@@ -23,14 +24,22 @@
 @startuml
 
 % for type in modelTypes:
-class ${modelFuncs.getTypeName(type)} {
-    % if hasattr(type,'properties'):
-        % for prop in type.properties:
-    ${modelFuncs.getTypeName(prop.type)}${'[]' if prop.isArray else ''} ${prop.name} 
-        % endfor
-    % endif
+    % if modelFuncs.isEnumType(type):
+enum ${modelFuncs.getTypeName(type)} {
+        % for value in type.values:
+    ${stringUtils.toUpperCaseName(value)}
+        % endfor      
 }
- 
+    % else:
+class ${modelFuncs.getTypeName(type)} {
+        % if hasattr(type,'properties'):
+            % for prop in type.properties:
+        ${modelFuncs.getTypeName(prop.type)}${'[]' if prop.isArray else ''} ${prop.name} 
+            % endfor
+        % endif
+}
+    % endif
+
     % if hasattr(type,'description') and (type.description != None):
 note top: ${addLineBreakToDescription(type.description)}
     % endif
