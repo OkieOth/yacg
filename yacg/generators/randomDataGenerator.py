@@ -1,7 +1,9 @@
 """A generator that creates from the model types one output file per type"""
 
 import random
+import string
 import uuid
+import datetime
 from os import path
 from pathlib import Path
 
@@ -31,8 +33,8 @@ def renderRandomData(
     Path(randomDataTask.destDir).mkdir(parents=True, exist_ok=True)
 
     # TODO create dict with random data
-    randomDataDict = __prepareTypeObjects(modelTypesToUse, randomDataTask)
-    __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict)
+    randomDataDict, keyValueDict = __prepareTypeObjects(modelTypesToUse, randomDataTask)
+    __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict, keyValueDict)
     return randomDataDict
 
 
@@ -42,6 +44,7 @@ def __prepareTypeObjects(modelTypesToUse, randomDataTask):
     """
 
     randomDataDict = {}
+    keyValueDict = {}
     for typeObj in modelTypesToUse:
         if not isinstance(typeObj, model.ComplexType):
             continue
@@ -53,7 +56,8 @@ def __prepareTypeObjects(modelTypesToUse, randomDataTask):
             __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask, keyValueList)
             dataList.append(typeDict)
         randomDataDict[typeObj.name] = dataList
-    return randomDataDict
+        keyValueDict[typeObj.name] = keyValueList
+    return (randomDataDict, keyValueDict)
 
 
 def __initKeyAttribInTypeDict(typeDict, typeObj, randomDataTask, keyValueList):
@@ -68,7 +72,7 @@ def __getRandomKeyValue(property, randomDataTask, keyValueList):
     if property.type is None:
         return None
     elif isinstance(property.type, model.IntegerType):
-        lastKey = keyValueList[-1] if len(keyValueList)>0 else 0
+        lastKey = keyValueList[-1] if len(keyValueList) > 0 else 0
         newKey = lastKey + 1
         keyValueList.append(newKey)
         return newKey
@@ -80,66 +84,93 @@ def __getRandomKeyValue(property, randomDataTask, keyValueList):
         return None
 
 
-def __getRandomIntValue(property, randomDataTask, randomDataDict):
+def __getRandomIntValue(property, randomDataTask):
     newInt = random.randint(-10000, 10000)
     return newInt
 
 
-def __getRandomNumberValue(property, randomDataTask, randomDataDict):
-    return None  # TODO
+def __getRandomNumberValue(property, randomDataTask):
+    newInt = random.randint(-10000, 10000)
+    return random.random() + newInt
 
 
-def __getRandomBooleanValue(property, randomDataTask, randomDataDict):
-    return None  # TODO
+def __getRandomBooleanValue(property, randomDataTask):
+    return bool(random.getrandbits(1))
 
 
-def __getRandomStringValue(property, randomDataTask, randomDataDict):
-    return None  # TODO
+def __getRandomStringValue(property, randomDataTask):
+    strLen = random.randint(0, 20)
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(strLen))
 
 
-def __getRandomEnumValue(property, randomDataTask, randomDataDict):
-    return None  # TODO
+def __getRandomEnumValue(property, randomDataTask):
+    return random.choice(property.type.values)
 
 
-def __getRandomDateValue(property, randomDataTask, randomDataDict):
-    return None  # TODO
+def __getRandomDateValue(property, randomDataTask):
+    # seems to be a better approach: https://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
+    # startdate=datetime.date(YYYY,MM,DD)
+    # date=startdate+datetime.timedelta(randint(1,365))
+    minYear = 2005
+    maxYear = 2025
+    return datetime.date(random.randint(minYear, maxYear), random.randint(1, 12), random.randint(1, 28))
 
 
-def __getRandomDateTimeValue(property, randomDataTask, randomDataDict):
-    return None  # TODO
+def __getRandomDateTimeValue(property, randomDataTask):
+    minYear = 2005
+    maxYear = 2025
+    return datetime.datetime(
+        random.randint(minYear, maxYear),
+        random.randint(1, 12),
+        random.randint(1, 28),
+        random.randint(0, 23),
+        random.randint(0, 59),
+        random.randint(0, 59))
 
 
-def __getRandomComplexValue(property, randomDataTask, randomDataDict):
-    return None  # TODO
+def __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDict):
+    # create a new dict for the type
+    # initialize the keys
+    # init the addtional properties
+    # put it to randomDataDict
+
+    typeList = randomDataDict.get(property.type.name, None)
+    if typeList is None:
+        return None
+    return random.choice(typeList)
 
 
-def __getRandomValue(property, randomDataTask, randomDataDict):
+def __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict):
+    """get random value for a specific type property
+
+    Keyword arguments
+    property -- item of yacg.model.ComplexType.properties
+    randomDataTask -- configuration how to generate random data
+    randomDataDict -- dictionary that takes per type a list with generated random data
+    keyValueDict -- dictionary that takes per type a list with already used keys
+    """
+
     if property.type is None:
         return None
     elif isinstance(property.type, model.IntegerType):
-        return __getRandomIntValue(property, randomDataTask, randomDataDict)
-    elif isinstance(type, model.NumberType):
-        return __getRandomNumberValue(property, randomDataTask, randomDataDict)
-        return None  # TODO
-    elif isinstance(type, model.BooleanType):
-        return __getRandomBooleanValue(property, randomDataTask, randomDataDict)
-        return None  # TODO
-    elif isinstance(type, model.StringType):
-        return __getRandomStringValue(property, randomDataTask, randomDataDict)
-        return None  # TODO
+        return __getRandomIntValue(property, randomDataTask)
+    elif isinstance(property.type, model.NumberType):
+        return __getRandomNumberValue(property, randomDataTask)
+    elif isinstance(property.type, model.BooleanType):
+        return __getRandomBooleanValue(property, randomDataTask)
+    elif isinstance(property.type, model.StringType):
+        return __getRandomStringValue(property, randomDataTask)
     elif isinstance(property.type, model.UuidType):
         return uuid.uuid4()
-    elif isinstance(type, model.EnumType):
-        return __getRandomEnumValue(property, randomDataTask, randomDataDict)
-        return None  # TODO
-    elif isinstance(type, model.DateType):
-        return __getRandomDateValue(property, randomDataTask, randomDataDict)
-        return None  # TODO
-    elif isinstance(type, model.DateTimeType):
-        return __getRandomDateTimeValue(property, randomDataTask, randomDataDict)
-        return None  # TODO
-    elif isinstance(type, model.ComplexType):
-        return __getRandomComplexValue(property, randomDataTask, randomDataDict)
+    elif isinstance(property.type, model.EnumType):
+        return __getRandomEnumValue(property, randomDataTask)
+    elif isinstance(property.type, model.DateType):
+        return __getRandomDateValue(property, randomDataTask)
+    elif isinstance(property.type, model.DateTimeType):
+        return __getRandomDateTimeValue(property, randomDataTask)
+    elif isinstance(property.type, model.ComplexType):
+        return __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDict)
     else:
         return None
 
@@ -208,19 +239,39 @@ def __getSetCountForType(typeName, randomDataTask):
         return random.randint(minElemCount, maxElemCount)
 
 
-def __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict):
+def __getArraySize(typeOb, property, randomDataTask):
+    # TODO
+    return random.randint(1, 10)
+
+
+def __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict, keyValueDict):
     """fills the type dictionaries with random values
+
+    Keyword arguments
+    modelTypesToUse -- list of model types
+    randomDataTask -- configuration how to generate random data
+    randomDataDict -- dictionary that takes per type a list with generated random data
+    keyValueDict -- dictionary that takes per type a list with already used keys
     """
 
     for typeObj in modelTypesToUse:
         if not isinstance(typeObj, model.ComplexType):
-            continue        
+            continue
         dataList = randomDataDict.get(typeObj.name, [])
         for dataListEntryDict in dataList:
             for property in typeObj.properties:
                 if dataListEntryDict.get(property.name, None) is not None:
                     continue
-                randomValue = __getRandomValue(property, randomDataTask, randomDataDict)
+                if property.isArray:
+                    arraySize = __getArraySize(typeObj, property, randomDataTask)
+                    randomValue = []
+                    for i in range(arraySize):
+                        tmpRandomValue = __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict)
+                        if tmpRandomValue is None:
+                            continue
+                        randomValue.append(tmpRandomValue)
+                else:
+                    randomValue = __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict)
                 if randomValue is None:
                     continue
                 dataListEntryDict[property.name] = randomValue
@@ -268,5 +319,3 @@ def __writeRenderResult(outputFile, multiFileTask, renderResult):
         f = open(outputFile, "w+")
         f.write(renderResult)
         f.close()
-
-
