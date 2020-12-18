@@ -1,15 +1,28 @@
 """A generator that creates from the model types one output file per type"""
 
+import json
 import random
 import string
 import uuid
 import datetime
-from os import path
 from pathlib import Path
+from uuid import UUID
 
 import yacg.generators.helper.generatorHelperFuncs as generatorHelper
-from yacg.generators.multiFileGenerator import getOutputFileName
 import yacg.model.model as model
+import yacg.model.config as config
+
+
+class JsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            # if the obj is uuid, we simply return the value of uuid
+            return obj.hex
+        elif isinstance(obj, datetime.date):
+            return obj.isoformat()
+        elif isinstance(obj, datetime.datetime):
+            return obj.isoformat()
+        return json.JSONEncoder.default(self, obj)
 
 
 def renderRandomData(
@@ -35,6 +48,7 @@ def renderRandomData(
     # TODO create dict with random data
     randomDataDict, keyValueDict = __prepareTypeObjects(modelTypesToUse, randomDataTask)
     __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict, keyValueDict)
+    __writeRandomValues(randomDataTask, randomDataDict)
     return randomDataDict
 
 
@@ -129,19 +143,26 @@ def __getRandomDateTimeValue(property, randomDataTask):
         random.randint(0, 59))
 
 
-def __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDict):
+def __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth):
     # create a new dict for the type
     # initialize the keys
     # init the addtional properties
     # put it to randomDataDict
 
-    typeList = randomDataDict.get(property.type.name, None)
-    if typeList is None:
+    # TODO
+    maxDepth = 2
+    if currentDepth == maxDepth:
         return None
-    return random.choice(typeList)
+
+    keyValueList = keyValueDict.get(property.type.name, [])
+
+    typeDict = {}
+    __initKeyAttribInTypeDict(typeDict, property.type, randomDataTask, keyValueList)
+    __fillRandomValuesForType(property.type, typeDict, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+    return typeDict
 
 
-def __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict):
+def __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth):
     """get random value for a specific type property
 
     Keyword arguments
@@ -170,7 +191,7 @@ def __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict):
     elif isinstance(property.type, model.DateTimeType):
         return __getRandomDateTimeValue(property, randomDataTask)
     elif isinstance(property.type, model.ComplexType):
-        return __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDict)
+        return __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
     else:
         return None
 
@@ -259,63 +280,43 @@ def __fillRandomValues(modelTypesToUse, randomDataTask, randomDataDict, keyValue
             continue
         dataList = randomDataDict.get(typeObj.name, [])
         for dataListEntryDict in dataList:
-            for property in typeObj.properties:
-                if dataListEntryDict.get(property.name, None) is not None:
+            __fillRandomValuesForType(typeObj, dataListEntryDict, randomDataTask, randomDataDict, keyValueDict, 1)
+
+
+def __fillRandomValuesForType(typeObj, typeDict, randomDataTask, randomDataDict, keyValueDict, currentDepth):
+    currentDepth = currentDepth + 1
+    for property in typeObj.properties:
+        if typeDict.get(property.name, None) is not None:
+            continue
+        if property.isArray:
+            arraySize = __getArraySize(typeObj, property, randomDataTask)
+            randomValue = []
+            for i in range(arraySize):
+                tmpRandomValue = __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+                if tmpRandomValue is None:
                     continue
-                if property.isArray:
-                    arraySize = __getArraySize(typeObj, property, randomDataTask)
-                    randomValue = []
-                    for i in range(arraySize):
-                        tmpRandomValue = __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict)
-                        if tmpRandomValue is None:
-                            continue
-                        randomValue.append(tmpRandomValue)
-                else:
-                    randomValue = __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict)
-                if randomValue is None:
-                    continue
-                dataListEntryDict[property.name] = randomValue
+                randomValue.append(tmpRandomValue)
+        else:
+            randomValue = __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+        if randomValue is None:
+            continue
+        typeDict[property.name] = randomValue
 
 
 def __writeRandomValues(randomDataTask, randomDataDict):
     """writes the random data dictionary in one file per type
     """
 
-    # TODO
-    pass
-
-
-def __renderOneFilePerType(
-        modelTypesToUse,
-        modelTypes,
-        templateParameterDict,
-        template,
-        multiFileTask):
-
-    destDir = multiFileTask.destDir
-    destFilePrefix = multiFileTask.destFilePrefix
-    destFilePostfix = multiFileTask.destFilePostfix
-    destFileExt = multiFileTask.destFileExt
-    upperCaseFileNames = multiFileTask.upperCaseStartedDestFileName
-
-    for typeObj in modelTypesToUse:
-        renderResult = template.render(
-            currentType=typeObj,
-            modelTypes=modelTypesToUse,
-            availableTypes=modelTypes,
-            templateParameters=templateParameterDict)
-        outputFile = getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames)
-        __writeRenderResult(outputFile, multiFileTask, renderResult)
-
-
-def __writeRenderResult(outputFile, multiFileTask, renderResult):
-    if path.exists(outputFile) and multiFileTask.createOnlyIfNotExist:
-        if multiFileTask.createTmpFileIfAlreadyExist:
-            outputFile = outputFile + ".tmp"
-            f = open(outputFile, "w+")
-            f.write(renderResult)
-            f.close()
-    else:
-        f = open(outputFile, "w+")
-        f.write(renderResult)
-        f.close()
+    destDir = randomDataTask.destDir
+    isCsv = randomDataTask.outputType is config.RandomDataTaskOutputTypeEnum.CSV
+    for typeName in randomDataDict.keys():
+        fileExt = 'csv' if isCsv else 'json'
+        fileNameBase = ''.join([i if (ord(i) < 123) and (ord(i) > 47) else '_' for i in typeName])
+        fileName = '{}/{}.{}'.format(destDir, fileNameBase, fileExt)
+        randomData = randomDataDict[typeName]
+        with open(fileName, 'w') as outfile:
+            if isCsv:
+                # implementation for object trees really sucks
+                pass
+            else:
+                json.dump(randomData, outfile, cls=JsonEncoder, indent=4)

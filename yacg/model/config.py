@@ -212,7 +212,6 @@ class BlackWhiteListEntryTypeEnum(Enum):
             return ''
 
 
-
 class SingleFileTask:
     """ parameter of a code generation task that creates one file
     """
@@ -482,7 +481,6 @@ class RandomDataTaskOutputTypeEnum(Enum):
             return ''
 
 
-
 class RandomDataTaskSpecialElemCounts:
     def __init__(self):
 
@@ -571,5 +569,3 @@ class RandomDataTaskSpecialArraySizes:
 
         obj.maxSize = dict.get('maxSize', None)
         return obj
-
-
