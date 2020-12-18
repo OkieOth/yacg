@@ -5,7 +5,7 @@ import os
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.config import BlackWhiteListEntry, BlackWhiteListEntryTypeEnum
 import yacg.generators.randomDataGenerator as randomDataGenerator
-from yacg.model.config import RandomDataTask
+from yacg.model.config import RandomDataTask, RandomDataTaskOutputTypeEnum
 
 
 import yacg.model.config as config
@@ -20,8 +20,9 @@ class TestRenderRandomData (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         randomDataTask = RandomDataTask()
-        randomDataTask.destDir = 'tmp/randomData'
+        randomDataTask.destDir = 'tmp/randomData1'
         randomDataTask.defaultKeyPropNames = ('id')
+        randomDataTask.outputType = RandomDataTaskOutputTypeEnum.JSON
 
         randomData = randomDataGenerator.renderRandomData(modelTypes, [], [], randomDataTask)
         self.assertEqual(12, len(randomData))
