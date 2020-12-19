@@ -72,6 +72,10 @@ class TestYacgConfigurationModel (unittest.TestCase):
         x = yacg.model.config.RandomDataTaskSpecialArraySizes()
         self.assertIsNotNone(x)
 
+    def testRandomDataTaskSpecialMaxDepths(self):
+        x = yacg.model.config.RandomDataTaskSpecialMaxDepths()
+        self.assertIsNotNone(x)
+
 
 if __name__ == '__main__':
     unittest.main()

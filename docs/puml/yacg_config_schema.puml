@@ -91,6 +91,8 @@ class RandomDataTask {
     IntegerType defaultMinSize 
     IntegerType defaultMaxSize 
     RandomDataTaskSpecialArraySizes[] specialArraySizes 
+    IntegerType defaultMaxDepth 
+    RandomDataTaskSpecialMaxDepths[] specialMaxDepths 
 }
  
 
@@ -122,6 +124,12 @@ class RandomDataTaskSpecialArraySizes {
     StringType propertyName 
     IntegerType minSize 
     IntegerType maxSize 
+}
+ 
+
+class RandomDataTaskSpecialMaxDepths {
+    StringType propertyName 
+    IntegerType maxDepth 
 }
  
 
@@ -168,6 +176,9 @@ RandomDataTask "0" *-- "n" RandomDataTaskValuePools
             
 RandomDataTask "0" *-- "n" RandomDataTaskSpecialArraySizes        
             
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialMaxDepths        
+            
+    
     
     
     

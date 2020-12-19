@@ -212,6 +212,7 @@ class BlackWhiteListEntryTypeEnum(Enum):
             return ''
 
 
+
 class SingleFileTask:
     """ parameter of a code generation task that creates one file
     """
@@ -384,6 +385,7 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
             return ''
 
 
+
 class RandomDataTask:
     def __init__(self):
 
@@ -408,6 +410,10 @@ class RandomDataTask:
         self.defaultMaxSize = None
 
         self.specialArraySizes = []
+
+        self.defaultMaxDepth = None
+
+        self.specialMaxDepths = []
 
     @classmethod
     def dictToObject(cls, dict):
@@ -450,6 +456,13 @@ class RandomDataTask:
         for elemSpecialArraySizes in arraySpecialArraySizes:
             obj.specialArraySizes.append(
                 RandomDataTaskSpecialArraySizes.dictToObject(elemSpecialArraySizes))
+
+        obj.defaultMaxDepth = dict.get('defaultMaxDepth', None)
+
+        arraySpecialMaxDepths = dict.get('specialMaxDepths', [])
+        for elemSpecialMaxDepths in arraySpecialMaxDepths:
+            obj.specialMaxDepths.append(
+                RandomDataTaskSpecialMaxDepths.dictToObject(elemSpecialMaxDepths))
         return obj
 
 
@@ -479,6 +492,7 @@ class RandomDataTaskOutputTypeEnum(Enum):
             return 'CSV'
         else:
             return ''
+
 
 
 class RandomDataTaskSpecialElemCounts:
@@ -569,3 +583,24 @@ class RandomDataTaskSpecialArraySizes:
 
         obj.maxSize = dict.get('maxSize', None)
         return obj
+
+
+class RandomDataTaskSpecialMaxDepths:
+    def __init__(self):
+
+        self.propertyName = None
+
+        self.maxDepth = None
+
+    @classmethod
+    def dictToObject(cls, dict):
+        if dict is None:
+            return None
+        obj = cls()
+
+        obj.propertyName = dict.get('propertyName', None)
+
+        obj.maxDepth = dict.get('maxDepth', None)
+        return obj
+
+
