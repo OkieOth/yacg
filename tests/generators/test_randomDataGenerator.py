@@ -43,7 +43,7 @@ class TestRenderRandomData (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         randomDataTask = RandomDataTask()
-        randomDataTask.destDir = 'tmp/randomData'
+        randomDataTask.destDir = 'tmp/randomData2'
         randomDataTask.defaultKeyPropNames = ('id')
 
         blackList = []
@@ -79,7 +79,7 @@ class TestRenderRandomData (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         randomDataTask = RandomDataTask()
-        randomDataTask.destDir = 'tmp/randomData'
+        randomDataTask.destDir = 'tmp/randomData3'
         randomDataTask.defaultKeyPropNames = ('id')
 
         whiteList = []
@@ -102,3 +102,23 @@ class TestRenderRandomData (unittest.TestCase):
         self.assertTrue(len(numberTypeData) > 0)
         for d in numberTypeData:
             self.assertIsNotNone(d.get('id', None))
+
+    def testWhiteList2(self):
+        modelFile = 'tests/resources/models/json/examples/dummy_random_data_model.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        randomDataTask = RandomDataTask()
+        randomDataTask.destDir = 'tmp/randomData4'
+        randomDataTask.defaultKeyPropNames = ('id')
+
+        whiteList = []
+        whiteListEntry = BlackWhiteListEntry()
+        whiteListEntry.name = 'ComplexType'
+        whiteListEntry.type = BlackWhiteListEntryTypeEnum.TYPE
+        whiteList.append(whiteListEntry)
+
+        randomData = randomDataGenerator.renderRandomData(modelTypes, [], whiteList, randomDataTask)
+        self.assertEqual(1, len(randomData))

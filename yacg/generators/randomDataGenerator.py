@@ -150,7 +150,7 @@ def __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDi
     # put it to randomDataDict
 
     # TODO
-    maxDepth = 2
+    maxDepth = 3
     if currentDepth == maxDepth:
         return None
 

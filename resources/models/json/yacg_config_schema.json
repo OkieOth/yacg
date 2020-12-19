@@ -216,7 +216,8 @@
               } 
             }
           }
-        },            "defaultMinSize": {
+        },            
+        "defaultMinSize": {
           "description": "minimum size of arrays",
           "type": "integer"
         },
@@ -239,6 +240,26 @@
               },
               "maxSize": {
                 "description": "how many array elements should be generated for that attrib, at maximum",
+                "type": "integer"
+              }
+            }
+          }    
+        },
+        "defaultMaxDepth": {
+          "description": "default max level depth when generating object trees",
+          "type": "integer"
+        },
+        "specialMaxDepths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "propertyName": {
+                "description": "TYPENAME.PROPERTYNAME",
+                "type": "string"
+              },
+              "maxDepth": {
+                "description": "max level depth when generating object trees for that attrib",
                 "type": "integer"
               }
             }
