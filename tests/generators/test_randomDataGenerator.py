@@ -5,7 +5,7 @@ import os
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.config import BlackWhiteListEntry, BlackWhiteListEntryTypeEnum
 import yacg.generators.randomDataGenerator as randomDataGenerator
-from yacg.model.config import RandomDataTask, RandomDataTaskOutputTypeEnum
+from yacg.model.config import RandomDataTask, RandomDataTaskOutputTypeEnum, RandomDataTaskSpecialMaxDepths
 
 
 import yacg.model.config as config
@@ -113,6 +113,11 @@ class TestRenderRandomData (unittest.TestCase):
         randomDataTask = RandomDataTask()
         randomDataTask.destDir = 'tmp/randomData4'
         randomDataTask.defaultKeyPropNames = ('id')
+        randomDataTask.defaultMaxDepth = 3
+        specialMaxDepth = RandomDataTaskSpecialMaxDepths()
+        specialMaxDepth.propertyName = 'ComplexType.properties'
+        specialMaxDepth.maxDepth = 4
+        randomDataTask.specialMaxDepths.append(specialMaxDepth)
 
         whiteList = []
         whiteListEntry = BlackWhiteListEntry()

@@ -143,7 +143,7 @@ def __getRandomDateTimeValue(property, randomDataTask):
         random.randint(0, 59))
 
 
-def __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth):
+def __getRandomComplexValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth):
     # create a new dict for the type
     # initialize the keys
     # init the addtional properties
@@ -151,6 +151,11 @@ def __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDi
 
     # TODO
     maxDepth = randomDataTask.defaultMaxDepth
+    propertyName = '{typeName}.{propName}'.format(typeName=typeObj.name, propName=property.name)
+    for md in randomDataTask.specialMaxDepths:
+        if md.propertyName == propertyName:
+            maxDepth = md.maxDepth if md.maxDepth is not None else maxDepth
+            break
     if currentDepth > maxDepth:
         return None
 
@@ -162,10 +167,11 @@ def __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDi
     return typeDict
 
 
-def __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth):
+def __getRandomValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth):
     """get random value for a specific type property
 
     Keyword arguments
+    typeObj -- current type
     property -- item of yacg.model.ComplexType.properties
     randomDataTask -- configuration how to generate random data
     randomDataDict -- dictionary that takes per type a list with generated random data
@@ -191,7 +197,7 @@ def __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict, cur
     elif isinstance(property.type, model.DateTimeType):
         return __getRandomDateTimeValue(property, randomDataTask)
     elif isinstance(property.type, model.ComplexType):
-        return __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+        return __getRandomComplexValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
     else:
         return None
 
@@ -292,12 +298,12 @@ def __fillRandomValuesForType(typeObj, typeDict, randomDataTask, randomDataDict,
             arraySize = __getArraySize(typeObj, property, randomDataTask)
             randomValue = []
             for i in range(arraySize):
-                tmpRandomValue = __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+                tmpRandomValue = __getRandomValue(typeObj,property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
                 if tmpRandomValue is None:
                     continue
                 randomValue.append(tmpRandomValue)
         else:
-            randomValue = __getRandomValue(property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+            randomValue = __getRandomValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
         if randomValue is None:
             continue
         typeDict[property.name] = randomValue
