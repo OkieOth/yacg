@@ -298,7 +298,7 @@ def __fillRandomValuesForType(typeObj, typeDict, randomDataTask, randomDataDict,
             arraySize = __getArraySize(typeObj, property, randomDataTask)
             randomValue = []
             for i in range(arraySize):
-                tmpRandomValue = __getRandomValue(typeObj,property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+                tmpRandomValue = __getRandomValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
                 if tmpRandomValue is None:
                     continue
                 randomValue.append(tmpRandomValue)
