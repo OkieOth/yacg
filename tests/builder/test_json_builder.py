@@ -58,17 +58,18 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(9, len(modelTypes))
+        self.assertEqual(16, len(modelTypes))
 
         self._checkUpType(0, 'Job', 4, modelTypes, ['models', 'tasks'])
         self._checkUpType(1, 'Model', 4, modelTypes, [])
-        self._checkUpType(2, 'Task', 6, modelTypes, [])
+        self._checkUpType(2, 'Task', 7, modelTypes, [])
         self._checkUpType(3, 'BlackWhiteListEntry', 2, modelTypes, ['name'])
         self._checkUpType(4, 'BlackWhiteListEntryTypeEnum', 0, modelTypes, [])
         self._checkUpType(5, 'SingleFileTask', 3, modelTypes, [])
         self._checkUpType(6, 'TemplateParam', 5, modelTypes, ['name', 'value'])
         self._checkUpType(7, 'MultiFileTask', 10, modelTypes, [])
         self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes, [])
+        self._checkUpType(9, 'RandomDataTask', 13, modelTypes, [], ('keyProperties', 'valuePools', 'arrays'))
 
     def testSchemaWithExternalRef(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
@@ -82,8 +83,8 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(0, 'OneType', 2, modelTypes, [])
         self._checkUpType(1, 'TwoType', 4, modelTypes, [])
         # TwoType->implicitRef
-        self.assertIsNotNone(modelTypes[1].properties[3].implicitReference)
-        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].implicitReference)
+        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey)
+        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey)
         self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
@@ -184,7 +185,7 @@ class TestJsonBuilder (unittest.TestCase):
         ]
         self.assertEqual(expectedMetaModelTypes, metaModelTypes)
 
-    def _checkUpType(self, position, typeName, propCount, modelTypes, requiredArray):
+    def _checkUpType(self, position, typeName, propCount, modelTypes, requiredArray, noArrayProperties=()):
         type = modelTypes[position]
         self.assertIsNotNone(type)
         self.assertIsNotNone(type.source)
@@ -197,7 +198,8 @@ class TestJsonBuilder (unittest.TestCase):
         for prop in type.properties:
             self.assertIsNotNone(prop.type, "property w/o a type: %s.%s" % (typeName, prop.name))
             if prop.name.endswith('s') or prop.name.endswith('ed'):
-                self.assertTrue(prop.isArray, "property has to be an array: %s.%s" % (typeName, prop.name))
+                if prop.name not in noArrayProperties:
+                    self.assertTrue(prop.isArray, "property has to be an array: %s.%s" % (typeName, prop.name))
             else:
                 self.assertFalse(prop.isArray, "property should be no array: %s.%s" % (typeName, prop.name))
         if len(requiredArray) > 0:

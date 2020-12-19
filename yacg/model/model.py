@@ -493,13 +493,19 @@ class Property:
         self.default = None
 
         #: a property of a type
-        self.implicitReference = None
-
-        #: a property of a type
         self.required = False
 
         #: a property of a type
         self.ordinal = None
+
+        #: a property of a type
+        self.isKey = False
+
+        #: a property of a type
+        self.isVisualKey = False
+
+        #: a property of a type
+        self.foreignKey = None
 
     @classmethod
     def dictToObject(cls, dict):
@@ -528,11 +534,15 @@ class Property:
 
         obj.default = dict.get('default', None)
 
-        obj.implicitReference = Type.dictToObject(dict.get('implicitReference', None))
-
         obj.required = dict.get('required', None)
 
         obj.ordinal = dict.get('ordinal', None)
+
+        obj.isKey = dict.get('isKey', None)
+
+        obj.isVisualKey = dict.get('isVisualKey', None)
+
+        obj.foreignKey = Type.dictToObject(dict.get('foreignKey', None))
         return obj
 
 

@@ -48,6 +48,34 @@ class TestYacgConfigurationModel (unittest.TestCase):
         self.assertIsNotNone(yacg.model.config.MultiFileTaskFileFilterTypeEnum.TYPE)
         self.assertIsNotNone(yacg.model.config.MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID)
 
+    def testRandomDataTask(self):
+        x = yacg.model.config.RandomDataTask()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskOutputTypeEnum(self):
+        self.assertIsNotNone(yacg.model.config.RandomDataTaskOutputTypeEnum.JSON)
+        self.assertIsNotNone(yacg.model.config.RandomDataTaskOutputTypeEnum.CSV)
+
+    def testRandomDataTaskSpecialElemCounts(self):
+        x = yacg.model.config.RandomDataTaskSpecialElemCounts()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskSpecialKeyPropNames(self):
+        x = yacg.model.config.RandomDataTaskSpecialKeyPropNames()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskValuePools(self):
+        x = yacg.model.config.RandomDataTaskValuePools()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskSpecialArraySizes(self):
+        x = yacg.model.config.RandomDataTaskSpecialArraySizes()
+        self.assertIsNotNone(x)
+
+    def testRandomDataTaskSpecialMaxDepths(self):
+        x = yacg.model.config.RandomDataTaskSpecialMaxDepths()
+        self.assertIsNotNone(x)
+
 
 if __name__ == '__main__':
     unittest.main()

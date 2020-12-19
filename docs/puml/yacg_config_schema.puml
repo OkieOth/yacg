@@ -26,6 +26,7 @@ class Task {
     BlackWhiteListEntry[] whiteListed 
     SingleFileTask singleFileTask 
     MultiFileTask multiFileTask 
+    RandomDataTask randomDataTask 
 }
  
 note top: A task to run
@@ -78,6 +79,60 @@ class MultiFileTaskFileFilterTypeEnum {
 }
  
 
+class RandomDataTask {
+    RandomDataTaskOutputTypeEnum outputType 
+    StringType destDir 
+    IntegerType defaultMinElemCount 
+    IntegerType defaultMaxElemCount 
+    RandomDataTaskSpecialElemCounts[] specialElemCounts 
+    StringType[] defaultKeyPropNames 
+    RandomDataTaskSpecialKeyPropNames[] specialKeyPropNames 
+    RandomDataTaskValuePools[] valuePools 
+    IntegerType defaultMinSize 
+    IntegerType defaultMaxSize 
+    RandomDataTaskSpecialArraySizes[] specialArraySizes 
+    IntegerType defaultMaxDepth 
+    RandomDataTaskSpecialMaxDepths[] specialMaxDepths 
+}
+ 
+
+class RandomDataTaskOutputTypeEnum {
+}
+ 
+
+class RandomDataTaskSpecialElemCounts {
+    StringType typeName 
+    IntegerType minElemCount 
+    IntegerType maxElemCount 
+}
+ 
+
+class RandomDataTaskSpecialKeyPropNames {
+    StringType typeName 
+    StringType keyPropName 
+}
+ 
+
+class RandomDataTaskValuePools {
+    StringType propertyName 
+    BooleanType useAll 
+    StringType[] values 
+}
+ 
+
+class RandomDataTaskSpecialArraySizes {
+    StringType propertyName 
+    IntegerType minSize 
+    IntegerType maxSize 
+}
+ 
+
+class RandomDataTaskSpecialMaxDepths {
+    StringType propertyName 
+    IntegerType maxDepth 
+}
+ 
+
 
     
 Job "0" *-- "n" Model        
@@ -94,6 +149,8 @@ Task  *--  SingleFileTask
             
 Task  *--  MultiFileTask        
             
+Task  *--  RandomDataTask        
+            
     
 BlackWhiteListEntry  *--  BlackWhiteListEntryTypeEnum        
             
@@ -107,6 +164,25 @@ MultiFileTask  *--  MultiFileTaskFileFilterTypeEnum
             
 MultiFileTask "0" *-- "n" TemplateParam        
             
+    
+    
+RandomDataTask  *--  RandomDataTaskOutputTypeEnum        
+            
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialElemCounts        
+            
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialKeyPropNames        
+            
+RandomDataTask "0" *-- "n" RandomDataTaskValuePools        
+            
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialArraySizes        
+            
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialMaxDepths        
+            
+    
+    
+    
+    
+    
     
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

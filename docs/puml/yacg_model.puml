@@ -126,9 +126,11 @@ class Property {
     Tag[] tags 
     StringType description 
     StringType default 
-    Type implicitReference 
     BooleanType required 
     IntegerType ordinal 
+    BooleanType isKey 
+    BooleanType isVisualKey 
+    Type foreignKey 
 }
  
 note top: a property of a type

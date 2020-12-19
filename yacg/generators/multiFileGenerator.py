@@ -26,6 +26,19 @@ def renderMultiFileTemplate(
     multiFileTask -- container object with the parameters
     """
 
+    template, modelTypesToUse, templateParameterDict = __prepareMultiFileTask(multiFileTask, modelTypes, blackList, whiteList)
+
+    if multiFileTask.fileFilterType == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
+        __renderOneFilePerOpenApiOperationId(
+            modelTypesToUse, modelTypes, templateParameterDict,
+            template, multiFileTask)
+    else:
+        __renderOneFilePerType(
+            modelTypesToUse, modelTypes, templateParameterDict,
+            template, multiFileTask)
+
+
+def __prepareMultiFileTask(multiFileTask, modelTypes, blackList, whiteList):
     template = Template(filename=multiFileTask.template)
     modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, whiteList)
     templateParameterDict = {}
@@ -42,15 +55,7 @@ def renderMultiFileTemplate(
         multiFileTask.destFileExt = 'txt'
 
     Path(multiFileTask.destDir).mkdir(parents=True, exist_ok=True)
-
-    if multiFileTask.fileFilterType == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
-        __renderOneFilePerOpenApiOperationId(
-            modelTypesToUse, modelTypes, templateParameterDict,
-            template, multiFileTask)
-    else:
-        __renderOneFilePerType(
-            modelTypesToUse, modelTypes, templateParameterDict,
-            template, multiFileTask)
+    return template, modelTypesToUse, templateParameterDict
 
 
 def __renderOneFilePerOpenApiOperationId(
@@ -75,7 +80,7 @@ def __renderOneFilePerOpenApiOperationId(
             modelTypes=modelTypesToUse,
             availableTypes=modelTypes,
             templateParameters=templateParameterDict)
-        outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, key, upperCaseFileNames)
+        outputFile = getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, key, upperCaseFileNames)
         __writeRenderResult(outputFile, multiFileTask, renderResult)
 
 
@@ -98,7 +103,7 @@ def __renderOneFilePerType(
             modelTypes=modelTypesToUse,
             availableTypes=modelTypes,
             templateParameters=templateParameterDict)
-        outputFile = __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames)
+        outputFile = getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames)
         __writeRenderResult(outputFile, multiFileTask, renderResult)
 
 
@@ -115,7 +120,7 @@ def __writeRenderResult(outputFile, multiFileTask, renderResult):
         f.close()
 
 
-def __getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames):
+def getOutputFileName(destDir, destFilePrefix, destFilePostfix, destFileExt, typeObj, upperCaseFileNames):
     fileNameBase = typeObj.name if hasattr(typeObj, 'name') and (typeObj.name is not None) else str(type(type))
     if isinstance(typeObj, str):
         fileNameBase = typeObj

@@ -19,6 +19,11 @@
                 },
                 {
                     "properties": {
+                        "guid": {
+                            "type": "string",
+                            "format": "uuid",
+                            "__key": true
+                        },
                         "format": {
                             "type": "string",
                             "enum": ["int32", "int64"]
@@ -52,6 +57,9 @@
                 },
                 {
                     "properties": {
+                        "id": {
+                            "type": "integer"
+                        },
                         "format": {
                             "type": "string",
                             "enum": ["float", "double"]

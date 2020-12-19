@@ -42,27 +42,37 @@ def __replaceEnvVars(jobArray, additionalVarsDict):
                 modelFile.schema = replaceVar(modelFile.schema, varName, varValue)
         for task in job.tasks:
             if task.singleFileTask is not None:
-                template = task.singleFileTask.template
-                varListTemplate = getVarList(template)
-                for varName in varListTemplate:
-                    varValue = resolveVar(varName, additionalVarsDict)
-                    task.singleFileTask.template = replaceVar(task.singleFileTask.template, varName, varValue)
-                varListDestFile = getVarList(task.singleFileTask.destFile)
-                for varName in varListDestFile:
-                    varValue = resolveVar(varName, additionalVarsDict)
-                    task.singleFileTask.destFile = replaceVar(task.singleFileTask.destFile, varName, varValue)
-                _replaceVarsInTemplateParamValues(task.singleFileTask.templateParams, additionalVarsDict)
+                __replaceEnvVarsInSingleFileTask(task.singleFileTask, additionalVarsDict)
             if task.multiFileTask is not None:
-                template = task.multiFileTask.template
-                varList = getVarList(template)
-                for varName in varList:
-                    varValue = resolveVar(varName, additionalVarsDict)
-                    task.multiFileTask.template = replaceVar(task.multiFileTask.template, varName, varValue)
-                varListDestDir = getVarList(task.multiFileTask.destDir)
-                for varName in varListDestDir:
-                    varValue = resolveVar(varName, additionalVarsDict)
-                    task.multiFileTask.destDir = replaceVar(task.multiFileTask.destDir, varName, varValue)
-                _replaceVarsInTemplateParamValues(task.multiFileTask.templateParams, additionalVarsDict)
+                __replaceEnvVarsInMultiFileTask(task.multiFileTask, additionalVarsDict)
+            if task.randomDataTask is not None:
+                __replaceEnvVarsInMultiFileTask(task.randomDataTask, additionalVarsDict)
+
+
+def __replaceEnvVarsInSingleFileTask(singleFileTask, additionalVarsDict):
+    template = singleFileTask.template
+    varListTemplate = getVarList(template)
+    for varName in varListTemplate:
+        varValue = resolveVar(varName, additionalVarsDict)
+        singleFileTask.template = replaceVar(singleFileTask.template, varName, varValue)
+    varListDestFile = getVarList(singleFileTask.destFile)
+    for varName in varListDestFile:
+        varValue = resolveVar(varName, additionalVarsDict)
+        singleFileTask.destFile = replaceVar(singleFileTask.destFile, varName, varValue)
+    _replaceVarsInTemplateParamValues(singleFileTask.templateParams, additionalVarsDict)
+
+
+def __replaceEnvVarsInMultiFileTask(multiFileTask, additionalVarsDict):
+    template = multiFileTask.template
+    varList = getVarList(template)
+    for varName in varList:
+        varValue = resolveVar(varName, additionalVarsDict)
+        multiFileTask.template = replaceVar(multiFileTask.template, varName, varValue)
+    varListDestDir = getVarList(multiFileTask.destDir)
+    for varName in varListDestDir:
+        varValue = resolveVar(varName, additionalVarsDict)
+        multiFileTask.destDir = replaceVar(multiFileTask.destDir, varName, varValue)
+    _replaceVarsInTemplateParamValues(multiFileTask.templateParams, additionalVarsDict)
 
 
 def _replaceVarsInTemplateParamValues(templateParams, additionalVarsDict):
