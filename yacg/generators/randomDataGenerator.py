@@ -150,8 +150,8 @@ def __getRandomComplexValue(property, randomDataTask, randomDataDict, keyValueDi
     # put it to randomDataDict
 
     # TODO
-    maxDepth = 3
-    if currentDepth == maxDepth:
+    maxDepth = randomDataTask.defaultMaxDepth
+    if currentDepth > maxDepth:
         return None
 
     keyValueList = keyValueDict.get(property.type.name, [])

@@ -247,7 +247,8 @@
         },
         "defaultMaxDepth": {
           "description": "default max level depth when generating object trees",
-          "type": "integer"
+          "type": "integer",
+          "default": 2
         },
         "specialMaxDepths": {
           "type": "array",

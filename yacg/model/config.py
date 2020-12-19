@@ -411,7 +411,7 @@ class RandomDataTask:
 
         self.specialArraySizes = []
 
-        self.defaultMaxDepth = None
+        self.defaultMaxDepth = 2
 
         self.specialMaxDepths = []
 
