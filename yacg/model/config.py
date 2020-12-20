@@ -342,7 +342,7 @@ class MultiFileTask:
 
         obj.destFileExt = dict.get('destFileExt', None)
 
-        obj.upperCaseStartedDestFileName = dict.get('upperCaseStartedDestFileName', None)
+        obj.upperCaseStartedDestFileName = dict.get('upperCaseStartedDestFileName', False)
 
         obj.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(dict.get('fileFilterType', None))
 
@@ -351,9 +351,9 @@ class MultiFileTask:
             obj.templateParams.append(
                 TemplateParam.dictToObject(elemTemplateParams))
 
-        obj.createOnlyIfNotExist = dict.get('createOnlyIfNotExist', None)
+        obj.createOnlyIfNotExist = dict.get('createOnlyIfNotExist', False)
 
-        obj.createTmpFileIfAlreadyExist = dict.get('createTmpFileIfAlreadyExist', None)
+        obj.createTmpFileIfAlreadyExist = dict.get('createTmpFileIfAlreadyExist', False)
         return obj
 
 
@@ -405,9 +405,9 @@ class RandomDataTask:
 
         self.valuePools = []
 
-        self.defaultMinSize = None
+        self.defaultMinSize = 1
 
-        self.defaultMaxSize = None
+        self.defaultMaxSize = 10
 
         self.specialArraySizes = []
 
@@ -425,9 +425,9 @@ class RandomDataTask:
 
         obj.destDir = dict.get('destDir', None)
 
-        obj.defaultMinElemCount = dict.get('defaultMinElemCount', None)
+        obj.defaultMinElemCount = dict.get('defaultMinElemCount', 1)
 
-        obj.defaultMaxElemCount = dict.get('defaultMaxElemCount', None)
+        obj.defaultMaxElemCount = dict.get('defaultMaxElemCount', 10)
 
         arraySpecialElemCounts = dict.get('specialElemCounts', [])
         for elemSpecialElemCounts in arraySpecialElemCounts:
@@ -448,16 +448,16 @@ class RandomDataTask:
             obj.valuePools.append(
                 RandomDataTaskValuePools.dictToObject(elemValuePools))
 
-        obj.defaultMinSize = dict.get('defaultMinSize', None)
+        obj.defaultMinSize = dict.get('defaultMinSize', 1)
 
-        obj.defaultMaxSize = dict.get('defaultMaxSize', None)
+        obj.defaultMaxSize = dict.get('defaultMaxSize', 10)
 
         arraySpecialArraySizes = dict.get('specialArraySizes', [])
         for elemSpecialArraySizes in arraySpecialArraySizes:
             obj.specialArraySizes.append(
                 RandomDataTaskSpecialArraySizes.dictToObject(elemSpecialArraySizes))
 
-        obj.defaultMaxDepth = dict.get('defaultMaxDepth', None)
+        obj.defaultMaxDepth = dict.get('defaultMaxDepth', 2)
 
         arraySpecialMaxDepths = dict.get('specialMaxDepths', [])
         for elemSpecialMaxDepths in arraySpecialMaxDepths:
@@ -554,7 +554,7 @@ class RandomDataTaskValuePools:
 
         obj.propertyName = dict.get('propertyName', None)
 
-        obj.useAll = dict.get('useAll', None)
+        obj.useAll = dict.get('useAll', False)
 
         arrayValues = dict.get('values', [])
         for elemValues in arrayValues:

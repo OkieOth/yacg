@@ -44,4 +44,6 @@ jobs:
     - name: Test run from command line
       run: |
         bin/demoMultiFileGenerator.sh
-      
+    - name: Test run from command line
+      run: |
+        bin/generateRandomData_example.sh

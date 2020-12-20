@@ -41,5 +41,11 @@ if ! bin/demoMultiFileGenerator.sh; then
     exit 1
 fi
 
+if ! bin/generateRandomData_example.sh; then
+    echo "problems while generate random data job from command line"
+    popd > /dev/null
+    exit 1
+fi
+
 echo "all good :)"
 popd > /dev/null

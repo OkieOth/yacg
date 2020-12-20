@@ -3,136 +3,140 @@
 
 class Type {
 }
- 
+
 note top: Dummy base class to implement\nstrong typed references
 
 class IntegerType {
-    IntegerTypeFormatEnum format 
-    IntegerType default 
-    IntegerType minimum 
-    IntegerType exclusiveMinimum 
-    IntegerType maximum 
-    IntegerType exclusiveMaximum 
+        IntegerTypeFormatEnum format 
+        IntegerType default 
+        IntegerType minimum 
+        IntegerType exclusiveMinimum 
+        IntegerType maximum 
+        IntegerType exclusiveMaximum 
 }
- 
+
 note top: integer values
 
 IntegerType --|> Type
-class IntegerTypeFormatEnum {
+enum IntegerTypeFormatEnum {
+    INT32
+    INT64
 }
- 
+
 
 class NumberType {
-    NumberTypeFormatEnum format 
-    NumberType default 
-    NumberType minimum 
-    NumberType exclusiveMinimum 
-    NumberType maximum 
-    NumberType exclusiveMaximum 
+        NumberTypeFormatEnum format 
+        NumberType default 
+        NumberType minimum 
+        NumberType exclusiveMinimum 
+        NumberType maximum 
+        NumberType exclusiveMaximum 
 }
- 
+
 note top: floating point values
 
 NumberType --|> Type
-class NumberTypeFormatEnum {
+enum NumberTypeFormatEnum {
+    FLOAT
+    DOUBLE
 }
- 
+
 
 class BooleanType {
-    BooleanType default 
+        BooleanType default 
 }
- 
+
 note top: boolean values
 
 BooleanType --|> Type
 class StringType {
-    StringType default 
+        StringType default 
 }
- 
+
 note top: integer values
 
 StringType --|> Type
 class UuidType {
-    StringType default 
+        StringType default 
 }
- 
+
 note top: UUID values
 
 UuidType --|> Type
 class EnumType {
-    StringType name 
-    StringType domain 
-    StringType source 
-    StringType description 
-    StringType[] values 
-    StringType default 
-    Tag[] tags 
+        StringType name 
+        StringType domain 
+        StringType source 
+        StringType description 
+        StringType[] values 
+        StringType default 
+        Tag[] tags 
 }
- 
+
 note top: type for enum values -\nfixed value types
 
 EnumType --|> Type
 class Tag {
-    StringType name 
-    StringType value 
+        StringType name 
+        StringType value 
 }
- 
+
 note top: a tag type
 
 class DateType {
-    DateType default 
-    DateType minimum 
-    DateType exclusiveMinimum 
-    DateType maximum 
-    DateType exclusiveMaximum 
+        DateType default 
+        DateType minimum 
+        DateType exclusiveMinimum 
+        DateType maximum 
+        DateType exclusiveMaximum 
 }
- 
+
 note top: type for date values
 
 DateType --|> Type
 class DateTimeType {
-    DateTimeType default 
-    DateTimeType minimum 
-    DateTimeType exclusiveMinimum 
-    DateTimeType maximum 
-    DateTimeType exclusiveMaximum 
+        DateTimeType default 
+        DateTimeType minimum 
+        DateTimeType exclusiveMinimum 
+        DateTimeType maximum 
+        DateTimeType exclusiveMaximum 
 }
- 
+
 note top: type for timestamp values
 
 DateTimeType --|> Type
 class ComplexType {
-    StringType name 
-    StringType description 
-    StringType domain 
-    StringType source 
-    ComplexType extendsType 
-    ComplexType[] extendedBy 
-    ComplexType[] referencedBy 
-    Property[] properties 
-    Tag[] tags 
+        StringType name 
+        StringType description 
+        StringType domain 
+        StringType source 
+        ComplexType extendsType 
+        ComplexType[] extendedBy 
+        ComplexType[] referencedBy 
+        Property[] properties 
+        Tag[] tags 
 }
- 
+
 note top: complex type description
 
 ComplexType --|> Type
 class Property {
-    StringType name 
-    BooleanType isArray 
-    IntegerType arrayMinItems 
-    IntegerType arrayMaxItems 
-    BooleanType arrayUniqueItems 
-    Type type 
-    Tag[] tags 
-    StringType description 
-    StringType default 
-    BooleanType required 
-    IntegerType ordinal 
-    BooleanType isKey 
-    BooleanType isVisualKey 
-    Type foreignKey 
+        StringType name 
+        BooleanType isArray 
+        IntegerType arrayMinItems 
+        IntegerType arrayMaxItems 
+        BooleanType arrayUniqueItems 
+        Type type 
+        Tag[] tags 
+        StringType description 
+        StringType default 
+        BooleanType required 
+        IntegerType ordinal 
+        BooleanType isKey 
+        BooleanType isVisualKey 
+        Type foreignKey 
 }
- 
+
 note top: a property of a type
 
 

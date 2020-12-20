@@ -219,11 +219,13 @@
         },            
         "defaultMinSize": {
           "description": "minimum size of arrays",
-          "type": "integer"
+          "type": "integer",
+          "default": 1
         },
         "defaultMaxSize": {
           "description": "maximum size of arrays",
-          "type": "integer"
+          "type": "integer",
+          "default": 10
         },
         "specialArraySizes": {
           "type": "array",

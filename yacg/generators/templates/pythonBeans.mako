@@ -98,7 +98,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % elif modelFuncs.isEnumType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = ${property.type.name}.valueForString(dict.get('${property.name}', ${property.default}))
+        obj.${property.name} = ${property.type.name}.valueForString(dict.get('${property.name}', None))
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])

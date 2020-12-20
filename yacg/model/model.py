@@ -515,7 +515,7 @@ class Property:
 
         obj.name = dict.get('name', None)
 
-        obj.isArray = dict.get('isArray', None)
+        obj.isArray = dict.get('isArray', False)
 
         obj.arrayMinItems = dict.get('arrayMinItems', None)
 
@@ -534,13 +534,13 @@ class Property:
 
         obj.default = dict.get('default', None)
 
-        obj.required = dict.get('required', None)
+        obj.required = dict.get('required', False)
 
         obj.ordinal = dict.get('ordinal', None)
 
-        obj.isKey = dict.get('isKey', None)
+        obj.isKey = dict.get('isKey', False)
 
-        obj.isVisualKey = dict.get('isVisualKey', None)
+        obj.isVisualKey = dict.get('isVisualKey', False)
 
         obj.foreignKey = Type.dictToObject(dict.get('foreignKey', None))
         return obj

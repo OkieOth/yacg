@@ -4,7 +4,7 @@
       "description": "This is a simple example",
       "models": [
         {
-          "schema": "resources/models/json/yacg_config_schema.json"
+          "schema": "resources/models/json/yacg_model_schema.json"
         }
       ],
       "tasks": [
@@ -14,7 +14,7 @@
             {
               "$comment": "only ComplexType data",
               "name": "ComplexType",
-              "type": "typeType"
+              "type": "type"
             }
           ],
           "randomDataTask": {  

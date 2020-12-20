@@ -2,73 +2,83 @@
 @startuml
 
 class PathType {
-    StringType pathPattern 
-    Command[] commands 
+        StringType pathPattern 
+        Command[] commands 
 }
- 
+
 note top: base type that contains all\nREST path information
 
 PathType --|> Type
 class Command {
-    CommandCommandEnum command 
-    StringType[] tags 
-    StringType summary 
-    StringType description 
-    StringType operationId 
-    Parameter[] parameters 
-    RequestBody requestBody 
-    Response[] responses 
-    CommandSecurity security 
+        CommandCommandEnum command 
+        StringType[] tags 
+        StringType summary 
+        StringType description 
+        StringType operationId 
+        Parameter[] parameters 
+        RequestBody requestBody 
+        Response[] responses 
+        CommandSecurity security 
 }
- 
+
 note top: information to a specific HTTP\ncommand
 
-class CommandCommandEnum {
+enum CommandCommandEnum {
+    GET
+    PUT
+    POST
+    DELETE
+    OPTIONS
+    PATCH
 }
- 
+
 
 class Parameter {
-    ParameterInTypeEnum inType 
-    StringType name 
-    BooleanType isArray 
-    StringType description 
-    BooleanType required 
-    Type type 
+        ParameterInTypeEnum inType 
+        StringType name 
+        BooleanType isArray 
+        StringType description 
+        BooleanType required 
+        Type type 
 }
- 
+
 note top: definition of a parameter that\nis used in the request
 
 class RequestBody {
-    StringType description 
-    BooleanType required 
-    ContentEntry[] content 
+        StringType description 
+        BooleanType required 
+        ContentEntry[] content 
 }
- 
+
 note top: definition of a parameter that\nis used in the request
 
 class Response {
-    IntegerType returnCode 
-    StringType description 
-    ContentEntry[] content 
+        IntegerType returnCode 
+        StringType description 
+        ContentEntry[] content 
 }
- 
+
 note top: description of a response option\nfor a request
 
 class CommandSecurity {
-    StringType[] scopes 
+        StringType[] scopes 
 }
- 
+
 
 class ContentEntry {
-    StringType mimeType 
-    Type type 
-    BooleanType isArray 
+        StringType mimeType 
+        Type type 
+        BooleanType isArray 
 }
- 
 
-class ParameterInTypeEnum {
+
+enum ParameterInTypeEnum {
+    PATH
+    QUERY
+    HEADER
+    COOKIE
 }
- 
+
 
 
     

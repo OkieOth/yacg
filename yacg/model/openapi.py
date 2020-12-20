@@ -294,7 +294,7 @@ class ContentEntry:
 
         obj.type = yacg.model.model.Type.dictToObject(dict.get('type', None))
 
-        obj.isArray = dict.get('isArray', None)
+        obj.isArray = dict.get('isArray', False)
         return obj
 
 
