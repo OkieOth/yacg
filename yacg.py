@@ -203,6 +203,8 @@ def _foundAllTemplates(codeGenerationJobs):
                 (fileExists, task.singleFileTask.template) = _tryToFindTemplate(task.singleFileTask.template)
             elif (task.multiFileTask is not None) and (task.multiFileTask.template is not None):
                 (fileExists, task.multiFileTask.template) = _tryToFindTemplate(task.multiFileTask.template)
+            elif (task.randomDataTask is not None):
+                fileExists = True
             if not fileExists:
                 foundAll = False
     return foundAll

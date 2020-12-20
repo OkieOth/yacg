@@ -11,7 +11,6 @@
     baseModelDomain = templateParameters.get('baseModelDomain',None)
     domainList = modelFuncs.getDomainsAsList(modelTypes)
 
-
 %># Attention, this file is generated. Manual changes get lost with the next
 # run of the code generation.
 # created by yacg (template: ${templateFile} v${templateVersion})
@@ -89,7 +88,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % if modelFuncs.isBaseType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = dict.get('${property.name}', None)
+        obj.${property.name} = dict.get('${property.name}', ${property.default})
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
@@ -99,7 +98,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % elif modelFuncs.isEnumType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = ${property.type.name}.valueForString(dict.get('${property.name}', None))
+        obj.${property.name} = ${property.type.name}.valueForString(dict.get('${property.name}', ${property.default}))
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
@@ -110,7 +109,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % else:
                 % if not property.isArray:
 
-        obj.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(dict.get('${property.name}', None))
+        obj.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(dict.get('${property.name}', ${property.default}))
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])

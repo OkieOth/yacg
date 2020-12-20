@@ -254,7 +254,7 @@ def __getSetCountForType(typeName, randomDataTask):
 
     minElemCount = randomDataTask.defaultMinElemCount
     maxElemCount = randomDataTask.defaultMaxElemCount
-    if randomDataTask.specialElemCounts is not None:
+    if len(randomDataTask.specialElemCounts) > 0:
         for elemCount in randomDataTask.specialElemCounts:
             if typeName == elemCount.typeName:
                 minElemCount = elemCount.minElemCount

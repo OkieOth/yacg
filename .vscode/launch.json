@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "name": "Python: Aktuelle Datei",
             "type": "python",
@@ -25,6 +26,17 @@
                 "stdout",
                 "--template",
                 "plantuml"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "randomData",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/yacg.py",
+            "args": [
+                "--config",
+                "resources/configurations/random_data_example.json"
             ],
             "console": "integratedTerminal"
         },
