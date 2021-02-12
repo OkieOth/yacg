@@ -1,6 +1,7 @@
 # 1.0.0
 * add min/max handling for properties
 * add original format string to the Properties type
+* handle ordinal value in protobuf template
 
 # 0.16.0
 * enable generation of test data
