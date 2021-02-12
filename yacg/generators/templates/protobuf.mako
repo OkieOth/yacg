@@ -46,6 +46,11 @@
         else:
             return '???'
 
+    def getOrdinal(property, i):
+        if property.ordinal is not None:
+            return property.ordinal
+        else:
+            return i
 
 %>/* Attention, this file is generated. Manual changes get lost with the next
 * run of the code generation.
@@ -76,7 +81,7 @@ message ${type.name} {
                 % if type.description != None:
         // ${type.description}
                 % endif
-        ${printArray(flattenProperties[i])}${getType(flattenProperties[i])} ${flattenProperties[i].name} = ${i+1};
+        ${printArray(flattenProperties[i])}${getType(flattenProperties[i])} ${flattenProperties[i].name} = ${getOrdinal(flattenProperties[i], i+1)};
 
         % endfor
 }

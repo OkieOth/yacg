@@ -1,5 +1,6 @@
 # 1.0.0
 * add min/max handling for properties
+* add original format string to the Properties type
 
 # 0.16.0
 * enable generation of test data

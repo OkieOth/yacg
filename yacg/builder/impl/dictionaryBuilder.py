@@ -315,6 +315,7 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
     modelFileContainer -- file name and stuff, instance of ModelFileContainer
     """
 
+    newProperty.format = propDict.get('format', None)
     type = propDict.get('type', None)
     if type == 'integer':
         return IntegerType()

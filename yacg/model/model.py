@@ -93,6 +93,7 @@ class IntegerTypeFormatEnum(Enum):
             return ''
 
 
+
 class NumberType (Type):
     """ floating point values
     """
@@ -164,6 +165,7 @@ class NumberTypeFormatEnum(Enum):
             return 'double'
         else:
             return ''
+
 
 
 class BooleanType (Type):
@@ -502,6 +504,9 @@ class Property:
         #: a property of a type
         self.foreignKey = None
 
+        #: a property of a type
+        self.format = None
+
     @classmethod
     def dictToObject(cls, dict):
         if dict is None:
@@ -536,5 +541,8 @@ class Property:
         obj.isVisualKey = dict.get('isVisualKey', False)
 
         obj.foreignKey = Type.dictToObject(dict.get('foreignKey', None))
+
+        obj.format = dict.get('format', None)
         return obj
+
 

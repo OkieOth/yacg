@@ -134,6 +134,7 @@ class Property {
         BooleanType isKey 
         BooleanType isVisualKey 
         Type foreignKey 
+        StringType format 
 }
 
 note top: a property of a type

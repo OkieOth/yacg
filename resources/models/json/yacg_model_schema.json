@@ -311,6 +311,8 @@
                 "name": {
                     "description": "type unique identifier",
                     "type": "string",
+                    "$comment": "ordinal example",
+                    "__ordinal": 1000,
                     "__tags": ["constructorValue"]
                 },
                 "isArray": {
