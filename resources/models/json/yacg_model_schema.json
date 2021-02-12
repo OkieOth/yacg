@@ -369,6 +369,10 @@
                 "foreignKey": {
                     "description": "content of the '__ref' entry of a property, points to an implicit referenced type, e.g. for IDs",
                     "$ref": "#/definitions/Type"                                              
+                },
+                "format": {
+                    "description": "holds the original 'format' value from the schema",
+                    "type": "string"
                 }
             }
         },
