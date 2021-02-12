@@ -490,9 +490,6 @@ class Property:
         self.description = None
 
         #: a property of a type
-        self.default = None
-
-        #: a property of a type
         self.required = False
 
         #: a property of a type
@@ -531,8 +528,6 @@ class Property:
                 Tag.dictToObject(elemTags))
 
         obj.description = dict.get('description', None)
-
-        obj.default = dict.get('default', None)
 
         obj.required = dict.get('required', False)
 
