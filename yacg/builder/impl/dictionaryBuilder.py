@@ -277,8 +277,19 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
         newProperty.name = propName
         if description is not None:
             newProperty.description = description
-        newProperty.default = propDict.get('default', None)
         newProperty.type = _extractAttribType(type.name, newProperty, propDict, modelTypes, modelFileContainer)
+        if newProperty.type is not None:
+            if newProperty.hasattr(newProperty.type, 'default'):
+                newProperty.default = propDict.get('default', None)
+            if newProperty.hasattr(newProperty.type, 'minimum'):
+                newProperty.minimum = propDict.get('minimum', None)
+            if newProperty.hasattr(newProperty.type, 'exclusiveMinimum'):
+                newProperty.minimum = propDict.get('exclusiveMinimum', None)
+            if newProperty.hasattr(newProperty.type, 'maximum'):
+                newProperty.minimum = propDict.get('maximum', None)
+            if newProperty.hasattr(newProperty.type, 'exclusiveMaximum'):
+                newProperty.maximum = propDict.get('exclusiveMaximum', None)
+
         newProperty.isKey = propDict.get('__key', False)
         newProperty.isVisualKey = propDict.get('__visualKey', False)
         implicitRefEntry = propDict.get('__ref', None)
