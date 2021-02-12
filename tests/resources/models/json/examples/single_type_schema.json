@@ -9,7 +9,11 @@
             "type": "string"
         },
         "aValue": {
-            "type": "number"
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 1.4,
+            "exclusiveMinimum": -1.5,
+            "exclusiveMaximum": -10.4
         },
         "aEnum": {
           "type": "string",
