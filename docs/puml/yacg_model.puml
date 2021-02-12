@@ -129,12 +129,12 @@ class Property {
         Type type 
         Tag[] tags 
         StringType description 
-        StringType default 
         BooleanType required 
         IntegerType ordinal 
         BooleanType isKey 
         BooleanType isVisualKey 
         Type foreignKey 
+        StringType format 
 }
 
 note top: a property of a type

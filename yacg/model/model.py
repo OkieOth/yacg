@@ -490,9 +490,6 @@ class Property:
         self.description = None
 
         #: a property of a type
-        self.default = None
-
-        #: a property of a type
         self.required = False
 
         #: a property of a type
@@ -506,6 +503,9 @@ class Property:
 
         #: a property of a type
         self.foreignKey = None
+
+        #: a property of a type
+        self.format = None
 
     @classmethod
     def dictToObject(cls, dict):
@@ -532,8 +532,6 @@ class Property:
 
         obj.description = dict.get('description', None)
 
-        obj.default = dict.get('default', None)
-
         obj.required = dict.get('required', False)
 
         obj.ordinal = dict.get('ordinal', None)
@@ -543,6 +541,8 @@ class Property:
         obj.isVisualKey = dict.get('isVisualKey', False)
 
         obj.foreignKey = Type.dictToObject(dict.get('foreignKey', None))
+
+        obj.format = dict.get('format', None)
         return obj
 
 

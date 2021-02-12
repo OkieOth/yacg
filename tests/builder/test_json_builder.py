@@ -35,6 +35,12 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(4, len(mainType.properties))
         self.assertTrue(isinstance(mainType.properties[0].type, StringType))
         self.assertTrue(isinstance(mainType.properties[1].type, NumberType))
+
+        self.assertEqual(mainType.properties[1].type.minimum, 0.5)
+        self.assertEqual(mainType.properties[1].type.maximum, 1.4)
+        self.assertEqual(mainType.properties[1].type.exclusiveMinimum, -1.5)
+        self.assertEqual(mainType.properties[1].type.exclusiveMaximum, -10.4)
+
         self.assertTrue(isinstance(mainType.properties[2].type, EnumType))
         self.assertTrue(isinstance(mainType.properties[3].type, ComplexType))
 
@@ -42,6 +48,12 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(2, len(anotherType.properties))
         self.assertTrue(isinstance(anotherType.properties[0].type, DateTimeType))
         self.assertTrue(isinstance(anotherType.properties[1].type, NumberType))
+
+        self.assertTrue(isinstance(anotherType.properties[1].type, NumberType))
+        self.assertIsNone(anotherType.properties[1].type.minimum)
+        self.assertIsNone(anotherType.properties[1].type.maximum)
+        self.assertIsNone(anotherType.properties[1].type.exclusiveMinimum)
+        self.assertIsNone(anotherType.properties[1].type.exclusiveMaximum)
 
         self.assertIsNotNone(innerComplexType)
         self.assertEqual(3, len(innerComplexType.properties))

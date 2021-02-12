@@ -88,7 +88,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % if modelFuncs.isBaseType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = dict.get('${property.name}', ${property.default})
+        obj.${property.name} = dict.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
@@ -109,7 +109,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % else:
                 % if not property.isArray:
 
-        obj.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(dict.get('${property.name}', ${property.default}))
+        obj.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(dict.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None}))
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])

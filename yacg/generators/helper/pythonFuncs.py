@@ -10,8 +10,8 @@ def getDefaultPythonValue(propertyObj):
     if propertyObj.isArray:
         return '[]'
     else:
-        if propertyObj.default is not None:
-            return getPythonValueForType(propertyObj.type, propertyObj.default)
+        if (hasattr(propertyObj.type, 'default')) and (propertyObj.type.default is not None):
+            return getPythonValueForType(propertyObj.type, propertyObj.type.default)
         else:
             return None
 
