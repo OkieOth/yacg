@@ -1,3 +1,6 @@
+# 1.0.1
+* bump dependency version
+
 # 1.0.0
 * add min/max handling for properties
 * add original format string to the Properties type
