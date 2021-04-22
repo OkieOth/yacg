@@ -31,6 +31,15 @@ docker pull okieoth/yacg
 # Usage
 ## Basic Usage
 
+Ubuntu 20.04: Attention, for some strange reasons I had to create some links manually to avoid error messages.
+
+```bash
+sudo su
+ln -s /bin/python
+ln -s /bin/python3
+ln -s /bin/pip
+```
+
 ```bash
 # basic preparation
 pip install --user pipenv
