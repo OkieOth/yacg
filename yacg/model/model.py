@@ -236,6 +236,9 @@ class EnumType (Type):
         super(Type, self).__init__()
 
         #: type for enum values - fixed value types
+        self.version = None
+
+        #: type for enum values - fixed value types
         self.name = None
 
         #: type for enum values - fixed value types
@@ -261,6 +264,8 @@ class EnumType (Type):
         if dict is None:
             return None
         obj = cls()
+
+        obj.version = dict.get('version', None)
 
         obj.name = dict.get('name', None)
 
@@ -395,6 +400,9 @@ class ComplexType (Type):
         super(Type, self).__init__()
 
         #: complex type description
+        self.version = None
+
+        #: complex type description
         self.name = None
 
         #: complex type description
@@ -426,6 +434,8 @@ class ComplexType (Type):
         if dict is None:
             return None
         obj = cls()
+
+        obj.version = dict.get('version', None)
 
         obj.name = dict.get('name', None)
 

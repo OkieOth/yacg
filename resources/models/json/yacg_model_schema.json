@@ -135,6 +135,10 @@
                 },
                 {
                     "properties": {
+                        "version": {
+                            "description": "is taken from the version entry of the file, optional",
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
