@@ -23,6 +23,7 @@ class ModelFileContainer:
     def __init__(self, fileName, parsedSchema):
         self.fileName = fileName
         self.parsedSchema = parsedSchema
+        self.version = parsedSchema.get('version', None)
         self.domain = parsedSchema.get('__domain', None)
 
 
@@ -218,6 +219,7 @@ def _extractObjectType(typeNameStr, properties, allOfEntries, description, model
         newType = ComplexType()
         newType.domain = modelFileContainer.domain
         newType.name = typeNameStr
+        newType.version = modelFileContainer.version
     else:
         newType = alreadyCreatedType
     newType.source = modelFileContainer.fileName
@@ -623,6 +625,7 @@ def _extractInternalReferenceType(refTypeName, modelTypes, modelFileContainer):
     dummyReference.domain = modelFileContainer.domain
     dummyReference.name = refTypeName
     dummyReference.source = modelFileContainer.fileName
+    dummyReference.version = modelFileContainer.version
     modelTypes.append(dummyReference)
     return dummyReference
 
@@ -644,6 +647,7 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
     newInnerType.domain = modelFileContainer.domain
     newInnerType.name = innerTypeName
     newInnerType.source = modelFileContainer.fileName
+    newInnerType.version = modelFileContainer.version
     modelTypes.append(newInnerType)
     description = propDict.get('description', None)
     if description is not None:
@@ -740,6 +744,7 @@ def _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileC
     enumType.name = enumTypeName
     enumType.values = enumValue
     enumType.source = modelFileContainer.fileName
+    enumType.version = modelFileContainer.version
     if alreadyCreatedType is not None:
         _replaceAllCurrentAppearencesOfAlreadyCreatedType(alreadyCreatedType, enumType, modelTypes)
     else:
