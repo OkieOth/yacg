@@ -1,6 +1,7 @@
 import argparse
 import sys
 import logging
+import json
 import semver
 import yacg.builder.impl.dictionaryBuilder as builder
 from yacg.util.fileUtils import doesFileExist
@@ -43,7 +44,20 @@ def main():
         printError('\nCurrent version is no valid semver: {}'.format(currentVersion))
         sys.exit(1)
     newVersion = _calcNewVersion(currentVersion, args.version)
-    print('newVersion: {}'.format(newVersion))
+    if args.dryRun:
+        print('model: {}, new version: {}, old version: {}'.format(args.model, newVersion, currentVersion))
+    else:
+        parsedSchema["version"] = newVersion
+        fileToWrite = args.model
+        if args.backupExt is not None:
+            fileToWrite = '{}.{}'.format(fileToWrite, args.backupExt)
+            printError('\nError while createing a backup of `{}` to `{}`'.format(args.model,fileToWrite))
+            # if not backupFile(args.model, args.backupExt):
+            #     printError('\nError while createing a backup of `{}` to `{}`'.format(args.model,fileToWrite))
+            #     sys.exit(1)
+        sys.exit(0)
+        json.dump(parsedSchema, fileToWrite, indent=4)
+        pass
 
 
 def _checkValidVersion(versionStr):
@@ -73,5 +87,7 @@ def _calcNewVersion(currentVersion, desiredVersion):
         return str(currentSemVer.bump_patch())
     else:
         return desiredVersion
+
+
 if __name__ == '__main__':
     main()
