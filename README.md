@@ -42,11 +42,15 @@ ln -s /bin/pip
 
 ```bash
 # basic preparation
+sudo apt-get install python3-venv
 pip install --user pipenv
 
 pipenv --python 3.8
-pipenv --three install
+pipenv install
 pipenv shell
+
+# in case of errors to create virtual env look here
+# https://askubuntu.com/questions/1241993/why-i-cannot-create-pipenv-shell-in-ubuntu-20-04-lts-with-python3-8
 
 # do a demo run ... and create plantuml
 pipenv run python3 yacg.py \
@@ -99,6 +103,18 @@ Most interesting are in the debug section to pre-configured debugging tasks for 
 
 * 'current tests' expects a open test file in the editor, and if this configuration is started, all test from this file are executed.
 * 'all tests' let run all tests in the 'tests' folder of the repository
+
+# Increment model versions
+This project contains also a script to increment model versions. I has the ability to increment the version of one schema and searching for additional dependencies of that schema, and increment there the version too.
+
+## Usage
+```bash
+# see the possible parameters of the script
+pipenv run python3 incrementVersion.py
+
+# do an example dry-run
+pipenv run python3 incrementVersion.py --model resources/models/json/yacg_model_schema.json --version minor
+```
 
 # Some Last Words
 This project is a spare time project - with all its pros and cons. The development of 

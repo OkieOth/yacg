@@ -1,3 +1,7 @@
+# 1.1.0
+* add model version to complex types and enums
+* add increment version script for json schemas
+
 # 1.0.1
 * bump dependency version
 
