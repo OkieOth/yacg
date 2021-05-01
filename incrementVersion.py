@@ -45,10 +45,10 @@ def main():
         printError('\nCurrent version is no valid semver: {}'.format(currentVersion))
         sys.exit(1)
     newVersion = _calcNewVersion(currentVersion, args.version)
-    _printOutput(args, newVersion)
+    _printOutput(args, newVersion, parsedSchema)
 
 
-def _printOutput(args, newVersion):
+def _printOutput(args, newVersion, parsedSchema):
     if args.dryRun:
         print('model: {}, new version: {}, old version: {}'.format(args.model, newVersion, currentVersion))
     else:
