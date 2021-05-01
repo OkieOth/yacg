@@ -52,7 +52,8 @@ def main():
         if args.backupExt is not None:
             backupToWrite = '{}.{}'.format(args.model, args.backupExt)
             shutil.copyfile(args.model, backupToWrite)
-        json.dump(parsedSchema, args.model, indent=4)
+        with open(args.model, 'w') as outfile:
+            json.dump(parsedSchema, outfile, indent=4)
 
 
 def _checkValidVersion(versionStr):
