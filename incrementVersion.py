@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import semver
+import shutil
 import yacg.builder.impl.dictionaryBuilder as builder
 from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError, printInfo
@@ -48,16 +49,10 @@ def main():
         print('model: {}, new version: {}, old version: {}'.format(args.model, newVersion, currentVersion))
     else:
         parsedSchema["version"] = newVersion
-        fileToWrite = args.model
         if args.backupExt is not None:
-            fileToWrite = '{}.{}'.format(fileToWrite, args.backupExt)
-            printError('\nError while createing a backup of `{}` to `{}`'.format(args.model,fileToWrite))
-            # if not backupFile(args.model, args.backupExt):
-            #     printError('\nError while createing a backup of `{}` to `{}`'.format(args.model,fileToWrite))
-            #     sys.exit(1)
-        sys.exit(0)
-        json.dump(parsedSchema, fileToWrite, indent=4)
-        pass
+            backupToWrite = '{}.{}'.format(args.model, args.backupExt)
+            shutil.copyfile(args.model, backupToWrite)
+        json.dump(parsedSchema, args.model, indent=4)
 
 
 def _checkValidVersion(versionStr):
