@@ -5,7 +5,7 @@
 import unittest
 
 import incrementVersion
-
+from yacg.util.fileUtils import doesFileExist
 
 class TestIncrementVersion (unittest.TestCase):
     def testSemver(self):
@@ -14,6 +14,17 @@ class TestIncrementVersion (unittest.TestCase):
         ret = incrementVersion._checkValidVersion('xxx')
         self.assertFalse(ret)
 
+    def testGetJsonSchemaFileNames(self):
+        ret = incrementVersion._getJsonSchemaFileNames('./resources')
+        self.assertEqual(7, len(ret))
+        for file in ret:
+            self.assertTrue(doesFileExist(file))
+        ret2 = incrementVersion._getJsonSchemaFileNames('./tests')
+        self.assertEqual(15, len(ret2))
+        for file in ret2:
+            self.assertTrue(doesFileExist(file))
+        # negative test
+        self.assertFalse(doesFileExist(ret2[0] + "xx"))
 
 
 if __name__ == '__main__':

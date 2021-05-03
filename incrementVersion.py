@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 import logging
 import json
@@ -36,6 +37,9 @@ def main():
     if not _checkValidVersion(args.version):
         printError('\nNo valid version argument was given, check the help: {}'.format(args.version))
         sys.exit(1)
+    if not _checkDirToCheckForRefs(args.dirToCheckForRefs):
+        printError("\nThe given directory to check for references isn't a valid dir: {}".format(args.dirToCheckForRefs))
+        sys.exit(1)
     parsedSchema = builder.getParsedSchemaFromJson(args.model)
     currentVersion = parsedSchema.get("version", None)
     if currentVersion is None:
@@ -44,19 +48,89 @@ def main():
     if not _checkValidVersion(currentVersion):
         printError('\nCurrent version is no valid semver: {}'.format(currentVersion))
         sys.exit(1)
-    newVersion = _calcNewVersion(currentVersion, args.version)
-    _printOutput(args, newVersion, parsedSchema)
+    newVersion = _calcNewVersion(currentVersion, args.version, True)
+    logging.info("modelFile: {}, currentVersion: {}, newVersion: {}".format(args.model, currentVersion, newVersion))
+    _printOutput(args.model, args.backupExt, args.dryRun, newVersion, parsedSchema, currentVersion)
+    if args.dirToCheckForRefs is not None:
+        filesToCheckList = _getJsonSchemaFileNames(args.dirToCheckForRefs)
+        _checkForReferences(args, newVersion, args.model, filesToCheckList, [args.model])
 
 
-def _printOutput(args, newVersion, parsedSchema):
-    if args.dryRun:
-        print('model: {}, new version: {}, old version: {}'.format(args.model, newVersion, currentVersion))
+def _checkDirToCheckForRefs(dirToCheckForRefs):
+    if dirToCheckForRefs is None:
+        return True
+    return os.path.isdir(dirToCheckForRefs)
+
+
+def _getJsonSchemaFileNames(dirToCheckForRefs):
+    foundJsonFiles = []
+    for root, dirs, files in os.walk(dirToCheckForRefs):
+        for file in files:
+            if file.endswith('.json'):
+                foundJsonFiles.append(root + '/' + file)
+    return foundJsonFiles
+
+
+def _checkForReferences(args, newVersion, modelFile, filesToCheckList, alreadyCheckedList):
+    """This function search for all json files in the configured dirToCheckForRefs.
+    In the found json files it looks for references to the originally changed model file
+    and increments there the version. The following rules are processed:
+    1. If the new version was given by [major, minor, patch], then the version of the 
+        referencing files is incremented in the same way.
+    2. If the new version was given as semver, then the major version of referencing
+        files is incremented
+    
+    Keyword arguments:
+    args -- command line arguments
+    newVersion -- version that was set for the first model in the command
+    modelFile -- model files that could be referenced
+    filesToCheckList -- list of files that have to be tests for references
+    alreadyCheckedList -- list with all files that are already checked ... to avoid circular dependencies
+    """
+
+    newModelsToCheck = []
+    for file in filesToCheckList:
+        if file in alreadyCheckedList:
+            continue
+        parsedSchema = builder.getParsedSchemaFromJson(file)
+        # search form modelFileReference
+        currentVersion = parsedSchema.get("version", None)
+        if currentVersion is None:
+            continue
+        if _hasModelReference(parsedSchema, modelFile):
+            # TODO increment file version
+            newVersion = _calcNewVersion(currentVersion, args.version, False)
+            _printOutput(file, args.backupExt, args.dryRun, newVersion, parsedSchema, currentVersion)
+            if file not in newModelsToCheck:
+                newModelsToCheck.append(file)
+            alreadyCheckedList.append(file)
+    for model in newModelsToCheck:
+        _checkForReferences(args, newVersion, model, filesToCheckList, alreadyCheckedList)
+
+
+def _hasModelReference(parsedSchema, modelFile):
+    """Check if the parsedSchema dict contains a reference to the modelFile. If a reference existss
+    the True is returned
+
+    Keyword arguments:
+    parsedSchema -- dictionary from the current parsed JSON file
+    modelFile -- file name of another schema to look for by reference
+    """
+
+    pass # TODO
+
+
+def _printOutput(modelFile, backupExt, dryRun, newVersion, parsedSchema, currentVersion):
+    if dryRun:
+        print('model: {}, new version: {}, old version: {}'.format(modelFile, newVersion, currentVersion))
     else:
         parsedSchema["version"] = newVersion
-        if args.backupExt is not None:
-            backupToWrite = '{}.{}'.format(args.model, args.backupExt)
-            shutil.copyfile(args.model, backupToWrite)
-        with open(args.model, 'w') as outfile:
+        if backupExt is not None:
+            backupToWrite = '{}.{}'.format(modelFile, backupExt)
+            logging.info("write modelFile backup: {}".format(backupToWrite))
+            shutil.copyfile(modelFile, backupToWrite)
+        logging.info("write modelFile with updated version: {}".format(modelFile))
+        with open(modelFile, 'w') as outfile:
             json.dump(parsedSchema, outfile, indent=4)
 
 
@@ -77,7 +151,7 @@ def _checkValidVersion(versionStr):
             return False
 
 
-def _calcNewVersion(currentVersion, desiredVersion):
+def _calcNewVersion(currentVersion, desiredVersion, keepDesiredVersionInsteadOfBumpingMajor):
     currentSemVer = semver.VersionInfo.parse(currentVersion)
     if desiredVersion == 'major':
         return str(currentSemVer.bump_major())
@@ -85,8 +159,11 @@ def _calcNewVersion(currentVersion, desiredVersion):
         return str(currentSemVer.bump_minor())
     elif desiredVersion == 'patch':
         return str(currentSemVer.bump_patch())
-    else:
+    elif keepDesiredVersionInsteadOfBumpingMajor:
         return desiredVersion
+    else:
+        # in case of we handling a referencing file instead of the initial updated model
+        return str(currentSemVer.bump_major())
 
 
 if __name__ == '__main__':
