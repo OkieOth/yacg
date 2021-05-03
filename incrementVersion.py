@@ -8,6 +8,7 @@ import shutil
 import yacg.builder.impl.dictionaryBuilder as builder
 from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError, printInfo
+from yacg.model.model import ComplexType
 
 description = """Increment the version of a JSON schema file. In addition
 it can increment the version of schemas that reference the file with the
@@ -79,7 +80,7 @@ def _checkForReferences(args, newVersion, modelFile, filesToCheckList, alreadyCh
         referencing files is incremented in the same way.
     2. If the new version was given as semver, then the major version of referencing
         files is incremented
-    
+
     Keyword arguments:
     args -- command line arguments
     newVersion -- version that was set for the first model in the command
@@ -97,8 +98,9 @@ def _checkForReferences(args, newVersion, modelFile, filesToCheckList, alreadyCh
         currentVersion = parsedSchema.get("version", None)
         if currentVersion is None:
             continue
-        if _hasModelReference(parsedSchema, modelFile):
-            # TODO increment file version
+        logging.info("checking {} for references ...".format(file))
+        if _hasModelReference(parsedSchema, file, modelFile):
+            logging.info("      ... found")
             newVersion = _calcNewVersion(currentVersion, args.version, False)
             _printOutput(file, args.backupExt, args.dryRun, newVersion, parsedSchema, currentVersion)
             if file not in newModelsToCheck:
@@ -108,7 +110,7 @@ def _checkForReferences(args, newVersion, modelFile, filesToCheckList, alreadyCh
         _checkForReferences(args, newVersion, model, filesToCheckList, alreadyCheckedList)
 
 
-def _hasModelReference(parsedSchema, modelFile):
+def _hasModelReference(parsedSchema, parsedFile, modelFile):
     """Check if the parsedSchema dict contains a reference to the modelFile. If a reference existss
     the True is returned
 
@@ -117,7 +119,14 @@ def _hasModelReference(parsedSchema, modelFile):
     modelFile -- file name of another schema to look for by reference
     """
 
-    pass # TODO
+    parsedFilePath = os.path.abspath(parsedFile)
+    modelFilePath = os.path.abspath(modelFile)
+    parsedTypeList = builder.extractTypes(parsedSchema, parsedFilePath, [], True)
+    for t in parsedTypeList:
+        if isinstance(t, ComplexType):
+            if modelFilePath == t.source:
+                return True
+    return False
 
 
 def _printOutput(modelFile, backupExt, dryRun, newVersion, parsedSchema, currentVersion):
