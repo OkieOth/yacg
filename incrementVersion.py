@@ -95,6 +95,8 @@ def _checkForReferences(args, newVersion, modelFile, filesToCheckList, alreadyCh
             continue
         parsedSchema = builder.getParsedSchemaFromJson(file)
         # search form modelFileReference
+        if not isinstance(parsedSchema, dict):
+            continue
         currentVersion = parsedSchema.get("version", None)
         if currentVersion is None:
             continue
