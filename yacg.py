@@ -174,7 +174,7 @@ def getJobConfigurations(args):
         templateParameters = _getTemplateParameters(args)
         vars = _getVars(args)
         jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config, vars)
-        if len(args.models) > 0:
+        if (args.models is not None) and (len(args.models) > 0):
             # there are models from the commandline that have to be mixed in the config file data
             for job in jobArray:
                 _putArgModelsToJob(args, job)
