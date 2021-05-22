@@ -64,6 +64,7 @@ note top: UUID values
 
 UuidType --|> Type
 class EnumType {
+        StringType version 
         StringType name 
         StringType domain 
         StringType source 
@@ -106,6 +107,7 @@ note top: type for timestamp values
 
 DateTimeType --|> Type
 class ComplexType {
+        StringType version 
         StringType name 
         StringType description 
         StringType domain 

@@ -8,7 +8,9 @@
         "Type": {
             "type": "object",
             "description": "Dummy base class to implement strong typed references",
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "IntegerType": {
             "type": "object",
@@ -21,7 +23,10 @@
                     "properties": {
                         "format": {
                             "type": "string",
-                            "enum": ["int32", "int64"]
+                            "enum": [
+                                "int32",
+                                "int64"
+                            ]
                         },
                         "default": {
                             "type": "integer"
@@ -41,7 +46,9 @@
                     }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "NumberType": {
             "type": "object",
@@ -54,7 +61,10 @@
                     "properties": {
                         "format": {
                             "type": "string",
-                            "enum": ["float", "double"]
+                            "enum": [
+                                "float",
+                                "double"
+                            ]
                         },
                         "default": {
                             "type": "number"
@@ -70,10 +80,13 @@
                         },
                         "exclusiveMaximum": {
                             "type": "number"
-                        }                    }
+                        }
+                    }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "BooleanType": {
             "type": "object",
@@ -90,7 +103,9 @@
                     }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "StringType": {
             "type": "object",
@@ -107,7 +122,9 @@
                     }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "UuidType": {
             "type": "object",
@@ -124,7 +141,9 @@
                     }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "EnumType": {
             "type": "object",
@@ -135,6 +154,10 @@
                 },
                 {
                     "properties": {
+                        "version": {
+                            "description": "is taken from the version entry of the file, optional",
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -154,7 +177,7 @@
                         "values": {
                             "type": "array",
                             "items": {
-                                "type": "string"   
+                                "type": "string"
                             }
                         },
                         "default": {
@@ -171,7 +194,9 @@
                     }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "DateType": {
             "type": "object",
@@ -205,7 +230,9 @@
                     }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "DateTimeType": {
             "type": "object",
@@ -239,7 +266,9 @@
                     }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "ComplexType": {
             "type": "object",
@@ -250,6 +279,10 @@
                 },
                 {
                     "properties": {
+                        "version": {
+                            "description": "is taken from the version entry of the file, optional",
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -288,7 +321,7 @@
                             "description": "properties of that type",
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Property"                            
+                                "$ref": "#/definitions/Property"
                             }
                         },
                         "tags": {
@@ -302,7 +335,9 @@
                     }
                 }
             ],
-            "__tags": ["metaModelType"]
+            "__tags": [
+                "metaModelType"
+            ]
         },
         "Property": {
             "type": "object",
@@ -313,7 +348,9 @@
                     "type": "string",
                     "$comment": "ordinal example",
                     "__ordinal": 1000,
-                    "__tags": ["constructorValue"]
+                    "__tags": [
+                        "constructorValue"
+                    ]
                 },
                 "isArray": {
                     "description": "true - if the property is an array",
@@ -334,8 +371,10 @@
                 },
                 "type": {
                     "description": "either a basic or a complex type",
-                    "$ref": "#/definitions/Type",                                              
-                    "__tags": ["constructorValue"]
+                    "$ref": "#/definitions/Type",
+                    "__tags": [
+                        "constructorValue"
+                    ]
                 },
                 "tags": {
                     "description": "additional flags to mark a property",
@@ -370,7 +409,7 @@
                 },
                 "foreignKey": {
                     "description": "content of the '__ref' entry of a property, points to an implicit referenced type, e.g. for IDs",
-                    "$ref": "#/definitions/Type"                                              
+                    "$ref": "#/definitions/Type"
                 },
                 "format": {
                     "description": "holds the original 'format' value from the schema",
@@ -385,12 +424,16 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "__tags": ["constructorValue"]
+                    "__tags": [
+                        "constructorValue"
+                    ]
                 },
                 "value": {
                     "type": "string",
                     "__tags": [
-                        {"constructorValue":"None"}
+                        {
+                            "constructorValue": "None"
+                        }
                     ],
                     "default": "None"
                 }

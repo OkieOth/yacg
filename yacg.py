@@ -149,16 +149,20 @@ def __blackWhiteListEntries2Objects(argsList):
 def _getJobConfigurationsFromArgs(args):
     job = config.Job()
     job.name = 'default'
-    for modelFile in args.models:
-        model = config.Model()
-        model.schema = modelFile
-        job.models.append(model)
+    _putArgModelsToJob(args, job)
     templateParameters = _getTemplateParameters(args)
     blackList = __blackWhiteListEntries2Objects(args.blackListed)
     whiteList = __blackWhiteListEntries2Objects(args.whiteListed)
     __getSingleFileTemplates(args, job, templateParameters, blackList, whiteList)
     __getMultiFileTemplates(args, job, templateParameters, blackList, whiteList)
     return [job]
+
+
+def _putArgModelsToJob(args, job):
+    for modelFile in args.models:
+        model = config.Model()
+        model.schema = modelFile
+        job.models.append(model)
 
 
 def getJobConfigurations(args):
@@ -170,6 +174,10 @@ def getJobConfigurations(args):
         templateParameters = _getTemplateParameters(args)
         vars = _getVars(args)
         jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config, vars)
+        if (args.models is not None) and (len(args.models) > 0):
+            # there are models from the commandline that have to be mixed in the config file data
+            for job in jobArray:
+                _putArgModelsToJob(args, job)
         if len(templateParameters) == 0:
             return jobArray
         # mix in of command line parameters to increase flexibility
