@@ -149,16 +149,20 @@ def __blackWhiteListEntries2Objects(argsList):
 def _getJobConfigurationsFromArgs(args):
     job = config.Job()
     job.name = 'default'
-    for modelFile in args.models:
-        model = config.Model()
-        model.schema = modelFile
-        job.models.append(model)
+    _putArgModelsToJob(args, job)
     templateParameters = _getTemplateParameters(args)
     blackList = __blackWhiteListEntries2Objects(args.blackListed)
     whiteList = __blackWhiteListEntries2Objects(args.whiteListed)
     __getSingleFileTemplates(args, job, templateParameters, blackList, whiteList)
     __getMultiFileTemplates(args, job, templateParameters, blackList, whiteList)
     return [job]
+
+
+def _putArgModelsToJob(args, job):
+    for modelFile in args.models:
+        model = config.Model()
+        model.schema = modelFile
+        job.models.append(model)
 
 
 def getJobConfigurations(args):
@@ -174,6 +178,7 @@ def getJobConfigurations(args):
             return jobArray
         # mix in of command line parameters to increase flexibility
         for job in jobArray:
+            _putArgModelsToJob(args, job)
             for task in job.tasks:
                 if task.singleFileTask is not None:
                     task.singleFileTask.templateParams = task.singleFileTask.templateParams + templateParameters

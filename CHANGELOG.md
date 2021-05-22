@@ -1,6 +1,7 @@
 # 1.1.0
 * add model version to complex types and enums
 * add increment version script for json schemas
+* mix in models given per cmd param into the file configuration
 
 # 1.0.1
 * bump dependency version

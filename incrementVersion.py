@@ -35,7 +35,7 @@ def main():
     if not doesFileExist(args.model):
         printError('\nModel file not found ... cancel: {}'.format(args.model))
         sys.exit(1)
-    if not _checkValidVersion(args.version):
+    if not checkValidVersion(args.version):
         printError('\nNo valid version argument was given, check the help: {}'.format(args.version))
         sys.exit(1)
     if not _checkDirToCheckForRefs(args.dirToCheckForRefs):
@@ -46,14 +46,14 @@ def main():
     if currentVersion is None:
         printInfo('\nModel file does not contain a version: {}'.format(args.model))
         sys.exit(0)
-    if not _checkValidVersion(currentVersion):
+    if not checkValidVersion(currentVersion):
         printError('\nCurrent version is no valid semver: {}'.format(currentVersion))
         sys.exit(1)
     newVersion = _calcNewVersion(currentVersion, args.version, True)
     logging.info("modelFile: {}, currentVersion: {}, newVersion: {}".format(args.model, currentVersion, newVersion))
     _printOutput(args.model, args.backupExt, args.dryRun, newVersion, parsedSchema, currentVersion)
     if args.dirToCheckForRefs is not None:
-        filesToCheckList = _getJsonSchemaFileNames(args.dirToCheckForRefs)
+        filesToCheckList = getJsonSchemaFileNames(args.dirToCheckForRefs)
         _checkForReferences(args, newVersion, args.model, filesToCheckList, [args.model])
 
 
@@ -76,7 +76,7 @@ def _checkForReferences(args, newVersion, modelFile, filesToCheckList, alreadyCh
     """This function search for all json files in the configured dirToCheckForRefs.
     In the found json files it looks for references to the originally changed model file
     and increments there the version. The following rules are processed:
-    1. If the new version was given by [major, minor, patch], then the version of the 
+    1. If the new version was given by [major, minor, patch], then the version of the
         referencing files is incremented in the same way.
     2. If the new version was given as semver, then the major version of referencing
         files is incremented
