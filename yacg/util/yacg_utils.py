@@ -108,4 +108,3 @@ def getVarList(strLine):
     for match in matchList:
         result.append(match[1:-1])
     return result
-

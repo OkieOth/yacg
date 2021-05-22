@@ -35,7 +35,7 @@ def main():
     if not doesFileExist(args.model):
         printError('\nModel file not found ... cancel: {}'.format(args.model))
         sys.exit(1)
-    if not checkValidVersion(args.version):
+    if not _checkValidVersion(args.version):
         printError('\nNo valid version argument was given, check the help: {}'.format(args.version))
         sys.exit(1)
     if not _checkDirToCheckForRefs(args.dirToCheckForRefs):
@@ -46,14 +46,14 @@ def main():
     if currentVersion is None:
         printInfo('\nModel file does not contain a version: {}'.format(args.model))
         sys.exit(0)
-    if not checkValidVersion(currentVersion):
+    if not _checkValidVersion(currentVersion):
         printError('\nCurrent version is no valid semver: {}'.format(currentVersion))
         sys.exit(1)
     newVersion = _calcNewVersion(currentVersion, args.version, True)
     logging.info("modelFile: {}, currentVersion: {}, newVersion: {}".format(args.model, currentVersion, newVersion))
     _printOutput(args.model, args.backupExt, args.dryRun, newVersion, parsedSchema, currentVersion)
     if args.dirToCheckForRefs is not None:
-        filesToCheckList = getJsonSchemaFileNames(args.dirToCheckForRefs)
+        filesToCheckList = _getJsonSchemaFileNames(args.dirToCheckForRefs)
         _checkForReferences(args, newVersion, args.model, filesToCheckList, [args.model])
 
 
