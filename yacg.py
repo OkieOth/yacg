@@ -9,7 +9,7 @@ from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 from yacg.generators.multiFileGenerator import renderMultiFileTemplate
 from yacg.generators.randomDataGenerator import renderRandomData
-from yacg.model import EnumType, ComplexType
+from yacg.model.model import EnumType, ComplexType
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 
@@ -321,9 +321,11 @@ def __printUsedFiles(codeGenerationJobs):
     if len(usedFiles) == 0:
         print("No loaded files detected.")
     else:
+        print()
         print("The following files were loaded:")
         for usedFile in usedFiles:
             print("-> {}".format(usedFile))
+
 
 def main():
     """starts the program execution"""
