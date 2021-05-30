@@ -35,6 +35,16 @@ if ! pipenv run python3 yacg.py \
     exit 1
 fi
 
+if ! pipenv run python3 yacg.py \
+    --models resources/models/json/yacg_config_schema.json \
+             resources/models/json/yacg_model_schema.json \
+    --usedFilesOnly; then
+    echo "problems while run with usesFilesOnly"
+    popd > /dev/null
+    exit 1
+fi
+
+
 if ! bin/demoMultiFileGenerator.sh; then
     echo "problems while running multifile job from command line"
     popd > /dev/null

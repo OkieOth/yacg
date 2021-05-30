@@ -1,3 +1,6 @@
+# 1.2.0
+* add '--usedFilesOnly' command line switch
+
 # 1.1.0
 * add model version to complex types and enums
 * add increment version script for json schemas

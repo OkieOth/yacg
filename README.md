@@ -58,6 +58,11 @@ pipenv run python3 yacg.py \
              resources/models/json/yacg_model_schema.json \
     --singleFileTemplates plantUml=stdout
 
+pipenv run python3 yacg.py \
+    --models resources/models/json/yacg_config_schema.json \
+             resources/models/json/yacg_model_schema.json \
+    --usedFilesOnly
+
 # demo run with protobuf example output
 pipenv run python3 yacg.py \
     --models resources/models/json/yacg_config_schema.json \

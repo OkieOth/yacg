@@ -93,7 +93,6 @@ class IntegerTypeFormatEnum(Enum):
             return ''
 
 
-
 class NumberType (Type):
     """ floating point values
     """
@@ -165,7 +164,6 @@ class NumberTypeFormatEnum(Enum):
             return 'double'
         else:
             return ''
-
 
 
 class BooleanType (Type):
@@ -554,5 +552,3 @@ class Property:
 
         obj.format = dict.get('format', None)
         return obj
-
-
