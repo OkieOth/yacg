@@ -6,7 +6,7 @@ import yacg.model.modelFuncs as modelFuncs
 
 
 class TestAdditional (unittest.TestCase):
-    def testFlattenTypes(self):
+    def _estFlattenTypes(self):
         modelFile = 'tests/resources/models/json/examples/more_sophisticated_allof.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
@@ -52,4 +52,29 @@ class TestAdditional (unittest.TestCase):
                 self.assertEqual(3, len(t.properties))
                 self.assertIsNone(t.extendsType)
 
-
+    def testFlattenByTag(self):
+        modelFile = 'tests/resources/models/json/examples/flatten_by_tag.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        modelTypes = modelFuncs.processYacgTags(modelTypes)
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(6, len(modelTypes))
+        for t in modelTypes:
+            if t.name == 'MoreSophisticatedAllOf':
+                self.assertEqual(1, len(t.properties))
+                self.assertIsNotNone(t.extendsType)
+            if t.name == 'Address':
+                # type Address is removed by Tag
+                self.assertIsNone(t)
+            if t.name == 'MainAdress':
+                self.assertEqual(6, len(t.properties))
+                self.assertIsNone(t.extendsType)
+            if t.name == 'SimpleAllOfSchema':
+                self.assertEqual(1, len(t.properties))
+                self.assertIsNotNone(t.extendsType)
+            if t.name == 'MainAddressComplex':
+                self.assertEqual(3, len(t.properties))
+                self.assertIsNone(t.extendsType)

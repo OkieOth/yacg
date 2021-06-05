@@ -62,6 +62,7 @@ def readModels(configJob, flattenInheritance):
 def _postProcessLoadedModels(loadedTypes, flattenInheritance):
     if flattenInheritance:
         loadedTypes = modelFuncs.flattenTypes(loadedTypes)
+    loadedTypes = modelFuncs.processYacgTags(loadedTypes)
     return loadedTypes
 
 
