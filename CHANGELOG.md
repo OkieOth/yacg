@@ -1,3 +1,8 @@
+# 1.3.0
+* add '--flattenInheritance' command line switch
+* introduce 'yacgFlattenType' type tag
+* introduce 'yacgIgnoreForModel' type tag
+
 # 1.2.0
 * add '--usedFilesOnly' command line switch
 

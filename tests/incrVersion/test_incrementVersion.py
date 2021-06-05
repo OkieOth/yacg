@@ -1,7 +1,3 @@
-# Attention, this file is generated. Manual changes get lost with the next
-# run of the code generation.
-# created by yacg (template: pythonBeans.mako v1.0.0)
-
 import unittest
 
 import incrementVersion
@@ -21,7 +17,7 @@ class TestIncrementVersion (unittest.TestCase):
         for file in ret:
             self.assertTrue(doesFileExist(file))
         ret2 = incrementVersion._getJsonSchemaFileNames('./tests')
-        self.assertEqual(15, len(ret2))
+        self.assertEqual(17, len(ret2))
         for file in ret2:
             self.assertTrue(doesFileExist(file))
         # negative test

@@ -1,0 +1,51 @@
+{
+    "title": "more sophisticated allOf",
+    "description": "example schema that contains a allOf construct and includes another allOf from an external file",
+    "version": "0.0.1",
+    "type": "object",
+    "definitions": {
+      "MainAddress": {
+        "type": "object",
+        "allOf": [
+          { 
+            "$ref": "simple_allof2.json" 
+          },
+          { 
+            "properties": {
+              "stuff": { 
+                  "type": "number" 
+              },
+              "complex": {
+                "type": "object",
+                "properties": {
+                  "n": {
+                    "type": "number"
+                  },
+                  "i": {
+                    "type": "integer"
+                  },
+                  "timestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "__tags": ["yacgFlattenType"]
+      }
+    },
+    "allOf": [
+      { 
+        "$ref": "simple_allof2.json#/definitions/Address" 
+      },
+      { 
+        "properties": {
+            "type": { 
+                "enum": [ "billing", "delivery", "weekend", "main" ] 
+            }
+        }
+      }
+    ]
+  }

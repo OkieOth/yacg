@@ -12,6 +12,7 @@ from yacg.generators.randomDataGenerator import renderRandomData
 from yacg.model.model import EnumType, ComplexType
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
+import yacg.model.modelFuncs as modelFuncs
 
 
 description = """Yet another code generation.
@@ -34,6 +35,7 @@ parser.add_argument('--blackListed', nargs='+', help='types that should not be h
 parser.add_argument('--whiteListed', nargs='+', help='types that should be handled in the template')
 parser.add_argument('--vars', nargs='+', help='variables that are passed to the processing')
 parser.add_argument('--usedFilesOnly', help='import models but only print the used files to stdout', action='store_true')
+parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
 
 
 def getFileExt(fileName):
@@ -43,7 +45,7 @@ def getFileExt(fileName):
     return fileName[lastDot:]
 
 
-def readModels(configJob):
+def readModels(configJob, flattenInheritance):
     """reads all desired models and build the model object tree from it"""
 
     loadedTypes = []
@@ -54,6 +56,13 @@ def readModels(configJob):
             loadedTypes = getModelFromYaml(model, loadedTypes)
         else:
             loadedTypes = getModelFromJson(model, loadedTypes)
+    return _postProcessLoadedModels(loadedTypes, flattenInheritance)
+
+
+def _postProcessLoadedModels(loadedTypes, flattenInheritance):
+    if flattenInheritance:
+        loadedTypes = modelFuncs.flattenTypes(loadedTypes)
+    loadedTypes = modelFuncs.processYacgTags(loadedTypes)
     return loadedTypes
 
 
@@ -279,12 +288,12 @@ def _isConfigurationValid(codeGenerationJobs):
     return isValid
 
 
-def __doCodeGen(codeGenerationJobs):
+def __doCodeGen(codeGenerationJobs, args):
     """process the jobs to do the actual code generation
     """
 
     for job in codeGenerationJobs:
-        loadedTypes = readModels(job)
+        loadedTypes = readModels(job, args.flattenInheritance)
         for task in job.tasks:
             if task.singleFileTask is not None:
                 renderSingleFileTemplate(
@@ -306,13 +315,13 @@ def __doCodeGen(codeGenerationJobs):
                     task.randomDataTask)
 
 
-def __printUsedFiles(codeGenerationJobs):
+def __printUsedFiles(codeGenerationJobs, args):
     """process the jobs to do the actual code generation
     """
 
     usedFiles = []
     for job in codeGenerationJobs:
-        loadedTypes = readModels(job)
+        loadedTypes = readModels(job, args.flattenInheritance)
         for type in loadedTypes:
             if isinstance(type, EnumType) or isinstance(type, ComplexType):
                 if type.source is not None:
@@ -334,9 +343,9 @@ def main():
     if not _isConfigurationValid(codeGenerationJobs):
         sys.exit(1)
     if args.usedFilesOnly:
-        __printUsedFiles(codeGenerationJobs)
+        __printUsedFiles(codeGenerationJobs, args)
     else:
-        __doCodeGen(codeGenerationJobs)
+        __doCodeGen(codeGenerationJobs, args)
 
 
 if __name__ == '__main__':
