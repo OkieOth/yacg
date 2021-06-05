@@ -122,6 +122,4 @@ pipenv run python3 incrementVersion.py --model resources/models/json/yacg_model_
 ```
 
 # Some Last Words
-This project is a spare time project - with all its pros and cons. The development of 
-project this project is done under a Linux OS, so I have no clue how it is working
-on Windows machines. 
+This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines. 
