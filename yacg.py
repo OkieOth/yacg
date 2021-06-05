@@ -36,7 +36,6 @@ parser.add_argument('--whiteListed', nargs='+', help='types that should be handl
 parser.add_argument('--vars', nargs='+', help='variables that are passed to the processing')
 parser.add_argument('--usedFilesOnly', help='import models but only print the used files to stdout', action='store_true')
 parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
-parser.add_argument('--removeSuperTypes', help='remove super types, makes only sense when flatten', action='store_true')
 
 
 def getFileExt(fileName):
@@ -46,7 +45,7 @@ def getFileExt(fileName):
     return fileName[lastDot:]
 
 
-def readModels(configJob, flattenInheritance, removeSuperTypes):
+def readModels(configJob, flattenInheritance):
     """reads all desired models and build the model object tree from it"""
 
     loadedTypes = []
@@ -57,33 +56,13 @@ def readModels(configJob, flattenInheritance, removeSuperTypes):
             loadedTypes = getModelFromYaml(model, loadedTypes)
         else:
             loadedTypes = getModelFromJson(model, loadedTypes)
-    return _postProcessLoadedModels(loadedTypes, flattenInheritance, removeSuperTypes)
+    return _postProcessLoadedModels(loadedTypes, flattenInheritance)
 
 
-def _postProcessLoadedModels(loadedTypes, flattenInheritance, removeSuperTypes):
+def _postProcessLoadedModels(loadedTypes, flattenInheritance):
     if flattenInheritance:
-        loadedTypes = __flattenTypes(loadedTypes)
-    if removeSuperTypes:
-        loadedTypes = __removeSuperTypes(loadedTypes)
+        loadedTypes = modelFuncs.flattenTypes(loadedTypes)
     return loadedTypes
-
-
-def __flattenTypes(loadedTypes):
-    for type in loadedTypes:
-        if isinstance(type, ComplexType):
-            flattenProperties = modelFuncs.getFlattenProperties(type)
-            type.properties = flattenProperties
-            type.extendsType = None
-    return loadedTypes
-
-
-def __removeSuperTypes(loadedTypes):
-    tiededUpTypes = []
-    for type in loadedTypes:
-        if isinstance(type, ComplexType) and len(type.extendedBy) > 0:
-            continue
-        tiededUpTypes.append(type)
-    return tiededUpTypes
 
 
 def _getVars(args):
@@ -313,7 +292,7 @@ def __doCodeGen(codeGenerationJobs, args):
     """
 
     for job in codeGenerationJobs:
-        loadedTypes = readModels(job, args.flattenInheritance, args.removeSuperTypes)
+        loadedTypes = readModels(job, args.flattenInheritance)
         for task in job.tasks:
             if task.singleFileTask is not None:
                 renderSingleFileTemplate(
@@ -341,7 +320,7 @@ def __printUsedFiles(codeGenerationJobs, args):
 
     usedFiles = []
     for job in codeGenerationJobs:
-        loadedTypes = readModels(job, args.flattenInheritance, args.removeSuperTypes)
+        loadedTypes = readModels(job, args.flattenInheritance)
         for type in loadedTypes:
             if isinstance(type, EnumType) or isinstance(type, ComplexType):
                 if type.source is not None:

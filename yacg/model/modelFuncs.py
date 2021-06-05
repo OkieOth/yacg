@@ -83,6 +83,15 @@ def hasEnumTypes(modelTypes):
     return False
 
 
+def flattenTypes(loadedTypes):
+    for type in loadedTypes:
+        if isinstance(type, model.ComplexType):
+            flattenProperties = getFlattenProperties(type)
+            type.properties = flattenProperties
+            type.extendsType = None
+    return loadedTypes
+
+
 def isEnumType(typeObj):
     """checks if the given type object is an EnumType. If that's the
     case then True is returned, else the return is false

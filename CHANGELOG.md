@@ -1,6 +1,5 @@
 # 1.3.0
 * add '--flattenInheritance' command line switch
-* add '--removeUnreferencedBaseTypes' command line switch
 
 # 1.2.0
 * add '--usedFilesOnly' command line switch
