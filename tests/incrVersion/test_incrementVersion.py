@@ -1,7 +1,3 @@
-# Attention, this file is generated. Manual changes get lost with the next
-# run of the code generation.
-# created by yacg (template: pythonBeans.mako v1.0.0)
-
 import unittest
 
 import incrementVersion
