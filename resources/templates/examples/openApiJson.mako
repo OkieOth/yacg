@@ -211,7 +211,7 @@
                 }
                 % endif
             % endif
-            }${',' if type != modelTypes[-1] else ''}
+            }${',' if type != nonEnumModelTypes[-1] else ''}
         % endfor
         }
     }
