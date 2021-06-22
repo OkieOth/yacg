@@ -1,3 +1,7 @@
+# 1.3.1
+* add new funcs to stringUtils
+* fix enum bug in python template
+
 # 1.3.0
 * add '--flattenInheritance' command line switch
 * introduce 'yacgFlattenType' type tag

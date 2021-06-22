@@ -1,3 +1,6 @@
+import re
+
+
 def toLowerCamelCase(text):
     """converts a given Text to a lower camel case text
     this is a example -> thisIsAExample"""
@@ -32,4 +35,20 @@ def toUpperCaseName(text):
     """
 
     capText = text.upper()
-    return ''.join([i if (ord(i) < 123) and (ord(i) > 47) else '_' for i in capText])
+    return toName(capText)
+
+
+def toSnakeCase(text):
+    """converts camel case to snake case
+    """
+
+    return ''.join(['_' + c.lower() if c.isupper() else c for c in text]).lstrip('_')
+
+
+def toName(text):
+    """converts a text that it is suitable as name
+    """
+
+    ret = re.sub("[^0-9a-zA-Z_]+", "_", text)
+    pattern = re.compile("^[0-9]")
+    return '_' + ret if pattern.match(ret) else ret

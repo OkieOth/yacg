@@ -50,6 +50,48 @@ class TestDictToObject (unittest.TestCase):
         f.write(renderResult)
         f.close()
 
+    def testEvilSchema(self):
+        modelFile = 'tests/resources/models/json/examples/evil_enum.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        templateFile = 'resources/templates/examples/pythonBeans.mako'
+        template = Template(filename=templateFile)
+        templateFileExists = os.path.isfile(modelFile)
+        self.assertTrue('template file exists: ' + templateFile, templateFileExists)
+        templateParameterDict = {}
+        templateParameterDict['baseModelDomain'] = 'yacg.model.model'
+        renderResult = template.render(modelTypes=modelTypes, templateParameters=templateParameterDict)
+        self.assertIsNotNone(renderResult)
+
+        testOutputFile = "tmp/evil_model.py"
+        f = open(testOutputFile, "w+")
+        f.write(renderResult)
+        f.close()
+
+    def testEvilSchema2(self):
+        modelFile = 'tests/resources/models/json/examples/evil_enum.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        templateFile = 'resources/templates/examples/pythonBeansTests.mako'
+        template = Template(filename=templateFile)
+        templateFileExists = os.path.isfile(modelFile)
+        self.assertTrue('template file exists: ' + templateFile, templateFileExists)
+        templateParameterDict = {}
+        templateParameterDict['baseModelDomain'] = 'yacg.model.model'
+        renderResult = template.render(modelTypes=modelTypes, templateParameters=templateParameterDict)
+        self.assertIsNotNone(renderResult)
+
+        testOutputFile = "tmp/evil_model_tests.py"
+        f = open(testOutputFile, "w+")
+        f.write(renderResult)
+        f.close()
+
     def testOpenApiSchema(self):
         modelFile = 'resources/models/json/yacg_openapi_paths.json'
         modelFileExists = os.path.isfile(modelFile)
