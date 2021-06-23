@@ -706,6 +706,8 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
         return DateTimeType()
     elif formatValue == 'uuid':
         return UuidType()
+    elif formatValue == 'byte':
+        return StringType()
     else:
         # TODO logging
         logging.error(
