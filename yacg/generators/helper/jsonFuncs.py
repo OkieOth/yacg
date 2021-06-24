@@ -24,6 +24,8 @@ def getJsonType(type):
         return 'string'
     elif isinstance(type, model.DateTimeType):
         return 'string'
+    elif isinstance(type, model.ByteType):
+        return 'string'
     elif isinstance(type, model.ComplexType):
         return type.name
     else:
@@ -52,6 +54,8 @@ def isFormatRequired(type):
         return True
     elif isinstance(type, model.DateTimeType):
         return True
+    elif isinstance(type, model.ByteType):
+        return True
     else:
         return False
 
@@ -69,6 +73,8 @@ def printOpenApiJsonFormatEntry(type):
         return ',"format": "date"'
     elif isinstance(type, model.DateTimeType):
         return ',"format": "date-time"'
+    elif isinstance(type, model.ByteType):
+        return ',"format": "byte"'
     else:
         return ''
 
