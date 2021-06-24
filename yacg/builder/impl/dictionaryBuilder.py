@@ -12,7 +12,7 @@ import yaml
 from yacg.model.model import Property
 from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType
-from yacg.model.model import StringType, UuidType
+from yacg.model.model import StringType, UuidType, ByteType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, Tag
 
@@ -707,7 +707,7 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif formatValue == 'uuid':
         return UuidType()
     elif formatValue == 'byte':
-        return StringType()
+        return ByteType()
     else:
         # TODO logging
         logging.error(
