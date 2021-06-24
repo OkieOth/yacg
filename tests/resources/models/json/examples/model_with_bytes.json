@@ -1,0 +1,397 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "yacg file configuration",
+  "description": "description of the file configuration for yacg",
+  "version": "0.0.1",
+  "__domain": "yacg.model.config",
+  "definitions": {
+    "Job": {
+      "type": "object",
+      "description": "base object that describes a complete code generation process",
+      "properties": {
+        "name": {
+          "description": "a short identifier of that job",
+          "type": "string"
+        },
+        "description": {
+            "description": "some words to explain",
+            "type": "string"
+        },
+        "models": {
+          "description": "list of models used for that job",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Model"           
+          }
+        },
+        "tasks": {
+          "description": "list of tasks that should run",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Task"           
+          }
+        }
+      },
+      "required": [
+        "models",
+        "tasks"
+      ]
+    },
+    "BlackWhiteListEntry": {
+      "type": "object",
+      "description": "entry of a type back/white list", 
+      "properties": {
+        "name": {
+          "description": "name that should be in-/excluded",
+          "type": "string"
+        },
+        "type": {
+          "description": "how is the name to be interpreted. If type is missing, then 'type' is expected",
+          "type": "string",
+          "enum": ["type", "tag", "containedAttrib", "notContainedAttrib", "domain","typeType"]
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "SingleFileTask": {
+      "type": "object",
+      "description": "parameter of a code generation task that creates one file",
+      "properties": {
+        "template": {
+          "description": "template to use for that task, either the name of a built in template, or a file system path, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
+          "type": "string"
+        },
+        "destFile": {
+          "description": "name and path for the file to create, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
+          "type": "string"
+        },
+        "templateParams": {
+          "description": "custom parameter that are passed to the template, while it is processed",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TemplateParam"
+          }
+        }
+      }
+    },
+    "MultiFileTask": {
+      "type": "object",
+      "description": "parameter of a code generation task that creates one file per model type",
+      "properties": {
+        "template": {
+          "description": "template to use for that task, either the name of a built in template, or a file system path, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
+          "type": "string"
+        },
+        "destDir": {
+          "description": "path where the files will be created, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
+          "type": "string"
+        },
+        "destFilePrefix": {
+          "description": "prefix for the name of the created files",
+          "type": "string"
+        },
+        "destFilePostfix": {
+          "description": "postfix for the name of the created files",
+          "type": "string"
+        },
+        "destFileExt": {
+          "description": "file extention for the created files",
+          "type": "string"
+        },
+        "upperCaseStartedDestFileName": {
+          "description": "the name of the destination file should start with an upper case",
+          "type": "boolean",
+          "default": false
+        },
+        "fileFilterType": {
+          "description": "this defines how the model is splitted to create the multiple files",
+          "type": "string",
+          "enum": ["type", "openApiOperationId"],
+          "default": "type"
+        },
+        "templateParams": {
+          "description": "custom parameter that are passed to the template, while it is processed",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TemplateParam"
+          }
+        },
+        "createOnlyIfNotExist": {
+          "description": "create the new file only if it not already exists",
+          "type": "boolean",
+          "default": false
+        },
+        "createTmpFileIfAlreadyExist": {
+          "description": "instead of creation of the orininal file it will be created with a '.tmp' extention, if the file aleady exists",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "RandomDataTask": {
+      "type": "object",      
+      "properties": {
+        "outputType": {
+          "type": "string",
+          "enum": ["JSON", "CSV"]
+        },
+        "destDir": {
+          "description": "path where the files will be created, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
+          "type": "string"
+        },
+        "defaultMinElemCount": {
+          "description": "minimum number of elements that should be created for all types",
+          "type": "integer",
+          "default": 1
+        },
+        "defaultMaxElemCount": {
+          "description": "maximum number of elements that should be created for all types",
+          "type": "integer",
+          "default": 10
+        },
+        "specialElemCounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "typeName": {
+                "description": "TYPENAME",
+                "type": "string"
+              },
+              "minElemCount": {
+                "description": "how many elements should be generated for that type at minimum",
+                "type": "integer"
+              },
+              "maxElemCount": {
+                "description": "how many elements should be generated for that type at maximum",
+                "type": "integer"
+              }
+            }
+          }    
+        },
+        "defaultKeyPropNames": {
+          "description": "list of names for primary key fields in the model",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "specialKeyPropNames": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "typeName": {
+                "description": "TYPENAME",
+                "type": "string"
+              },
+              "keyPropName": {
+                "description": "name of the attribute that represents the key for that type",
+                "type": "string"
+              }
+            }
+          }    
+        },
+        "valuePools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "propertyName": {
+                "description": "TYPENAME.PROPERTYNAME",
+                "type": "string"
+              },
+              "useAll": {
+                "description": "should all values from the pool be used in the data gen",
+                "type": "boolean",
+                "default": false
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }      
+              } 
+            }
+          }
+        },            
+        "defaultMinSize": {
+          "description": "minimum size of arrays",
+          "type": "integer",
+          "default": 1
+        },
+        "defaultMaxSize": {
+          "description": "maximum size of arrays",
+          "type": "integer",
+          "default": 10
+        },
+        "specialArraySizes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "propertyName": {
+                "description": "TYPENAME.PROPERTYNAME",
+                "type": "string"
+              },
+              "minSize": {
+                "description": "how many array elements should be generated for that attrib, at minimum",
+                "type": "integer"
+              },
+              "maxSize": {
+                "description": "how many array elements should be generated for that attrib, at maximum",
+                "type": "integer"
+              }
+            }
+          }    
+        },
+        "defaultMaxDepth": {
+          "description": "default max level depth when generating object trees",
+          "type": "integer",
+          "default": 2
+        },
+        "specialMaxDepths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "propertyName": {
+                "description": "TYPENAME.PROPERTYNAME",
+                "type": "string"
+              },
+              "maxDepth": {
+                "description": "max level depth when generating object trees for that attrib",
+                "type": "integer"
+              }
+            }
+          }    
+        }
+      }
+    },
+    "TemplateParam": {
+      "type": "object",
+      "description": "additional, template specific custom parameter for codegen task", 
+      "properties": {
+        "name": {
+          "description": "name of the custom parameter",
+          "type": "string"
+        },
+        "value": {
+          "description": "value of the custom parameter",
+          "type": "string"
+        },
+        "bValue": {
+          "description": "a useless byte value",
+          "type": "string",
+          "format": "byte"
+        },
+        "requiredDomains": {
+          "description": "if set then this parameter only effected types of the specific domains",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requiredTags": {
+          "description": "if set then this parameter only effected types or attributes with the specific tag",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requiredNames": {
+          "description": "if set then this parameter only effected types or attributes with the specific name",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["name", "value"]
+    },
+    "Task": {
+      "type": "object",
+      "description": "A task to run", 
+      "properties": {
+        "name": {
+          "description": "short visual identifier",
+          "type": "string"
+        },
+        "bValues": {
+          "description": "a more useless byte array :D",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"  
+          }
+        },
+        "description": {
+            "description": "some words to explain",
+            "type": "string"
+        },
+        "blackListed": {
+          "description": "what elements should be excluded from handling",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlackWhiteListEntry"
+          }
+        },
+        "whiteListed": {
+          "description": "what elements should be included in the handling",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlackWhiteListEntry"
+          }
+        },
+        "singleFileTask": {
+          "description": "the code generation creates only one file",
+          "$ref": "#/definitions/SingleFileTask"
+        },
+        "multiFileTask": {
+          "description": "the code generation creates one file per type",
+          "$ref": "#/definitions/MultiFileTask"
+        },
+        "randomDataTask": {
+          "description": "the code generation creates one file per type with random data",
+          "$ref": "#/definitions/RandomDataTask"
+        }
+      }, 
+      "required": [
+          "name"
+      ]
+    },
+    "Model": {
+      "type": "object",
+      "description": "A model that should be used",
+      "properties": {
+        "schema": {
+          "description": "path to the jsonSchema file, entry can also contain env vars in the format '{ENV_VAR_NAME}'",
+          "type": "string"
+        },
+        "domain": {
+          "description": "optional nameSpace string for the model, if not set the file name/path are used as namespace",
+          "type": "string"
+        },
+        "blackListed": {
+          "description": "what elements should be excluded from handling",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlackWhiteListEntry"
+          }
+        },
+        "whiteListed": {
+          "description": "what elements should be included in the handling",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlackWhiteListEntry"
+          }
+        }
+      },
+      "required": [
+        "schema"
+      ]
+    }
+  }
+}

@@ -3,7 +3,7 @@ import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.model import IntegerType, NumberType
 from yacg.model.model import StringType
-from yacg.model.model import DateTimeType
+from yacg.model.model import DateTimeType, ByteType
 from yacg.model.model import EnumType, ComplexType
 from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
 
@@ -83,6 +83,32 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes, [])
         self._checkUpType(9, 'RandomDataTask', 13, modelTypes, [], ('keyProperties', 'valuePools', 'arrays'))
 
+    def testSingleTypeSchema3(self):
+        modelFile = 'tests/resources/models/json/examples/model_with_bytes.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(16, len(modelTypes))
+        self._checkUpType(0, 'Job', 4, modelTypes, ['models', 'tasks'])
+        self._checkUpType(1, 'Model', 4, modelTypes, [])
+        self._checkUpType(2, 'Task', 8, modelTypes, [])
+        self._checkUpType(3, 'BlackWhiteListEntry', 2, modelTypes, ['name'])
+        self._checkUpType(4, 'BlackWhiteListEntryTypeEnum', 0, modelTypes, [])
+        self._checkUpType(5, 'SingleFileTask', 3, modelTypes, [])
+        self._checkUpType(6, 'TemplateParam', 6, modelTypes, ['name', 'value'])
+        self._checkUpType(7, 'MultiFileTask', 10, modelTypes, [])
+        self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes, [])
+        self._checkUpType(9, 'RandomDataTask', 13, modelTypes, [], ('keyProperties', 'valuePools', 'arrays'))
+        self.assertEqual('bValues', modelTypes[2].properties[1].name)
+        self.assertTrue(modelTypes[2].properties[1].isArray)
+        self.assertTrue(isinstance(modelTypes[2].properties[1].type, ByteType))
+        self.assertEqual('bValue', modelTypes[6].properties[2].name)
+        self.assertFalse(modelTypes[6].properties[2].isArray)
+        self.assertTrue(isinstance(modelTypes[6].properties[2].type, ByteType))
+
     def testSchemaWithExternalRef(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
         modelFileExists = os.path.isfile(modelFile)
@@ -151,7 +177,7 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(3, 'MainAddress', 2, modelTypes, [])
         self._checkUpType(6, 'MainAddressComplex', 3, modelTypes, [])
 
-    def _testTags(self):
+    def testTags(self):
         modelFile = 'resources/models/json/yacg_model_schema.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
@@ -172,7 +198,7 @@ class TestJsonBuilder (unittest.TestCase):
                 propertyType = type
             elif type.name == 'ComplexType':
                 complexTypeType = type
-            self.assertEqual('yacgCore', type.domain)
+            self.assertEqual('yacg.model.model', type.domain)
         self.assertIsNotNone(tagType)
         constructorValueProps1 = getPropertiesThatHasTag('constructorValue', tagType)
         self.assertEqual(2, len(constructorValueProps1))
@@ -193,6 +219,7 @@ class TestJsonBuilder (unittest.TestCase):
             'EnumType',
             'DateType',
             'DateTimeType',
+            'ByteType',
             'ComplexType'
         ]
         self.assertEqual(expectedMetaModelTypes, metaModelTypes)
