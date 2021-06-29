@@ -392,14 +392,14 @@ class DateTimeType (Type):
         return obj
 
 
-class ByteType (Type):
-    """ type for byte values
+class BytesType (Type):
+    """ type for byte values, it will usually be rendered to a byte array
     """
 
     def __init__(self):
         super(Type, self).__init__()
 
-        #: type for byte values
+        #: type for byte values, it will usually be rendered to a byte array
         self.default = None
 
     @classmethod

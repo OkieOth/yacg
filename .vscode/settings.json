@@ -2,6 +2,6 @@
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": ["--ignore=E24,W504","--max-line-length=130", "--verbose"],
     "python.linting.enabled": true,
-    "python.pythonPath": "/home/eiko/.local/share/virtualenvs/yacg-wYbDYoC2/bin/python",
+    "python.pythonPath": "/home/eiko/.local/share/virtualenvs/yacg-gkm2cCW0/bin/python",
     "python.linting.pylintEnabled": false
 }

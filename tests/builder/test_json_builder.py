@@ -3,7 +3,7 @@ import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.model import IntegerType, NumberType
 from yacg.model.model import StringType
-from yacg.model.model import DateTimeType, ByteType
+from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
 from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
 
@@ -104,10 +104,10 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(9, 'RandomDataTask', 13, modelTypes, [], ('keyProperties', 'valuePools', 'arrays'))
         self.assertEqual('bValues', modelTypes[2].properties[1].name)
         self.assertTrue(modelTypes[2].properties[1].isArray)
-        self.assertTrue(isinstance(modelTypes[2].properties[1].type, ByteType))
+        self.assertTrue(isinstance(modelTypes[2].properties[1].type, BytesType))
         self.assertEqual('bValue', modelTypes[6].properties[2].name)
         self.assertFalse(modelTypes[6].properties[2].isArray)
-        self.assertTrue(isinstance(modelTypes[6].properties[2].type, ByteType))
+        self.assertTrue(isinstance(modelTypes[6].properties[2].type, BytesType))
 
     def testSchemaWithExternalRef(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
@@ -219,7 +219,7 @@ class TestJsonBuilder (unittest.TestCase):
             'EnumType',
             'DateType',
             'DateTimeType',
-            'ByteType',
+            'BytesType',
             'ComplexType'
         ]
         self.assertEqual(expectedMetaModelTypes, metaModelTypes)

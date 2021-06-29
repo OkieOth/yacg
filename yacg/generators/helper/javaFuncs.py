@@ -16,7 +16,7 @@ def getJavaType(type, isArray):
         return 'Boolean' if not isArray else 'java.util.List<Boolean>'
     elif isinstance(type, model.StringType):
         return 'String' if not isArray else 'java.util.List<String>'
-    elif isinstance(type, model.ByteType):
+    elif isinstance(type, model.BytesType):
         return 'byte[]' if not isArray else 'java.util.List<byte[]>'
     elif isinstance(type, model.UuidType):
         return 'java.util.UUID' if not isArray else 'java.util.List<java.util.UUID>'
