@@ -8,16 +8,16 @@ from yacg.util.fileUtils import doesFileExist
 
 class TestModelToYaml (unittest.TestCase):
     def testTrimFileName(self):
-        ret = modelToYaml._trimModelFileName('test/test2/tttt.json')
+        ret = modelToYaml.trimModelFileName('test/test2/tttt.json')
         self.assertEqual('tttt', ret)
-        ret = modelToYaml._trimModelFileName('test/test2/ttty.yaml')
+        ret = modelToYaml.trimModelFileName('test/test2/ttty.yaml')
         self.assertEqual('ttty', ret)
-        ret = modelToYaml._trimModelFileName('test/test2/tttz.yaml')
+        ret = modelToYaml.trimModelFileName('test/test2/tttz.yaml')
         self.assertFalse('ttty' == ret)
 
     def testDryRun(self):
         model = 'resources/models/json/yacg_config_schema.json'
-        modelToYaml._convertModel(model, True, 'dummy')
+        modelToYaml.convertModel(model, True, 'dummy')
 
     def testConvertFile(self):
         dirpath = Path('tmp', 'model2yaml')
@@ -25,7 +25,7 @@ class TestModelToYaml (unittest.TestCase):
             shutil.rmtree(dirpath)
         os.mkdir(dirpath)
         model = 'resources/models/json/yacg_config_schema.json'
-        modelToYaml._convertModel(model, False, 'tmp/model2yaml')
+        modelToYaml.convertModel(model, False, 'tmp/model2yaml')
         self.assertTrue(doesFileExist('tmp/model2yaml/yacg_config_schema.yaml'))
 
 if __name__ == '__main__':

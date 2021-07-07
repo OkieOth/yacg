@@ -20,7 +20,7 @@ parser.add_argument('--destDir', help='directory to write the yaml versions')
 parser.add_argument('--dryRun', help='if set, then no output file is created', action='store_true')
 
 
-def _trimModelFileName(modelFile):
+def trimModelFileName(modelFile):
     lastSlash = modelFile.rfind('/')
     modelFileName = modelFile[lastSlash + 1:]
     lastDot = modelFileName.rfind('.')
@@ -28,14 +28,14 @@ def _trimModelFileName(modelFile):
 
 
 def _printYaml(parsedSchema, model, destDir):
-    modelFileNameWithoutExt = _trimModelFileName(model)
+    modelFileNameWithoutExt = trimModelFileName(model)
     modelFile = "{}/{}.yaml".format(destDir, modelFileNameWithoutExt)
     printInfo('\nWrite yaml: {}'.format(modelFile))
     with open(modelFile, 'w') as outfile:
         yaml.dump(parsedSchema, outfile, indent=4)
 
 
-def _convertModel(model, dryRun, destDir):
+def convertModel(model, dryRun, destDir):
     parsedSchema = builder.getParsedSchemaFromJson(model)
     if dryRun:
         print(yaml.dump(parsedSchema))
@@ -51,7 +51,7 @@ def main():
     if (not args.dryRun) and (not os.path.isdir(args.destDir)):
         printError('\nDest dir for yaml output not found ... cancel: {}'.format(args.destDir))
         sys.exit(1)
-    _convertModel(args.model, args.dryRun, args.destDir)
+    convertModel(args.model, args.dryRun, args.destDir)
 
 
 
