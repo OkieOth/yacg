@@ -57,5 +57,13 @@ if ! bin/generateRandomData_example.sh; then
     exit 1
 fi
 
+if ! pipenv run python3 \
+    modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun; then
+    echo "problems while run modelToYaml.py"
+    popd > /dev/null
+    exit 1
+fi
+
+
 echo "all good :)"
 popd > /dev/null
