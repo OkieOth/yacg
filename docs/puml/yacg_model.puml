@@ -106,13 +106,13 @@ class DateTimeType {
 note top: type for timestamp values
 
 DateTimeType --|> Type
-class ByteType {
-        StringType default 
+class BytesType {
+        BytesType default 
 }
 
-note top: type for byte values
+note top: type for byte values, it\nwill usually be rendered to\na byte array
 
-ByteType --|> Type
+BytesType --|> Type
 class ComplexType {
         StringType version 
         StringType name 

@@ -121,5 +121,18 @@ pipenv run python3 incrementVersion.py
 pipenv run python3 incrementVersion.py --model resources/models/json/yacg_model_schema.json --version minor
 ```
 
+
+# Models to yaml
+This project contains also a script to convert JSON schemas to the yaml format. Quick'n Dirty :D
+
+## Usage
+```bash
+# see the possible parameters of the script
+pipenv run python3 modelToYaml.py
+
+# do an example dry-run
+pipenv run python3 modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun
+```
+
 # Some Last Words
 This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines. 

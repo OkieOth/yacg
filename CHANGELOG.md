@@ -1,3 +1,6 @@
+# 2.0.0
+* rename ByteType to BytesType
+
 # 1.4.0
 * introduction of a ByteType
 
