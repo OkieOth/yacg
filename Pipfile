@@ -16,6 +16,7 @@ ptvsd = "*"
 pudb = "*"
 flake8 = "*"
 semver = "*"
+fileinput = "*"
 
 [requires]
 python_version = "3.8"

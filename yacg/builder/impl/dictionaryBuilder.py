@@ -15,6 +15,7 @@ from yacg.model.model import IntegerType, NumberType, BooleanType
 from yacg.model.model import StringType, UuidType, BytesType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, Tag
+from yacg.util.fileUtils import doesFileExist
 
 import yacg.model.openapi as openapi
 
@@ -27,28 +28,38 @@ class ModelFileContainer:
         self.domain = parsedSchema.get('__domain', None)
 
 
-def getParsedSchemaFromJson(modelFile):
+def getParsedSchemaFromJson(model):
     """reads a JSON schema file in json format
     and returns the parsed dictionary from it
 
     Keyword arguments:
-    modelFile -- file name and path to the model to load
+    model -- file name and path to the model to load or model content from stdin
     """
 
-    with open(modelFile) as json_schema:
-        return json.load(json_schema)
+    if doesFileExist(model):
+        # model is treaten as file to input
+        with open(model) as json_schema:
+            return json.load(json_schema)
+    else:
+        # model is treaten as string content to get parsed
+        return json.loads(model)
 
 
-def getParsedSchemaFromYaml(modelFile):
+def getParsedSchemaFromYaml(model):
     """reads a JSON schema file in yaml format
     and returns the parsed dictionary from it
 
     Keyword arguments:
-    modelFile -- file name and path to the model to load
+    model -- file name and path to the model to load or model content from stdin
     """
-
-    with open(modelFile) as json_schema:
-        return yaml.load(json_schema, Loader=yaml.FullLoader)
+    
+    if doesFileExist(model):
+        # model is treaten as file to input
+        with open(model) as json_schema:
+            return yaml.load(json_schema, Loader=yaml.FullLoader)
+    else:
+        # model is treaten as string content to get parsed
+        return yaml.load(model, Loader=yaml.FullLoader)
 
 
 def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):

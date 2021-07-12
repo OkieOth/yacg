@@ -1,54 +1,41 @@
 import argparse
 import sys
 import os
-import yaml
+import json
 import logging
+import modelToYaml
 from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError, printInfo
 import yacg.builder.impl.dictionaryBuilder as builder
 
 
-description = """Reads a JSON schema model and converts it to a
-yaml file
+description = """Reads a JSON schema model in yaml format and converts it to a
+json file
 """
 
 logging.basicConfig(level=logging.INFO)
 
-parser = argparse.ArgumentParser(prog='modelToYaml', description=description)
-parser.add_argument('--model', help='model schema to convert to yaml')
+parser = argparse.ArgumentParser(prog='modelToJson', description=description)
+parser.add_argument('--model', help='model schema to convert to JSON')
 parser.add_argument('--stdin', help='reads the model content from stdin', action='store_true')
-parser.add_argument('--destDir', help='directory to write the yaml versions')
+parser.add_argument('--destDir', help='directory to write the JSON versions')
 parser.add_argument('--dryRun', help='if set, then no output file is created', action='store_true')
 
 
-def trimModelFileName(modelFile):
-    lastSlash = modelFile.rfind('/')
-    modelFileName = modelFile[lastSlash + 1:]
-    lastDot = modelFileName.rfind('.')
-    return modelFileName[:lastDot]
-
-
-def _printYaml(parsedSchema, model, destDir):
-    modelFileNameWithoutExt = trimModelFileName(model)
-    modelFile = "{}/{}.yaml".format(destDir, modelFileNameWithoutExt)
-    printInfo('\nWrite yaml: {}'.format(modelFile))
+def _printJson(parsedSchema, model, destDir):
+    modelFileNameWithoutExt = modelToYaml.trimModelFileName(model)
+    modelFile = "{}/{}.json".format(destDir, modelFileNameWithoutExt)
+    printInfo('\nWrite JSON: {}'.format(modelFile))
     with open(modelFile, 'w') as outfile:
-        yaml.dump(parsedSchema, outfile, indent=4)
+        json.dump(parsedSchema, outfile, indent=4)
 
 
 def convertModel(model, dryRun, destDir):
-    parsedSchema = builder.getParsedSchemaFromJson(model)
+    parsedSchema = builder.getParsedSchemaFromYaml(model)
     if dryRun:
-        print(yaml.dump(parsedSchema))
+        print(json.dumps(parsedSchema, indent=4))
     else:
-        _printYaml(parsedSchema, model, destDir)
-
-
-def readStdin():
-    stdinInput = ''
-    for line in sys.stdin:
-        stdinInput = stdinInput + line
-    return stdinInput
+        _printJson(parsedSchema, model, destDir)
 
 
 def main():
@@ -62,12 +49,11 @@ def main():
             sys.exit(1)
         model = args.model
     else:
-        model = readStdin()
+        model = modelToYaml.readStdin()
     if (not args.dryRun) and ((args.destDir is None) or (not os.path.isdir(args.destDir))):
         printError('\nDest dir for yaml output not found ... cancel: {}'.format(args.destDir))
         sys.exit(1)
     convertModel(model, args.dryRun, args.destDir)
-
 
 
 if __name__ == '__main__':

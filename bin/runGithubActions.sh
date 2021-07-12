@@ -64,6 +64,12 @@ if ! pipenv run python3 \
     exit 1
 fi
 
+if ! pipenv run python3 \
+    modelToJson.py --model resources/models/yaml/yacg_config_schema.yaml --dryRun; then
+    echo "problems while run modelToJson.py"
+    popd > /dev/null
+    exit 1
+fi
 
 echo "all good :)"
 popd > /dev/null
