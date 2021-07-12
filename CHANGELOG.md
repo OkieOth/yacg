@@ -1,3 +1,8 @@
+# 2.1.0
+* modelToYaml script
+* modelToJson script
+* enable usage of stdin for modelTo[Json|Yaml] scripts
+
 # 2.0.0
 * rename ByteType to BytesType
 

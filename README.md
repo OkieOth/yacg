@@ -128,10 +128,29 @@ This project contains also a script to convert JSON schemas to the yaml format. 
 ## Usage
 ```bash
 # see the possible parameters of the script
-pipenv run python3 modelToYaml.py
+pipenv run python3 modelToYaml.py --help
 
 # do an example dry-run
 pipenv run python3 modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun
+
+# feed stdin to convert
+cat resources/models/json/yacg_model_schema.json | pipenv run python3 modelToYaml.py --stdin --dryRun
+```
+
+# Models to JSON
+This project contains also a script to convert yaml schemas to the JSON format. Quick'n Dirty :D
+
+## Usage
+```bash
+# see the possible parameters of the script
+pipenv run python3 modelToJson.py --help
+
+# do an example dry-run
+pipenv run python3 modelToJson.py --model resources/models/yaml/yacg_config_schema.yaml --dryRun
+
+# feed stdin to convert
+cat resources/models/yaml/yacg_config_schema.yaml | pipenv run python3 modelToJson.py \
+    --stdin --dryRun
 ```
 
 # Some Last Words
