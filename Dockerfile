@@ -5,6 +5,9 @@ RUN pip install pipenv
 WORKDIR /yacg
 
 ADD yacg.py yacg.py
+ADD incrementVersion.py incrementVersion.py
+ADD modelToJson.py modelToJson.py
+ADD modelToYaml.py modelToYaml.py
 ADD version.txt version.txt
 ADD Pipfile Pipfile
 ADD Pipfile.lock Pipfile.lock

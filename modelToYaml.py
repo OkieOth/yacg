@@ -38,6 +38,7 @@ def _printYaml(parsedSchema, model, destDir):
 
 def convertModel(model, dryRun, destDir):
     parsedSchema = builder.getParsedSchemaFromJson(model)
+    traverseDictAndReplaceRefExtensions(parsedSchema, True)
     if dryRun:
         print(yaml.dump(parsedSchema))
     else:
@@ -49,6 +50,35 @@ def readStdin():
     for line in sys.stdin:
         stdinInput = stdinInput + line
     return stdinInput
+
+
+def traverseDictAndReplaceRefExtensions(dictionary, replaceJson):
+    for key in dictionary:
+        v = dictionary.get(key, None)
+        if v is None:
+            continue
+        if isinstance(v, dict):
+            traverseDictAndReplaceRefExtensions(v, replaceJson)
+        if isinstance(v, list):
+            __traverseListAndReplaceRefExtensions(v, replaceJson)
+        else:
+            if (key == '$ref') or (key == '__ref') or (key == 'allOf'):
+                dictionary[key] = __replaceRefExtention(v, replaceJson)
+
+
+def __traverseListAndReplaceRefExtensions(listObj, replaceJson):
+    for v in listObj:
+        if isinstance(v, dict):
+            traverseDictAndReplaceRefExtensions(v, replaceJson)
+        if isinstance(v, list):
+            __traverseListAndReplaceRefExtensions(v, replaceJson)
+
+
+def __replaceRefExtention(str, replaceJson):
+    if replaceJson:
+        return str.replace('.json', '.yaml')
+    else:
+        return str.replace('.yaml', '.json')
 
 
 def main():
@@ -67,7 +97,6 @@ def main():
         printError('\nDest dir for yaml output not found ... cancel: {}'.format(args.destDir))
         sys.exit(1)
     convertModel(model, args.dryRun, args.destDir)
-
 
 
 if __name__ == '__main__':

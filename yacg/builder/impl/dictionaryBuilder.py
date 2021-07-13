@@ -52,7 +52,7 @@ def getParsedSchemaFromYaml(model):
     Keyword arguments:
     model -- file name and path to the model to load or model content from stdin
     """
-    
+
     if doesFileExist(model):
         # model is treaten as file to input
         with open(model) as json_schema:

@@ -2,7 +2,8 @@ import unittest
 from pathlib import Path
 import shutil
 import os
-from modelToYaml import trimModelFileName, convertModel
+import json
+from modelToYaml import trimModelFileName, convertModel, traverseDictAndReplaceRefExtensions
 from yacg.util.fileUtils import doesFileExist
 
 
@@ -27,6 +28,39 @@ class TestModelToYaml (unittest.TestCase):
         model = 'resources/models/json/yacg_config_schema.json'
         convertModel(model, False, 'tmp/model2yaml')
         self.assertTrue(doesFileExist('tmp/model2yaml/yacg_config_schema.yaml'))
+
+    def testTraverseDictAndReplaceRefExtensions(self):
+        with open('tests/resources/models/json/examples/more_sophisticated_allof.json') as openFile:
+            content = json.load(openFile)
+            str1 = str(content)
+            jsonCount1 = str1.count('.json')
+            yamlCount1 = str1.count('.yaml')
+            self.assertEqual(2, jsonCount1)
+            self.assertEqual(0, yamlCount1)
+            print('jsonCount1={}, yamlCount1={}'.format(jsonCount1, yamlCount1))
+            traverseDictAndReplaceRefExtensions(content, True)
+            str2 = str(content)
+            jsonCount2 = str2.count('.json')
+            yamlCount2 = str2.count('.yaml')
+            self.assertEqual(0, jsonCount2)
+            self.assertEqual(jsonCount1, yamlCount2)
+
+    def testTraverseDictAndReplaceRefExtensions2(self):
+        with open('tests/resources/models/json/examples/more_sophisticated_allof.json') as openFile:
+            content = json.load(openFile)
+            str1 = str(content)
+            jsonCount1 = str1.count('.json')
+            yamlCount1 = str1.count('.yaml')
+            self.assertEqual(2, jsonCount1)
+            self.assertEqual(0, yamlCount1)
+            print('jsonCount1={}, yamlCount1={}'.format(jsonCount1, yamlCount1))
+            traverseDictAndReplaceRefExtensions(content, False)
+            str2 = str(content)
+            jsonCount2 = str2.count('.json')
+            yamlCount2 = str2.count('.yaml')
+            self.assertEqual(2, jsonCount2)
+            self.assertEqual(0, yamlCount2)
+
 
 if __name__ == '__main__':
     unittest.main()

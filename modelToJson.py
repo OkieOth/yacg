@@ -32,6 +32,7 @@ def _printJson(parsedSchema, model, destDir):
 
 def convertModel(model, dryRun, destDir):
     parsedSchema = builder.getParsedSchemaFromYaml(model)
+    modelToYaml.traverseDictAndReplaceRefExtensions(parsedSchema, False)
     if dryRun:
         print(json.dumps(parsedSchema, indent=4))
     else:
