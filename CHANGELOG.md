@@ -1,3 +1,7 @@
+# 2.1.1
+* put the new helper scripts to the docker image
+* fix reference extentions to yaml or json depending the convertion
+
 # 2.1.0
 * modelToYaml script
 * modelToJson script
