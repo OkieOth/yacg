@@ -143,6 +143,11 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
     if (schemaProperties is not None) or (allOfEntry is not None):
         # extract top level type
         titleStr = modelFileContainer.parsedSchema.get('title', None)
+        if titleStr is None:
+            lastSlash = modelFileContainer.fileName.rfind('/')
+            lastDot = modelFileContainer.fileName.rfind('.')
+            lastSlash = lastSlash + 1
+            titleStr = modelFileContainer.fileName[lastSlash: lastDot]
         typeNameStr = toUpperCamelCase(titleStr)
         if typeNameStr == desiredTypeName:
             description = modelFileContainer.parsedSchema.get('description', None)
@@ -435,9 +440,11 @@ def _extractDesiredTypeNameFromRefEntry(refEntry, fileName, fullPathToFile):
             return None
         titleStr = parsedSchema.get('title', None)
         if titleStr is None:
-            return None
-        else:
-            return toUpperCamelCase(titleStr)
+            lastSlash = fileName.rfind('/')
+            lastSlash = lastSlash + 1
+            lastDot = fileName.rfind('.')
+            titleStr = fileName[lastSlash:lastDot]
+        return toUpperCamelCase(titleStr)
     else:
         lastSlash = refEntry.rfind('/', fileNameLen)
         return refEntry[lastSlash + 1:]

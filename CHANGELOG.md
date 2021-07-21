@@ -1,3 +1,6 @@
+# 2.1.2
+* fix a bug in handling single type models w/o any title
+
 # 2.1.1
 * put the new helper scripts to the docker image
 * fix reference extentions to yaml or json depending the convertion
