@@ -140,6 +140,23 @@ def separateOpenApiPathTypes(types):
     return (pathTypes, otherTypes)
 
 
+def getOpenApiTags(types):
+    """function returns a list with used OpenApi operation tags
+
+    Keyword arguments:
+    types -- list of model.Type instances
+    """
+
+    tags = []
+    for type in types:
+        if isinstance(type, openapi.PathType):
+            for command in type.commands:
+                for tag in command.tags:
+                    if tag not in tags:
+                        tags.append(tag)
+    return tags
+
+
 def isBaseType(type):
     if isinstance(type, model.EnumType):
         return False

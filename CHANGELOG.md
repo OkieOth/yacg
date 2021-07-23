@@ -1,3 +1,6 @@
+# 2.2.0
+* add some modelFuncs to facilitate the usage of openApi models in templates
+
 # 2.1.2
 * fix a bug in handling single type models w/o any title
 

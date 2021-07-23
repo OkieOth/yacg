@@ -26,6 +26,14 @@ class TestOpenApiParsing (unittest.TestCase):
         self.assertEqual(4, len(pathTypes))
         self.assertEqual(11, len(otherTypes))
 
+    def test_getOpenApiTags(self):
+        modelFile = 'tests/resources/models/json/examples/openapi_v3_example_small.json'
+        parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
+        modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(15, len(modelTypes))
+        tags = modelFuncs.getOpenApiTags(modelTypes)
+        self.assertEqual(1, len(tags))
 
     def __doTest(self, modelFile, skipScopeTest, requestBodyMimeTypeCanBeNone=False):
         modelFileExists = os.path.isfile(modelFile)
