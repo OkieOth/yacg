@@ -1,6 +1,7 @@
 '''Compfort function for model classes'''
 
 import yacg.model.model as model
+import yacg.model.openapi as openapi
 
 
 def hasTag(tagName, typeOrPropertyObj):
@@ -119,6 +120,24 @@ def isEnumType(typeObj):
 
 def getTypeName(type):
     return type.name if hasattr(type, 'name') else type.__class__.__name__
+
+
+def separateOpenApiPathTypes(types):
+    """function returns a tupel with  OpenApi PathTypes
+    and the other types as second part
+
+    Keyword arguments:
+    types -- list of model.Type instances
+    """
+
+    pathTypes = []
+    otherTypes = []
+    for type in types:
+        if isinstance(type, openapi.PathType):
+            pathTypes.append(type)
+        else:
+            otherTypes.append(type)
+    return (pathTypes, otherTypes)
 
 
 def isBaseType(type):

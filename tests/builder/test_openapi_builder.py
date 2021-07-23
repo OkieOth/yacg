@@ -3,6 +3,7 @@ import os
 
 import yacg.builder.impl.dictionaryBuilder as dictionaryBuilder
 import yacg.model.openapi as openapi
+import yacg.model.modelFuncs as modelFuncs
 
 
 class TestOpenApiParsing (unittest.TestCase):
@@ -14,6 +15,17 @@ class TestOpenApiParsing (unittest.TestCase):
     def test_swaggerExample(self):
         modelFile = 'tests/resources/models/json/examples/swagger_v2_example_small.json'
         self.__doTest(modelFile, True, True)
+
+    def test_separateOpenApiPathTypes(self):
+        modelFile = 'tests/resources/models/json/examples/openapi_v3_example_small.json'
+        parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
+        modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(15, len(modelTypes))
+        (pathTypes, otherTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
+        self.assertEqual(4, len(pathTypes))
+        self.assertEqual(11, len(otherTypes))
+
 
     def __doTest(self, modelFile, skipScopeTest, requestBodyMimeTypeCanBeNone=False):
         modelFileExists = os.path.isfile(modelFile)
