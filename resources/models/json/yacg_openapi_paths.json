@@ -3,7 +3,7 @@
     "title": "yacg type for openapi support",
     "description": "the yacg standard model included the type spefic aspects, this model cares about path definitions",
     "version": "0.0.1",
-    "__domain": "yacg.model.openapi",
+    "x-domain": "yacg.model.openapi",
     "definitions": {
         "PathType": {
             "type": "object",

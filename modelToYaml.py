@@ -62,7 +62,7 @@ def traverseDictAndReplaceRefExtensions(dictionary, replaceJson):
         if isinstance(v, list):
             __traverseListAndReplaceRefExtensions(v, replaceJson)
         else:
-            if (key == '$ref') or (key == '__ref') or (key == 'allOf'):
+            if (key == '$ref') or (key == 'x-ref') or (key == 'allOf'):
                 dictionary[key] = __replaceRefExtention(v, replaceJson)
 
 

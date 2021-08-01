@@ -6,20 +6,20 @@ case in full respect of the existing standard.
 # JSON-Schema Extensions
 ## Type and Property Tags
 It's possible to tag types and properties for the later handling in the templates. To do this 
-include a '__tag' attribute in your model. This attribute expects an array of strings as value.
+include a 'x-tag' attribute in your model. This attribute expects an array of strings as value.
 
 ```json
             "properties": {
                 "name": {
                     "description": "type unique identifier",
                     "type": "string",
-                    "__tags": ["constructorValue"]
+                    "x-tags": ["constructorValue"]
                 },
                 ...
 ```
 
 ## Foreign type references
-To put a reference to an foreign key like attribute, the '__ref' entry can be used. The
+To put a reference to an foreign key like attribute, the 'x-ref' entry can be used. The
 expected value it the same as for the '$ref' entry.
 
 ```json
@@ -40,7 +40,7 @@ expected value it the same as for the '$ref' entry.
                 "implicitRef": {
                     "type": "string",
                     "format": "uuid",
-                    "__ref": "./single_type_schema.json#/definitions/AnotherType"
+                    "x-ref": "./single_type_schema.json#/definitions/AnotherType"
                 }
             }
             ...
@@ -49,7 +49,7 @@ expected value it the same as for the '$ref' entry.
 It is internally mapped to `yacg_model_schema->Property->foreignKey`.
 
 ## Marks type properties as key field
-To mark a property as key add the '__key' entry. 
+To mark a property as key add the 'x-key' entry. 
 
 ```json
         ...
@@ -59,7 +59,7 @@ To mark a property as key add the '__key' entry.
                 "guid": {
                     "type": "string",
                     "format": "uuid"
-                    "__key": true
+                    "x-key": true
                 },                
                 ...
             }
@@ -67,7 +67,7 @@ To mark a property as key add the '__key' entry.
 ```
 
 ## Marks type properties as visual key field
-To mark a property as visual key (e.g. label, name, caption, ...) add the '__visualKey' entry. 
+To mark a property as visual key (e.g. label, name, caption, ...) add the 'x-visualKey' entry. 
 
 ```json
         ...
@@ -77,11 +77,11 @@ To mark a property as visual key (e.g. label, name, caption, ...) add the '__vis
                 "guid": {
                     "type": "string",
                     "format": "uuid"
-                    "__key": true
+                    "x-key": true
                 },                
                 "name": {
                     "type": "string",
-                    "__visualKey": true
+                    "x-visualKey": true
                 },                
                 ...
             }
@@ -89,7 +89,7 @@ To mark a property as visual key (e.g. label, name, caption, ...) add the '__vis
 ```
 
 ## Domain information for the model
-To specify a domain for a model use the '__domain' entry.
+To specify a domain for a model use the 'x-domain' entry.
 
 ```json
 {
@@ -97,12 +97,12 @@ To specify a domain for a model use the '__domain' entry.
   "title": "yacg file configuration",
   "description": "description of the file configuration for yacg",
   "version": "0.0.1",
-  "__domain": "yacg.model.config",
+  "x-domain": "yacg.model.config",
   "definitions": {
  ```
 
 ## Property Ordinal Number
-A custom keyword '__ordinal' can be used to add some kind of an index to 
+A custom keyword 'x-ordinal' can be used to add some kind of an index to 
 a property definition. This index can be used for instance as field number when utilize yacg to generate protobuffer.
 
 ```json
@@ -113,21 +113,21 @@ a property definition. This index can be used for instance as field number when 
                 "aDate": {
                     "type": "string",
                     "format": "date-time",
-                    "__ordinal": 1
+                    "x-ordinal": 1
                 },                
                 "aBool": {
                     "type": "boolean",
-                    "__ordinal": 2
+                    "x-ordinal": 2
                 },
                 "aRef": {
                     "$ref": "./single_type_schema.json#/definitions/AnotherType",
-                    "__ordinal": 3
+                    "x-ordinal": 3
                 },
                 "implicitRef": {
                     "type": "string",
                     "format": "uuid",
-                    "__ref": "./single_type_schema.json#/definitions/AnotherType",
-                    "__ordinal": 4
+                    "x-ref": "./single_type_schema.json#/definitions/AnotherType",
+                    "x-ordinal": 4
                 }
             }
             ...

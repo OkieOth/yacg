@@ -3,7 +3,7 @@
   "title": "yacg file configuration",
   "description": "description of the file configuration for yacg",
   "version": "0.0.1",
-  "__domain": "yacg.model.config",
+  "x-domain": "yacg.model.config",
   "definitions": {
     "Job": {
       "type": "object",

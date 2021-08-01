@@ -203,7 +203,7 @@ def __getRandomValue(typeObj, property, randomDataTask, randomDataDict, keyValue
 
 
 def __initKeyAttribInTypeDictFromKeyField(typeDict, typeObj, randomDataTask, keyValueList):
-    # has they type a taged key field ('__key')?
+    # has they type a taged key field ('x-key')?
     for property in typeObj.properties:
         if property.isKey:
             randomValue = __getRandomKeyValue(property, randomDataTask, keyValueList)

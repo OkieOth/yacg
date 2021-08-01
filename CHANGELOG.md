@@ -1,4 +1,5 @@
-# 2.2.0
+# 3.0.0
+* replace '__' prefix for custom extensions with 'x-' prefix
 * add some modelFuncs to facilitate the usage of openApi models in templates
 
 # 2.1.2

@@ -3,12 +3,12 @@
     "title": "yacg inner type model",
     "description": "model types used internally to provide loaded models for the code generators",
     "version": "0.0.1",
-    "__domain": "yacg.model.model",
+    "x-domain": "yacg.model.model",
     "definitions": {
         "Type": {
             "type": "object",
             "description": "Dummy base class to implement strong typed references",
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -46,7 +46,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -84,7 +84,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -103,7 +103,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -122,7 +122,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -141,7 +141,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -185,7 +185,7 @@
                         },
                         "tags": {
                             "description": "additional flags to mark a type",
-                            "$comment": "custom extension marked with '__tags'",
+                            "$comment": "custom extension marked with 'x-tags'",
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/Tag"
@@ -194,7 +194,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -230,7 +230,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -266,7 +266,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -286,7 +286,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -346,7 +346,7 @@
                         },
                         "tags": {
                             "description": "additional flags to mark a type",
-                            "$comment": "custom extension marked with '__tags'",
+                            "$comment": "custom extension marked with 'x-tags'",
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/Tag"
@@ -355,7 +355,7 @@
                     }
                 }
             ],
-            "__tags": [
+            "x-tags": [
                 "metaModelType"
             ]
         },
@@ -367,8 +367,8 @@
                     "description": "type unique identifier",
                     "type": "string",
                     "$comment": "ordinal example",
-                    "__ordinal": 1000,
-                    "__tags": [
+                    "x-ordinal": 1000,
+                    "x-tags": [
                         "constructorValue"
                     ]
                 },
@@ -392,13 +392,13 @@
                 "type": {
                     "description": "either a basic or a complex type",
                     "$ref": "#/definitions/Type",
-                    "__tags": [
+                    "x-tags": [
                         "constructorValue"
                     ]
                 },
                 "tags": {
                     "description": "additional flags to mark a property",
-                    "$comment": "custom extension marked with '__tags'",
+                    "$comment": "custom extension marked with 'x-tags'",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/Tag"
@@ -428,7 +428,7 @@
                     "default": false
                 },
                 "foreignKey": {
-                    "description": "content of the '__ref' entry of a property, points to an implicit referenced type, e.g. for IDs",
+                    "description": "content of the 'x-ref' entry of a property, points to an implicit referenced type, e.g. for IDs",
                     "$ref": "#/definitions/Type"
                 },
                 "format": {
@@ -444,13 +444,13 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "__tags": [
+                    "x-tags": [
                         "constructorValue"
                     ]
                 },
                 "value": {
                     "type": "string",
-                    "__tags": [
+                    "x-tags": [
                         {
                             "constructorValue": "None"
                         }
