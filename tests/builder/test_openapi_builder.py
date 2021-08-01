@@ -22,9 +22,10 @@ class TestOpenApiParsing (unittest.TestCase):
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(15, len(modelTypes))
-        (pathTypes, otherTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
+        (pathTypes, otherTypes, enumTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
         self.assertEqual(4, len(pathTypes))
-        self.assertEqual(11, len(otherTypes))
+        self.assertEqual(6, len(otherTypes))
+        self.assertEqual(5, len(enumTypes))
 
     def test_getOpenApiTags(self):
         modelFile = 'tests/resources/models/json/examples/openapi_v3_example_small.json'

@@ -13,12 +13,9 @@
     description = templateParameters.get('description','This is a simple template that create an OpenApi file')
     description = description + "(created by yacg, template: {} v{})".format(templateFile,templateVersion)
     version = templateParameters.get('version','1.0.0')
-    pathTypes = 
 
-    restTypeParam = templateParameters.get('restTypes','')
-    restTypeNames = restTypeParam.split(',')
-    restTypes = modelFuncs.getTypesWithName(modelTypes,restTypeNames)
-    nonEnumModelTypes = modelFuncs.getNonEnumModelType(modelTypes)
+    tags = modelFuncs.getOpenApiTags(modelTypes)
+    (pathTypes, nonEnumTypes, enumTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
 %>{
     "openapi": "3.0.1",
     "info": {
@@ -31,52 +28,19 @@
         "version": "${version}"
     },
     "tags": [
-        % for type in restTypes:
+        % for tag in tags:
         {
-            "name": "${type.name}",
-            % if type.description != None:
-            "description": "${type.description}"
-            % endif
-        }${',' if type != modelTypes[-1] else ''}
+            "name": "${tag}"
+        }${',' if tag != tags[-1] else ''}
         % endfor
     ],
     "paths": {
-        % for type in restTypes:
-        "/${stringUtils.toLowerCamelCase(type.name)}": {
-            "get": {
-                "tags": [
-                    "${type.name}"
-                ],
-                "description": "Returns a list of ${type.name} entries",
-                "operationId": "get${type.name}",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                        "application/xml": {
-                            "schema": {
-                            "$ref": "#/components/schemas/${type.name}"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                            "$ref": "#/components/schemas/${type.name}"
-                            }
-                        }
-                        }
-                    },
-                    "500": {
-                        "description": "in case of errors",
-                        "content": {}
-                    }
-                },
-            }
-        }${',' if type != restTypes[-1] else ''}
+        % for type in pathTypes:
         % endfor
     },
     "components": {
         "schemas": {
-        % for type in nonEnumModelTypes:
+        % for type in nonEnumTypes:
             "${type.name}": {
             % if type.description is not None:
                 "description": "${type.description}",
@@ -213,7 +177,7 @@
                 }
                 % endif
             % endif
-            }${',' if type != nonEnumModelTypes[-1] else ''}
+            }${',' if type != nonEnumTypes[-1] else ''}
         % endfor
         }
     }
