@@ -1,6 +1,7 @@
 ## Template to create a Python file with type beans of the model types
 <%
     import yacg.model.model as model
+    import yacg.model.openapi as openapi
     import yacg.templateHelper as templateHelper
     import yacg.model.modelFuncs as modelFuncs
     import yacg.util.stringUtils as stringUtils
@@ -35,7 +36,91 @@
         % endfor
     ],
     "paths": {
-        % for type in pathTypes:
+        % for pathType in pathTypes:
+        "${pathType.pathPattern}": {
+            % for command in pathType.commands:
+            "${command.command.value.lower()}": {
+                "operationId": "${command.operationId}",
+                % if command.summary is not None:
+                "summary": "${command.summary}",
+                % endif
+                % if command.description is not None:
+                "description": "${command.description}",
+                % endif
+                "tags": [
+                    % for tag in command.tags:
+                    "${tag}"${',' if tag != command.tags[-1] else ''}
+                    % endfor
+                ],
+                % if len(command.parameters) > 0:
+                "parameters": [
+                    % for param in command.parameters:
+                    {
+                        % if param.description is not None:
+                        "description": "${param.description}",
+                        % endif
+                        "required": ${'true' if param.required is True else 'false'},
+                        "in": "${param.inType.value}",
+                        "name": "${param.name}",
+                        "schema": {
+                            
+                        }
+                    }${',' if param != command.parameters[-1] else ''}
+                    % endfor
+                ],
+                % endif
+                % if command.requestBody is not None:
+                "requestBody": {
+                    % if command.requestBody.description is not None:
+                    "description": "${command.requestBody.description}",
+                    % endif
+                    "required": ${'true' if command.requestBody.required is True else 'false'},
+                    "content": {
+                    % for content in command.requestBody.content:
+                        "${content.mimeType}": {
+                            "schema": {
+                        % if content.isArray:
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/${content.type.name}"
+                                }
+                        % else:
+                                "$ref": "#/components/schemas/${content.type.name}"
+                        % endif 
+                            }
+                        }${',' if content != command.requestBody.content[-1] else ''}
+                    % endfor
+                    }
+                },
+                % endif
+                "responses": {
+                % for response in command.responses:
+                    "${response.returnCode}": {
+                    % if response.description is not None:
+                        "description": "${response.description}",
+                    % endif
+                        "content": {
+                        % for content in response.content:
+                            "${content.mimeType}": {
+                                "schema": {
+                            % if content.isArray:
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/${content.type.name}"
+                                    }
+                            % else:
+                                    "$ref": "#/components/schemas/${content.type.name}"
+                            % endif 
+                                }
+                            }${',' if content != response.content[-1] else ''}
+                        % endfor
+                        }
+                    }${',' if response != command.responses[-1] else ''}
+                % endfor
+                }
+            }${',' if command != pathType.commands[-1] else ''}
+            % endfor
+        }${',' if pathType != pathTypes[-1] else ''}
         % endfor
     },
     "components": {

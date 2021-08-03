@@ -1,5 +1,6 @@
 '''Compfort function for model classes'''
 
+from re import T
 import yacg.model.model as model
 import yacg.model.openapi as openapi
 
@@ -243,3 +244,21 @@ def getDomainsAsList(modelTypes):
                 domainList.append(propDomain)
 
     return domainList
+
+
+def isTimestampContained(modelTypes):
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.DateTimeType)):
+                    return True
+    return False
+
+
+def isDateContained(modelTypes):
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.DateType)):
+                    return True
+    return False
