@@ -260,7 +260,6 @@ def _foundAllModels(codeGenerationJobs):
 
     foundAll = True
     for job in codeGenerationJobs:
-        #'  Models for job {}:'.format(job.name))
         for model in job.models:
             fileExists = doesFileExist(model.schema)
             fileExistsString = getOkTxt('found') if fileExists \
@@ -335,7 +334,6 @@ def __printUsedFiles(codeGenerationJobs, args):
         for usedFile in usedFiles:
             logging.info("-> {}".format(usedFile))
             pass
-
 
 
 def main():

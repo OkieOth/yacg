@@ -1,6 +1,5 @@
 '''Compfort function for model classes'''
 
-from re import T
 import yacg.model.model as model
 import yacg.model.openapi as openapi
 
