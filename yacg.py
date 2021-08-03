@@ -36,6 +36,7 @@ parser.add_argument('--whiteListed', nargs='+', help='types that should be handl
 parser.add_argument('--vars', nargs='+', help='variables that are passed to the processing')
 parser.add_argument('--usedFilesOnly', help='import models but only print the used files to stdout', action='store_true')
 parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
+parser.add_argument('--noLogs', help='do not print logs', action='store_true')
 
 
 def getFileExt(fileName):
@@ -212,10 +213,10 @@ def _foundAllTemplates(codeGenerationJobs):
     returns True if all templates are available, else False
     """
 
-    print('\nChecking up templates:')
+    logging.info('Checking up templates ...')
     foundAll = True
     for job in codeGenerationJobs:
-        print('  template for job {}:'.format(job.name))
+        logging.info('  template for job {}:'.format(job.name))
         for task in job.tasks:
             fileExists = False
             if (task.singleFileTask is not None) and (task.singleFileTask.template is not None):
@@ -246,7 +247,7 @@ def _tryToFindTemplate(templateFile):
         fileExists = doesFileExist(internalTemplateName)
         templateFileToReturn = internalTemplateName
     fileExistsString = getOkTxt('found') if fileExists else getErrorTxt('missing')
-    print('   {}\t{}'.format(fileExistsString, templateFile))
+    logging.info('   {}\t{}'.format(fileExistsString, templateFile))
     return (fileExists, templateFileToReturn)
 
 
@@ -257,17 +258,15 @@ def _foundAllModels(codeGenerationJobs):
     returns True if all templates are available, else False
     """
 
-    print('\nChecking up models:')
     foundAll = True
     for job in codeGenerationJobs:
-        print('  Models for job {}:'.format(job.name))
         for model in job.models:
             fileExists = doesFileExist(model.schema)
             fileExistsString = getOkTxt('found') if fileExists \
                 else getErrorTxt('missing')
             if not fileExists:
                 foundAll = False
-            print('   {}\t{}'.format(fileExistsString, model.schema))
+            logging.info('   {}\t{}'.format(fileExistsString, model.schema))
     return foundAll
 
 
@@ -279,7 +278,7 @@ def _isConfigurationValid(codeGenerationJobs):
     isValid = True
     if (codeGenerationJobs is None) or (len(codeGenerationJobs) == 0):
         errorMsg = getErrorTxt('no generation jobs are given - cancel')
-        print(errorMsg)
+        logging.info(errorMsg)
         return False
     if _foundAllTemplates(codeGenerationJobs) is False:
         isValid = False
@@ -328,12 +327,13 @@ def __printUsedFiles(codeGenerationJobs, args):
                     if type.source not in usedFiles:
                         usedFiles.append(type.source)
     if len(usedFiles) == 0:
-        print("No loaded files detected.")
+        logging.info("No loaded files detected.")
+        pass
     else:
-        print()
-        print("The following files were loaded:")
+        logging.info("The following files were loaded ...")
         for usedFile in usedFiles:
-            print("-> {}".format(usedFile))
+            logging.info("-> {}".format(usedFile))
+            pass
 
 
 def main():

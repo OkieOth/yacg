@@ -32,7 +32,7 @@
                 "implicitRef": {
                     "type": "string",
                     "format": "uuid",
-                    "__ref": "./single_type_schema.json#/definitions/AnotherType"
+                    "x-ref": "./single_type_schema.json#/definitions/AnotherType"
                 }
             }
         },

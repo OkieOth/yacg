@@ -1,6 +1,7 @@
 '''Compfort function for model classes'''
 
 import yacg.model.model as model
+import yacg.model.openapi as openapi
 
 
 def hasTag(tagName, typeOrPropertyObj):
@@ -121,6 +122,46 @@ def getTypeName(type):
     return type.name if hasattr(type, 'name') else type.__class__.__name__
 
 
+def separateOpenApiPathTypes(types):
+    """function returns a list that consists of three elems:
+    1. OpenApi PathTypes
+    2. Non enum types
+    3. Enum types
+
+    Keyword arguments:
+    types -- list of model.Type instances
+    """
+
+    pathTypes = []
+    nonEnumTypes = []
+    enumTypes = []
+    for type in types:
+        if isinstance(type, openapi.PathType):
+            pathTypes.append(type)
+        elif isinstance(type, model.EnumType):
+            enumTypes.append(type)
+        else:
+            nonEnumTypes.append(type)
+    return (pathTypes, nonEnumTypes, enumTypes)
+
+
+def getOpenApiTags(types):
+    """function returns a list with used OpenApi operation tags.
+
+    Keyword arguments:
+    types -- list of model.Type instances
+    """
+
+    tags = []
+    for type in types:
+        if isinstance(type, openapi.PathType):
+            for command in type.commands:
+                for tag in command.tags:
+                    if tag not in tags:
+                        tags.append(tag)
+    return tags
+
+
 def isBaseType(type):
     if isinstance(type, model.EnumType):
         return False
@@ -202,3 +243,21 @@ def getDomainsAsList(modelTypes):
                 domainList.append(propDomain)
 
     return domainList
+
+
+def isTimestampContained(modelTypes):
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.DateTimeType)):
+                    return True
+    return False
+
+
+def isDateContained(modelTypes):
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.DateType)):
+                    return True
+    return False

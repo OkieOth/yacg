@@ -9,19 +9,19 @@
         "properties": {
           "street_addr": { 
             "type": "string",
-            "__ordinal": 4 
+            "x-ordinal": 4 
           },
           "city": {
              "type": "string", 
-             "__ordinal": 5
+             "x-ordinal": 5
             },
           "state": { 
             "type": "string", 
-            "__ordinal": 6
+            "x-ordinal": 6
           }
         },
         "required": ["street_address", "city", "state"],
-        "__tags": ["yacgIgnoreForModel"]
+        "x-tags": ["yacgIgnoreForModel"]
       }
     },
     "allOf": [

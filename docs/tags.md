@@ -1,5 +1,5 @@
 # General
-The models can use the '__tags' array to annotate types and properties.
+The models can use the 'x-tags' array to annotate types and properties.
 
 Usually this tags are designed to customize the codeGen. Some tags also
 influence the creation of the internal model. The internal used tags start

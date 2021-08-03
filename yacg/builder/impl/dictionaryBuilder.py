@@ -25,7 +25,7 @@ class ModelFileContainer:
         self.fileName = fileName
         self.parsedSchema = parsedSchema
         self.version = parsedSchema.get('version', None)
-        self.domain = parsedSchema.get('__domain', None)
+        self.domain = parsedSchema.get('x-domain', None)
 
 
 def getParsedSchemaFromJson(model):
@@ -82,7 +82,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
         description = parsedSchema.get('description', None)
         mainType = _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFileContainer)
         if len(mainType.tags) == 0:
-            tags = parsedSchema.get('__tags', None)
+            tags = parsedSchema.get('x-tags', None)
             if tags is not None:
                 mainType.tags = _extractTags(tags)
         _markRequiredAttributes(mainType, parsedSchema.get('required', []))
@@ -92,7 +92,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
         typeNameStr = toUpperCamelCase(titleStr)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
         if len(mainType.tags) == 0:
-            tags = parsedSchema.get('__tags', None)
+            tags = parsedSchema.get('x-tags', None)
             if tags is not None:
                 mainType.tags = _extractTags(tags)
     schemaDefinitions = parsedSchema.get('definitions', None)
@@ -153,7 +153,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
             description = modelFileContainer.parsedSchema.get('description', None)
             type = _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFileContainer)
             if len(type.tags) == 0:
-                tags = modelFileContainer.parsedSchema.get('__tags', None)
+                tags = modelFileContainer.parsedSchema.get('x-tags', None)
                 if tags is not None:
                     type.tags = _extractTags(tags)
             _markRequiredAttributes(type, modelFileContainer.parsedSchema.get('required', []))
@@ -164,7 +164,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
         typeNameStr = toUpperCamelCase(titleStr)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
         if len(mainType.tags) == 0:
-            tags = modelFileContainer.parsedSchema.get('__tags', None)
+            tags = modelFileContainer.parsedSchema.get('x-tags', None)
             if tags is not None:
                 mainType.tags = _extractTags(tags)
 
@@ -203,13 +203,13 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
         if enumEntry is not None:
             mainType = _extractEnumType(key, None, enumEntry, modelTypes, modelFileContainer)
             if len(mainType.tags) == 0:
-                tags = modelFileContainer.parsedSchema.get('__tags', None)
+                tags = modelFileContainer.parsedSchema.get('x-tags', None)
                 if tags is not None:
                     mainType.tags = _extractTags(tags)
         else:
             type = _extractObjectType(key, properties, allOfEntry, description, modelTypes, modelFileContainer)
             if len(type.tags) == 0:
-                tags = object.get('__tags', None)
+                tags = object.get('x-tags', None)
                 if tags is not None:
                     type.tags = _extractTags(tags)
             _markRequiredAttributes(type, object.get('required', []))
@@ -308,15 +308,15 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
             if hasattr(newProperty.type, 'exclusiveMaximum'):
                 newProperty.type.exclusiveMaximum = propDict.get('exclusiveMaximum', None)
 
-        newProperty.isKey = propDict.get('__key', False)
-        newProperty.isVisualKey = propDict.get('__visualKey', False)
-        implicitRefEntry = propDict.get('__ref', None)
+        newProperty.isKey = propDict.get('x-key', False)
+        newProperty.isVisualKey = propDict.get('x-visualKey', False)
+        implicitRefEntry = propDict.get('x-ref', None)
         if implicitRefEntry is not None:
             newProperty.foreignKey = _extractReferenceType(implicitRefEntry, modelTypes, modelFileContainer)
-        tags = propDict.get('__tags', None)
+        tags = propDict.get('x-tags', None)
         if tags is not None:
             newProperty.tags = _extractTags(tags)
-        newProperty.ordinal = propDict.get('__ordinal', None)
+        newProperty.ordinal = propDict.get('x-ordinal', None)
 
         type.properties.append(newProperty)
 
@@ -670,7 +670,7 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
     description = propDict.get('description', None)
     if description is not None:
         newInnerType.description = description
-    tags = propDict.get('__tags', None)
+    tags = propDict.get('x-tags', None)
     if tags is not None:
         newInnerType.tags = _extractTags(tags)
     properties = propDict.get('properties', None)
@@ -787,7 +787,7 @@ def _extractTags(tagArray):
     list
 
     Keyword arguments:
-    tagArray -- dictionary of models '__tags' entry
+    tagArray -- dictionary of models 'x-tags' entry
     """
 
     tags = []

@@ -33,7 +33,7 @@
             }
           }
         ],
-        "__tags": ["yacgFlattenType"]
+        "x-tags": ["yacgFlattenType"]
       }
     },
     "allOf": [

@@ -16,7 +16,8 @@ class TestModelToYaml (unittest.TestCase):
         ret = trimModelFileName('test/test2/tttz.yaml')
         self.assertFalse('ttty' == ret)
 
-    def testDryRun(self):
+    def __testDryRun(self):
+        # this test blurs to test output
         model = 'resources/models/json/yacg_config_schema.json'
         convertModel(model, True, 'dummy')
 
