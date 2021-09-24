@@ -30,6 +30,16 @@
           "items": {
             "$ref": "#/definitions/Task"           
           }
+        },
+        "float": {
+          "description": "maximum number of elements that should be created for all types",
+          "type": "number",
+          "format": "float"
+        },
+        "double": {
+          "description": "maximum number of elements that should be created for all types",
+          "type": "number",
+          "format": "double"
         }
       },
       "required": [

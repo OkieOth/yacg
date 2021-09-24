@@ -1,3 +1,6 @@
+# 3.0.1
+* fix bug when extracting formats for numbers and integers
+
 # 3.0.0
 * replace '__' prefix for custom extensions with 'x-' prefix
 * add some modelFuncs to facilitate the usage of openApi models in templates
