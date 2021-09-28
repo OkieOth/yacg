@@ -11,7 +11,7 @@ import yaml
 
 from yacg.model.model import Property
 from yacg.util.stringUtils import toUpperCamelCase
-from yacg.model.model import IntegerType, NumberType, BooleanType
+from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, Tag
@@ -336,9 +336,13 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
     newProperty.format = propDict.get('format', None)
     type = propDict.get('type', None)
     if type == 'integer':
-        return IntegerType()
+        ret = IntegerType()
+        ret.format = IntegerTypeFormatEnum.valueForString(newProperty.format)
+        return ret
     elif type == 'number':
-        return NumberType()
+        ret = NumberType()
+        ret.format = NumberTypeFormatEnum.valueForString(newProperty.format)
+        return ret
     elif type == 'boolean':
         return BooleanType()
     elif type == 'string':

@@ -1,7 +1,7 @@
 import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
-from yacg.model.model import IntegerType, NumberType
+from yacg.model.model import IntegerType, NumberType, NumberTypeFormatEnum
 from yacg.model.model import StringType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
@@ -92,7 +92,7 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(16, len(modelTypes))
-        self._checkUpType(0, 'Job', 4, modelTypes, ['models', 'tasks'])
+        self._checkUpType(0, 'Job', 6, modelTypes, ['models', 'tasks'])
         self._checkUpType(1, 'Model', 4, modelTypes, [])
         self._checkUpType(2, 'Task', 8, modelTypes, [])
         self._checkUpType(3, 'BlackWhiteListEntry', 2, modelTypes, ['name'])
@@ -108,6 +108,10 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual('bValue', modelTypes[6].properties[2].name)
         self.assertFalse(modelTypes[6].properties[2].isArray)
         self.assertTrue(isinstance(modelTypes[6].properties[2].type, BytesType))
+
+        jobType = modelTypes[0]
+        self.assertEquals(jobType.properties[4].type.format,NumberTypeFormatEnum.FLOAT)
+        self.assertEquals(jobType.properties[5].type.format,NumberTypeFormatEnum.DOUBLE)
 
     def testSchemaWithExternalRef(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
