@@ -27,6 +27,32 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "yacgOpcUa",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/yacg.py",
+            "args": [
+                "--models",
+                "resources/models/json/yacg_opcua_model.json",
+                "--singleFileTemplates",
+                "resources/templates/examples/opcUaTypes.mako=tmp/Types-Base-Result.xml",
+                "--templateParameters",
+                "locale=de",
+                "modelVersion=0.0.1"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "yacgHelp",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/yacg.py",
+            "args": [
+                "-h",
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "incrementVersion",
             "type": "python",
             "request": "launch",

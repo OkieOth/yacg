@@ -1,0 +1,202 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "yacg file configuration",
+    "description": "description of the file configuration for yacg",
+    "version": "0.0.1",
+    "x-domain": "yacg.model.config",
+    "definitions": {
+      "UAObjectType": {
+        "type": "object",
+        "description": "base class to implement strong typed UA object types",
+        "x-tags": [
+            "metaModelType",
+            "opcUaTag"
+        ]
+      },
+      "UADataType": {
+        "type": "object",
+        "description": "base class to implement strong typed UA data types",
+        "x-tags": [
+            "metaModelType",
+            "opcUaTag"
+        ]
+      },
+      "UAVariable": {
+        "type": "object",
+        "description": "Minimal properties for a UAVariable",
+        "properties": {
+            "prio": {
+                "description": "prio number",
+                "type": "integer"
+            },
+            "internalType": {
+                "description": "internal type (event, measurement, command)",
+                "type": "integer"
+            },
+            "historizing": {
+                "description": "historizing flag (on, off)",
+                "type": "boolean"
+            }
+        },
+        "x-tags": [
+            "metaModelType",
+            "opcUaTag"
+        ]
+      },
+      "UAMethod": {
+        "type": "object",
+        "description": "Minimal properties for a UAMethod",
+        "properties": {
+            "prio": {
+                "description": "prio number",
+                "type": "integer"
+            },
+            "internalType": {
+                "description": "internal type (command)",
+                "type": "integer",
+                "default": 2
+            },
+            "historizing": {
+                "description": "historizing flag (on, off)",
+                "type": "boolean"
+            },
+            "arguments": {
+                "description": "method's arguments",
+                "type": "array"
+            }
+        },
+        "x-tags": [
+            "metaModelType",
+            "opcUaTag"
+        ]
+      },
+      "AQType": {
+        "type": "object",
+        "description": "Anlagenrückstellung",
+        "allOf": [
+            {
+                "$ref": "#/definitions/UAObjectType"
+            },
+            {
+                "properties": {
+                    "I_EventResetMode": {
+                        "description": "the member I_EventResetMode",
+                        "$ref": "#/definitions/I_EventResetMode"
+                    },
+                    "S_SetResetEventMode": {
+                        "description": "the member S_SetResetEventMode",
+                        "$ref": "#/definitions/S_SetResetEventMode"
+                    }
+                }
+            }
+        ]
+      },
+      "I_EventResetMode": {
+        "type": "object",
+        "description": "Attribute for the reset mode",
+        "allOf": [
+            {
+                "$ref": "#/definitions/EventState"
+            },
+            {
+                "$ref": "#/definitions/UAVariable"
+            },
+            {
+                "properties": {
+                    "name": {
+                        "description": "a short identifier of the data variable",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "some words to explain the data variable",
+                        "type": "string"
+                    },
+                    "prio": {
+                        "description": "prio number",
+                        "type": "integer",
+                        "default": 1
+                    },
+                    "internalType": {
+                        "description": "internal type (event, measurement, command)",
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "historizing": {
+                        "description": "historizing flag (on, off)",
+                        "type": "boolean",
+                        "default": true
+                    }
+                }
+            }
+        ],
+        "required": [
+            "prio",
+            "internalType",
+            "historizing"
+        ]
+      },
+      "S_SetResetEventMode": {
+        "type": "object",
+        "description": "Method to reset the plant",
+        "allOf": [
+            {
+                "$ref": "#/definitions/UAMethod"
+            },
+            {
+                "properties": {
+                    "arguments": {
+                        "description": "method argument",
+                        "$ref": "#/definitions/EventState"
+                    },
+                    "name": {
+                        "description": "a short identifier of the method",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "some words to explain the method",
+                        "type": "string"
+                    },
+                    "prio": {
+                        "description": "prio number",
+                        "type": "integer",
+                        "default": 1
+                    },
+                    "internalType": {
+                        "description": "internal type (event, measurement, command)",
+                        "type": "integer",
+                        "default": 2
+                    },
+                    "historizing": {
+                        "description": "historizing flag (on, off)",
+                        "type": "boolean",
+                        "default": false
+                    }
+                }
+            }
+        ],
+        "required": [
+            "arguments",
+            "prio",
+            "historizing"
+        ]
+      },
+      "EventState": {
+          "type": "object",
+          "description": "Data type for I_EventResetMode, but could also be for other attributes",
+          "allOf": [
+              {
+                "$ref": "#/definitions/UADataType"
+              },
+              {
+                "properties": {
+                    "format": {
+                        "type": "integer",
+                        "enum": [0, 1]
+                    }
+                }
+              }
+          ]
+      }
+    }
+  }
+  
