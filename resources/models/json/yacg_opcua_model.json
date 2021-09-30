@@ -96,13 +96,14 @@
         "description": "Attribute for the reset mode",
         "allOf": [
             {
-                "$ref": "#/definitions/EventState"
-            },
-            {
                 "$ref": "#/definitions/UAVariable"
             },
             {
                 "properties": {
+                    "dataType": {
+                        "description": "Assigns a data type to this data variable",
+                        "$ref": "#/definitions/EventState"
+                    },
                     "name": {
                         "description": "a short identifier of the data variable",
                         "type": "string"
