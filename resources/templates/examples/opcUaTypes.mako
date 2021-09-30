@@ -3,7 +3,7 @@
     import yacg.model.model as model
     import yacg.util.dateUtils as dateUtils
 
-    templateFile = 'template.mako'
+    templateFile = 'opcUaTypes.mako'
     templateVersion = '1.0.0'
 
     usedIds = {}
@@ -40,7 +40,7 @@
     % endif
 % endfor
     </Aliases>
-    
+
 % for type in modelTypes:
     % if not modelFuncs.hasTag('opcUaTag', type):
     % if type.extendsType.name == 'UAObjectType':
