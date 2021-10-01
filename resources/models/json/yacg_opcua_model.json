@@ -1,116 +1,31 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "yacg file configuration",
-    "description": "description of the file configuration for yacg",
+    "title": "typicals to process with yacg",
+    "description": "description of the types for yacg",
     "version": "0.0.1",
     "x-domain": "yacg.model.config",
     "definitions": {
-      "UAObjectType": {
-        "type": "object",
-        "description": "base class to implement strong typed UA object types",
-        "x-tags": [
-            "metaModelType",
-            "opcUaTag"
-        ]
-      },
-      "UADataType": {
-        "type": "object",
-        "description": "base class to implement strong typed UA data types",
-        "x-tags": [
-            "metaModelType",
-            "opcUaTag"
-        ]
-      },
-      "UAVariable": {
-        "type": "object",
-        "description": "Minimal properties for a UAVariable",
-        "properties": {
-            "prio": {
-                "description": "prio number",
-                "type": "integer"
-            },
-            "internalType": {
-                "description": "internal type (event, measurement, command)",
-                "type": "integer"
-            },
-            "historizing": {
-                "description": "historizing flag (on, off)",
-                "type": "boolean"
-            }
-        },
-        "x-tags": [
-            "metaModelType",
-            "opcUaTag"
-        ]
-      },
-      "UAMethod": {
-        "type": "object",
-        "description": "Minimal properties for a UAMethod",
-        "properties": {
-            "prio": {
-                "description": "prio number",
-                "type": "integer"
-            },
-            "internalType": {
-                "description": "internal type (command)",
-                "type": "integer",
-                "default": 2
-            },
-            "historizing": {
-                "description": "historizing flag (on, off)",
-                "type": "boolean"
-            },
-            "arguments": {
-                "description": "method's arguments",
-                "type": "array"
-            }
-        },
-        "x-tags": [
-            "metaModelType",
-            "opcUaTag"
-        ]
-      },
       "AQType": {
         "type": "object",
         "description": "Anlagenrückstellung",
-        "allOf": [
-            {
-                "$ref": "#/definitions/UAObjectType"
+        "properties": {
+            "__isObjectType": {
+                "description": "tells if this definition is an object type",
+                "type": "boolean",
+                "default": true
             },
-            {
+            "I_EventResetMode": {
+                "description": "the member I_EventResetMode",
+                "type": "object",
                 "properties": {
-                    "I_EventResetMode": {
-                        "description": "the member I_EventResetMode",
-                        "$ref": "#/definitions/I_EventResetMode"
+                    "__isDataProperty": {
+                        "description": "tells if this is definition a data property",
+                        "type": "boolean",
+                        "default": true
                     },
-                    "S_SetResetEventMode": {
-                        "description": "the member S_SetResetEventMode",
-                        "$ref": "#/definitions/S_SetResetEventMode"
-                    }
-                }
-            }
-        ]
-      },
-      "I_EventResetMode": {
-        "type": "object",
-        "description": "Attribute for the reset mode",
-        "allOf": [
-            {
-                "$ref": "#/definitions/UAVariable"
-            },
-            {
-                "properties": {
-                    "dataType": {
+                    "__dataType": {
                         "description": "Assigns a data type to this data variable",
                         "$ref": "#/definitions/EventState"
-                    },
-                    "name": {
-                        "description": "a short identifier of the data variable",
-                        "type": "string"
-                    },
-                    "description": {
-                        "description": "some words to explain the data variable",
-                        "type": "string"
                     },
                     "prio": {
                         "description": "prio number",
@@ -127,76 +42,67 @@
                         "type": "boolean",
                         "default": true
                     }
-                }
-            }
-        ],
-        "required": [
-            "prio",
-            "internalType",
-            "historizing"
-        ]
-      },
-      "S_SetResetEventMode": {
-        "type": "object",
-        "description": "Method to reset the plant",
-        "allOf": [
-            {
-                "$ref": "#/definitions/UAMethod"
+                },
+                "required": [
+                    "__isDataProperty",
+                    "__dataType",
+                    "prio",
+                    "internalType",
+                    "historizing"
+                ]
             },
-            {
+            "S_SetResetEventMode": {
+                "description": "the member S_SetResetEventMode",
+                "type": "object",
                 "properties": {
-                    "arguments": {
+                    "__isMethod": {
+                        "description": "tells if this definition is a method",
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "__arguments": {
                         "description": "method argument",
                         "$ref": "#/definitions/EventState"
-                    },
-                    "name": {
-                        "description": "a short identifier of the method",
-                        "type": "string"
-                    },
-                    "description": {
-                        "description": "some words to explain the method",
-                        "type": "string"
                     },
                     "prio": {
                         "description": "prio number",
                         "type": "integer",
                         "default": 1
                     },
-                    "internalType": {
-                        "description": "internal type (event, measurement, command)",
-                        "type": "integer",
-                        "default": 2
-                    },
                     "historizing": {
                         "description": "historizing flag (on, off)",
                         "type": "boolean",
                         "default": false
                     }
-                }
+                },
+                "required": [
+                    "__isMethod",
+                    "__arguments",
+                    "prio",
+                    "historizing"
+                ]
             }
-        ],
+        },
         "required": [
-            "arguments",
-            "prio",
-            "historizing"
+            "__isObjectType",
+            "I_EventResetMode",
+            "S_SetResetEventMode"
         ]
       },
       "EventState": {
           "type": "object",
           "description": "Data type for I_EventResetMode, but could also be for other attributes",
-          "allOf": [
-              {
-                "$ref": "#/definitions/UADataType"
-              },
-              {
-                "properties": {
-                    "format": {
-                        "type": "integer",
-                        "enum": [0, 1]
-                    }
-                }
-              }
-          ]
+          "properties": {
+            "__isDataType": {
+                "description": "tells if this definition is a data type",
+                "type": "boolean",
+                "default": true
+            },
+            "format": {
+                "type": "integer",
+                "enum": [0, 1]
+            }
+        }
       }
     }
   }
