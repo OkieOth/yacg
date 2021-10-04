@@ -35,6 +35,9 @@
         else:
             return arguments.type.name
 
+    def isTypePropertyTrue(type, propertyName):
+        return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
+
 %>
 <UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s1="http://swarco.com/Types/Base/${modelVersion}">
     <NamespaceUris>
@@ -64,7 +67,7 @@
     </Aliases>
 
 % for type in modelTypes:
-    % if modelFuncs.hasProperty('__isObjectType', type):
+    % if isTypePropertyTrue(type, '__isObjectType'):
     <UAObjectType NodeId="ns=1;i=${printId(type.name)}" BrowseName="1:${type.name}">
         % if type.description is not None:
         <Description Locale="${descriptionLocale}">${type.description}</Description>
@@ -83,7 +86,7 @@
 
             % if not prop.name.startswith('__'):
 
-                % if modelFuncs.hasProperty('__isDataProperty', prop.type):
+                % if isTypePropertyTrue(prop.type, '__isDataProperty'):
     <UAVariable NodeId="ns=1;i=${printId(prop.type.name)}" BrowseName="1:${prop.name}" ParentNodeId="ns=1;i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
                     % if prop.type.description is not None:
         <Description Locale="${descriptionLocale}">${type.description}</Description>
@@ -94,7 +97,7 @@
         </References>
     </UAVariable>
 
-                % elif modelFuncs.hasProperty('__isMethod', prop.type):
+                % elif isTypePropertyTrue(prop.type, '__isMethod'):
     <UAMethod NodeId="ns=1;i=${printId(prop.type.name)}" BrowseName="1:${prop.name}" ParentNodeId="ns=1;i=${printId(type.name)}">
         <DisplayName>${prop.name}</DisplayName>
         <References>
@@ -136,7 +139,7 @@
 
         % endfor
 
-    % elif modelFuncs.hasProperty('__isDataType', type):
+    % elif isTypePropertyTrue(type, '__isDataType'):
     <UADataType NodeId="ns=1;i=${printId(type.name)}" BrowseName="1:${type.name}" IsAbstract="false">
         <DisplayName>${type.name}</DisplayName>
         <References>
