@@ -149,6 +149,26 @@
         </References>
         <Value>
             <uax:ListOfExtensionObject>
+                    % if modelFuncs.getProperty('__arguments', prop.type).isArray and isinstance(modelFuncs.getProperty('__arguments', prop.type).arrayMinItems, int) and modelFuncs.getProperty('__arguments', prop.type).arrayMinItems > 1:
+                        % for i in range(modelFuncs.getProperty('__arguments', prop.type).arrayMinItems):
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=296</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:Argument>
+                            <uax:Name>${prop.name}${i}</uax:Name>
+                            <uax:DataType>
+                                <uax:Identifier>ns=1;i=${printId(getTypeFromMethodArgs(prop.type))}</uax:Identifier>
+                            </uax:DataType>
+                            <uax:ValueRank>-1</uax:ValueRank>
+                            <uax:ArrayDimensions></uax:ArrayDimensions>
+                            <uax:Description></uax:Description>
+                        </uax:Argument>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                        % endfor
+                    % else:
                 <uax:ExtensionObject>
                     <uax:TypeId>
                         <uax:Identifier>i=296</uax:Identifier>
@@ -165,6 +185,7 @@
                         </uax:Argument>
                     </uax:Body>
                 </uax:ExtensionObject>
+                    % endif
             </uax:ListOfExtensionObject>
         </Value>
     </UAVariable>
