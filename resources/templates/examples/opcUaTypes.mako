@@ -94,6 +94,11 @@
         <DisplayName>${prop.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=${printId(type.name)}</Reference>
+                % for innerProp in prop.type.properties:
+                    % if not innerProp.name.startswith('__'):
+            <Reference ReferenceType="HasProperty">ns=1;i=${printId(prop.type.name + innerProp.name)}</Reference>
+                    % endif
+                % endfor
         </References>
     </UAVariable>
 
@@ -104,6 +109,11 @@
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=${printId(type.name)}</Reference>
             <Reference ReferenceType="HasProperty">ns=1;i=${printId(prop.type.name + 'InputArguments')}</Reference>
+                    % for innerProp in prop.type.properties:
+                        % if not innerProp.name.startswith('__'):
+            <Reference ReferenceType="HasProperty">ns=1;i=${printId(prop.type.name + innerProp.name)}</Reference>
+                        % endif
+                    % endfor
         </References>
     </UAMethod>
     <UAVariable NodeId="ns=1;i=${printId(prop.type.name + 'InputArguments')}" BrowseName="1:InputArguments" DataType="Argument" ValueRank="1" AccessLevel="1" UserAccessLevel="1">
@@ -135,6 +145,20 @@
     </UAVariable>
                 % endif
 
+                % for innerProp in prop.type.properties:
+                    % if not innerProp.name.startswith('__'):
+    <UAVariable NodeId="ns=1;i=${printId(prop.type.name + innerProp.name)}" BrowseName="1:${innerProp.name}" DataType="???" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+        <DisplayName>${innerProp.name}</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=${printId(prop.type.name)}</Reference>
+        </References>
+        <Value>
+            ${innerProp.type.default}
+        </Value>
+    </UAVariable>
+                    % endif
+                % endfor
+                
             % endif
 
         % endfor
