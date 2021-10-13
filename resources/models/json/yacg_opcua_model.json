@@ -32,10 +32,10 @@
                         "type": "integer",
                         "default": 1
                     },
-                    "internalType": {
+                    "internal-type": {
                         "description": "internal type (event, measurement, command)",
                         "type": "integer",
-                        "default": 0
+                        "default": 1
                     },
                     "historizing": {
                         "description": "historizing flag (on, off)",

@@ -38,6 +38,7 @@
                 "resources/templates/examples/opcUaTypes.mako=tmp/Types-Base-Result.xml",
                 "--templateParameters",
                 // "locale=de",
+                // "nsIndex=2",
                 "modelVersion=0.0.1"
             ],
             "console": "integratedTerminal"

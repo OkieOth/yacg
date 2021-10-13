@@ -11,6 +11,7 @@
 
     modelVersion = templateParameters.get('modelVersion', 'null')
     descriptionLocale = templateParameters.get('locale','null')
+    nsIndex = templateParameters.get('nsIndex', '1')
 
     def printId(typeName):
         existingId = usedIds.get(typeName, None)
@@ -35,11 +36,14 @@
         else:
             return arguments.type.name
 
+    def getArgsFromType(type):
+        return modelFuncs.getProperty('__arguments', prop.type)
+
     def isTypePropertyTrue(type, propertyName):
         return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
 
 %>
-<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s1="http://swarco.com/Types/Base/${modelVersion}">
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s${nsIndex}="http://swarco.com/Types/Base/${modelVersion}">
     <NamespaceUris>
         <Uri>http://swarco.com/Types/Base/${modelVersion}</Uri>
     </NamespaceUris>
@@ -86,14 +90,14 @@
         <Alias Alias="EnumValueType">i=7594</Alias>
 % for type in modelTypes:
     % if not (modelFuncs.hasProperty('__isDataProperty', type) or modelFuncs.hasProperty('__isMethod', type)):
-        <Alias Alias="${type.name}">ns=1;i=${printId(type.name)}</Alias>
+        <Alias Alias="${type.name}">ns=${nsIndex};i=${printId(type.name)}</Alias>
     % endif
 % endfor
     </Aliases>
 
 % for type in modelTypes:
     % if isTypePropertyTrue(type, '__isObjectType'):
-    <UAObjectType NodeId="ns=1;i=${printId(type.name)}" BrowseName="1:${type.name}">
+    <UAObjectType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${nsIndex}:${type.name}">
         % if type.description is not None:
         <Description Locale="${descriptionLocale}">${type.description}</Description>
         % endif
@@ -101,7 +105,7 @@
         <References>
             % for prop in type.properties:
                 % if not prop.name.startswith('__'):
-            <Reference ReferenceType="HasComponent">ns=1;i=${printId(prop.type.name)}</Reference>
+            <Reference ReferenceType="HasComponent">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
                 % endif
             % endfor
         </References>
@@ -112,45 +116,45 @@
             % if not prop.name.startswith('__'):
 
                 % if isTypePropertyTrue(prop.type, '__isDataProperty'):
-    <UAVariable NodeId="ns=1;i=${printId(prop.type.name)}" BrowseName="1:${prop.name}" ParentNodeId="ns=1;i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
                     % if prop.type.description is not None:
         <Description Locale="${descriptionLocale}">${type.description}</Description>
                     % endif
         <DisplayName>${prop.name}</DisplayName>
         <References>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=${printId(type.name)}</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
                 % for innerProp in prop.type.properties:
                     % if not innerProp.name.startswith('__'):
-            <Reference ReferenceType="HasProperty">ns=1;i=${printId(prop.type.name + innerProp.name)}</Reference>
+            <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}</Reference>
                     % endif
                 % endfor
         </References>
     </UAVariable>
 
                 % elif isTypePropertyTrue(prop.type, '__isMethod'):
-    <UAMethod NodeId="ns=1;i=${printId(prop.type.name)}" BrowseName="1:${prop.name}" ParentNodeId="ns=1;i=${printId(type.name)}">
+    <UAMethod NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}">
         <DisplayName>${prop.name}</DisplayName>
         <References>
         <References>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=${printId(type.name)}</Reference>
-            <Reference ReferenceType="HasProperty">ns=1;i=${printId(prop.type.name + 'InputArguments')}</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
+            <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + 'InputArguments')}</Reference>
                     % for innerProp in prop.type.properties:
                         % if not innerProp.name.startswith('__'):
-            <Reference ReferenceType="HasProperty">ns=1;i=${printId(prop.type.name + innerProp.name)}</Reference>
+            <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}</Reference>
                         % endif
                     % endfor
         </References>
     </UAMethod>
-    <UAVariable NodeId="ns=1;i=${printId(prop.type.name + 'InputArguments')}" BrowseName="1:InputArguments" DataType="Argument" ValueRank="1" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + 'InputArguments')}" BrowseName="${nsIndex}:InputArguments" DataType="Argument" ValueRank="1" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>InputArguments</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=${printId(prop.type.name)}</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
         </References>
         <Value>
             <uax:ListOfExtensionObject>
-                    % if modelFuncs.getProperty('__arguments', prop.type).isArray and isinstance(modelFuncs.getProperty('__arguments', prop.type).arrayMinItems, int) and modelFuncs.getProperty('__arguments', prop.type).arrayMinItems > 1:
-                        % for i in range(modelFuncs.getProperty('__arguments', prop.type).arrayMinItems):
+                    % if getArgsFromType(prop.type).isArray and isinstance(getArgsFromType(prop.type).arrayMinItems, int) and getArgsFromType(prop.type).arrayMinItems > 1:
+                        % for i in range(getArgsFromType(prop.type).arrayMinItems):
                 <uax:ExtensionObject>
                     <uax:TypeId>
                         <uax:Identifier>i=296</uax:Identifier>
@@ -159,7 +163,7 @@
                         <uax:Argument>
                             <uax:Name>${prop.name}${i}</uax:Name>
                             <uax:DataType>
-                                <uax:Identifier>ns=1;i=${printId(getTypeFromMethodArgs(prop.type))}</uax:Identifier>
+                                <uax:Identifier>ns=${nsIndex};i=${printId(getTypeFromMethodArgs(prop.type))}</uax:Identifier>
                             </uax:DataType>
                             <uax:ValueRank>-1</uax:ValueRank>
                             <uax:ArrayDimensions></uax:ArrayDimensions>
@@ -177,7 +181,7 @@
                         <uax:Argument>
                             <uax:Name>${prop.name}</uax:Name>
                             <uax:DataType>
-                                <uax:Identifier>ns=1;i=${printId(getTypeFromMethodArgs(prop.type))}</uax:Identifier>
+                                <uax:Identifier>ns=${nsIndex};i=${printId(getTypeFromMethodArgs(prop.type))}</uax:Identifier>
                             </uax:DataType>
                             <uax:ValueRank>-1</uax:ValueRank>
                             <uax:ArrayDimensions></uax:ArrayDimensions>
@@ -193,10 +197,10 @@
 
                 % for innerProp in prop.type.properties:
                     % if not innerProp.name.startswith('__'):
-    <UAVariable NodeId="ns=1;i=${printId(prop.type.name + innerProp.name)}" BrowseName="1:${innerProp.name}" DataType="???" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="???" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${innerProp.name}</DisplayName>
         <References>
-            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=${printId(prop.type.name)}</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
         </References>
         <Value>
             ${innerProp.type.default}
@@ -210,17 +214,17 @@
         % endfor
 
     % elif isTypePropertyTrue(type, '__isDataType'):
-    <UADataType NodeId="ns=1;i=${printId(type.name)}" BrowseName="1:${type.name}" IsAbstract="false">
+    <UADataType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${nsIndex}:${type.name}" IsAbstract="false">
         <DisplayName>${type.name}</DisplayName>
         <References>
-            <Reference ReferenceType="HasProperty">ns=1;${printId(type.name + 'EnumStrings')}</Reference>
+            <Reference ReferenceType="HasProperty">ns=${nsIndex};${printId(type.name + 'EnumStrings')}</Reference>
             <Reference ReferenceType="HasSubtype" IsForward="false">i=29</Reference>
         </References>
     </UADataType>
-    <UAVariable NodeId="ns=1;i=${printId(type.name + 'EnumStrings')}" BrowseName="1:EnumStrings" DataType="EnumValueType" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + 'EnumStrings')}" BrowseName="${nsIndex}:EnumStrings" DataType="EnumValueType" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>EnumStrings</DisplayName>
         <References>
-            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=${printId(type.name)}</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
         <Value>
