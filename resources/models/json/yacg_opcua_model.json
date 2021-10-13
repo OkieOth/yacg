@@ -9,11 +9,6 @@
         "type": "object",
         "description": "Anlagenrückstellung",
         "properties": {
-            "__isObjectType": {
-                "description": "tells if this definition is an object type",
-                "type": "boolean",
-                "default": true
-            },
             "I_EventResetMode": {
                 "description": "the member I_EventResetMode",
                 "type": "object",
@@ -84,25 +79,14 @@
             }
         },
         "required": [
-            "__isObjectType",
             "I_EventResetMode",
             "S_SetResetEventMode"
         ]
       },
       "EventState": {
-          "type": "object",
-          "description": "Data type for I_EventResetMode, but could also be for other attributes",
-          "properties": {
-            "__isDataType": {
-                "description": "tells if this definition is a data type",
-                "type": "boolean",
-                "default": true
-            },
-            "format": {
-                "type": "integer",
-                "enum": [0, 1]
-            }
-        }
+        "type": "string",
+        "description": "Data type for I_EventResetMode, but could also be for other attributes",
+        "enum": ["Inaktiv", "Aktiv"]
       }
     }
   }

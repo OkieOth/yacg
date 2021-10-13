@@ -8,6 +8,7 @@
 
     usedIds = {}
     lastUsedId = [0]
+    usedModelTypes = {}
 
     modelVersion = templateParameters.get('modelVersion', 'null')
     descriptionLocale = templateParameters.get('locale','null')
@@ -96,24 +97,21 @@
     </Aliases>
 
 % for type in modelTypes:
-    % if isTypePropertyTrue(type, '__isObjectType'):
+    % if usedModelTypes.get(type.name, None) is None:
+        % if isinstance(type, model.ComplexType):
     <UAObjectType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${nsIndex}:${type.name}">
-        % if type.description is not None:
+            % if type.description is not None:
         <Description Locale="${descriptionLocale}">${type.description}</Description>
-        % endif
+            % endif
         <DisplayName>${type.name}</DisplayName>
         <References>
-            % for prop in type.properties:
-                % if not prop.name.startswith('__'):
+                % for prop in type.properties:
             <Reference ReferenceType="HasComponent">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
-                % endif
-            % endfor
+                % endfor
         </References>
     </UAObjectType>
 
-        % for prop in type.properties:
-
-            % if not prop.name.startswith('__'):
+            % for prop in type.properties:
 
                 % if isTypePropertyTrue(prop.type, '__isDataProperty'):
     <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
@@ -139,7 +137,7 @@
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
             <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + 'InputArguments')}</Reference>
                     % for innerProp in prop.type.properties:
-                        % if not innerProp.name.startswith('__'):
+                         % if not innerProp.name.startswith('__'):
             <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}</Reference>
                         % endif
                     % endfor
@@ -195,7 +193,7 @@
     </UAVariable>
                 % endif
 
-                % for innerProp in prop.type.properties:
+                 % for innerProp in prop.type.properties:
                     % if not innerProp.name.startswith('__'):
     <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="???" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${innerProp.name}</DisplayName>
@@ -208,12 +206,12 @@
     </UAVariable>
                     % endif
                 % endfor
-                
-            % endif
 
-        % endfor
+                <% usedModelTypes[prop.type.name] = True %>
+                    
+            % endfor
 
-    % elif isTypePropertyTrue(type, '__isDataType'):
+        % else:
     <UADataType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${nsIndex}:${type.name}" IsAbstract="false">
         <DisplayName>${type.name}</DisplayName>
         <References>
@@ -229,37 +227,26 @@
         </References>
         <Value>
             <uax:ListOfExtensionObject>
+                % for enumValue in type.values:
                 <uax:ExtensionObject>
                     <uax:TypeId>
                         <uax:Identifier>i=7594</uax:Identifier>
                     </uax:TypeId>
                     <uax:Body>
                         <uax:EnumValueType>
-                            <uax:Value>0</uax:Value>
+                            <uax:Value>${loop.index}</uax:Value>
                             <uax:DisplayName>
                                 <uax:Locale></uax:Locale>
-                                <uax:Text>Inaktiv</uax:Text>
+                                <uax:Text>${enumValue}</uax:Text>
                             </uax:DisplayName>
                         </uax:EnumValueType>
                     </uax:Body>
                 </uax:ExtensionObject>
-                <uax:ExtensionObject>
-                    <uax:TypeId>
-                        <uax:Identifier>i=7594</uax:Identifier>
-                    </uax:TypeId>
-                    <uax:Body>
-                        <uax:EnumValueType>
-                            <uax:Value>1</uax:Value>
-                            <uax:DisplayName>
-                                <uax:Locale></uax:Locale>
-                                <uax:Text>Aktiv</uax:Text>
-                            </uax:DisplayName>
-                        </uax:EnumValueType>
-                    </uax:Body>
-                </uax:ExtensionObject>
+                % endfor 
             </uax:ListOfExtensionObject>
         </Value>
     </UAVariable>
+        % endif
 
     % endif
 % endfor
