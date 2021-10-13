@@ -43,13 +43,13 @@
         return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
 
 %>
-<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s${nsIndex}="http://swarco.com/Types/Base/${modelVersion}">
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s${nsIndex}="http://swarco.com/Types/${modelVersion}">
     <NamespaceUris>
-        <Uri>http://swarco.com/Types/Base/${modelVersion}</Uri>
+        <Uri>http://swarco.com/Types/${modelVersion}</Uri>
     </NamespaceUris>
 
     <Models>
-        <Model ModelUri="http://swarco.com/Types/Base/${modelVersion}" Version="${modelVersion}" PublicationDate="${dateUtils.getCurrentIsoDateTime()}">
+        <Model ModelUri="http://swarco.com/Types/${modelVersion}" Version="${modelVersion}" PublicationDate="${dateUtils.getCurrentIsoDateTime()}">
             <RequiredModel ModelUri="http://opcfoundation.org/UA/" Version="1.04.7"></RequiredModel>
         </Model>
     </Models>
