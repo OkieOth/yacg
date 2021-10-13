@@ -13,13 +13,8 @@
                 "description": "the member I_EventResetMode",
                 "type": "object",
                 "properties": {
-                    "__isDataProperty": {
-                        "description": "tells if this is definition a data property",
-                        "type": "boolean",
-                        "default": true
-                    },
-                    "__dataType": {
-                        "description": "Assigns a data type to this data variable",
+                    "value": {
+                        "description": "the value's data type",
                         "$ref": "#/definitions/EventState"
                     },
                     "prio": {
@@ -36,13 +31,25 @@
                         "description": "historizing flag (on, off)",
                         "type": "boolean",
                         "default": true
+                    },
+                    "foo": {
+                        "description": "foo",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "bar": {
+                        "description": "bar",
+                        "type": "number"
+                    },
+                    "test": {
+                        "description": "test",
+                        "type": "string"
                     }
                 },
                 "required": [
-                    "__isDataProperty",
-                    "__dataType",
+                    "value",
                     "prio",
-                    "internalType",
+                    "internal-type",
                     "historizing"
                 ]
             },
@@ -62,6 +69,7 @@
                     "prio": {
                         "description": "prio number",
                         "type": "integer",
+                        "format": "int32",
                         "default": 1
                     },
                     "historizing": {

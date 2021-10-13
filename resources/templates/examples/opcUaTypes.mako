@@ -8,11 +8,18 @@
 
     usedIds = {}
     lastUsedId = [0]
+    aliasBlacklist = {}
     usedModelTypes = {}
 
     modelVersion = templateParameters.get('modelVersion', 'null')
     descriptionLocale = templateParameters.get('locale','null')
     nsIndex = templateParameters.get('nsIndex', '1')
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for prop in type.properties:
+                if isinstance(prop.type, model.ComplexType):
+                    aliasBlacklist[prop.type.name] = True
 
     def printId(typeName):
         existingId = usedIds.get(typeName, None)
@@ -23,12 +30,12 @@
             usedIds[typeName] = lastUsedId[0]
             return lastUsedId[0]
 
-    def getDataTypeFromProperty(property):
-        dataType = modelFuncs.getProperty('__dataType', property)
-        if dataType is None:
+    def getValueDataTypeFromType(type):
+        value = modelFuncs.getProperty('value', type)
+        if value is None:
             return None
         else:
-            return dataType.type.name
+            return value.type.name
     
     def getTypeFromMethodArgs(method):
         arguments = modelFuncs.getProperty('__arguments', method)
@@ -42,6 +49,26 @@
 
     def isTypePropertyTrue(type, propertyName):
         return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
+
+    def getOpcUaPrimitive(type):
+        opcUaPrimitiveType = "InvalidTypeName"
+
+        if isinstance(type, model.IntegerType):
+            if type.format == model.IntegerTypeFormatEnum.INT32:
+                opcUaPrimitiveType = "Int32"
+            else:
+                opcUaPrimitiveType = "Int64"
+        elif isinstance(type, model.NumberType):
+            if type.format == model.NumberTypeFormatEnum.FLOAT:
+                opcUaPrimitiveType = "Float"
+            else:
+                opcUaPrimitiveType = "Double"
+        elif isinstance(type, model.BooleanType):
+            opcUaPrimitiveType = "Boolean"
+        elif isinstance(type, model.StringType):
+            opcUaPrimitiveType = "String"
+
+        return opcUaPrimitiveType
 
 %>
 <UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s${nsIndex}="http://swarco.com/Types/${modelVersion}">
@@ -90,14 +117,14 @@
         <Alias Alias="Argument">i=296</Alias>
         <Alias Alias="EnumValueType">i=7594</Alias>
 % for type in modelTypes:
-    % if not (modelFuncs.hasProperty('__isDataProperty', type) or modelFuncs.hasProperty('__isMethod', type)):
+    % if aliasBlacklist.get(type.name) is None:
         <Alias Alias="${type.name}">ns=${nsIndex};i=${printId(type.name)}</Alias>
     % endif
 % endfor
     </Aliases>
 
 % for type in modelTypes:
-    % if usedModelTypes.get(type.name, None) is None:
+    % if usedModelTypes.get(type.name) is None:
         % if isinstance(type, model.ComplexType):
     <UAObjectType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${nsIndex}:${type.name}">
             % if type.description is not None:
@@ -113,23 +140,7 @@
 
             % for prop in type.properties:
 
-                % if isTypePropertyTrue(prop.type, '__isDataProperty'):
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
-                    % if prop.type.description is not None:
-        <Description Locale="${descriptionLocale}">${type.description}</Description>
-                    % endif
-        <DisplayName>${prop.name}</DisplayName>
-        <References>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
-                % for innerProp in prop.type.properties:
-                    % if not innerProp.name.startswith('__'):
-            <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}</Reference>
-                    % endif
-                % endfor
-        </References>
-    </UAVariable>
-
-                % elif isTypePropertyTrue(prop.type, '__isMethod'):
+                % if isTypePropertyTrue(prop.type, '__isMethod'):
     <UAMethod NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}">
         <DisplayName>${prop.name}</DisplayName>
         <References>
@@ -191,18 +202,35 @@
             </uax:ListOfExtensionObject>
         </Value>
     </UAVariable>
+                % else:
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeFromType(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+                    % if prop.type.description is not None:
+        <Description Locale="${descriptionLocale}">${type.description}</Description>
+                    % endif
+        <DisplayName>${prop.name}</DisplayName>
+        <References>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
+                % for innerProp in prop.type.properties:
+                    % if innerProp.name != 'value':
+            <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}</Reference>
+                    % endif
+                % endfor
+        </References>
+    </UAVariable>
                 % endif
 
-                 % for innerProp in prop.type.properties:
-                    % if not innerProp.name.startswith('__'):
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="???" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+                % for innerProp in prop.type.properties:
+                    % if not innerProp.name.startswith('__') and innerProp.name != 'value':
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="${getOpcUaPrimitive(innerProp.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${innerProp.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
         </References>
+                        % if innerProp.type.default is not None:
         <Value>
             ${innerProp.type.default}
         </Value>
+                        % endif
     </UAVariable>
                     % endif
                 % endfor
