@@ -66,6 +66,12 @@
             return getOpcUaPrimitive(value.type)
         else:
             return value.type.name
+
+    def getDataTypeFromProperty(type):
+        if isinstance(prop.type, model.EnumType):
+            return prop.type.name
+        else:
+            return opcUaPrimitives.get(getOpcUaPrimitive(prop.type))
     
     def getComplexTypeNameFromMethodArgs(method):
         arguments = modelFuncs.getProperty('__arguments', method)
@@ -131,7 +137,9 @@
                 % if isTypePropertyTrue(prop.type, '__isMethod'):
     <UAMethod NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}">
         <DisplayName>${prop.name}</DisplayName>
-        <References>
+                    % if prop.type.description is not None:
+        <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
+                    % endif
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
             <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + 'InputArguments')}</Reference>
@@ -198,40 +206,52 @@
             </uax:ListOfExtensionObject>
         </Value>
     </UAVariable>
-                % else:
+                % elif isinstance(prop.type, model.ComplexType):
     <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
                     % if prop.type.description is not None:
-        <Description Locale="${descriptionLocale}">${type.description}</Description>
+        <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
                     % endif
         <DisplayName>${prop.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
-                % for innerProp in prop.type.properties:
-                    % if innerProp.name != 'value':
+                    % for innerProp in prop.type.properties:
+                        % if innerProp.name != 'value':
             <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}</Reference>
+                        % endif
+                    % endfor
+        </References>
+    </UAVariable>
+                % else:
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1" ArrayDimensions="${1 if prop.isArray else 0}" AccessLevel="1" UserAccessLevel="1">
+                    % if prop.type.description is not None:
+        <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
                     % endif
-                % endfor
+        <DisplayName>${prop.name}</DisplayName>
+        <References>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
         </References>
     </UAVariable>
                 % endif
 
-                % for innerProp in prop.type.properties:
-                    % if not innerProp.name.startswith('__') and innerProp.name != 'value':
+                % if isinstance(prop.type, model.ComplexType):
+                    % for innerProp in prop.type.properties:
+                        % if not innerProp.name.startswith('__') and innerProp.name != 'value':
     <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="${getOpcUaPrimitive(innerProp.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${innerProp.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
         </References>
-                        % if innerProp.type.default is not None:
+                            % if innerProp.type.default is not None:
         <Value>
             ${innerProp.type.default}
         </Value>
-                        % endif
+                            % endif
     </UAVariable>
-                    % endif
-                % endfor
+                        % endif
+                    % endfor
 
-                <% usedModelTypes[prop.type.name] = True %>
+                    <% usedModelTypes[prop.type.name] = True %>
+                % endif
                     
             % endfor
 
