@@ -8,8 +8,16 @@
 
     usedIds = {}
     lastUsedId = [0]
-    aliasBlacklist = {}
     usedModelTypes = {}
+    aliasBlacklist = {}
+    opcUaPrimitives = {
+        'Boolean': 1,
+        'Int32': 6,
+        'Int64': 8,
+        'Float': 10,
+        'Double': 11,
+        'String': 12
+    }
 
     modelVersion = templateParameters.get('modelVersion', 'null')
     descriptionLocale = templateParameters.get('locale','null')
@@ -30,14 +38,14 @@
             usedIds[typeName] = lastUsedId[0]
             return lastUsedId[0]
 
-    def getValueDataTypeFromType(type):
+    def getValueDataTypeNameFromType(type):
         value = modelFuncs.getProperty('value', type)
         if value is None:
             return None
         else:
             return value.type.name
     
-    def getTypeFromMethodArgs(method):
+    def getComplexTypeNameFromMethodArgs(method):
         arguments = modelFuncs.getProperty('__arguments', method)
         if arguments is None:
             return None
@@ -45,28 +53,28 @@
             return arguments.type.name
 
     def getArgsFromType(type):
-        return modelFuncs.getProperty('__arguments', prop.type)
+        return modelFuncs.getProperty('__arguments', type)
 
     def isTypePropertyTrue(type, propertyName):
         return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
 
     def getOpcUaPrimitive(type):
-        opcUaPrimitiveType = "InvalidTypeName"
+        opcUaPrimitiveType = 'InvalidTypeName'
 
         if isinstance(type, model.IntegerType):
             if type.format == model.IntegerTypeFormatEnum.INT32:
-                opcUaPrimitiveType = "Int32"
+                opcUaPrimitiveType = 'Int32'
             else:
-                opcUaPrimitiveType = "Int64"
+                opcUaPrimitiveType = 'Int64'
         elif isinstance(type, model.NumberType):
             if type.format == model.NumberTypeFormatEnum.FLOAT:
-                opcUaPrimitiveType = "Float"
+                opcUaPrimitiveType = 'Float'
             else:
-                opcUaPrimitiveType = "Double"
+                opcUaPrimitiveType = 'Double'
         elif isinstance(type, model.BooleanType):
-            opcUaPrimitiveType = "Boolean"
+            opcUaPrimitiveType = 'Boolean'
         elif isinstance(type, model.StringType):
-            opcUaPrimitiveType = "String"
+            opcUaPrimitiveType = 'String'
 
         return opcUaPrimitiveType
 
@@ -83,31 +91,9 @@
     </Models>
 
     <Aliases>
-        <Alias Alias="Boolean">i=1</Alias>
-        <Alias Alias="SByte">i=2</Alias>
-        <Alias Alias="Byte">i=3</Alias>
-        <Alias Alias="Int16">i=4</Alias>
-        <Alias Alias="UInt16">i=5</Alias>
-        <Alias Alias="Int32">i=6</Alias>
-        <Alias Alias="UInt32">i=7</Alias>
-        <Alias Alias="Int64">i=8</Alias>
-        <Alias Alias="UInt64">i=9</Alias>
-        <Alias Alias="Float">i=10</Alias>
-        <Alias Alias="Double">i=11</Alias>
-        <Alias Alias="DateTime">i=13</Alias>
-        <Alias Alias="String">i=12</Alias>
-        <Alias Alias="ByteString">i=15</Alias>
-        <Alias Alias="Guid">i=14</Alias>
-        <Alias Alias="XmlElement">i=16</Alias>
-        <Alias Alias="NodeId">i=17</Alias>
-        <Alias Alias="ExpandedNodeId">i=18</Alias>
-        <Alias Alias="QualifiedName">i=20</Alias>
-        <Alias Alias="LocalizedText">i=21</Alias>
-        <Alias Alias="StatusCode">i=19</Alias>
-        <Alias Alias="Structure">i=22</Alias>
-        <Alias Alias="Number">i=26</Alias>
-        <Alias Alias="Integer">i=27</Alias>
-        <Alias Alias="UInteger">i=28</Alias>
+% for primitive in opcUaPrimitives:
+        <Alias Alias="${primitive}">i=${opcUaPrimitives[primitive]}</Alias>
+% endfor
         <Alias Alias="Enumeration">i=29</Alias>
         <Alias Alias="HasTypeDefinition">i=40</Alias>
         <Alias Alias="HasSubtype">i=45</Alias>
@@ -172,7 +158,11 @@
                         <uax:Argument>
                             <uax:Name>${prop.name}${i}</uax:Name>
                             <uax:DataType>
-                                <uax:Identifier>ns=${nsIndex};i=${printId(getTypeFromMethodArgs(prop.type))}</uax:Identifier>
+                            % if getOpcUaPrimitive(getArgsFromType(prop.type).type).lower().startswith('invalid'):
+                                <uax:Identifier>ns=${nsIndex};i=${printId(getComplexTypeNameFromMethodArgs(prop.type))}</uax:Identifier>
+                            % else:
+                                <uax:Identifier>i=${opcUaPrimitives.get(getOpcUaPrimitive(getArgsFromType(prop.type).type))}</uax:Identifier>
+                            % endif
                             </uax:DataType>
                             <uax:ValueRank>-1</uax:ValueRank>
                             <uax:ArrayDimensions></uax:ArrayDimensions>
@@ -190,7 +180,11 @@
                         <uax:Argument>
                             <uax:Name>${prop.name}</uax:Name>
                             <uax:DataType>
-                                <uax:Identifier>ns=${nsIndex};i=${printId(getTypeFromMethodArgs(prop.type))}</uax:Identifier>
+                            % if getOpcUaPrimitive(getArgsFromType(prop.type).type).lower().startswith('invalid'):
+                                <uax:Identifier>ns=${nsIndex};i=${printId(getComplexTypeNameFromMethodArgs(prop.type))}</uax:Identifier>
+                            % else:
+                                <uax:Identifier>i=${opcUaPrimitives.get(getOpcUaPrimitive(getArgsFromType(prop.type).type))}</uax:Identifier>
+                            % endif
                             </uax:DataType>
                             <uax:ValueRank>-1</uax:ValueRank>
                             <uax:ArrayDimensions></uax:ArrayDimensions>
@@ -203,7 +197,7 @@
         </Value>
     </UAVariable>
                 % else:
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeFromType(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
                     % if prop.type.description is not None:
         <Description Locale="${descriptionLocale}">${type.description}</Description>
                     % endif
