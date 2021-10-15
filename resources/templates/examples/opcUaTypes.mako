@@ -108,6 +108,7 @@
         <Alias Alias="HasSubtype">i=45</Alias>
         <Alias Alias="HasProperty">i=46</Alias>
         <Alias Alias="HasComponent">i=47</Alias>
+        <Alias Alias="BaseObjectType">i=58</Alias>
         <Alias Alias="PropertyType">i=68</Alias>
         <Alias Alias="Argument">i=296</Alias>
         <Alias Alias="EnumValueType">i=7594</Alias>
@@ -127,6 +128,7 @@
             % endif
         <DisplayName>${type.name}</DisplayName>
         <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
                 % for prop in type.properties:
                     % if isinstance(prop.type, model.ComplexType):
             <Reference ReferenceType="HasComponent">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
@@ -244,6 +246,7 @@
     <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="${getOpcUaPrimitive(innerProp.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${innerProp.name}</DisplayName>
         <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
         </References>
                             % if innerProp.type.default is not None:
@@ -271,8 +274,8 @@
     <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + 'EnumStrings')}" BrowseName="${nsIndex}:EnumStrings" DataType="EnumValueType" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>EnumStrings</DisplayName>
         <References>
-            <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
         </References>
         <Value>
             <uax:ListOfExtensionObject>
