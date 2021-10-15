@@ -73,16 +73,16 @@
             return prop.type.name
         else:
             return getOpcUaPrimitive(prop.type)
+
+    def getArgsFromType(type):
+        return modelFuncs.getProperty('__arguments', type)
     
     def getComplexTypeNameFromMethodArgs(method):
-        arguments = modelFuncs.getProperty('__arguments', method)
+        arguments = getArgsFromType(method)
         if arguments is None:
             return None
         else:
             return arguments.type.name
-
-    def getArgsFromType(type):
-        return modelFuncs.getProperty('__arguments', type)
 
     def isTypePropertyTrue(type, propertyName):
         return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
