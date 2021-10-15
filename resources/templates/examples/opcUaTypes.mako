@@ -71,7 +71,7 @@
         if isinstance(prop.type, model.EnumType):
             return prop.type.name
         else:
-            return opcUaPrimitives.get(getOpcUaPrimitive(prop.type))
+            return getOpcUaPrimitive(prop.type)
     
     def getComplexTypeNameFromMethodArgs(method):
         arguments = modelFuncs.getProperty('__arguments', method)
@@ -127,7 +127,11 @@
         <DisplayName>${type.name}</DisplayName>
         <References>
                 % for prop in type.properties:
+                    % if isinstance(prop.type, model.ComplexType):
             <Reference ReferenceType="HasComponent">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
+                    % else:
+            <Reference ReferenceType="HasComponent">ns=${nsIndex};i=${printId(type.name + prop.name)}</Reference>
+                    % endif
                 % endfor
         </References>
     </UAObjectType>
@@ -223,8 +227,8 @@
     </UAVariable>
                 % else:
     <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1" ArrayDimensions="${1 if prop.isArray else 0}" AccessLevel="1" UserAccessLevel="1">
-                    % if prop.type.description is not None:
-        <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
+                    % if prop.description is not None:
+        <Description Locale="${descriptionLocale}">${prop.description}</Description>
                     % endif
         <DisplayName>${prop.name}</DisplayName>
         <References>
