@@ -33,9 +33,9 @@
             "program": "${workspaceFolder}/yacg.py",
             "args": [
                 "--models",
-                "resources/models/json/yacg_opcua_model.json",
+                "resources/models/json/yacg_opcua_typicals.json",
                 "--singleFileTemplates",
-                "resources/templates/examples/opcUaTypes.mako=tmp/Types-Base-Result.xml",
+                "resources/templates/examples/opcUaTypes.mako=tmp/Types-Result.xml",
                 "--templateParameters",
                 // "locale=de",
                 // "nsIndex=2",
