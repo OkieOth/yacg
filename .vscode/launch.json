@@ -39,6 +39,7 @@
                 "--templateParameters",
                 // "locale=de",
                 // "nsIndex=2",
+                // "nsUri=http://foo.com/Types",
                 "modelVersion=0.0.1"
             ],
             "console": "integratedTerminal"
