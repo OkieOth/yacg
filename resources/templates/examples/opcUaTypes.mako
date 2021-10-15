@@ -38,26 +38,6 @@
             usedIds[typeName] = lastUsedId[0]
             return lastUsedId[0]
 
-    def getValueDataTypeNameFromType(type):
-        value = modelFuncs.getProperty('value', type)
-        if value is None:
-            return None
-        else:
-            return value.type.name
-    
-    def getComplexTypeNameFromMethodArgs(method):
-        arguments = modelFuncs.getProperty('__arguments', method)
-        if arguments is None:
-            return None
-        else:
-            return arguments.type.name
-
-    def getArgsFromType(type):
-        return modelFuncs.getProperty('__arguments', type)
-
-    def isTypePropertyTrue(type, propertyName):
-        return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
-
     def getOpcUaPrimitive(type):
         opcUaPrimitiveType = 'InvalidTypeName'
 
@@ -77,6 +57,28 @@
             opcUaPrimitiveType = 'String'
 
         return opcUaPrimitiveType
+
+    def getValueDataTypeNameFromType(type):
+        value = modelFuncs.getProperty('value', type)
+        if value is None:
+            return None
+        elif getOpcUaPrimitive(value.type) != 'InvalidTypeName':
+            return getOpcUaPrimitive(value.type)
+        else:
+            return value.type.name
+    
+    def getComplexTypeNameFromMethodArgs(method):
+        arguments = modelFuncs.getProperty('__arguments', method)
+        if arguments is None:
+            return None
+        else:
+            return arguments.type.name
+
+    def getArgsFromType(type):
+        return modelFuncs.getProperty('__arguments', type)
+
+    def isTypePropertyTrue(type, propertyName):
+        return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
 
 %>
 <UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s${nsIndex}="http://swarco.com/Types/${modelVersion}">
@@ -158,7 +160,7 @@
                         <uax:Argument>
                             <uax:Name>${prop.name}${i}</uax:Name>
                             <uax:DataType>
-                            % if getOpcUaPrimitive(getArgsFromType(prop.type).type).lower().startswith('invalid'):
+                            % if getOpcUaPrimitive(getArgsFromType(prop.type).type) == 'InvalidTypeName':
                                 <uax:Identifier>ns=${nsIndex};i=${printId(getComplexTypeNameFromMethodArgs(prop.type))}</uax:Identifier>
                             % else:
                                 <uax:Identifier>i=${opcUaPrimitives.get(getOpcUaPrimitive(getArgsFromType(prop.type).type))}</uax:Identifier>
@@ -180,7 +182,7 @@
                         <uax:Argument>
                             <uax:Name>${prop.name}</uax:Name>
                             <uax:DataType>
-                            % if getOpcUaPrimitive(getArgsFromType(prop.type).type).lower().startswith('invalid'):
+                            % if getOpcUaPrimitive(getArgsFromType(prop.type).type) == 'InvalidTypeName':
                                 <uax:Identifier>ns=${nsIndex};i=${printId(getComplexTypeNameFromMethodArgs(prop.type))}</uax:Identifier>
                             % else:
                                 <uax:Identifier>i=${opcUaPrimitives.get(getOpcUaPrimitive(getArgsFromType(prop.type).type))}</uax:Identifier>
