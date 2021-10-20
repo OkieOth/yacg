@@ -14,7 +14,28 @@
                 "type": "array",
                 "items": {
                     "description": "event state",
-                    "$ref": "#/definitions/EventState"
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "the value's data type",
+                            "$ref": "#/definitions/EventState"
+                        },
+                        "prio": {
+                            "description": "prio number",
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "internal-type": {
+                            "description": "internal type (event, measurement, command)",
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "historizing": {
+                            "description": "historizing flag (on, off)",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    }
                 }
             },
             "I_EventResetMode": {
