@@ -9,6 +9,14 @@
         "type": "object",
         "description": "Anlagenrückstellung",
         "properties": {
+            "I_EventStateCollection": {
+                "description": "the member I_EventStateCollection",
+                "type": "array",
+                "items": {
+                    "description": "event state",
+                    "$ref": "#/definitions/EventState"
+                }
+            },
             "I_EventResetMode": {
                 "description": "the member I_EventResetMode",
                 "type": "object",
