@@ -214,7 +214,7 @@
         </Value>
     </UAVariable>
                 % elif isinstance(prop.type, model.ComplexType):
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" AccessLevel="1" UserAccessLevel="1">
                     % if prop.type.description is not None:
         <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
                     % endif
@@ -229,7 +229,7 @@
         </References>
     </UAVariable>
                 % else:
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1" ArrayDimensions="${1 if prop.isArray else 0}" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="1 if prop.isArray else 0" ArrayDimensions="${1 if prop.isArray else 0}" AccessLevel="1" UserAccessLevel="1">
                     % if prop.description is not None:
         <Description Locale="${descriptionLocale}">${prop.description}</Description>
                     % endif
@@ -243,7 +243,7 @@
                 % if isinstance(prop.type, model.ComplexType):
                     % for innerProp in prop.type.properties:
                         % if not innerProp.name.startswith('__') and innerProp.name != 'value':
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="${getOpcUaPrimitive(innerProp.type)}" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="${getOpcUaPrimitive(innerProp.type)}" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${innerProp.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
