@@ -26,7 +26,7 @@ import ${domain}
 
 
 % for type in modelTypes:
-    % if modelFuncs.isEnumType(type):    
+    % if modelFuncs.isEnumType(type):
 class ${type.name}(Enum):
         % for value in type.values:
     ${stringUtils.toUpperCaseName(value)} = '${value}'
@@ -63,7 +63,9 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
     """
 
         % endif
-    def __init__(self):
+    def __init__(self, config):
+        if config is None:
+            return None
         % if type.extendsType is not None:
         super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
         % endif
@@ -75,51 +77,37 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                 % if type.description != None:
         #: ${type.description}
                 % endif
-        self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
-            % endfor
-        % endif
-
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
-        % for property in type.properties:
             % if modelFuncs.isBaseType(property.type):
                 % if not property.isArray:
-
-        obj.${property.name} = dict.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
+        self.${property.name} = config.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else ${pythonFuncs.getDefaultPythonValue(property)}})
                 % else:
-
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
-        for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(elem${stringUtils.toUpperCamelCase(property.name)})
+        self.${property.name} = config.get('${property.name}', [])
                 % endif
             % elif modelFuncs.isEnumType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = ${property.type.name}.valueForString(dict.get('${property.name}', None))
+        self.${property.name} = ${property.type.name}.valueForString(config.get('${property.name}', None))
                 % else:
 
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
-        for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(
-                ${property.type.name}.valueForString(elem${stringUtils.toUpperCamelCase(property.name)}))
+        self.${property.name} = [
+            ${property.type.name}.valueForString(item)
+            for item in config.get('${property.name}', [])
+        ]
                 % endif
             % else:
                 % if not property.isArray:
 
-        obj.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(dict.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None}))
+        self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(config.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None}))
                 % else:
 
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
-        for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(
-                ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
+        self.${property.name} = [
+            ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(item)
+            for item in config.get('${property.name}', [])
+        ]
                 % endif
             % endif
-        % endfor
-        return obj
+            % endfor
+        % endif
 
     % endif
 
