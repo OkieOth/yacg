@@ -13,10 +13,9 @@ class PathType (yacg.model.model.Type):
     def __init__(self, dictObj = None):
         super(yacg.model.model.Type, self).__init__()
 
-        #: base type that contains all REST path information
+        #: REST path with parameter pattern if existing
         self.pathPattern = None
 
-        #: base type that contains all REST path information
         self.commands = []
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -39,31 +38,25 @@ class Command:
 
     def __init__(self, dictObj = None):
 
-        #: information to a specific HTTP command
+        #: HTTP command that is executed on the path
         self.command = None
 
-        #: information to a specific HTTP command
+        #: tags array of the open api path section
         self.tags = []
 
-        #: information to a specific HTTP command
         self.summary = None
 
-        #: information to a specific HTTP command
         self.description = None
 
-        #: information to a specific HTTP command
         self.operationId = None
 
-        #: information to a specific HTTP command
         self.parameters = []
 
-        #: information to a specific HTTP command
+        #: content of the request body that is passed to the back-end
         self.requestBody = None
 
-        #: information to a specific HTTP command
         self.responses = []
 
-        #: information to a specific HTTP command
         self.security = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -154,22 +147,21 @@ class Parameter:
 
     def __init__(self, dictObj = None):
 
-        #: definition of a parameter that is used in the request
+        #: how is the parameter passed to the back-end, attention
         self.inType = None
 
-        #: definition of a parameter that is used in the request
+        #: name of the parameter
         self.name = None
 
-        #: definition of a parameter that is used in the request
         self.isArray = None
 
-        #: definition of a parameter that is used in the request
+        #: some more words to explain for what this parameter is good for
         self.description = None
 
-        #: definition of a parameter that is used in the request
+        #: tells if is this parameter optional
         self.required = None
 
-        #: definition of a parameter that is used in the request
+        #: type that is passed as parameter
         self.type = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -197,13 +189,12 @@ class RequestBody:
 
     def __init__(self, dictObj = None):
 
-        #: definition of a parameter that is used in the request
+        #: some more words to explain for what this parameter is good for
         self.description = None
 
-        #: definition of a parameter that is used in the request
+        #: tells if is this parameter optional
         self.required = None
 
-        #: definition of a parameter that is used in the request
         self.content = []
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -228,13 +219,11 @@ class Response:
 
     def __init__(self, dictObj = None):
 
-        #: description of a response option for a request
+        #: HTTP return code for the specific case
         self.returnCode = None
 
-        #: description of a response option for a request
         self.description = None
 
-        #: description of a response option for a request
         self.content = []
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -272,8 +261,10 @@ class CommandSecurity:
 class ContentEntry:
     def __init__(self, dictObj = None):
 
+        #: mime type that is passed as request body
         self.mimeType = None
 
+        #: meta model type that is passed in the body
         self.type = None
 
         self.isArray = False

@@ -26,22 +26,16 @@ class IntegerType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: integer values
         self.format = None
 
-        #: integer values
         self.default = None
 
-        #: integer values
         self.minimum = None
 
-        #: integer values
         self.exclusiveMinimum = None
 
-        #: integer values
         self.maximum = None
 
-        #: integer values
         self.exclusiveMaximum = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -99,22 +93,16 @@ class NumberType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: floating point values
         self.format = None
 
-        #: floating point values
         self.default = None
 
-        #: floating point values
         self.minimum = None
 
-        #: floating point values
         self.exclusiveMinimum = None
 
-        #: floating point values
         self.maximum = None
 
-        #: floating point values
         self.exclusiveMaximum = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -172,7 +160,6 @@ class BooleanType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: boolean values
         self.default = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -191,7 +178,6 @@ class StringType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: integer values
         self.default = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -210,7 +196,6 @@ class UuidType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: UUID values
         self.default = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -229,28 +214,24 @@ class EnumType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: type for enum values - fixed value types
+        #: is taken from the version entry of the file, optional
         self.version = None
 
-        #: type for enum values - fixed value types
         self.name = None
 
-        #: type for enum values - fixed value types
+        #: scope/domain to that this type belongs
         self.domain = None
 
-        #: type for enum values - fixed value types
+        #: from what file the Type was loaded
         self.source = None
 
-        #: type for enum values - fixed value types
         self.description = None
 
-        #: type for enum values - fixed value types
         self.values = []
 
-        #: type for enum values - fixed value types
         self.default = None
 
-        #: type for enum values - fixed value types
+        #: additional flags to mark a type
         self.tags = []
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -287,10 +268,8 @@ class Tag:
 
     def __init__(self, dictObj = None):
 
-        #: a tag type
         self.name = None
 
-        #: a tag type
         self.value = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -311,19 +290,14 @@ class DateType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: type for date values
         self.default = None
 
-        #: type for date values
         self.minimum = None
 
-        #: type for date values
         self.exclusiveMinimum = None
 
-        #: type for date values
         self.maximum = None
 
-        #: type for date values
         self.exclusiveMaximum = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -350,19 +324,14 @@ class DateTimeType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: type for timestamp values
         self.default = None
 
-        #: type for timestamp values
         self.minimum = None
 
-        #: type for timestamp values
         self.exclusiveMinimum = None
 
-        #: type for timestamp values
         self.maximum = None
 
-        #: type for timestamp values
         self.exclusiveMaximum = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -389,7 +358,6 @@ class BytesType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: type for byte values, it will usually be rendered to a byte array
         self.default = None
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -408,34 +376,32 @@ class ComplexType (Type):
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
 
-        #: complex type description
+        #: is taken from the version entry of the file, optional
         self.version = None
 
-        #: complex type description
         self.name = None
 
-        #: complex type description
         self.description = None
 
-        #: complex type description
+        #: scope/domain to that this type belongs
         self.domain = None
 
-        #: complex type description
+        #: from what file the Type was loaded
         self.source = None
 
-        #: complex type description
+        #: in case of inheritance points this attrib to the base type
         self.extendsType = None
 
-        #: complex type description
+        #: list of types that extend this type
         self.extendedBy = []
 
-        #: complex type description
+        #: types that hold attribute references to that type
         self.referencedBy = []
 
-        #: complex type description
+        #: properties of that type
         self.properties = []
 
-        #: complex type description
+        #: additional flags to mark a type
         self.tags = []
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -483,46 +449,46 @@ class Property:
 
     def __init__(self, dictObj = None):
 
-        #: a property of a type
+        #: type unique identifier
         self.name = None
 
-        #: a property of a type
+        #: true - if the property is an array
         self.isArray = False
 
-        #: a property of a type
+        #: defined minimum of elements in the array/list
         self.arrayMinItems = None
 
-        #: a property of a type
+        #: defined maximum of elements in the array/list
         self.arrayMaxItems = None
 
-        #: a property of a type
+        #: the elements in the array/list have to be unique
         self.arrayUniqueItems = None
 
-        #: a property of a type
+        #: either a basic or a complex type
         self.type = None
 
-        #: a property of a type
+        #: additional flags to mark a property
         self.tags = []
 
-        #: a property of a type
+        #: optional description from the model file
         self.description = None
 
-        #: a property of a type
+        #: is set to true if the attribute is marked as required in the model
         self.required = False
 
-        #: a property of a type
+        #: ordinal number/position of that attribute. Used in protobuf e.g.
         self.ordinal = None
 
-        #: a property of a type
+        #: is set to true if the attribute is the key of the type
         self.isKey = False
 
-        #: a property of a type
+        #: is set to true if the attribute is some kind of a name, caption, label or anther kind of visual key
         self.isVisualKey = False
 
-        #: a property of a type
+        #: content of the 'x-ref' entry of a property, points to an implicit referenced type, e.g. for IDs
         self.foreignKey = None
 
-        #: a property of a type
+        #: holds the original 'format' value from the schema
         self.format = None
         if dictObj is not None:
             self.initFromDict(dictObj)
