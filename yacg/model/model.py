@@ -9,8 +9,9 @@ class Type:
     """ Dummy base class to implement strong typed references
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         pass
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -23,7 +24,7 @@ class IntegerType (Type):
     """ integer values
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         self.format = None
@@ -37,6 +38,7 @@ class IntegerType (Type):
         self.maximum = None
 
         self.exclusiveMaximum = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -90,7 +92,7 @@ class NumberType (Type):
     """ floating point values
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         self.format = None
@@ -104,6 +106,7 @@ class NumberType (Type):
         self.maximum = None
 
         self.exclusiveMaximum = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -157,10 +160,11 @@ class BooleanType (Type):
     """ boolean values
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         self.default = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -175,10 +179,11 @@ class StringType (Type):
     """ integer values
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         self.default = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -193,10 +198,11 @@ class UuidType (Type):
     """ UUID values
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         self.default = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -211,7 +217,7 @@ class EnumType (Type):
     """ type for enum values - fixed value types
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         #: is taken from the version entry of the file, optional
@@ -233,6 +239,7 @@ class EnumType (Type):
 
         #: additional flags to mark a type
         self.tags = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -266,11 +273,12 @@ class Tag:
     """ a tag type
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         self.name = None
 
         self.value = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -287,7 +295,7 @@ class DateType (Type):
     """ type for date values
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         self.default = None
@@ -299,6 +307,7 @@ class DateType (Type):
         self.maximum = None
 
         self.exclusiveMaximum = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -321,7 +330,7 @@ class DateTimeType (Type):
     """ type for timestamp values
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         self.default = None
@@ -333,6 +342,7 @@ class DateTimeType (Type):
         self.maximum = None
 
         self.exclusiveMaximum = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -355,10 +365,11 @@ class BytesType (Type):
     """ type for byte values, it will usually be rendered to a byte array
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         self.default = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -373,7 +384,7 @@ class ComplexType (Type):
     """ complex type description
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(Type, self).__init__()
 
         #: is taken from the version entry of the file, optional
@@ -403,6 +414,7 @@ class ComplexType (Type):
 
         #: additional flags to mark a type
         self.tags = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -420,7 +432,7 @@ class ComplexType (Type):
 
         self.source = dictObj.get('source', None)
 
-        self.extendsType = ComplexType(dict.get('extendsType', None))
+        self.extendsType = ComplexType(dictObj.get('extendsType', None))
 
         arrayExtendedBy = dictObj.get('extendedBy', [])
         for elemExtendedBy in arrayExtendedBy:
@@ -447,7 +459,7 @@ class Property:
     """ a property of a type
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: type unique identifier
         self.name = None
@@ -490,6 +502,7 @@ class Property:
 
         #: holds the original 'format' value from the schema
         self.format = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -507,7 +520,7 @@ class Property:
 
         self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
 
-        self.type = Type(dict.get('type', None))
+        self.type = Type(dictObj.get('type', None))
 
         arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
@@ -524,7 +537,7 @@ class Property:
 
         self.isVisualKey = dictObj.get('isVisualKey', False)
 
-        self.foreignKey = Type(dict.get('foreignKey', None))
+        self.foreignKey = Type(dictObj.get('foreignKey', None))
 
         self.format = dictObj.get('format', None)
 

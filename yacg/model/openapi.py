@@ -10,13 +10,14 @@ class PathType (yacg.model.model.Type):
     """ base type that contains all REST path information
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         super(yacg.model.model.Type, self).__init__()
 
         #: REST path with parameter pattern if existing
         self.pathPattern = None
 
         self.commands = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -36,7 +37,7 @@ class Command:
     """ information to a specific HTTP command
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: HTTP command that is executed on the path
         self.command = None
@@ -58,6 +59,7 @@ class Command:
         self.responses = []
 
         self.security = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -82,14 +84,14 @@ class Command:
             self.parameters.append(
                 Parameter(elemParameters))
 
-        self.requestBody = RequestBody(dict.get('requestBody', None))
+        self.requestBody = RequestBody(dictObj.get('requestBody', None))
 
         arrayResponses = dictObj.get('responses', [])
         for elemResponses in arrayResponses:
             self.responses.append(
                 Response(elemResponses))
 
-        self.security = CommandSecurity(dict.get('security', None))
+        self.security = CommandSecurity(dictObj.get('security', None))
 
 
 class CommandCommandEnum(Enum):
@@ -145,7 +147,7 @@ class Parameter:
     """ definition of a parameter that is used in the request
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: how is the parameter passed to the back-end, attention
         self.inType = None
@@ -163,6 +165,7 @@ class Parameter:
 
         #: type that is passed as parameter
         self.type = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -180,14 +183,14 @@ class Parameter:
 
         self.required = dictObj.get('required', None)
 
-        self.type = yacg.model.model.Type(dict.get('type', None))
+        self.type = yacg.model.model.Type(dictObj.get('type', None))
 
 
 class RequestBody:
     """ definition of a parameter that is used in the request
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: some more words to explain for what this parameter is good for
         self.description = None
@@ -196,6 +199,7 @@ class RequestBody:
         self.required = None
 
         self.content = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -217,7 +221,7 @@ class Response:
     """ description of a response option for a request
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: HTTP return code for the specific case
         self.returnCode = None
@@ -225,6 +229,7 @@ class Response:
         self.description = None
 
         self.content = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -243,9 +248,10 @@ class Response:
 
 
 class CommandSecurity:
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         self.scopes = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -259,7 +265,7 @@ class CommandSecurity:
 
 
 class ContentEntry:
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: mime type that is passed as request body
         self.mimeType = None
@@ -268,6 +274,7 @@ class ContentEntry:
         self.type = None
 
         self.isArray = False
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -277,7 +284,7 @@ class ContentEntry:
 
         self.mimeType = dictObj.get('mimeType', None)
 
-        self.type = yacg.model.model.Type(dict.get('type', None))
+        self.type = yacg.model.model.Type(dictObj.get('type', None))
 
         self.isArray = dictObj.get('isArray', False)
 

@@ -9,7 +9,7 @@ class Job:
     """ base object that describes a complete code generation process
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: a short identifier of that job
         self.name = None
@@ -22,6 +22,7 @@ class Job:
 
         #: list of tasks that should run
         self.tasks = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -48,7 +49,7 @@ class Model:
     """ A model that should be used
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: path to the jsonSchema file, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.schema = None
@@ -61,6 +62,7 @@ class Model:
 
         #: what elements should be included in the handling
         self.whiteListed = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -87,7 +89,7 @@ class Task:
     """ A task to run
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: short visual identifier
         self.name = None
@@ -109,6 +111,7 @@ class Task:
 
         #: the code generation creates one file per type with random data
         self.randomDataTask = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -130,24 +133,25 @@ class Task:
             self.whiteListed.append(
                 BlackWhiteListEntry(elemWhiteListed))
 
-        self.singleFileTask = SingleFileTask(dict.get('singleFileTask', None))
+        self.singleFileTask = SingleFileTask(dictObj.get('singleFileTask', None))
 
-        self.multiFileTask = MultiFileTask(dict.get('multiFileTask', None))
+        self.multiFileTask = MultiFileTask(dictObj.get('multiFileTask', None))
 
-        self.randomDataTask = RandomDataTask(dict.get('randomDataTask', None))
+        self.randomDataTask = RandomDataTask(dictObj.get('randomDataTask', None))
 
 
 class BlackWhiteListEntry:
     """ entry of a type back/white list
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: name that should be in-/excluded
         self.name = None
 
         #: how is the name to be interpreted. If type is missing, then 'type' is expected
         self.type = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -213,7 +217,7 @@ class SingleFileTask:
     """ parameter of a code generation task that creates one file
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: template to use for that task, either the name of a built in template, or a file system path, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.template = None
@@ -223,6 +227,7 @@ class SingleFileTask:
 
         #: custom parameter that are passed to the template, while it is processed
         self.templateParams = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -244,7 +249,7 @@ class TemplateParam:
     """ additional, template specific custom parameter for codegen task
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: name of the custom parameter
         self.name = None
@@ -260,6 +265,7 @@ class TemplateParam:
 
         #: if set then this parameter only effected types or attributes with the specific name
         self.requiredNames = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -288,7 +294,7 @@ class MultiFileTask:
     """ parameter of a code generation task that creates one file per model type
     """
 
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: template to use for that task, either the name of a built in template, or a file system path, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.template = None
@@ -319,6 +325,7 @@ class MultiFileTask:
 
         #: instead of creation of the orininal file it will be created with a '.tmp' extention, if the file aleady exists
         self.createTmpFileIfAlreadyExist = False
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -380,7 +387,7 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
 
 
 class RandomDataTask:
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         self.outputType = None
 
@@ -414,6 +421,7 @@ class RandomDataTask:
         self.defaultMaxDepth = 2
 
         self.specialMaxDepths = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -495,7 +503,7 @@ class RandomDataTaskOutputTypeEnum(Enum):
 
 
 class RandomDataTaskSpecialElemCounts:
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: TYPENAME
         self.typeName = None
@@ -505,6 +513,7 @@ class RandomDataTaskSpecialElemCounts:
 
         #: how many elements should be generated for that type at maximum
         self.maxElemCount = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -520,13 +529,14 @@ class RandomDataTaskSpecialElemCounts:
 
 
 class RandomDataTaskSpecialKeyPropNames:
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: TYPENAME
         self.typeName = None
 
         #: name of the attribute that represents the key for that type
         self.keyPropName = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -540,7 +550,7 @@ class RandomDataTaskSpecialKeyPropNames:
 
 
 class RandomDataTaskValuePools:
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: TYPENAME.PROPERTYNAME
         self.propertyName = None
@@ -549,6 +559,7 @@ class RandomDataTaskValuePools:
         self.useAll = False
 
         self.values = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -566,7 +577,7 @@ class RandomDataTaskValuePools:
 
 
 class RandomDataTaskSpecialArraySizes:
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: TYPENAME.PROPERTYNAME
         self.propertyName = None
@@ -576,6 +587,7 @@ class RandomDataTaskSpecialArraySizes:
 
         #: how many array elements should be generated for that attrib, at maximum
         self.maxSize = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -591,13 +603,14 @@ class RandomDataTaskSpecialArraySizes:
 
 
 class RandomDataTaskSpecialMaxDepths:
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
 
         #: TYPENAME.PROPERTYNAME
         self.propertyName = None
 
         #: max level depth when generating object trees for that attrib
         self.maxDepth = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 

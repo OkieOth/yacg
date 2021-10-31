@@ -63,7 +63,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
     """
 
         % endif
-    def __init__(self, dictObj = None):
+    def __init__(self, dictObj=None):
         % if type.extendsType is not None:
         super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
         % endif
@@ -78,6 +78,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
             % endfor
         % endif
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -109,7 +110,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % else:
                 % if not property.isArray:
 
-        self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(dict.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None}))
+        self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None}))
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
