@@ -10,95 +10,95 @@ class PathType (yacg.model.model.Type):
     """ base type that contains all REST path information
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(yacg.model.model.Type, self).__init__()
+        if dictObj is None:
 
-        #: base type that contains all REST path information
-        self.pathPattern = None
+            #: base type that contains all REST path information
+            self.pathPattern = None
 
-        #: base type that contains all REST path information
-        self.commands = []
+            #: base type that contains all REST path information
+            self.commands = []
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.pathPattern = dict.get('pathPattern', None)
+        self.pathPattern = dictObj.get('pathPattern', None)
 
-        arrayCommands = dict.get('commands', [])
+        arrayCommands = dictObj.get('commands', [])
         for elemCommands in arrayCommands:
-            obj.commands.append(
-                Command.dictToObject(elemCommands))
-        return obj
+            self.commands.append(
+                Command(elemCommands))
 
 
 class Command:
     """ information to a specific HTTP command
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
+        if dictObj is None:
 
-        #: information to a specific HTTP command
-        self.command = None
+            #: information to a specific HTTP command
+            self.command = None
 
-        #: information to a specific HTTP command
-        self.tags = []
+            #: information to a specific HTTP command
+            self.tags = []
 
-        #: information to a specific HTTP command
-        self.summary = None
+            #: information to a specific HTTP command
+            self.summary = None
 
-        #: information to a specific HTTP command
-        self.description = None
+            #: information to a specific HTTP command
+            self.description = None
 
-        #: information to a specific HTTP command
-        self.operationId = None
+            #: information to a specific HTTP command
+            self.operationId = None
 
-        #: information to a specific HTTP command
-        self.parameters = []
+            #: information to a specific HTTP command
+            self.parameters = []
 
-        #: information to a specific HTTP command
-        self.requestBody = None
+            #: information to a specific HTTP command
+            self.requestBody = None
 
-        #: information to a specific HTTP command
-        self.responses = []
+            #: information to a specific HTTP command
+            self.responses = []
 
-        #: information to a specific HTTP command
-        self.security = None
+            #: information to a specific HTTP command
+            self.security = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.command = CommandCommandEnum.valueForString(dict.get('command', None))
+        self.command = CommandCommandEnum.valueForString(dictObj.get('command', None))
 
-        arrayTags = dict.get('tags', [])
+        arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
-            obj.tags.append(elemTags)
+            self.tags.append(elemTags)
 
-        obj.summary = dict.get('summary', None)
+        self.summary = dictObj.get('summary', None)
 
-        obj.description = dict.get('description', None)
+        self.description = dictObj.get('description', None)
 
-        obj.operationId = dict.get('operationId', None)
+        self.operationId = dictObj.get('operationId', None)
 
-        arrayParameters = dict.get('parameters', [])
+        arrayParameters = dictObj.get('parameters', [])
         for elemParameters in arrayParameters:
-            obj.parameters.append(
-                Parameter.dictToObject(elemParameters))
+            self.parameters.append(
+                Parameter(elemParameters))
 
-        obj.requestBody = RequestBody.dictToObject(dict.get('requestBody', None))
+        self.requestBody = RequestBody(dict.get('requestBody', None))
 
-        arrayResponses = dict.get('responses', [])
+        arrayResponses = dictObj.get('responses', [])
         for elemResponses in arrayResponses:
-            obj.responses.append(
-                Response.dictToObject(elemResponses))
+            self.responses.append(
+                Response(elemResponses))
 
-        obj.security = CommandSecurity.dictToObject(dict.get('security', None))
-        return obj
+        self.security = CommandSecurity(dict.get('security', None))
 
 
 class CommandCommandEnum(Enum):
@@ -154,148 +154,148 @@ class Parameter:
     """ definition of a parameter that is used in the request
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
+        if dictObj is None:
 
-        #: definition of a parameter that is used in the request
-        self.inType = None
+            #: definition of a parameter that is used in the request
+            self.inType = None
 
-        #: definition of a parameter that is used in the request
-        self.name = None
+            #: definition of a parameter that is used in the request
+            self.name = None
 
-        #: definition of a parameter that is used in the request
-        self.isArray = None
+            #: definition of a parameter that is used in the request
+            self.isArray = None
 
-        #: definition of a parameter that is used in the request
-        self.description = None
+            #: definition of a parameter that is used in the request
+            self.description = None
 
-        #: definition of a parameter that is used in the request
-        self.required = None
+            #: definition of a parameter that is used in the request
+            self.required = None
 
-        #: definition of a parameter that is used in the request
-        self.type = None
+            #: definition of a parameter that is used in the request
+            self.type = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.inType = ParameterInTypeEnum.valueForString(dict.get('inType', None))
+        self.inType = ParameterInTypeEnum.valueForString(dictObj.get('inType', None))
 
-        obj.name = dict.get('name', None)
+        self.name = dictObj.get('name', None)
 
-        obj.isArray = dict.get('isArray', None)
+        self.isArray = dictObj.get('isArray', None)
 
-        obj.description = dict.get('description', None)
+        self.description = dictObj.get('description', None)
 
-        obj.required = dict.get('required', None)
+        self.required = dictObj.get('required', None)
 
-        obj.type = yacg.model.model.Type.dictToObject(dict.get('type', None))
-        return obj
+        self.type = yacg.model.model.Type(dict.get('type', None))
 
 
 class RequestBody:
     """ definition of a parameter that is used in the request
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
+        if dictObj is None:
 
-        #: definition of a parameter that is used in the request
-        self.description = None
+            #: definition of a parameter that is used in the request
+            self.description = None
 
-        #: definition of a parameter that is used in the request
-        self.required = None
+            #: definition of a parameter that is used in the request
+            self.required = None
 
-        #: definition of a parameter that is used in the request
-        self.content = []
+            #: definition of a parameter that is used in the request
+            self.content = []
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.description = dict.get('description', None)
+        self.description = dictObj.get('description', None)
 
-        obj.required = dict.get('required', None)
+        self.required = dictObj.get('required', None)
 
-        arrayContent = dict.get('content', [])
+        arrayContent = dictObj.get('content', [])
         for elemContent in arrayContent:
-            obj.content.append(
-                ContentEntry.dictToObject(elemContent))
-        return obj
+            self.content.append(
+                ContentEntry(elemContent))
 
 
 class Response:
     """ description of a response option for a request
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
+        if dictObj is None:
 
-        #: description of a response option for a request
-        self.returnCode = None
+            #: description of a response option for a request
+            self.returnCode = None
 
-        #: description of a response option for a request
-        self.description = None
+            #: description of a response option for a request
+            self.description = None
 
-        #: description of a response option for a request
-        self.content = []
+            #: description of a response option for a request
+            self.content = []
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.returnCode = dict.get('returnCode', None)
+        self.returnCode = dictObj.get('returnCode', None)
 
-        obj.description = dict.get('description', None)
+        self.description = dictObj.get('description', None)
 
-        arrayContent = dict.get('content', [])
+        arrayContent = dictObj.get('content', [])
         for elemContent in arrayContent:
-            obj.content.append(
-                ContentEntry.dictToObject(elemContent))
-        return obj
+            self.content.append(
+                ContentEntry(elemContent))
 
 
 class CommandSecurity:
-    def __init__(self):
+    def __init__(self, dictObj = None):
+        if dictObj is None:
 
-        self.scopes = []
+            self.scopes = []
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        arrayScopes = dict.get('scopes', [])
+        arrayScopes = dictObj.get('scopes', [])
         for elemScopes in arrayScopes:
-            obj.scopes.append(elemScopes)
-        return obj
+            self.scopes.append(elemScopes)
 
 
 class ContentEntry:
-    def __init__(self):
+    def __init__(self, dictObj = None):
+        if dictObj is None:
 
-        self.mimeType = None
+            self.mimeType = None
 
-        self.type = None
+            self.type = None
 
-        self.isArray = False
+            self.isArray = False
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.mimeType = dict.get('mimeType', None)
+        self.mimeType = dictObj.get('mimeType', None)
 
-        obj.type = yacg.model.model.Type.dictToObject(dict.get('type', None))
+        self.type = yacg.model.model.Type(dict.get('type', None))
 
-        obj.isArray = dict.get('isArray', False)
-        return obj
+        self.isArray = dictObj.get('isArray', False)
 
 
 class ParameterInTypeEnum(Enum):

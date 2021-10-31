@@ -9,60 +9,60 @@ class Type:
     """ Dummy base class to implement strong typed references
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, dictObj = None):
+        if dictObj is None:
+            pass
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
-        return obj
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
 
 class IntegerType (Type):
     """ integer values
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: integer values
-        self.format = None
+            #: integer values
+            self.format = None
 
-        #: integer values
-        self.default = None
+            #: integer values
+            self.default = None
 
-        #: integer values
-        self.minimum = None
+            #: integer values
+            self.minimum = None
 
-        #: integer values
-        self.exclusiveMinimum = None
+            #: integer values
+            self.exclusiveMinimum = None
 
-        #: integer values
-        self.maximum = None
+            #: integer values
+            self.maximum = None
 
-        #: integer values
-        self.exclusiveMaximum = None
+            #: integer values
+            self.exclusiveMaximum = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.format = IntegerTypeFormatEnum.valueForString(dict.get('format', None))
+        self.format = IntegerTypeFormatEnum.valueForString(dictObj.get('format', None))
 
-        obj.default = dict.get('default', None)
+        self.default = dictObj.get('default', None)
 
-        obj.minimum = dict.get('minimum', None)
+        self.minimum = dictObj.get('minimum', None)
 
-        obj.exclusiveMinimum = dict.get('exclusiveMinimum', None)
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
 
-        obj.maximum = dict.get('maximum', None)
+        self.maximum = dictObj.get('maximum', None)
 
-        obj.exclusiveMaximum = dict.get('exclusiveMaximum', None)
-        return obj
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
 class IntegerTypeFormatEnum(Enum):
@@ -98,45 +98,45 @@ class NumberType (Type):
     """ floating point values
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: floating point values
-        self.format = None
+            #: floating point values
+            self.format = None
 
-        #: floating point values
-        self.default = None
+            #: floating point values
+            self.default = None
 
-        #: floating point values
-        self.minimum = None
+            #: floating point values
+            self.minimum = None
 
-        #: floating point values
-        self.exclusiveMinimum = None
+            #: floating point values
+            self.exclusiveMinimum = None
 
-        #: floating point values
-        self.maximum = None
+            #: floating point values
+            self.maximum = None
 
-        #: floating point values
-        self.exclusiveMaximum = None
+            #: floating point values
+            self.exclusiveMaximum = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.format = NumberTypeFormatEnum.valueForString(dict.get('format', None))
+        self.format = NumberTypeFormatEnum.valueForString(dictObj.get('format', None))
 
-        obj.default = dict.get('default', None)
+        self.default = dictObj.get('default', None)
 
-        obj.minimum = dict.get('minimum', None)
+        self.minimum = dictObj.get('minimum', None)
 
-        obj.exclusiveMinimum = dict.get('exclusiveMinimum', None)
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
 
-        obj.maximum = dict.get('maximum', None)
+        self.maximum = dictObj.get('maximum', None)
 
-        obj.exclusiveMaximum = dict.get('exclusiveMaximum', None)
-        return obj
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
 class NumberTypeFormatEnum(Enum):
@@ -172,407 +172,407 @@ class BooleanType (Type):
     """ boolean values
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: boolean values
-        self.default = None
+            #: boolean values
+            self.default = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.default = dict.get('default', None)
-        return obj
+        self.default = dictObj.get('default', None)
 
 
 class StringType (Type):
     """ integer values
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: integer values
-        self.default = None
+            #: integer values
+            self.default = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.default = dict.get('default', None)
-        return obj
+        self.default = dictObj.get('default', None)
 
 
 class UuidType (Type):
     """ UUID values
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: UUID values
-        self.default = None
+            #: UUID values
+            self.default = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.default = dict.get('default', None)
-        return obj
+        self.default = dictObj.get('default', None)
 
 
 class EnumType (Type):
     """ type for enum values - fixed value types
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: type for enum values - fixed value types
-        self.version = None
+            #: type for enum values - fixed value types
+            self.version = None
 
-        #: type for enum values - fixed value types
-        self.name = None
+            #: type for enum values - fixed value types
+            self.name = None
 
-        #: type for enum values - fixed value types
-        self.domain = None
+            #: type for enum values - fixed value types
+            self.domain = None
 
-        #: type for enum values - fixed value types
-        self.source = None
+            #: type for enum values - fixed value types
+            self.source = None
 
-        #: type for enum values - fixed value types
-        self.description = None
+            #: type for enum values - fixed value types
+            self.description = None
 
-        #: type for enum values - fixed value types
-        self.values = []
+            #: type for enum values - fixed value types
+            self.values = []
 
-        #: type for enum values - fixed value types
-        self.default = None
+            #: type for enum values - fixed value types
+            self.default = None
 
-        #: type for enum values - fixed value types
-        self.tags = []
+            #: type for enum values - fixed value types
+            self.tags = []
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.version = dict.get('version', None)
+        self.version = dictObj.get('version', None)
 
-        obj.name = dict.get('name', None)
+        self.name = dictObj.get('name', None)
 
-        obj.domain = dict.get('domain', None)
+        self.domain = dictObj.get('domain', None)
 
-        obj.source = dict.get('source', None)
+        self.source = dictObj.get('source', None)
 
-        obj.description = dict.get('description', None)
+        self.description = dictObj.get('description', None)
 
-        arrayValues = dict.get('values', [])
+        arrayValues = dictObj.get('values', [])
         for elemValues in arrayValues:
-            obj.values.append(elemValues)
+            self.values.append(elemValues)
 
-        obj.default = dict.get('default', None)
+        self.default = dictObj.get('default', None)
 
-        arrayTags = dict.get('tags', [])
+        arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
-            obj.tags.append(
-                Tag.dictToObject(elemTags))
-        return obj
+            self.tags.append(
+                Tag(elemTags))
 
 
 class Tag:
     """ a tag type
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
+        if dictObj is None:
 
-        #: a tag type
-        self.name = None
+            #: a tag type
+            self.name = None
 
-        #: a tag type
-        self.value = None
+            #: a tag type
+            self.value = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.name = dict.get('name', None)
+        self.name = dictObj.get('name', None)
 
-        obj.value = dict.get('value', None)
-        return obj
+        self.value = dictObj.get('value', None)
 
 
 class DateType (Type):
     """ type for date values
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: type for date values
-        self.default = None
+            #: type for date values
+            self.default = None
 
-        #: type for date values
-        self.minimum = None
+            #: type for date values
+            self.minimum = None
 
-        #: type for date values
-        self.exclusiveMinimum = None
+            #: type for date values
+            self.exclusiveMinimum = None
 
-        #: type for date values
-        self.maximum = None
+            #: type for date values
+            self.maximum = None
 
-        #: type for date values
-        self.exclusiveMaximum = None
+            #: type for date values
+            self.exclusiveMaximum = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.default = dict.get('default', None)
+        self.default = dictObj.get('default', None)
 
-        obj.minimum = dict.get('minimum', None)
+        self.minimum = dictObj.get('minimum', None)
 
-        obj.exclusiveMinimum = dict.get('exclusiveMinimum', None)
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
 
-        obj.maximum = dict.get('maximum', None)
+        self.maximum = dictObj.get('maximum', None)
 
-        obj.exclusiveMaximum = dict.get('exclusiveMaximum', None)
-        return obj
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
 class DateTimeType (Type):
     """ type for timestamp values
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: type for timestamp values
-        self.default = None
+            #: type for timestamp values
+            self.default = None
 
-        #: type for timestamp values
-        self.minimum = None
+            #: type for timestamp values
+            self.minimum = None
 
-        #: type for timestamp values
-        self.exclusiveMinimum = None
+            #: type for timestamp values
+            self.exclusiveMinimum = None
 
-        #: type for timestamp values
-        self.maximum = None
+            #: type for timestamp values
+            self.maximum = None
 
-        #: type for timestamp values
-        self.exclusiveMaximum = None
+            #: type for timestamp values
+            self.exclusiveMaximum = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.default = dict.get('default', None)
+        self.default = dictObj.get('default', None)
 
-        obj.minimum = dict.get('minimum', None)
+        self.minimum = dictObj.get('minimum', None)
 
-        obj.exclusiveMinimum = dict.get('exclusiveMinimum', None)
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
 
-        obj.maximum = dict.get('maximum', None)
+        self.maximum = dictObj.get('maximum', None)
 
-        obj.exclusiveMaximum = dict.get('exclusiveMaximum', None)
-        return obj
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
 class BytesType (Type):
     """ type for byte values, it will usually be rendered to a byte array
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: type for byte values, it will usually be rendered to a byte array
-        self.default = None
+            #: type for byte values, it will usually be rendered to a byte array
+            self.default = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.default = dict.get('default', None)
-        return obj
+        self.default = dictObj.get('default', None)
 
 
 class ComplexType (Type):
     """ complex type description
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
         super(Type, self).__init__()
+        if dictObj is None:
 
-        #: complex type description
-        self.version = None
+            #: complex type description
+            self.version = None
 
-        #: complex type description
-        self.name = None
+            #: complex type description
+            self.name = None
 
-        #: complex type description
-        self.description = None
+            #: complex type description
+            self.description = None
 
-        #: complex type description
-        self.domain = None
+            #: complex type description
+            self.domain = None
 
-        #: complex type description
-        self.source = None
+            #: complex type description
+            self.source = None
 
-        #: complex type description
-        self.extendsType = None
+            #: complex type description
+            self.extendsType = None
 
-        #: complex type description
-        self.extendedBy = []
+            #: complex type description
+            self.extendedBy = []
 
-        #: complex type description
-        self.referencedBy = []
+            #: complex type description
+            self.referencedBy = []
 
-        #: complex type description
-        self.properties = []
+            #: complex type description
+            self.properties = []
 
-        #: complex type description
-        self.tags = []
+            #: complex type description
+            self.tags = []
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.version = dict.get('version', None)
+        self.version = dictObj.get('version', None)
 
-        obj.name = dict.get('name', None)
+        self.name = dictObj.get('name', None)
 
-        obj.description = dict.get('description', None)
+        self.description = dictObj.get('description', None)
 
-        obj.domain = dict.get('domain', None)
+        self.domain = dictObj.get('domain', None)
 
-        obj.source = dict.get('source', None)
+        self.source = dictObj.get('source', None)
 
-        obj.extendsType = ComplexType.dictToObject(dict.get('extendsType', None))
+        self.extendsType = ComplexType(dict.get('extendsType', None))
 
-        arrayExtendedBy = dict.get('extendedBy', [])
+        arrayExtendedBy = dictObj.get('extendedBy', [])
         for elemExtendedBy in arrayExtendedBy:
-            obj.extendedBy.append(
-                ComplexType.dictToObject(elemExtendedBy))
+            self.extendedBy.append(
+                ComplexType(elemExtendedBy))
 
-        arrayReferencedBy = dict.get('referencedBy', [])
+        arrayReferencedBy = dictObj.get('referencedBy', [])
         for elemReferencedBy in arrayReferencedBy:
-            obj.referencedBy.append(
-                ComplexType.dictToObject(elemReferencedBy))
+            self.referencedBy.append(
+                ComplexType(elemReferencedBy))
 
-        arrayProperties = dict.get('properties', [])
+        arrayProperties = dictObj.get('properties', [])
         for elemProperties in arrayProperties:
-            obj.properties.append(
-                Property.dictToObject(elemProperties))
+            self.properties.append(
+                Property(elemProperties))
 
-        arrayTags = dict.get('tags', [])
+        arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
-            obj.tags.append(
-                Tag.dictToObject(elemTags))
-        return obj
+            self.tags.append(
+                Tag(elemTags))
 
 
 class Property:
     """ a property of a type
     """
 
-    def __init__(self):
+    def __init__(self, dictObj = None):
+        if dictObj is None:
 
-        #: a property of a type
-        self.name = None
+            #: a property of a type
+            self.name = None
 
-        #: a property of a type
-        self.isArray = False
+            #: a property of a type
+            self.isArray = False
 
-        #: a property of a type
-        self.arrayMinItems = None
+            #: a property of a type
+            self.arrayMinItems = None
 
-        #: a property of a type
-        self.arrayMaxItems = None
+            #: a property of a type
+            self.arrayMaxItems = None
 
-        #: a property of a type
-        self.arrayUniqueItems = None
+            #: a property of a type
+            self.arrayUniqueItems = None
 
-        #: a property of a type
-        self.type = None
+            #: a property of a type
+            self.type = None
 
-        #: a property of a type
-        self.tags = []
+            #: a property of a type
+            self.tags = []
 
-        #: a property of a type
-        self.description = None
+            #: a property of a type
+            self.description = None
 
-        #: a property of a type
-        self.required = False
+            #: a property of a type
+            self.required = False
 
-        #: a property of a type
-        self.ordinal = None
+            #: a property of a type
+            self.ordinal = None
 
-        #: a property of a type
-        self.isKey = False
+            #: a property of a type
+            self.isKey = False
 
-        #: a property of a type
-        self.isVisualKey = False
+            #: a property of a type
+            self.isVisualKey = False
 
-        #: a property of a type
-        self.foreignKey = None
+            #: a property of a type
+            self.foreignKey = None
 
-        #: a property of a type
-        self.format = None
+            #: a property of a type
+            self.format = None
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.name = dict.get('name', None)
+        self.name = dictObj.get('name', None)
 
-        obj.isArray = dict.get('isArray', False)
+        self.isArray = dictObj.get('isArray', False)
 
-        obj.arrayMinItems = dict.get('arrayMinItems', None)
+        self.arrayMinItems = dictObj.get('arrayMinItems', None)
 
-        obj.arrayMaxItems = dict.get('arrayMaxItems', None)
+        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
 
-        obj.arrayUniqueItems = dict.get('arrayUniqueItems', None)
+        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
 
-        obj.type = Type.dictToObject(dict.get('type', None))
+        self.type = Type(dict.get('type', None))
 
-        arrayTags = dict.get('tags', [])
+        arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
-            obj.tags.append(
-                Tag.dictToObject(elemTags))
+            self.tags.append(
+                Tag(elemTags))
 
-        obj.description = dict.get('description', None)
+        self.description = dictObj.get('description', None)
 
-        obj.required = dict.get('required', False)
+        self.required = dictObj.get('required', False)
 
-        obj.ordinal = dict.get('ordinal', None)
+        self.ordinal = dictObj.get('ordinal', None)
 
-        obj.isKey = dict.get('isKey', False)
+        self.isKey = dictObj.get('isKey', False)
 
-        obj.isVisualKey = dict.get('isVisualKey', False)
+        self.isVisualKey = dictObj.get('isVisualKey', False)
 
-        obj.foreignKey = Type.dictToObject(dict.get('foreignKey', None))
+        self.foreignKey = Type(dict.get('foreignKey', None))
 
-        obj.format = dict.get('format', None)
-        return obj
+        self.format = dictObj.get('format', None)
 
 

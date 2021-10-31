@@ -11,7 +11,6 @@
     baseModelDomain = templateParameters.get('baseModelDomain',None)
     domainList = modelFuncs.getDomainsAsList(modelTypes)
 
-
 %># Attention, this file is generated. Manual changes get lost with the next
 # run of the code generation.
 # created by yacg (template: ${templateFile} v${templateVersion})
@@ -35,15 +34,27 @@ class ${type.name}(Enum):
 
     @classmethod
     def valueForString(cls, stringValue):
-        upperStringValue = stringValue.upper() if stringValue is not None else None
-        if upperStringValue is None:
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
             return None
         % for value in type.values:
-        elif upperStringValue == '${value}':
+        elif lowerStringValue == '${value.lower()}':
             return ${type.name}.${stringUtils.toUpperCaseName(value)}
         % endfor
         else:
             return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        % for value in type.values:
+        elif enumValue == ${type.name}.${stringUtils.toUpperCaseName(value)}:
+            return '${value}'
+        % endfor
+        else:
+            return ''
+
 
     % else:
 class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)) if type.extendsType is not None else ''}:
@@ -52,63 +63,63 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
     """
 
         % endif
-    def __init__(self):
+    def __init__(self, dictObj = None):
         % if type.extendsType is not None:
         super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
         % endif
+        if dictObj is None:
         % if len(type.properties) == 0:
-        pass
+            pass
         % else:
             % for property in type.properties:
 
                 % if type.description != None:
-        #: ${type.description}
+            #: ${type.description}
                 % endif
-        self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
+            self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
             % endfor
         % endif
+        else:
+            self.initFromDict(dictObj)
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
         % for property in type.properties:
             % if modelFuncs.isBaseType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = dict.get('${property.name}', None)
+        self.${property.name} = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
                 % else:
 
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(elem${stringUtils.toUpperCamelCase(property.name)})
+            self.${property.name}.append(elem${stringUtils.toUpperCamelCase(property.name)})
                 % endif
             % elif modelFuncs.isEnumType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = ${property.type.name}.valueForString(dict.get('${property.name}', None))
+        self.${property.name} = ${property.type.name}.valueForString(dictObj.get('${property.name}', None))
                 % else:
 
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(
+            self.${property.name}.append(
                 ${property.type.name}.valueForString(elem${stringUtils.toUpperCamelCase(property.name)}))
                 % endif
             % else:
                 % if not property.isArray:
 
-        obj.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(dict.get('${property.name}', None))
+        self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(dict.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None}))
                 % else:
 
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(
-                ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
+            self.${property.name}.append(
+                ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(elem${stringUtils.toUpperCamelCase(property.name)}))
                 % endif
             % endif
         % endfor
-        return obj
 
     % endif
 
