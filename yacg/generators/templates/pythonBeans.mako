@@ -67,19 +67,18 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % if type.extendsType is not None:
         super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
         % endif
-        if dictObj is None:
         % if len(type.properties) == 0:
-            pass
+        pass
         % else:
             % for property in type.properties:
 
                 % if type.description != None:
-            #: ${type.description}
+        #: ${type.description}
                 % endif
-            self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
+        self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
             % endfor
         % endif
-        else:
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
