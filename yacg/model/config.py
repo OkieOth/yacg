@@ -10,20 +10,19 @@ class Job:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: base object that describes a complete code generation process
-            self.name = None
+        #: base object that describes a complete code generation process
+        self.name = None
 
-            #: base object that describes a complete code generation process
-            self.description = None
+        #: base object that describes a complete code generation process
+        self.description = None
 
-            #: base object that describes a complete code generation process
-            self.models = []
+        #: base object that describes a complete code generation process
+        self.models = []
 
-            #: base object that describes a complete code generation process
-            self.tasks = []
-        else:
+        #: base object that describes a complete code generation process
+        self.tasks = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -50,20 +49,19 @@ class Model:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: A model that should be used
-            self.schema = None
+        #: A model that should be used
+        self.schema = None
 
-            #: A model that should be used
-            self.domain = None
+        #: A model that should be used
+        self.domain = None
 
-            #: A model that should be used
-            self.blackListed = []
+        #: A model that should be used
+        self.blackListed = []
 
-            #: A model that should be used
-            self.whiteListed = []
-        else:
+        #: A model that should be used
+        self.whiteListed = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -90,29 +88,28 @@ class Task:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: A task to run
-            self.name = None
+        #: A task to run
+        self.name = None
 
-            #: A task to run
-            self.description = None
+        #: A task to run
+        self.description = None
 
-            #: A task to run
-            self.blackListed = []
+        #: A task to run
+        self.blackListed = []
 
-            #: A task to run
-            self.whiteListed = []
+        #: A task to run
+        self.whiteListed = []
 
-            #: A task to run
-            self.singleFileTask = None
+        #: A task to run
+        self.singleFileTask = None
 
-            #: A task to run
-            self.multiFileTask = None
+        #: A task to run
+        self.multiFileTask = None
 
-            #: A task to run
-            self.randomDataTask = None
-        else:
+        #: A task to run
+        self.randomDataTask = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -145,14 +142,13 @@ class BlackWhiteListEntry:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: entry of a type back/white list
-            self.name = None
+        #: entry of a type back/white list
+        self.name = None
 
-            #: entry of a type back/white list
-            self.type = None
-        else:
+        #: entry of a type back/white list
+        self.type = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -218,17 +214,16 @@ class SingleFileTask:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: parameter of a code generation task that creates one file
-            self.template = None
+        #: parameter of a code generation task that creates one file
+        self.template = None
 
-            #: parameter of a code generation task that creates one file
-            self.destFile = None
+        #: parameter of a code generation task that creates one file
+        self.destFile = None
 
-            #: parameter of a code generation task that creates one file
-            self.templateParams = []
-        else:
+        #: parameter of a code generation task that creates one file
+        self.templateParams = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -250,23 +245,22 @@ class TemplateParam:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: additional, template specific custom parameter for codegen task
-            self.name = None
+        #: additional, template specific custom parameter for codegen task
+        self.name = None
 
-            #: additional, template specific custom parameter for codegen task
-            self.value = None
+        #: additional, template specific custom parameter for codegen task
+        self.value = None
 
-            #: additional, template specific custom parameter for codegen task
-            self.requiredDomains = []
+        #: additional, template specific custom parameter for codegen task
+        self.requiredDomains = []
 
-            #: additional, template specific custom parameter for codegen task
-            self.requiredTags = []
+        #: additional, template specific custom parameter for codegen task
+        self.requiredTags = []
 
-            #: additional, template specific custom parameter for codegen task
-            self.requiredNames = []
-        else:
+        #: additional, template specific custom parameter for codegen task
+        self.requiredNames = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -295,38 +289,37 @@ class MultiFileTask:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: parameter of a code generation task that creates one file per model type
-            self.template = None
+        #: parameter of a code generation task that creates one file per model type
+        self.template = None
 
-            #: parameter of a code generation task that creates one file per model type
-            self.destDir = None
+        #: parameter of a code generation task that creates one file per model type
+        self.destDir = None
 
-            #: parameter of a code generation task that creates one file per model type
-            self.destFilePrefix = None
+        #: parameter of a code generation task that creates one file per model type
+        self.destFilePrefix = None
 
-            #: parameter of a code generation task that creates one file per model type
-            self.destFilePostfix = None
+        #: parameter of a code generation task that creates one file per model type
+        self.destFilePostfix = None
 
-            #: parameter of a code generation task that creates one file per model type
-            self.destFileExt = None
+        #: parameter of a code generation task that creates one file per model type
+        self.destFileExt = None
 
-            #: parameter of a code generation task that creates one file per model type
-            self.upperCaseStartedDestFileName = False
+        #: parameter of a code generation task that creates one file per model type
+        self.upperCaseStartedDestFileName = False
 
-            #: parameter of a code generation task that creates one file per model type
-            self.fileFilterType = MultiFileTaskFileFilterTypeEnum.TYPE
+        #: parameter of a code generation task that creates one file per model type
+        self.fileFilterType = MultiFileTaskFileFilterTypeEnum.TYPE
 
-            #: parameter of a code generation task that creates one file per model type
-            self.templateParams = []
+        #: parameter of a code generation task that creates one file per model type
+        self.templateParams = []
 
-            #: parameter of a code generation task that creates one file per model type
-            self.createOnlyIfNotExist = False
+        #: parameter of a code generation task that creates one file per model type
+        self.createOnlyIfNotExist = False
 
-            #: parameter of a code generation task that creates one file per model type
-            self.createTmpFileIfAlreadyExist = False
-        else:
+        #: parameter of a code generation task that creates one file per model type
+        self.createTmpFileIfAlreadyExist = False
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -388,34 +381,33 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
 
 class RandomDataTask:
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            self.outputType = None
+        self.outputType = None
 
-            self.destDir = None
+        self.destDir = None
 
-            self.defaultMinElemCount = 1
+        self.defaultMinElemCount = 1
 
-            self.defaultMaxElemCount = 10
+        self.defaultMaxElemCount = 10
 
-            self.specialElemCounts = []
+        self.specialElemCounts = []
 
-            self.defaultKeyPropNames = []
+        self.defaultKeyPropNames = []
 
-            self.specialKeyPropNames = []
+        self.specialKeyPropNames = []
 
-            self.valuePools = []
+        self.valuePools = []
 
-            self.defaultMinSize = 1
+        self.defaultMinSize = 1
 
-            self.defaultMaxSize = 10
+        self.defaultMaxSize = 10
 
-            self.specialArraySizes = []
+        self.specialArraySizes = []
 
-            self.defaultMaxDepth = 2
+        self.defaultMaxDepth = 2
 
-            self.specialMaxDepths = []
-        else:
+        self.specialMaxDepths = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -497,14 +489,13 @@ class RandomDataTaskOutputTypeEnum(Enum):
 
 class RandomDataTaskSpecialElemCounts:
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            self.typeName = None
+        self.typeName = None
 
-            self.minElemCount = None
+        self.minElemCount = None
 
-            self.maxElemCount = None
-        else:
+        self.maxElemCount = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -520,12 +511,11 @@ class RandomDataTaskSpecialElemCounts:
 
 class RandomDataTaskSpecialKeyPropNames:
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            self.typeName = None
+        self.typeName = None
 
-            self.keyPropName = None
-        else:
+        self.keyPropName = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -539,14 +529,13 @@ class RandomDataTaskSpecialKeyPropNames:
 
 class RandomDataTaskValuePools:
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            self.propertyName = None
+        self.propertyName = None
 
-            self.useAll = False
+        self.useAll = False
 
-            self.values = []
-        else:
+        self.values = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -564,14 +553,13 @@ class RandomDataTaskValuePools:
 
 class RandomDataTaskSpecialArraySizes:
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            self.propertyName = None
+        self.propertyName = None
 
-            self.minSize = None
+        self.minSize = None
 
-            self.maxSize = None
-        else:
+        self.maxSize = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -587,12 +575,11 @@ class RandomDataTaskSpecialArraySizes:
 
 class RandomDataTaskSpecialMaxDepths:
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            self.propertyName = None
+        self.propertyName = None
 
-            self.maxDepth = None
-        else:
+        self.maxDepth = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):

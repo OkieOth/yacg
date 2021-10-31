@@ -12,14 +12,13 @@ class PathType (yacg.model.model.Type):
 
     def __init__(self, dictObj = None):
         super(yacg.model.model.Type, self).__init__()
-        if dictObj is None:
 
-            #: base type that contains all REST path information
-            self.pathPattern = None
+        #: base type that contains all REST path information
+        self.pathPattern = None
 
-            #: base type that contains all REST path information
-            self.commands = []
-        else:
+        #: base type that contains all REST path information
+        self.commands = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -39,35 +38,34 @@ class Command:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: information to a specific HTTP command
-            self.command = None
+        #: information to a specific HTTP command
+        self.command = None
 
-            #: information to a specific HTTP command
-            self.tags = []
+        #: information to a specific HTTP command
+        self.tags = []
 
-            #: information to a specific HTTP command
-            self.summary = None
+        #: information to a specific HTTP command
+        self.summary = None
 
-            #: information to a specific HTTP command
-            self.description = None
+        #: information to a specific HTTP command
+        self.description = None
 
-            #: information to a specific HTTP command
-            self.operationId = None
+        #: information to a specific HTTP command
+        self.operationId = None
 
-            #: information to a specific HTTP command
-            self.parameters = []
+        #: information to a specific HTTP command
+        self.parameters = []
 
-            #: information to a specific HTTP command
-            self.requestBody = None
+        #: information to a specific HTTP command
+        self.requestBody = None
 
-            #: information to a specific HTTP command
-            self.responses = []
+        #: information to a specific HTTP command
+        self.responses = []
 
-            #: information to a specific HTTP command
-            self.security = None
-        else:
+        #: information to a specific HTTP command
+        self.security = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -155,26 +153,25 @@ class Parameter:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: definition of a parameter that is used in the request
-            self.inType = None
+        #: definition of a parameter that is used in the request
+        self.inType = None
 
-            #: definition of a parameter that is used in the request
-            self.name = None
+        #: definition of a parameter that is used in the request
+        self.name = None
 
-            #: definition of a parameter that is used in the request
-            self.isArray = None
+        #: definition of a parameter that is used in the request
+        self.isArray = None
 
-            #: definition of a parameter that is used in the request
-            self.description = None
+        #: definition of a parameter that is used in the request
+        self.description = None
 
-            #: definition of a parameter that is used in the request
-            self.required = None
+        #: definition of a parameter that is used in the request
+        self.required = None
 
-            #: definition of a parameter that is used in the request
-            self.type = None
-        else:
+        #: definition of a parameter that is used in the request
+        self.type = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -199,17 +196,16 @@ class RequestBody:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: definition of a parameter that is used in the request
-            self.description = None
+        #: definition of a parameter that is used in the request
+        self.description = None
 
-            #: definition of a parameter that is used in the request
-            self.required = None
+        #: definition of a parameter that is used in the request
+        self.required = None
 
-            #: definition of a parameter that is used in the request
-            self.content = []
-        else:
+        #: definition of a parameter that is used in the request
+        self.content = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -231,17 +227,16 @@ class Response:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: description of a response option for a request
-            self.returnCode = None
+        #: description of a response option for a request
+        self.returnCode = None
 
-            #: description of a response option for a request
-            self.description = None
+        #: description of a response option for a request
+        self.description = None
 
-            #: description of a response option for a request
-            self.content = []
-        else:
+        #: description of a response option for a request
+        self.content = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -260,10 +255,9 @@ class Response:
 
 class CommandSecurity:
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            self.scopes = []
-        else:
+        self.scopes = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -277,14 +271,13 @@ class CommandSecurity:
 
 class ContentEntry:
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            self.mimeType = None
+        self.mimeType = None
 
-            self.type = None
+        self.type = None
 
-            self.isArray = False
-        else:
+        self.isArray = False
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):

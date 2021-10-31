@@ -72,8 +72,8 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % else:
             % for property in type.properties:
 
-                % if type.description != None:
-        #: ${type.description}
+                % if property.description != None:
+        #: ${property.description}
                 % endif
         self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
             % endfor

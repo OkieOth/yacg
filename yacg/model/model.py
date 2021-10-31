@@ -10,9 +10,8 @@ class Type:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
-            pass
-        else:
+        pass
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -26,26 +25,25 @@ class IntegerType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: integer values
-            self.format = None
+        #: integer values
+        self.format = None
 
-            #: integer values
-            self.default = None
+        #: integer values
+        self.default = None
 
-            #: integer values
-            self.minimum = None
+        #: integer values
+        self.minimum = None
 
-            #: integer values
-            self.exclusiveMinimum = None
+        #: integer values
+        self.exclusiveMinimum = None
 
-            #: integer values
-            self.maximum = None
+        #: integer values
+        self.maximum = None
 
-            #: integer values
-            self.exclusiveMaximum = None
-        else:
+        #: integer values
+        self.exclusiveMaximum = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -100,26 +98,25 @@ class NumberType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: floating point values
-            self.format = None
+        #: floating point values
+        self.format = None
 
-            #: floating point values
-            self.default = None
+        #: floating point values
+        self.default = None
 
-            #: floating point values
-            self.minimum = None
+        #: floating point values
+        self.minimum = None
 
-            #: floating point values
-            self.exclusiveMinimum = None
+        #: floating point values
+        self.exclusiveMinimum = None
 
-            #: floating point values
-            self.maximum = None
+        #: floating point values
+        self.maximum = None
 
-            #: floating point values
-            self.exclusiveMaximum = None
-        else:
+        #: floating point values
+        self.exclusiveMaximum = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -174,11 +171,10 @@ class BooleanType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: boolean values
-            self.default = None
-        else:
+        #: boolean values
+        self.default = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -194,11 +190,10 @@ class StringType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: integer values
-            self.default = None
-        else:
+        #: integer values
+        self.default = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -214,11 +209,10 @@ class UuidType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: UUID values
-            self.default = None
-        else:
+        #: UUID values
+        self.default = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -234,32 +228,31 @@ class EnumType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: type for enum values - fixed value types
-            self.version = None
+        #: type for enum values - fixed value types
+        self.version = None
 
-            #: type for enum values - fixed value types
-            self.name = None
+        #: type for enum values - fixed value types
+        self.name = None
 
-            #: type for enum values - fixed value types
-            self.domain = None
+        #: type for enum values - fixed value types
+        self.domain = None
 
-            #: type for enum values - fixed value types
-            self.source = None
+        #: type for enum values - fixed value types
+        self.source = None
 
-            #: type for enum values - fixed value types
-            self.description = None
+        #: type for enum values - fixed value types
+        self.description = None
 
-            #: type for enum values - fixed value types
-            self.values = []
+        #: type for enum values - fixed value types
+        self.values = []
 
-            #: type for enum values - fixed value types
-            self.default = None
+        #: type for enum values - fixed value types
+        self.default = None
 
-            #: type for enum values - fixed value types
-            self.tags = []
-        else:
+        #: type for enum values - fixed value types
+        self.tags = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -293,14 +286,13 @@ class Tag:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: a tag type
-            self.name = None
+        #: a tag type
+        self.name = None
 
-            #: a tag type
-            self.value = None
-        else:
+        #: a tag type
+        self.value = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -318,23 +310,22 @@ class DateType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: type for date values
-            self.default = None
+        #: type for date values
+        self.default = None
 
-            #: type for date values
-            self.minimum = None
+        #: type for date values
+        self.minimum = None
 
-            #: type for date values
-            self.exclusiveMinimum = None
+        #: type for date values
+        self.exclusiveMinimum = None
 
-            #: type for date values
-            self.maximum = None
+        #: type for date values
+        self.maximum = None
 
-            #: type for date values
-            self.exclusiveMaximum = None
-        else:
+        #: type for date values
+        self.exclusiveMaximum = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -358,23 +349,22 @@ class DateTimeType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: type for timestamp values
-            self.default = None
+        #: type for timestamp values
+        self.default = None
 
-            #: type for timestamp values
-            self.minimum = None
+        #: type for timestamp values
+        self.minimum = None
 
-            #: type for timestamp values
-            self.exclusiveMinimum = None
+        #: type for timestamp values
+        self.exclusiveMinimum = None
 
-            #: type for timestamp values
-            self.maximum = None
+        #: type for timestamp values
+        self.maximum = None
 
-            #: type for timestamp values
-            self.exclusiveMaximum = None
-        else:
+        #: type for timestamp values
+        self.exclusiveMaximum = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -398,11 +388,10 @@ class BytesType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: type for byte values, it will usually be rendered to a byte array
-            self.default = None
-        else:
+        #: type for byte values, it will usually be rendered to a byte array
+        self.default = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -418,38 +407,37 @@ class ComplexType (Type):
 
     def __init__(self, dictObj = None):
         super(Type, self).__init__()
-        if dictObj is None:
 
-            #: complex type description
-            self.version = None
+        #: complex type description
+        self.version = None
 
-            #: complex type description
-            self.name = None
+        #: complex type description
+        self.name = None
 
-            #: complex type description
-            self.description = None
+        #: complex type description
+        self.description = None
 
-            #: complex type description
-            self.domain = None
+        #: complex type description
+        self.domain = None
 
-            #: complex type description
-            self.source = None
+        #: complex type description
+        self.source = None
 
-            #: complex type description
-            self.extendsType = None
+        #: complex type description
+        self.extendsType = None
 
-            #: complex type description
-            self.extendedBy = []
+        #: complex type description
+        self.extendedBy = []
 
-            #: complex type description
-            self.referencedBy = []
+        #: complex type description
+        self.referencedBy = []
 
-            #: complex type description
-            self.properties = []
+        #: complex type description
+        self.properties = []
 
-            #: complex type description
-            self.tags = []
-        else:
+        #: complex type description
+        self.tags = []
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
@@ -494,50 +482,49 @@ class Property:
     """
 
     def __init__(self, dictObj = None):
-        if dictObj is None:
 
-            #: a property of a type
-            self.name = None
+        #: a property of a type
+        self.name = None
 
-            #: a property of a type
-            self.isArray = False
+        #: a property of a type
+        self.isArray = False
 
-            #: a property of a type
-            self.arrayMinItems = None
+        #: a property of a type
+        self.arrayMinItems = None
 
-            #: a property of a type
-            self.arrayMaxItems = None
+        #: a property of a type
+        self.arrayMaxItems = None
 
-            #: a property of a type
-            self.arrayUniqueItems = None
+        #: a property of a type
+        self.arrayUniqueItems = None
 
-            #: a property of a type
-            self.type = None
+        #: a property of a type
+        self.type = None
 
-            #: a property of a type
-            self.tags = []
+        #: a property of a type
+        self.tags = []
 
-            #: a property of a type
-            self.description = None
+        #: a property of a type
+        self.description = None
 
-            #: a property of a type
-            self.required = False
+        #: a property of a type
+        self.required = False
 
-            #: a property of a type
-            self.ordinal = None
+        #: a property of a type
+        self.ordinal = None
 
-            #: a property of a type
-            self.isKey = False
+        #: a property of a type
+        self.isKey = False
 
-            #: a property of a type
-            self.isVisualKey = False
+        #: a property of a type
+        self.isVisualKey = False
 
-            #: a property of a type
-            self.foreignKey = None
+        #: a property of a type
+        self.foreignKey = None
 
-            #: a property of a type
-            self.format = None
-        else:
+        #: a property of a type
+        self.format = None
+        if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
