@@ -87,8 +87,11 @@
     def isTypePropertyTrue(type, propertyName):
         return modelFuncs.hasProperty(propertyName, type) and modelFuncs.getProperty(propertyName, type).type.default
 
-    def castIsArrayToInt(prop):
-        return 1 if prop.isArray else -1
+    def castIsArrayToInt(prop, castForArrayDimensions = False):
+        if castForArrayDimensions:
+            return 1 if prop.isArray else 0
+        else:
+            return 1 if prop.isArray else -1
 
 %>
 <UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s${nsIndex}="${nsUri}/${modelVersion}">
@@ -217,7 +220,7 @@
         </Value>
     </UAVariable>
                 % elif isinstance(prop.type, model.ComplexType):
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop)}" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop, True)}" AccessLevel="1" UserAccessLevel="1">
                     % if prop.type.description is not None:
         <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
                     % endif
@@ -232,7 +235,7 @@
         </References>
     </UAVariable>
                 % else:
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop)}" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop, True)}" AccessLevel="1" UserAccessLevel="1">
                     % if prop.description is not None:
         <Description Locale="${descriptionLocale}">${prop.description}</Description>
                     % endif
