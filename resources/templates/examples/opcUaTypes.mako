@@ -257,7 +257,9 @@
         </References>
                             % if innerProp.type.default is not None:
         <Value>
-            ${innerProp.type.default}
+            <${getOpcUaPrimitive(innerProp.type)}>
+                ${innerProp.type.default}
+            </${getOpcUaPrimitive(innerProp.type)}>
         </Value>
                             % endif
     </UAVariable>

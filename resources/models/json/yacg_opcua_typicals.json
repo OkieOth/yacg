@@ -68,11 +68,13 @@
                     },
                     "bar": {
                         "description": "bar",
-                        "type": "number"
+                        "type": "number",
+                        "default": 3.5
                     },
                     "test": {
                         "description": "test",
-                        "type": "string"
+                        "type": "string",
+                        "default": "Test"
                     }
                 },
                 "required": [
