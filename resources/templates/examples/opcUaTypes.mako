@@ -129,10 +129,10 @@
     % if usedModelTypes.get(type.name) is None:
         % if isinstance(type, model.ComplexType):
     <UAObjectType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${nsIndex}:${type.name}">
+        <DisplayName>${type.name}</DisplayName>
             % if type.description is not None:
         <Description Locale="${descriptionLocale}">${type.description}</Description>
             % endif
-        <DisplayName>${type.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
                 % for prop in type.properties:
@@ -221,10 +221,10 @@
     </UAVariable>
                 % elif isinstance(prop.type, model.ComplexType):
     <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop, True)}" AccessLevel="1" UserAccessLevel="1">
+        <DisplayName>${prop.name}</DisplayName>
                     % if prop.type.description is not None:
         <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
                     % endif
-        <DisplayName>${prop.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
                     % for innerProp in prop.type.properties:
@@ -236,10 +236,10 @@
     </UAVariable>
                 % else:
     <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop, True)}" AccessLevel="1" UserAccessLevel="1">
+        <DisplayName>${prop.name}</DisplayName>
                     % if prop.description is not None:
         <Description Locale="${descriptionLocale}">${prop.description}</Description>
                     % endif
-        <DisplayName>${prop.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
         </References>
