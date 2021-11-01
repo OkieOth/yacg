@@ -23,7 +23,8 @@
                         "prio": {
                             "description": "prio number",
                             "type": "integer",
-                            "default": 1
+                            "default": 1,
+                            "format": "int32"
                         },
                         "internal-type": {
                             "description": "internal type (event, measurement, command)",
