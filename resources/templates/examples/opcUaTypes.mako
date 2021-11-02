@@ -110,12 +110,14 @@
         <Alias Alias="${primitive}">i=${opcUaPrimitives[primitive]}</Alias>
 % endfor
         <Alias Alias="Enumeration">i=29</Alias>
+        <Alias Alias="HasModellingRule">i=37</Alias>
         <Alias Alias="HasTypeDefinition">i=40</Alias>
         <Alias Alias="HasSubtype">i=45</Alias>
         <Alias Alias="HasProperty">i=46</Alias>
         <Alias Alias="HasComponent">i=47</Alias>
         <Alias Alias="BaseObjectType">i=58</Alias>
         <Alias Alias="PropertyType">i=68</Alias>
+        <Alias Alias="Mandatory">i=78</Alias>
         <Alias Alias="Argument">i=296</Alias>
         <Alias Alias="EnumValueType">i=7594</Alias>
 % for type in modelTypes:
@@ -155,6 +157,7 @@
                     % endif
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + 'InputArguments')}</Reference>
                     % for innerProp in prop.type.properties:
                          % if not innerProp.name.startswith('__'):
@@ -167,6 +170,7 @@
         <DisplayName>InputArguments</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
         </References>
         <Value>
@@ -226,7 +230,9 @@
         <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
                     % endif
         <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
                     % for innerProp in prop.type.properties:
                         % if innerProp.name != 'value':
             <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}</Reference>
@@ -241,6 +247,8 @@
         <Description Locale="${descriptionLocale}">${prop.description}</Description>
                     % endif
         <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
         </References>
     </UAVariable>
@@ -253,6 +261,7 @@
         <DisplayName>${innerProp.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=${nsIndex};i=${printId(prop.type.name)}</Reference>
         </References>
                             % if innerProp.type.default is not None:
