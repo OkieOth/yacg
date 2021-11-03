@@ -130,7 +130,7 @@
 % for type in modelTypes:
     % if usedModelTypes.get(type.name) is None:
         % if isinstance(type, model.ComplexType):
-    <UAObjectType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${nsIndex}:${type.name}">
+    <UAObjectType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${type.name}">
         <DisplayName>${type.name}</DisplayName>
             % if type.description is not None:
         <Description Locale="${descriptionLocale}">${type.description}</Description>
@@ -150,7 +150,7 @@
             % for prop in type.properties:
 
                 % if isTypePropertyTrue(prop.type, '__isMethod'):
-    <UAMethod NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}">
+    <UAMethod NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}">
         <DisplayName>${prop.name}</DisplayName>
                     % if prop.type.description is not None:
         <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
@@ -166,7 +166,7 @@
                     % endfor
         </References>
     </UAMethod>
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + 'InputArguments')}" BrowseName="${nsIndex}:InputArguments" DataType="Argument" ValueRank="1" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + 'InputArguments')}" BrowseName="InputArguments" DataType="Argument" ValueRank="1" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>InputArguments</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
@@ -224,13 +224,13 @@
         </Value>
     </UAVariable>
                 % elif isinstance(prop.type, model.ComplexType):
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop, True)}" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getValueDataTypeNameFromType(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop, True)}" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${prop.name}</DisplayName>
                     % if prop.type.description is not None:
         <Description Locale="${descriptionLocale}">${prop.type.description}</Description>
                     % endif
         <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=2365</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
                     % for innerProp in prop.type.properties:
@@ -241,13 +241,13 @@
         </References>
     </UAVariable>
                 % else:
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${nsIndex}:${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop, True)}" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + prop.name)}" BrowseName="${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}" DataType="${getDataTypeFromProperty(prop.type)}" ValueRank="${castIsArrayToInt(prop)}" ArrayDimensions="${castIsArrayToInt(prop, True)}" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${prop.name}</DisplayName>
                     % if prop.description is not None:
         <Description Locale="${descriptionLocale}">${prop.description}</Description>
                     % endif
         <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=2365</Reference>
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=${nsIndex};i=${printId(type.name)}</Reference>
         </References>
@@ -257,7 +257,7 @@
                 % if isinstance(prop.type, model.ComplexType):
                     % for innerProp in prop.type.properties:
                         % if not innerProp.name.startswith('__') and innerProp.name != 'value':
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${nsIndex}:${innerProp.name}" DataType="${getOpcUaPrimitive(innerProp.type)}" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${innerProp.name}" DataType="${getOpcUaPrimitive(innerProp.type)}" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${innerProp.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
@@ -281,14 +281,14 @@
             % endfor
 
         % else:
-    <UADataType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${nsIndex}:${type.name}" IsAbstract="false">
+    <UADataType NodeId="ns=${nsIndex};i=${printId(type.name)}" BrowseName="${type.name}" IsAbstract="false">
         <DisplayName>${type.name}</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty">ns=${nsIndex};${printId(type.name + 'EnumStrings')}</Reference>
             <Reference ReferenceType="HasSubtype" IsForward="false">i=29</Reference>
         </References>
     </UADataType>
-    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + 'EnumStrings')}" BrowseName="${nsIndex}:EnumStrings" DataType="EnumValueType" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
+    <UAVariable NodeId="ns=${nsIndex};i=${printId(type.name + 'EnumStrings')}" BrowseName="EnumStrings" DataType="EnumValueType" ValueRank="1" ArrayDimensions="0" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>EnumStrings</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
