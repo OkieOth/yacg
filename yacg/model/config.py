@@ -9,159 +9,165 @@ class Job:
     """ base object that describes a complete code generation process
     """
 
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
-        #: base object that describes a complete code generation process
+        #: a short identifier of that job
         self.name = None
 
-        #: base object that describes a complete code generation process
+        #: some words to explain
         self.description = None
 
-        #: base object that describes a complete code generation process
+        #: list of models used for that job
         self.models = []
 
-        #: base object that describes a complete code generation process
+        #: list of tasks that should run
         self.tasks = []
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.name = dict.get('name', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.description = dict.get('description', None)
+        self.name = dictObj.get('name', None)
 
-        arrayModels = dict.get('models', [])
+        self.description = dictObj.get('description', None)
+
+        arrayModels = dictObj.get('models', [])
         for elemModels in arrayModels:
-            obj.models.append(
-                Model.dictToObject(elemModels))
+            self.models.append(
+                Model(elemModels))
 
-        arrayTasks = dict.get('tasks', [])
+        arrayTasks = dictObj.get('tasks', [])
         for elemTasks in arrayTasks:
-            obj.tasks.append(
-                Task.dictToObject(elemTasks))
-        return obj
+            self.tasks.append(
+                Task(elemTasks))
 
 
 class Model:
     """ A model that should be used
     """
 
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
-        #: A model that should be used
+        #: path to the jsonSchema file, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.schema = None
 
-        #: A model that should be used
+        #: optional nameSpace string for the model, if not set the file name/path are used as namespace
         self.domain = None
 
-        #: A model that should be used
+        #: what elements should be excluded from handling
         self.blackListed = []
 
-        #: A model that should be used
+        #: what elements should be included in the handling
         self.whiteListed = []
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.schema = dict.get('schema', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.domain = dict.get('domain', None)
+        self.schema = dictObj.get('schema', None)
 
-        arrayBlackListed = dict.get('blackListed', [])
+        self.domain = dictObj.get('domain', None)
+
+        arrayBlackListed = dictObj.get('blackListed', [])
         for elemBlackListed in arrayBlackListed:
-            obj.blackListed.append(
-                BlackWhiteListEntry.dictToObject(elemBlackListed))
+            self.blackListed.append(
+                BlackWhiteListEntry(elemBlackListed))
 
-        arrayWhiteListed = dict.get('whiteListed', [])
+        arrayWhiteListed = dictObj.get('whiteListed', [])
         for elemWhiteListed in arrayWhiteListed:
-            obj.whiteListed.append(
-                BlackWhiteListEntry.dictToObject(elemWhiteListed))
-        return obj
+            self.whiteListed.append(
+                BlackWhiteListEntry(elemWhiteListed))
 
 
 class Task:
     """ A task to run
     """
 
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
-        #: A task to run
+        #: short visual identifier
         self.name = None
 
-        #: A task to run
+        #: some words to explain
         self.description = None
 
-        #: A task to run
+        #: what elements should be excluded from handling
         self.blackListed = []
 
-        #: A task to run
+        #: what elements should be included in the handling
         self.whiteListed = []
 
-        #: A task to run
+        #: the code generation creates only one file
         self.singleFileTask = None
 
-        #: A task to run
+        #: the code generation creates one file per type
         self.multiFileTask = None
 
-        #: A task to run
+        #: the code generation creates one file per type with random data
         self.randomDataTask = None
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.name = dict.get('name', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.description = dict.get('description', None)
+        self.name = dictObj.get('name', None)
 
-        arrayBlackListed = dict.get('blackListed', [])
+        self.description = dictObj.get('description', None)
+
+        arrayBlackListed = dictObj.get('blackListed', [])
         for elemBlackListed in arrayBlackListed:
-            obj.blackListed.append(
-                BlackWhiteListEntry.dictToObject(elemBlackListed))
+            self.blackListed.append(
+                BlackWhiteListEntry(elemBlackListed))
 
-        arrayWhiteListed = dict.get('whiteListed', [])
+        arrayWhiteListed = dictObj.get('whiteListed', [])
         for elemWhiteListed in arrayWhiteListed:
-            obj.whiteListed.append(
-                BlackWhiteListEntry.dictToObject(elemWhiteListed))
+            self.whiteListed.append(
+                BlackWhiteListEntry(elemWhiteListed))
 
-        obj.singleFileTask = SingleFileTask.dictToObject(dict.get('singleFileTask', None))
+        subDictObj = dictObj.get('singleFileTask', None)
+        if subDictObj is not None:
+            self.singleFileTask = SingleFileTask(subDictObj)
 
-        obj.multiFileTask = MultiFileTask.dictToObject(dict.get('multiFileTask', None))
+        subDictObj = dictObj.get('multiFileTask', None)
+        if subDictObj is not None:
+            self.multiFileTask = MultiFileTask(subDictObj)
 
-        obj.randomDataTask = RandomDataTask.dictToObject(dict.get('randomDataTask', None))
-        return obj
+        subDictObj = dictObj.get('randomDataTask', None)
+        if subDictObj is not None:
+            self.randomDataTask = RandomDataTask(subDictObj)
 
 
 class BlackWhiteListEntry:
     """ entry of a type back/white list
     """
 
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
-        #: entry of a type back/white list
+        #: name that should be in-/excluded
         self.name = None
 
-        #: entry of a type back/white list
+        #: how is the name to be interpreted. If type is missing, then 'type' is expected
         self.type = None
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.name = dict.get('name', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.type = BlackWhiteListEntryTypeEnum.valueForString(dict.get('type', None))
-        return obj
+        self.name = dictObj.get('name', None)
+
+        self.type = BlackWhiteListEntryTypeEnum.valueForString(dictObj.get('type', None))
 
 
 class BlackWhiteListEntryTypeEnum(Enum):
@@ -217,144 +223,144 @@ class SingleFileTask:
     """ parameter of a code generation task that creates one file
     """
 
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
-        #: parameter of a code generation task that creates one file
+        #: template to use for that task, either the name of a built in template, or a file system path, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.template = None
 
-        #: parameter of a code generation task that creates one file
+        #: name and path for the file to create, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.destFile = None
 
-        #: parameter of a code generation task that creates one file
+        #: custom parameter that are passed to the template, while it is processed
         self.templateParams = []
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.template = dict.get('template', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.destFile = dict.get('destFile', None)
+        self.template = dictObj.get('template', None)
 
-        arrayTemplateParams = dict.get('templateParams', [])
+        self.destFile = dictObj.get('destFile', None)
+
+        arrayTemplateParams = dictObj.get('templateParams', [])
         for elemTemplateParams in arrayTemplateParams:
-            obj.templateParams.append(
-                TemplateParam.dictToObject(elemTemplateParams))
-        return obj
+            self.templateParams.append(
+                TemplateParam(elemTemplateParams))
 
 
 class TemplateParam:
     """ additional, template specific custom parameter for codegen task
     """
 
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
-        #: additional, template specific custom parameter for codegen task
+        #: name of the custom parameter
         self.name = None
 
-        #: additional, template specific custom parameter for codegen task
+        #: value of the custom parameter
         self.value = None
 
-        #: additional, template specific custom parameter for codegen task
+        #: if set then this parameter only effected types of the specific domains
         self.requiredDomains = []
 
-        #: additional, template specific custom parameter for codegen task
+        #: if set then this parameter only effected types or attributes with the specific tag
         self.requiredTags = []
 
-        #: additional, template specific custom parameter for codegen task
+        #: if set then this parameter only effected types or attributes with the specific name
         self.requiredNames = []
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.name = dict.get('name', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.value = dict.get('value', None)
+        self.name = dictObj.get('name', None)
 
-        arrayRequiredDomains = dict.get('requiredDomains', [])
+        self.value = dictObj.get('value', None)
+
+        arrayRequiredDomains = dictObj.get('requiredDomains', [])
         for elemRequiredDomains in arrayRequiredDomains:
-            obj.requiredDomains.append(elemRequiredDomains)
+            self.requiredDomains.append(elemRequiredDomains)
 
-        arrayRequiredTags = dict.get('requiredTags', [])
+        arrayRequiredTags = dictObj.get('requiredTags', [])
         for elemRequiredTags in arrayRequiredTags:
-            obj.requiredTags.append(elemRequiredTags)
+            self.requiredTags.append(elemRequiredTags)
 
-        arrayRequiredNames = dict.get('requiredNames', [])
+        arrayRequiredNames = dictObj.get('requiredNames', [])
         for elemRequiredNames in arrayRequiredNames:
-            obj.requiredNames.append(elemRequiredNames)
-        return obj
+            self.requiredNames.append(elemRequiredNames)
 
 
 class MultiFileTask:
     """ parameter of a code generation task that creates one file per model type
     """
 
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
-        #: parameter of a code generation task that creates one file per model type
+        #: template to use for that task, either the name of a built in template, or a file system path, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.template = None
 
-        #: parameter of a code generation task that creates one file per model type
+        #: path where the files will be created, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.destDir = None
 
-        #: parameter of a code generation task that creates one file per model type
+        #: prefix for the name of the created files
         self.destFilePrefix = None
 
-        #: parameter of a code generation task that creates one file per model type
+        #: postfix for the name of the created files
         self.destFilePostfix = None
 
-        #: parameter of a code generation task that creates one file per model type
+        #: file extention for the created files
         self.destFileExt = None
 
-        #: parameter of a code generation task that creates one file per model type
+        #: the name of the destination file should start with an upper case
         self.upperCaseStartedDestFileName = False
 
-        #: parameter of a code generation task that creates one file per model type
+        #: this defines how the model is splitted to create the multiple files
         self.fileFilterType = MultiFileTaskFileFilterTypeEnum.TYPE
 
-        #: parameter of a code generation task that creates one file per model type
+        #: custom parameter that are passed to the template, while it is processed
         self.templateParams = []
 
-        #: parameter of a code generation task that creates one file per model type
+        #: create the new file only if it not already exists
         self.createOnlyIfNotExist = False
 
-        #: parameter of a code generation task that creates one file per model type
+        #: instead of creation of the orininal file it will be created with a '.tmp' extention, if the file aleady exists
         self.createTmpFileIfAlreadyExist = False
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.template = dict.get('template', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.destDir = dict.get('destDir', None)
+        self.template = dictObj.get('template', None)
 
-        obj.destFilePrefix = dict.get('destFilePrefix', None)
+        self.destDir = dictObj.get('destDir', None)
 
-        obj.destFilePostfix = dict.get('destFilePostfix', None)
+        self.destFilePrefix = dictObj.get('destFilePrefix', None)
 
-        obj.destFileExt = dict.get('destFileExt', None)
+        self.destFilePostfix = dictObj.get('destFilePostfix', None)
 
-        obj.upperCaseStartedDestFileName = dict.get('upperCaseStartedDestFileName', False)
+        self.destFileExt = dictObj.get('destFileExt', None)
 
-        obj.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(dict.get('fileFilterType', None))
+        self.upperCaseStartedDestFileName = dictObj.get('upperCaseStartedDestFileName', False)
 
-        arrayTemplateParams = dict.get('templateParams', [])
+        self.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(dictObj.get('fileFilterType', None))
+
+        arrayTemplateParams = dictObj.get('templateParams', [])
         for elemTemplateParams in arrayTemplateParams:
-            obj.templateParams.append(
-                TemplateParam.dictToObject(elemTemplateParams))
+            self.templateParams.append(
+                TemplateParam(elemTemplateParams))
 
-        obj.createOnlyIfNotExist = dict.get('createOnlyIfNotExist', False)
+        self.createOnlyIfNotExist = dictObj.get('createOnlyIfNotExist', False)
 
-        obj.createTmpFileIfAlreadyExist = dict.get('createTmpFileIfAlreadyExist', False)
-        return obj
+        self.createTmpFileIfAlreadyExist = dictObj.get('createTmpFileIfAlreadyExist', False)
 
 
 class MultiFileTaskFileFilterTypeEnum(Enum):
@@ -387,83 +393,90 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
 
 
 class RandomDataTask:
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
         self.outputType = None
 
+        #: path where the files will be created, entry can also contain env vars in the format '{ENV_VAR_NAME}'
         self.destDir = None
 
+        #: minimum number of elements that should be created for all types
         self.defaultMinElemCount = 1
 
+        #: maximum number of elements that should be created for all types
         self.defaultMaxElemCount = 10
 
         self.specialElemCounts = []
 
+        #: list of names for primary key fields in the model
         self.defaultKeyPropNames = []
 
         self.specialKeyPropNames = []
 
         self.valuePools = []
 
+        #: minimum size of arrays
         self.defaultMinSize = 1
 
+        #: maximum size of arrays
         self.defaultMaxSize = 10
 
         self.specialArraySizes = []
 
+        #: default max level depth when generating object trees
         self.defaultMaxDepth = 2
 
         self.specialMaxDepths = []
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.outputType = RandomDataTaskOutputTypeEnum.valueForString(dict.get('outputType', None))
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.destDir = dict.get('destDir', None)
+        self.outputType = RandomDataTaskOutputTypeEnum.valueForString(dictObj.get('outputType', None))
 
-        obj.defaultMinElemCount = dict.get('defaultMinElemCount', 1)
+        self.destDir = dictObj.get('destDir', None)
 
-        obj.defaultMaxElemCount = dict.get('defaultMaxElemCount', 10)
+        self.defaultMinElemCount = dictObj.get('defaultMinElemCount', 1)
 
-        arraySpecialElemCounts = dict.get('specialElemCounts', [])
+        self.defaultMaxElemCount = dictObj.get('defaultMaxElemCount', 10)
+
+        arraySpecialElemCounts = dictObj.get('specialElemCounts', [])
         for elemSpecialElemCounts in arraySpecialElemCounts:
-            obj.specialElemCounts.append(
-                RandomDataTaskSpecialElemCounts.dictToObject(elemSpecialElemCounts))
+            self.specialElemCounts.append(
+                RandomDataTaskSpecialElemCounts(elemSpecialElemCounts))
 
-        arrayDefaultKeyPropNames = dict.get('defaultKeyPropNames', [])
+        arrayDefaultKeyPropNames = dictObj.get('defaultKeyPropNames', [])
         for elemDefaultKeyPropNames in arrayDefaultKeyPropNames:
-            obj.defaultKeyPropNames.append(elemDefaultKeyPropNames)
+            self.defaultKeyPropNames.append(elemDefaultKeyPropNames)
 
-        arraySpecialKeyPropNames = dict.get('specialKeyPropNames', [])
+        arraySpecialKeyPropNames = dictObj.get('specialKeyPropNames', [])
         for elemSpecialKeyPropNames in arraySpecialKeyPropNames:
-            obj.specialKeyPropNames.append(
-                RandomDataTaskSpecialKeyPropNames.dictToObject(elemSpecialKeyPropNames))
+            self.specialKeyPropNames.append(
+                RandomDataTaskSpecialKeyPropNames(elemSpecialKeyPropNames))
 
-        arrayValuePools = dict.get('valuePools', [])
+        arrayValuePools = dictObj.get('valuePools', [])
         for elemValuePools in arrayValuePools:
-            obj.valuePools.append(
-                RandomDataTaskValuePools.dictToObject(elemValuePools))
+            self.valuePools.append(
+                RandomDataTaskValuePools(elemValuePools))
 
-        obj.defaultMinSize = dict.get('defaultMinSize', 1)
+        self.defaultMinSize = dictObj.get('defaultMinSize', 1)
 
-        obj.defaultMaxSize = dict.get('defaultMaxSize', 10)
+        self.defaultMaxSize = dictObj.get('defaultMaxSize', 10)
 
-        arraySpecialArraySizes = dict.get('specialArraySizes', [])
+        arraySpecialArraySizes = dictObj.get('specialArraySizes', [])
         for elemSpecialArraySizes in arraySpecialArraySizes:
-            obj.specialArraySizes.append(
-                RandomDataTaskSpecialArraySizes.dictToObject(elemSpecialArraySizes))
+            self.specialArraySizes.append(
+                RandomDataTaskSpecialArraySizes(elemSpecialArraySizes))
 
-        obj.defaultMaxDepth = dict.get('defaultMaxDepth', 2)
+        self.defaultMaxDepth = dictObj.get('defaultMaxDepth', 2)
 
-        arraySpecialMaxDepths = dict.get('specialMaxDepths', [])
+        arraySpecialMaxDepths = dictObj.get('specialMaxDepths', [])
         for elemSpecialMaxDepths in arraySpecialMaxDepths:
-            obj.specialMaxDepths.append(
-                RandomDataTaskSpecialMaxDepths.dictToObject(elemSpecialMaxDepths))
-        return obj
+            self.specialMaxDepths.append(
+                RandomDataTaskSpecialMaxDepths(elemSpecialMaxDepths))
 
 
 class RandomDataTaskOutputTypeEnum(Enum):
@@ -496,111 +509,123 @@ class RandomDataTaskOutputTypeEnum(Enum):
 
 
 class RandomDataTaskSpecialElemCounts:
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
+        #: TYPENAME
         self.typeName = None
 
+        #: how many elements should be generated for that type at minimum
         self.minElemCount = None
 
+        #: how many elements should be generated for that type at maximum
         self.maxElemCount = None
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.typeName = dict.get('typeName', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.minElemCount = dict.get('minElemCount', None)
+        self.typeName = dictObj.get('typeName', None)
 
-        obj.maxElemCount = dict.get('maxElemCount', None)
-        return obj
+        self.minElemCount = dictObj.get('minElemCount', None)
+
+        self.maxElemCount = dictObj.get('maxElemCount', None)
 
 
 class RandomDataTaskSpecialKeyPropNames:
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
+        #: TYPENAME
         self.typeName = None
 
+        #: name of the attribute that represents the key for that type
         self.keyPropName = None
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.typeName = dict.get('typeName', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.keyPropName = dict.get('keyPropName', None)
-        return obj
+        self.typeName = dictObj.get('typeName', None)
+
+        self.keyPropName = dictObj.get('keyPropName', None)
 
 
 class RandomDataTaskValuePools:
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
+        #: TYPENAME.PROPERTYNAME
         self.propertyName = None
 
+        #: should all values from the pool be used in the data gen
         self.useAll = False
 
         self.values = []
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.propertyName = dict.get('propertyName', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.useAll = dict.get('useAll', False)
+        self.propertyName = dictObj.get('propertyName', None)
 
-        arrayValues = dict.get('values', [])
+        self.useAll = dictObj.get('useAll', False)
+
+        arrayValues = dictObj.get('values', [])
         for elemValues in arrayValues:
-            obj.values.append(elemValues)
-        return obj
+            self.values.append(elemValues)
 
 
 class RandomDataTaskSpecialArraySizes:
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
+        #: TYPENAME.PROPERTYNAME
         self.propertyName = None
 
+        #: how many array elements should be generated for that attrib, at minimum
         self.minSize = None
 
+        #: how many array elements should be generated for that attrib, at maximum
         self.maxSize = None
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.propertyName = dict.get('propertyName', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.minSize = dict.get('minSize', None)
+        self.propertyName = dictObj.get('propertyName', None)
 
-        obj.maxSize = dict.get('maxSize', None)
-        return obj
+        self.minSize = dictObj.get('minSize', None)
+
+        self.maxSize = dictObj.get('maxSize', None)
 
 
 class RandomDataTaskSpecialMaxDepths:
-    def __init__(self):
+    def __init__(self, dictObj=None):
 
+        #: TYPENAME.PROPERTYNAME
         self.propertyName = None
 
+        #: max level depth when generating object trees for that attrib
         self.maxDepth = None
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
 
-        obj.propertyName = dict.get('propertyName', None)
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
-        obj.maxDepth = dict.get('maxDepth', None)
-        return obj
+        self.propertyName = dictObj.get('propertyName', None)
+
+        self.maxDepth = dictObj.get('maxDepth', None)
 
 

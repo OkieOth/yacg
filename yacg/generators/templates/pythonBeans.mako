@@ -63,7 +63,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
     """
 
         % endif
-    def __init__(self):
+    def __init__(self, dictObj=None):
         % if type.extendsType is not None:
         super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
         % endif
@@ -72,54 +72,56 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % else:
             % for property in type.properties:
 
-                % if type.description != None:
-        #: ${type.description}
+                % if property.description != None:
+        #: ${property.description}
                 % endif
         self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
             % endfor
         % endif
 
-    @classmethod
-    def dictToObject(cls, dict):
-        if dict is None:
-            return None
-        obj = cls()
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
         % for property in type.properties:
             % if modelFuncs.isBaseType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = dict.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
+        self.${property.name} = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
                 % else:
 
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(elem${stringUtils.toUpperCamelCase(property.name)})
+            self.${property.name}.append(elem${stringUtils.toUpperCamelCase(property.name)})
                 % endif
             % elif modelFuncs.isEnumType(property.type):
                 % if not property.isArray:
 
-        obj.${property.name} = ${property.type.name}.valueForString(dict.get('${property.name}', None))
+        self.${property.name} = ${property.type.name}.valueForString(dictObj.get('${property.name}', None))
                 % else:
 
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(
+            self.${property.name}.append(
                 ${property.type.name}.valueForString(elem${stringUtils.toUpperCamelCase(property.name)}))
                 % endif
             % else:
                 % if not property.isArray:
 
-        obj.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(dict.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None}))
+        subDictObj = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
+        if subDictObj is not None:
+            self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(subDictObj)
                 % else:
 
-        array${stringUtils.toUpperCamelCase(property.name)} = dict.get('${property.name}', [])
+        array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
-            obj.${property.name}.append(
-                ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}.dictToObject(elem${stringUtils.toUpperCamelCase(property.name)}))
+            self.${property.name}.append(
+                ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(elem${stringUtils.toUpperCamelCase(property.name)}))
                 % endif
             % endif
         % endfor
-        return obj
 
     % endif
 
