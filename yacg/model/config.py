@@ -133,11 +133,17 @@ class Task:
             self.whiteListed.append(
                 BlackWhiteListEntry(elemWhiteListed))
 
-        self.singleFileTask = SingleFileTask(dictObj.get('singleFileTask', None))
+        subDictObj = dictObj.get('singleFileTask', None)
+        if subDictObj is not None:
+            self.singleFileTask = SingleFileTask(subDictObj)
 
-        self.multiFileTask = MultiFileTask(dictObj.get('multiFileTask', None))
+        subDictObj = dictObj.get('multiFileTask', None)
+        if subDictObj is not None:
+            self.multiFileTask = MultiFileTask(subDictObj)
 
-        self.randomDataTask = RandomDataTask(dictObj.get('randomDataTask', None))
+        subDictObj = dictObj.get('randomDataTask', None)
+        if subDictObj is not None:
+            self.randomDataTask = RandomDataTask(subDictObj)
 
 
 class BlackWhiteListEntry:

@@ -112,7 +112,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
 
         subDictObj = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
         if subDictObj is not None:
-            self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}()
+            self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(subDictObj)
                 % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])

@@ -84,14 +84,18 @@ class Command:
             self.parameters.append(
                 Parameter(elemParameters))
 
-        self.requestBody = RequestBody(dictObj.get('requestBody', None))
+        subDictObj = dictObj.get('requestBody', None)
+        if subDictObj is not None:
+            self.requestBody = RequestBody(subDictObj)
 
         arrayResponses = dictObj.get('responses', [])
         for elemResponses in arrayResponses:
             self.responses.append(
                 Response(elemResponses))
 
-        self.security = CommandSecurity(dictObj.get('security', None))
+        subDictObj = dictObj.get('security', None)
+        if subDictObj is not None:
+            self.security = CommandSecurity(subDictObj)
 
 
 class CommandCommandEnum(Enum):
@@ -183,7 +187,9 @@ class Parameter:
 
         self.required = dictObj.get('required', None)
 
-        self.type = yacg.model.model.Type(dictObj.get('type', None))
+        subDictObj = dictObj.get('type', None)
+        if subDictObj is not None:
+            self.type = yacg.model.model.Type(subDictObj)
 
 
 class RequestBody:
@@ -284,7 +290,9 @@ class ContentEntry:
 
         self.mimeType = dictObj.get('mimeType', None)
 
-        self.type = yacg.model.model.Type(dictObj.get('type', None))
+        subDictObj = dictObj.get('type', None)
+        if subDictObj is not None:
+            self.type = yacg.model.model.Type(subDictObj)
 
         self.isArray = dictObj.get('isArray', False)
 

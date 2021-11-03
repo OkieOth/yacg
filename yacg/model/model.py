@@ -432,7 +432,9 @@ class ComplexType (Type):
 
         self.source = dictObj.get('source', None)
 
-        self.extendsType = ComplexType(dictObj.get('extendsType', None))
+        subDictObj = dictObj.get('extendsType', None)
+        if subDictObj is not None:
+            self.extendsType = ComplexType(subDictObj)
 
         arrayExtendedBy = dictObj.get('extendedBy', [])
         for elemExtendedBy in arrayExtendedBy:
@@ -520,7 +522,9 @@ class Property:
 
         self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
 
-        self.type = Type(dictObj.get('type', None))
+        subDictObj = dictObj.get('type', None)
+        if subDictObj is not None:
+            self.type = Type(subDictObj)
 
         arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
@@ -537,7 +541,9 @@ class Property:
 
         self.isVisualKey = dictObj.get('isVisualKey', False)
 
-        self.foreignKey = Type(dictObj.get('foreignKey', None))
+        subDictObj = dictObj.get('foreignKey', None)
+        if subDictObj is not None:
+            self.foreignKey = Type(subDictObj)
 
         self.format = dictObj.get('format', None)
 
