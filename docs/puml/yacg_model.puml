@@ -148,6 +148,21 @@ class Property {
 
 note top: a property of a type
 
+class DictionaryType {
+        StringType version 
+        StringType name 
+        StringType description 
+        StringType domain 
+        StringType source 
+        ComplexType[] referencedBy 
+        Property[] properties 
+        Type valueType 
+        Tag[] tags 
+}
+
+note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
+
+DictionaryType --|> Type
 
     
     
@@ -179,6 +194,15 @@ ComplexType "0" *-- "n" Tag
 Property  *--  Type        
             
 Property "0" *-- "n" Tag        
+            
+    
+DictionaryType "0" *-- "n" ComplexType        
+            
+DictionaryType "0" *-- "n" Property        
+            
+DictionaryType  *--  Type        
+            
+DictionaryType "0" *-- "n" Tag        
             
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

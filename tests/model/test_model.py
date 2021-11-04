@@ -68,6 +68,10 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.Property()
         self.assertIsNotNone(x)
 
+    def testDictionaryType(self):
+        x = yacg.model.model.DictionaryType()
+        self.assertIsNotNone(x)
+
 
 if __name__ == '__main__':
     unittest.main()
