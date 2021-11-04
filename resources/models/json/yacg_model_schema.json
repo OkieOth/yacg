@@ -395,13 +395,6 @@
                                 "$ref": "#/definitions/ComplexType"
                             }
                         },
-                        "properties": {
-                            "description": "properties of that type",
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Property"
-                            }
-                        },
                         "valueType": {
                             "description": "either a basic or a complex type",
                             "$ref": "#/definitions/Type",

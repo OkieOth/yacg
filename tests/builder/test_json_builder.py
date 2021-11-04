@@ -257,6 +257,15 @@ class TestJsonBuilder (unittest.TestCase):
                 self.assertTrue(found)
         return type
 
+    def testDictionary(self):
+        modelFile = 'tests/resources/models/json/examples/simple_dictionary.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+
 
 if __name__ == '__main__':
     unittest.main()

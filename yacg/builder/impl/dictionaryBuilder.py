@@ -14,7 +14,7 @@ from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType
 from yacg.model.model import DateType, DateTimeType
-from yacg.model.model import EnumType, ComplexType, Tag
+from yacg.model.model import EnumType, ComplexType, DictionaryType, Tag
 from yacg.util.fileUtils import doesFileExist
 
 import yacg.model.openapi as openapi
@@ -236,7 +236,7 @@ def _extractObjectType(typeNameStr, properties, additionalProperties, allOfEntri
     # This can be the case in situations where attributes refer to another complex type
     newType = None
     if alreadyCreatedType is None:
-        newType = ComplexType()
+        newType = ComplexType() if additionalProperties is None else DictionaryType()
         newType.domain = modelFileContainer.domain
         newType.name = typeNameStr
         newType.version = modelFileContainer.version
