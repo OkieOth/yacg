@@ -1,0 +1,21 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "SimpleDictionary2",
+	"type": "object",
+	"additionalProperties": {
+		"$ref": "#definitions/ComplexValueType"
+	},
+	"definitions": {
+		"ComplexValueType": {
+			"type": "object",
+			"properties": {
+				"value1": {
+					"type": "string"
+				},
+				"value2": {
+					"type": "integer"
+				}
+			}
+		}
+	}
+}

@@ -75,12 +75,13 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
     schemaProperties = parsedSchema.get('properties', None)
     allOfEntry = parsedSchema.get('allOf', None)
-    if (schemaProperties is not None) or (allOfEntry is not None):
+    additionalProperties = parsedSchema.get('additionalProperties', None)
+    if (schemaProperties is not None) or (allOfEntry is not None) or (additionalProperties is not None):
         # extract top level type
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
         description = parsedSchema.get('description', None)
-        mainType = _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFileContainer)
+        mainType = _extractObjectType(typeNameStr, schemaProperties, additionalProperties, allOfEntry, description, modelTypes, modelFileContainer)
         if len(mainType.tags) == 0:
             tags = parsedSchema.get('x-tags', None)
             if tags is not None:
@@ -140,7 +141,8 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
 
     schemaProperties = modelFileContainer.parsedSchema.get('properties', None)
     allOfEntry = modelFileContainer.parsedSchema.get('allOf', None)
-    if (schemaProperties is not None) or (allOfEntry is not None):
+    additionalProperties = modelFileContainer.parsedSchema.get('additionalProperties', None)
+    if (schemaProperties is not None) or (allOfEntry is not None) or (additionalProperties is not None):
         # extract top level type
         titleStr = modelFileContainer.parsedSchema.get('title', None)
         if titleStr is None:
@@ -151,7 +153,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
         typeNameStr = toUpperCamelCase(titleStr)
         if typeNameStr == desiredTypeName:
             description = modelFileContainer.parsedSchema.get('description', None)
-            type = _extractObjectType(typeNameStr, schemaProperties, allOfEntry, description, modelTypes, modelFileContainer)
+            type = _extractObjectType(typeNameStr, schemaProperties, additionalProperties, allOfEntry, description, modelTypes, modelFileContainer)
             if len(type.tags) == 0:
                 tags = modelFileContainer.parsedSchema.get('x-tags', None)
                 if tags is not None:
@@ -197,6 +199,7 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
         object = definitions[key]
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
+        additionalProperties = object.get('additionalProperties', None)
         description = object.get('description', None)
 
         enumEntry = object.get('enum', None)
@@ -207,7 +210,7 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
                 if tags is not None:
                     mainType.tags = _extractTags(tags)
         else:
-            type = _extractObjectType(key, properties, allOfEntry, description, modelTypes, modelFileContainer)
+            type = _extractObjectType(key, properties, additionalProperties, allOfEntry, description, modelTypes, modelFileContainer)
             if len(type.tags) == 0:
                 tags = object.get('x-tags', None)
                 if tags is not None:
@@ -215,12 +218,13 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
             _markRequiredAttributes(type, object.get('required', []))
 
 
-def _extractObjectType(typeNameStr, properties, allOfEntries, description, modelTypes, modelFileContainer):
+def _extractObjectType(typeNameStr, properties, additionalProperties, allOfEntries, description, modelTypes, modelFileContainer):
     """build a type object
 
     Keyword arguments:
     typeNameStr -- Name of the new type
     properties -- dict of a schema properties-block
+    additionalProperties -- dict of a schema additionalProperties-block
     allOfEntries -- dict of allOf block
     description -- optional description of that type
     modelTypes -- list of already loaded models
@@ -678,6 +682,7 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
     if tags is not None:
         newInnerType.tags = _extractTags(tags)
     properties = propDict.get('properties', None)
+    additionalProperties = propDict.get('additionalProperties', None)
     if properties is not None:
         _extractAttributes(newInnerType, properties, modelTypes, modelFileContainer)
         _markRequiredAttributes(newInnerType, propDict.get('required', []))
