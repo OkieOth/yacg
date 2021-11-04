@@ -572,9 +572,6 @@ class DictionaryType (Type):
         #: types that hold attribute references to that type
         self.referencedBy = []
 
-        #: properties of that type
-        self.properties = []
-
         #: either a basic or a complex type
         self.valueType = None
 
@@ -602,11 +599,6 @@ class DictionaryType (Type):
         for elemReferencedBy in arrayReferencedBy:
             self.referencedBy.append(
                 ComplexType(elemReferencedBy))
-
-        arrayProperties = dictObj.get('properties', [])
-        for elemProperties in arrayProperties:
-            self.properties.append(
-                Property(elemProperties))
 
         subDictObj = dictObj.get('valueType', None)
         if subDictObj is not None:

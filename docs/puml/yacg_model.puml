@@ -155,7 +155,6 @@ class DictionaryType {
         StringType domain 
         StringType source 
         ComplexType[] referencedBy 
-        Property[] properties 
         Type valueType 
         Tag[] tags 
 }
@@ -197,8 +196,6 @@ Property "0" *-- "n" Tag
             
     
 DictionaryType "0" *-- "n" ComplexType        
-            
-DictionaryType "0" *-- "n" Property        
             
 DictionaryType  *--  Type        
             
