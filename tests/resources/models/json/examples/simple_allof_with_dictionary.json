@@ -19,6 +19,9 @@
             "type": "string", 
             "x-ordinal": 6
           },
+          "outOfHell": { 
+            "type": "object" 
+          },
           "innerDict": {
             "type": "object",
             "additionalProperties": {

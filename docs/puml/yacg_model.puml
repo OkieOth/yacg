@@ -6,6 +6,12 @@ class Type {
 
 note top: Dummy base class to implement\nstrong typed references
 
+class ObjectType {
+}
+
+note top: Straight out of hell -\na undefined object type
+
+ObjectType --|> Type
 class IntegerType {
         IntegerTypeFormatEnum format 
         IntegerType default 
@@ -163,6 +169,7 @@ note top: key/value dictionary type. Keys are\nalways strings, the value type\nc
 
 DictionaryType --|> Type
 
+    
     
     
 IntegerType  *--  IntegerTypeFormatEnum        

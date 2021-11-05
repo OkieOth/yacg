@@ -12,7 +12,7 @@ import yaml
 from yacg.model.model import Property
 from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
-from yacg.model.model import StringType, UuidType, BytesType
+from yacg.model.model import StringType, UuidType, BytesType, ObjectType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, DictionaryType, Tag
 from yacg.util.fileUtils import doesFileExist
@@ -372,7 +372,13 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
         # DateType, DateTimeType, StringType, EnumType
         return _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
     elif type == 'object':
-        return _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
+        subProps = propDict.get('properties', None)
+        subAllOf = propDict.get('allOf', None)
+        subAdditionalProperties = propDict.get('additionalProperties', None)
+        if (subProps is None) and (subAllOf is None) and (subAdditionalProperties is None):
+            return ObjectType()
+        else:
+            return _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
     else:
         refEntry = propDict.get('$ref', None)
         enumEntry = propDict.get('enum', None)

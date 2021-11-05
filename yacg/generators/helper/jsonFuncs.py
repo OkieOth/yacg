@@ -10,6 +10,8 @@ def getJsonType(type):
         return '???'
     elif isinstance(type, model.IntegerType):
         return 'integer'
+    elif isinstance(type, model.ObjectType):
+        return 'object'
     elif isinstance(type, model.NumberType):
         return 'number'
     elif isinstance(type, model.BooleanType):
@@ -26,6 +28,8 @@ def getJsonType(type):
         return 'string'
     elif isinstance(type, model.BytesType):
         return 'string'
+    elif isinstance(type, model.DictionaryType):
+        return 'object'
     elif isinstance(type, model.ComplexType):
         return type.name
     else:

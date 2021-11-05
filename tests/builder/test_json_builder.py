@@ -1,7 +1,7 @@
 import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
-from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum
+from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum, ObjectType
 from yacg.model.model import StringType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
@@ -215,6 +215,7 @@ class TestJsonBuilder (unittest.TestCase):
 
         expectedMetaModelTypes = [
             'Type',
+            'ObjectType',
             'IntegerType',
             'NumberType',
             'BooleanType',
@@ -317,10 +318,11 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(isinstance(modelTypes[4].valueType, StringType))
 
         self.assertTrue(isinstance(modelTypes[1].properties[2].type, StringType))
-        self.assertTrue(isinstance(modelTypes[1].properties[3].type, DictionaryType))
-        self.assertTrue(isinstance(modelTypes[1].properties[3].type.valueType, IntegerType))
+        self.assertTrue(isinstance(modelTypes[1].properties[3].type, ObjectType))
         self.assertTrue(isinstance(modelTypes[1].properties[4].type, DictionaryType))
-        self.assertTrue(isinstance(modelTypes[1].properties[4].type.valueType, StringType))
+        self.assertTrue(isinstance(modelTypes[1].properties[4].type.valueType, IntegerType))
+        self.assertTrue(isinstance(modelTypes[1].properties[5].type, DictionaryType))
+        self.assertTrue(isinstance(modelTypes[1].properties[5].type.valueType, StringType))
 
 
 if __name__ == '__main__':

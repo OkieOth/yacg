@@ -20,6 +20,22 @@ class Type:
             return
 
 
+class ObjectType (Type):
+    """ Straight out of hell - a undefined object type
+    """
+
+    def __init__(self, dictObj=None):
+        super(Type, self).__init__()
+        pass
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+
 class IntegerType (Type):
     """ integer values
     """

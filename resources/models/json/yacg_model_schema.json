@@ -12,6 +12,18 @@
                 "metaModelType"
             ]
         },
+        "ObjectType": {
+            "type": "object",
+            "description": "Straight out of hell - a undefined object type",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                }
+            ],
+            "x-tags": [
+                "metaModelType"
+            ]
+        },
         "IntegerType": {
             "type": "object",
             "description": "integer values",
