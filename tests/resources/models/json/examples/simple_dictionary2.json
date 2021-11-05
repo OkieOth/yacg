@@ -3,7 +3,7 @@
 	"title": "SimpleDictionary2",
 	"type": "object",
 	"additionalProperties": {
-		"$ref": "#definitions/ComplexValueType"
+		"$ref": "#/definitions/ComplexValueType"
 	},
 	"definitions": {
 		"ComplexValueType": {

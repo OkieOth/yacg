@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"title": "SimpleDictionary2",
+	"title": "SimpleDictionary3",
 	"$comment": "dictionary that contains dictionaries",
 	"type": "object",
 	"additionalProperties": {

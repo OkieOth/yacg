@@ -1,7 +1,7 @@
 import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
-from yacg.model.model import IntegerType, NumberType, NumberTypeFormatEnum
+from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum
 from yacg.model.model import StringType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
@@ -110,8 +110,8 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(isinstance(modelTypes[6].properties[2].type, BytesType))
 
         jobType = modelTypes[0]
-        self.assertEquals(jobType.properties[4].type.format,NumberTypeFormatEnum.FLOAT)
-        self.assertEquals(jobType.properties[5].type.format,NumberTypeFormatEnum.DOUBLE)
+        self.assertEqual(jobType.properties[4].type.format, NumberTypeFormatEnum.FLOAT)
+        self.assertEqual(jobType.properties[5].type.format, NumberTypeFormatEnum.DOUBLE)
 
     def testSchemaWithExternalRef(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
@@ -265,6 +265,62 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
+        self.assertEqual(1, len(modelTypes))
+        self.assertTrue(isinstance(modelTypes[0], DictionaryType))
+        self.assertIsNotNone(modelTypes[0].valueType)
+        self.assertTrue(isinstance(modelTypes[0].valueType, StringType))
+
+    def testDictionary2(self):
+        modelFile = 'tests/resources/models/json/examples/simple_dictionary2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(2, len(modelTypes))
+        self.assertTrue(isinstance(modelTypes[0], DictionaryType))
+        self.assertIsNotNone(modelTypes[0].valueType)
+        self.assertTrue(isinstance(modelTypes[0].valueType, ComplexType))
+
+    def testDictionary3(self):
+        modelFile = 'tests/resources/models/json/examples/simple_dictionary3.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(3, len(modelTypes))
+        self.assertTrue(isinstance(modelTypes[0], DictionaryType))
+        self.assertTrue(isinstance(modelTypes[0].valueType, DictionaryType))
+        self.assertTrue(isinstance(modelTypes[1], DictionaryType))
+        self.assertTrue(isinstance(modelTypes[1].valueType, ComplexType))
+        self.assertTrue(isinstance(modelTypes[2], ComplexType))
+
+    def testDictionary4(self):
+        modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(5, len(modelTypes))
+        self.assertTrue(isinstance(modelTypes[0], ComplexType))
+        self.assertTrue(isinstance(modelTypes[1], ComplexType))
+        self.assertTrue(isinstance(modelTypes[2], EnumType))
+        self.assertTrue(isinstance(modelTypes[3], DictionaryType))
+        self.assertTrue(isinstance(modelTypes[4], DictionaryType))
+
+        self.assertTrue(isinstance(modelTypes[3].valueType, IntegerType))
+        self.assertTrue(isinstance(modelTypes[4].valueType, StringType))
+
+        self.assertTrue(isinstance(modelTypes[1].properties[2].type, StringType))
+        self.assertTrue(isinstance(modelTypes[1].properties[3].type, DictionaryType))
+        self.assertTrue(isinstance(modelTypes[1].properties[3].type.valueType, IntegerType))
+        self.assertTrue(isinstance(modelTypes[1].properties[4].type, DictionaryType))
+        self.assertTrue(isinstance(modelTypes[1].properties[4].type.valueType, StringType))
 
 
 if __name__ == '__main__':

@@ -1,3 +1,6 @@
+# 3.2.0
+* implement model support for dictionaries 
+
 # 3.1.0
 * improved Python object initialization - inspired by a contribution of Paul Way [https://github.com/PaulWay]
 

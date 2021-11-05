@@ -9,7 +9,7 @@ from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 from yacg.generators.multiFileGenerator import renderMultiFileTemplate
 from yacg.generators.randomDataGenerator import renderRandomData
-from yacg.model.model import EnumType, ComplexType
+from yacg.model.model import DictionaryType, EnumType, ComplexType
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 import yacg.model.modelFuncs as modelFuncs
@@ -292,7 +292,13 @@ def __doCodeGen(codeGenerationJobs, args):
     """
 
     for job in codeGenerationJobs:
-        loadedTypes = readModels(job, args.flattenInheritance)
+        alloadedTypes = readModels(job, args.flattenInheritance)
+        # dictionary types are not really useful as toplevel types ... so it's
+        # better to remove them - TODO add a commandline switch for that
+        loadedTypes = []
+        for t in alloadedTypes:
+            if not isinstance(t, DictionaryType):
+                loadedTypes.append(t)
         for task in job.tasks:
             if task.singleFileTask is not None:
                 renderSingleFileTemplate(
