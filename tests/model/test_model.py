@@ -12,6 +12,10 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.Type()
         self.assertIsNotNone(x)
 
+    def testObjectType(self):
+        x = yacg.model.model.ObjectType()
+        self.assertIsNotNone(x)
+
     def testIntegerType(self):
         x = yacg.model.model.IntegerType()
         self.assertIsNotNone(x)
@@ -66,6 +70,10 @@ class TestYacgModel (unittest.TestCase):
 
     def testProperty(self):
         x = yacg.model.model.Property()
+        self.assertIsNotNone(x)
+
+    def testDictionaryType(self):
+        x = yacg.model.model.DictionaryType()
         self.assertIsNotNone(x)
 
 

@@ -6,6 +6,12 @@ class Type {
 
 note top: Dummy base class to implement\nstrong typed references
 
+class ObjectType {
+}
+
+note top: Straight out of hell -\na undefined object type
+
+ObjectType --|> Type
 class IntegerType {
         IntegerTypeFormatEnum format 
         IntegerType default 
@@ -148,7 +154,22 @@ class Property {
 
 note top: a property of a type
 
+class DictionaryType {
+        StringType version 
+        StringType name 
+        StringType description 
+        StringType domain 
+        StringType source 
+        ComplexType[] referencedBy 
+        Type valueType 
+        Tag[] tags 
+}
 
+note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
+
+DictionaryType --|> Type
+
+    
     
     
 IntegerType  *--  IntegerTypeFormatEnum        
@@ -179,6 +200,13 @@ ComplexType "0" *-- "n" Tag
 Property  *--  Type        
             
 Property "0" *-- "n" Tag        
+            
+    
+DictionaryType "0" *-- "n" ComplexType        
+            
+DictionaryType  *--  Type        
+            
+DictionaryType "0" *-- "n" Tag        
             
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

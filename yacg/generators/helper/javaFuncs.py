@@ -10,6 +10,8 @@ def getJavaType(type, isArray):
         return '???'
     elif isinstance(type, model.IntegerType):
         return 'Integer' if not isArray else 'java.util.List<Integer>'
+    elif isinstance(type, model.ObjectType):
+        return 'Object'
     elif isinstance(type, model.NumberType):
         return 'Double' if not isArray else 'java.util.List<Double>'
     elif isinstance(type, model.BooleanType):
@@ -26,6 +28,8 @@ def getJavaType(type, isArray):
         return 'java.time.LocalDate' if not isArray else 'java.util.List<java.time.LocalData>'
     elif isinstance(type, model.DateTimeType):
         return 'java.time.LocalDateTime' if not isArray else 'java.util.List<java.time.LocalDataTime>'
+    elif isinstance(type, model.DictionaryType):
+        return 'java.util.Map'
     elif isinstance(type, model.ComplexType):
         return type.name if not isArray else 'java.util.List<{}>'.format(type.name)
     else:
