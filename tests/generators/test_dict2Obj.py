@@ -5,6 +5,7 @@ from yacg.builder.jsonBuilder import getModelFromJson
 
 import yacg.model.config as config
 import yacg.generators.helper.generatorHelperFuncs as generatorHelperFuncs
+from yacg.builder.impl.dictionaryBuilder import getParsedSchemaFromJson
 
 
 class TestDictToObject (unittest.TestCase):
@@ -148,3 +149,11 @@ class TestDictToObject (unittest.TestCase):
         f = open(testOutputFile, "w+")
         f.write(renderResult)
         f.close()
+
+    def testReadConfig(self):
+        modelFile = 'resources/configurations/java_bean_example.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        modelDictArray = getParsedSchemaFromJson(modelFile)
+        configJob = config.Job(modelDictArray[0])
+        self.assertIsNotNone(configJob)

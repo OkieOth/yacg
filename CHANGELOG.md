@@ -1,3 +1,10 @@
+# 3.2.0
+* implement model support for dictionaries
+* introduce pure object type
+
+# 3.1.0
+* improved Python object initialization - inspired by a contribution of Paul Way [https://github.com/PaulWay]
+
 # 3.0.1
 * fix bug when extracting formats for numbers and integers
 

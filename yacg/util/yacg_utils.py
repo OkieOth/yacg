@@ -24,7 +24,7 @@ def getJobConfigurationsFromConfigFile(configFile, additionalVarsDict={}):
         return []
     jobArray = []
     for conf in configurations:
-        job = config.Job.dictToObject(conf)
+        job = config.Job(conf)
         jobArray.append(job)
     __replaceEnvVars(jobArray, additionalVarsDict)
     return jobArray

@@ -12,6 +12,18 @@
                 "metaModelType"
             ]
         },
+        "ObjectType": {
+            "type": "object",
+            "description": "Straight out of hell - a undefined object type",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                }
+            ],
+            "x-tags": [
+                "metaModelType"
+            ]
+        },
         "IntegerType": {
             "type": "object",
             "description": "integer values",
@@ -343,6 +355,64 @@
                             "items": {
                                 "$ref": "#/definitions/Property"
                             }
+                        },
+                        "tags": {
+                            "description": "additional flags to mark a type",
+                            "$comment": "custom extension marked with 'x-tags'",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Tag"
+                            }
+                        }
+                    }
+                }
+            ],
+            "x-tags": [
+                "metaModelType"
+            ]
+        },
+        "DictionaryType": {
+            "type": "object",
+            "description": "key/value dictionary type. Keys are always strings, the value type can be specified",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "version": {
+                            "description": "is taken from the version entry of the file, optional",
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "domain": {
+                            "description": "scope/domain to that this type belongs",
+                            "$comment": "optional, can be used for domain driven modelling",
+                            "type": "string"
+                        },
+                        "source": {
+                            "description": "from what file the Type was loaded",
+                            "$comment": "basically a nomalized fileName with path",
+                            "type": "string"
+                        },
+                        "referencedBy": {
+                            "description": "types that hold attribute references to that type",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ComplexType"
+                            }
+                        },
+                        "valueType": {
+                            "description": "either a basic or a complex type",
+                            "$ref": "#/definitions/Type",
+                            "x-tags": [
+                                "constructorValue"
+                            ]
                         },
                         "tags": {
                             "description": "additional flags to mark a type",

@@ -1,0 +1,50 @@
+{
+    "title": "simple allOf schema",
+    "description": "example schema that contains a simple allOf construct, source: https://json-schema.org/understanding-json-schema/reference/combining.html",
+    "version": "0.0.1",
+    "type": "object",
+    "definitions": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "street_addr": { 
+            "type": "string",
+            "x-ordinal": 4 
+          },
+          "city": {
+             "type": "string", 
+             "x-ordinal": 5
+            },
+          "state": { 
+            "type": "string", 
+            "x-ordinal": 6
+          },
+          "outOfHell": { 
+            "type": "object" 
+          },
+          "innerDict": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }          
+          },
+          "externReferencedDict": {
+            "$ref": "./simple_dictionary.json"
+          }
+        },
+        "required": ["street_address", "city", "state"]
+      }
+    },
+    "allOf": [
+        { 
+          "$ref": "#/definitions/Address" 
+        },
+        { 
+            "properties": {
+                "type": { 
+                    "enum": [ "residential", "business" ] 
+                }
+        }
+      }
+    ]
+  }
