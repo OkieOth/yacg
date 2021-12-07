@@ -75,7 +75,7 @@
             return getOpcUaPrimitive(prop.type)
 
     def getArgsFromType(type):
-        return modelFuncs.getProperty('__arguments', type)
+        return modelFuncs.getProperty('x-arguments', type)
     
     def getComplexTypeNameFromMethodArgs(method):
         arguments = getArgsFromType(method)
@@ -149,7 +149,7 @@
 
             % for prop in type.properties:
 
-                % if isTypePropertyTrue(prop.type, '__isMethod'):
+                % if isTypePropertyTrue(prop.type, 'x-isMethod'):
     <UAMethod NodeId="ns=${nsIndex};i=${printId(prop.type.name)}" BrowseName="${prop.name}" ParentNodeId="ns=${nsIndex};i=${printId(type.name)}">
         <DisplayName>${prop.name}</DisplayName>
                     % if prop.type.description is not None:
@@ -160,7 +160,7 @@
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + 'InputArguments')}</Reference>
                     % for innerProp in prop.type.properties:
-                         % if not innerProp.name.startswith('__'):
+                         % if not innerProp.name.startswith('x-'):
             <Reference ReferenceType="HasProperty">ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}</Reference>
                         % endif
                     % endfor
@@ -256,7 +256,7 @@
 
                 % if isinstance(prop.type, model.ComplexType):
                     % for innerProp in prop.type.properties:
-                        % if not innerProp.name.startswith('__') and innerProp.name != 'value':
+                        % if not innerProp.name.startswith('x-') and innerProp.name != 'value':
     <UAVariable NodeId="ns=${nsIndex};i=${printId(prop.type.name + innerProp.name)}" BrowseName="${innerProp.name}" DataType="${getOpcUaPrimitive(innerProp.type)}" AccessLevel="1" UserAccessLevel="1">
         <DisplayName>${innerProp.name}</DisplayName>
         <References>

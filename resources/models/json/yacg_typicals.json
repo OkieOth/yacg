@@ -89,12 +89,12 @@
                 "description": "the member S_SetResetEventMode",
                 "type": "object",
                 "properties": {
-                    "__isMethod": {
+                    "x-isMethod": {
                         "description": "tells if this definition is a method",
                         "type": "boolean",
                         "default": true
                     },
-                    "__arguments": {
+                    "x-arguments": {
                         "description": "method argument",
                         "$ref": "#/definitions/EventState"
                     },
@@ -111,8 +111,8 @@
                     }
                 },
                 "required": [
-                    "__isMethod",
-                    "__arguments",
+                    "x-isMethod",
+                    "x-arguments",
                     "prio",
                     "historizing"
                 ]
