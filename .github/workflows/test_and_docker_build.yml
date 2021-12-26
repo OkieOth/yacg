@@ -16,7 +16,7 @@ jobs:
     - name: build image
       run: docker build -t ghcr.io/okieoth/yacg:`cat version.txt | grep -P '\d+\.\d+\.\d+'` .
     - name: Login to GitHub Registry
-      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login -u okieoth --password-stdin
+      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u okieoth --password-stdin
     - name: Push the Docker image
       run: docker push ghcr.io/okieoth/yacg:`cat version.txt | grep -P '\d+\.\d+\.\d+'`
 
