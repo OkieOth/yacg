@@ -26,7 +26,8 @@ def renderMultiFileTemplate(
     multiFileTask -- container object with the parameters
     """
 
-    template, modelTypesToUse, templateParameterDict = __prepareMultiFileTask(multiFileTask, modelTypes, blackList, whiteList)
+    template, modelTypesToUse, templateParameterDict = __prepareMultiFileTask(
+        multiFileTask, modelTypes, blackList, whiteList)
 
     if multiFileTask.fileFilterType == MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID:
         __renderOneFilePerOpenApiOperationId(

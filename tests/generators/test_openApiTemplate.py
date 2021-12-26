@@ -28,7 +28,7 @@ class TestOpenApi (unittest.TestCase):
         f.write(renderResult)
         f.close()
 
-    def testNormalized(self):        
+    def testNormalized(self):
         modelFile = 'tests/resources/models/json/examples/openapi_v3_example_refs.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)

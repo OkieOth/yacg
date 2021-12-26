@@ -1,0 +1,22 @@
+# This workflow will create the docker image and deploy it to the github repository
+
+name: yacg tests
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  call-workflow-test:
+    uses: .github/workflows/__tests.yml@master
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build image
+      run: docker build -t ghcr.io/okieoth/yacg:`cat version.txt | grep -P '\d+\.\d+\.\d+'` .
+    - name: Login to GitHub Registry
+      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login -u okieoth --password-stdin
+    - name: Push the Docker image
+      run: docker push ghcr.io/okieoth/yacg:`cat version.txt | grep -P '\d+\.\d+\.\d+'`
+

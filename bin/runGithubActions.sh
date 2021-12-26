@@ -14,7 +14,7 @@ if ! flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics; then
 fi
 
 # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-if ! flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics; then
+if ! flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --per-file-ignores='yacg/model/*.py:E501 E303 W391'; then
     echo "There are flake8 problems [2]"
     popd > /dev/null
     exit 1
