@@ -123,7 +123,8 @@ def __getRandomEnumValue(property, randomDataTask):
 
 
 def __getRandomDateValue(property, randomDataTask):
-    # seems to be a better approach: https://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
+    # seems to be a better approach:
+    # https://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
     # startdate=datetime.date(YYYY,MM,DD)
     # date=startdate+datetime.timedelta(randint(1,365))
     minYear = 2005
@@ -298,7 +299,9 @@ def __fillRandomValuesForType(typeObj, typeDict, randomDataTask, randomDataDict,
             arraySize = __getArraySize(typeObj, property, randomDataTask)
             randomValue = []
             for i in range(arraySize):
-                tmpRandomValue = __getRandomValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+                tmpRandomValue = __getRandomValue(
+                                        typeObj, property, randomDataTask,
+                                        randomDataDict, keyValueDict, currentDepth)
                 if tmpRandomValue is None:
                     continue
                 randomValue.append(tmpRandomValue)

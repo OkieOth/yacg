@@ -1,3 +1,6 @@
+# 3.2.1
+* improve Map handling in javaBeans template
+
 # 3.2.0
 * implement model support for dictionaries
 * introduce pure object type
