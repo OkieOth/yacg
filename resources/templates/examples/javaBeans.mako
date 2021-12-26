@@ -17,7 +17,7 @@
 
 package ${packageName};
 
-% if isinstance(currentType, model.EnumType):    
+% if isinstance(currentType, model.EnumType):
     % if currentType.description != None:
 /**
 ${templateHelper.addLineBreakToDescription(currentType.description,4)}
