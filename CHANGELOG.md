@@ -1,3 +1,9 @@
+# 3.2.3
+* include also a latest container image into the CI
+
+# 3.2.2
+* move to GitHub container registry for publishing via CI
+
 # 3.2.1
 * improve Map handling in javaBeans template
 

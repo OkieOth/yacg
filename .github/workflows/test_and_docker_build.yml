@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-workflow-test:
-    uses: OkieOth/yacg/.github/workflows/__tests.yml@v3.2.2
+    uses: OkieOth/yacg/.github/workflows/__tests.yml@3.2.3
   docker-build:
     runs-on: ubuntu-latest
     steps:
@@ -19,4 +19,8 @@ jobs:
       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u okieoth --password-stdin
     - name: Push the Docker image
       run: docker push ghcr.io/okieoth/yacg:`cat version.txt | grep -P '\d+\.\d+\.\d+'`
+    - name: tag images as latest
+      run: docker tag ghcr.io/okieoth/yacg:`cat version.txt | grep -P '\d+\.\d+\.\d+'` ghcr.io/okieoth/yacg
+    - name: Push the latest Docker image
+      run: docker push ghcr.io/okieoth/yacg
 
