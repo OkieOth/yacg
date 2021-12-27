@@ -5,7 +5,7 @@ stuff based on them.
 
 Possible use-case are for instance to create PlanUML class diagrams based
 on the models, create bean classes based on model or more sophisticated
-create fully dao code with included tests. 
+create fully dao code with included tests.
 
 Basically it's a tool to play with model driven development ...
 
@@ -25,10 +25,10 @@ tag and also a tag matching the content of the `version.txt` file.
 
 ```bash
 # e.g. pull the image with a fixed tag
-ghcr.io/okieoth/yacg:3.2.2
+docker pull ghcr.io/okieoth/yacg:3.2.2
 
 # pull the lastest images
-ghcr.io/okieoth/yacg
+docker pull ghcr.io/okieoth/yacg
 ```
 
 # Usage
