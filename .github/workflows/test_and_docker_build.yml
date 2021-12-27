@@ -1,6 +1,6 @@
 # This workflow will create the docker image and deploy it to the github repository
 
-name: yacg tests
+name: yacg tests and docker build
 
 on:
   push:

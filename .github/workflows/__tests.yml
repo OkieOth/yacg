@@ -1,4 +1,4 @@
-name: yacg tests
+name: yacg actions lib
 
 on: workflow_call
 

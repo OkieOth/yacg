@@ -19,13 +19,16 @@ The general workflow is:
 Even if this tool written in Python it can be used to create text output
 in every format - all depends from choosen templates.
 
-To free the usage of yacg from too much care about dependencies, is on 
-Docker Hub `https://hub.docker.com/repository/docker/okieoth/yacg/general` 
-also a docker image, from the latest master brunch push, available. 
+To free the usage of yacg from too much care about dependencies, it's also
+available as container image from the GitHub repository. There are a 'latest'
+tag and also a tag matching the content of the `version.txt` file.
 
 ```bash
-# pull the image
-docker pull okieoth/yacg
+# e.g. pull the image with a fixed tag
+ghcr.io/okieoth/yacg:3.2.2
+
+# pull the lastest images
+ghcr.io/okieoth/yacg
 ```
 
 # Usage
