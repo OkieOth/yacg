@@ -157,4 +157,6 @@ cat resources/models/yaml/yacg_config_schema.yaml | pipenv run python3 modelToJs
 ```
 
 # Some Last Words
-This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines. 
+This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines.
+
+This project is advanced challended here: https://github.com/OkieOth/nibelheim_ts
