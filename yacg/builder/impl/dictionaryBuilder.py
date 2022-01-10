@@ -62,6 +62,13 @@ def getParsedSchemaFromYaml(model):
         return yaml.load(model, Loader=yaml.FullLoader)
 
 
+def __initTags(mainType, parsedSchema):
+    if len(mainType.tags) == 0:
+        tags = parsedSchema.get('x-tags', None)
+        if tags is not None:
+            mainType.tags = _extractTags(tags)
+
+
 def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     """extract the types from the parsed schema
 
@@ -81,21 +88,17 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
         description = parsedSchema.get('description', None)
-        mainType = _extractObjectType(typeNameStr, schemaProperties, additionalProperties, allOfEntry, description, modelTypes, modelFileContainer)
-        if len(mainType.tags) == 0:
-            tags = parsedSchema.get('x-tags', None)
-            if tags is not None:
-                mainType.tags = _extractTags(tags)
+        mainType = _extractObjectType(
+            typeNameStr, schemaProperties, additionalProperties,
+            allOfEntry, description, modelTypes, modelFileContainer)
+        __initTags(mainType, parsedSchema)
         _markRequiredAttributes(mainType, parsedSchema.get('required', []))
     enumEntry = parsedSchema.get('enum', None)
     if enumEntry is not None:
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
-        if len(mainType.tags) == 0:
-            tags = parsedSchema.get('x-tags', None)
-            if tags is not None:
-                mainType.tags = _extractTags(tags)
+        __initTags(mainType, parsedSchema)
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -153,7 +156,9 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
         typeNameStr = toUpperCamelCase(titleStr)
         if typeNameStr == desiredTypeName:
             description = modelFileContainer.parsedSchema.get('description', None)
-            type = _extractObjectType(typeNameStr, schemaProperties, additionalProperties, allOfEntry, description, modelTypes, modelFileContainer)
+            type = _extractObjectType(
+                typeNameStr, schemaProperties, additionalProperties,
+                allOfEntry, description, modelTypes, modelFileContainer)
             if len(type.tags) == 0:
                 tags = modelFileContainer.parsedSchema.get('x-tags', None)
                 if tags is not None:
@@ -210,7 +215,9 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
                 if tags is not None:
                     mainType.tags = _extractTags(tags)
         else:
-            type = _extractObjectType(key, properties, additionalProperties, allOfEntry, description, modelTypes, modelFileContainer)
+            type = _extractObjectType(
+                key, properties, additionalProperties, allOfEntry,
+                description, modelTypes, modelFileContainer)
             if len(type.tags) == 0:
                 tags = object.get('x-tags', None)
                 if tags is not None:
@@ -218,7 +225,9 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
             _markRequiredAttributes(type, object.get('required', []))
 
 
-def _extractObjectType(typeNameStr, properties, additionalProperties, allOfEntries, description, modelTypes, modelFileContainer):
+def _extractObjectType(
+                typeNameStr, properties, additionalProperties, allOfEntries,
+                description, modelTypes, modelFileContainer):
     """build a type object
 
     Keyword arguments:
@@ -584,7 +593,9 @@ def _getTypeFromParsedSchema(modelFileContainer, desiredTypeName, modelTypes):
             desiredType = type
             break
     if desiredType is None:
-        logging.error("can't find external type: desiredTypeName=%s, file=%s" % (desiredTypeName, modelFileContainer.fileName))
+        logging.error(
+            "can't find external type: desiredTypeName=%s, file=%s" %
+            (desiredTypeName, modelFileContainer.fileName))
         return None
     # _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,modelTypes)
     return desiredType

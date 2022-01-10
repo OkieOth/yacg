@@ -5,7 +5,7 @@ stuff based on them.
 
 Possible use-case are for instance to create PlanUML class diagrams based
 on the models, create bean classes based on model or more sophisticated
-create fully dao code with included tests. 
+create fully dao code with included tests.
 
 Basically it's a tool to play with model driven development ...
 
@@ -19,13 +19,16 @@ The general workflow is:
 Even if this tool written in Python it can be used to create text output
 in every format - all depends from choosen templates.
 
-To free the usage of yacg from too much care about dependencies, is on 
-Docker Hub `https://hub.docker.com/repository/docker/okieoth/yacg/general` 
-also a docker image, from the latest master brunch push, available. 
+To free the usage of yacg from too much care about dependencies, it's also
+available as container image from the GitHub repository. There are a 'latest'
+tag and also a tag matching the content of the `version.txt` file.
 
 ```bash
-# pull the image
-docker pull okieoth/yacg
+# e.g. pull the image with a fixed tag
+docker pull ghcr.io/okieoth/yacg:3.2.2
+
+# pull the lastest images
+docker pull ghcr.io/okieoth/yacg
 ```
 
 # Usage
@@ -154,4 +157,6 @@ cat resources/models/yaml/yacg_config_schema.yaml | pipenv run python3 modelToJs
 ```
 
 # Some Last Words
-This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines. 
+This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines.
+
+This project is advanced challended here: https://github.com/OkieOth/nibelheim_ts

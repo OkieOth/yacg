@@ -29,7 +29,7 @@ def getJavaType(type, isArray):
     elif isinstance(type, model.DateTimeType):
         return 'java.time.LocalDateTime' if not isArray else 'java.util.List<java.time.LocalDataTime>'
     elif isinstance(type, model.DictionaryType):
-        return 'java.util.Map'
+        return 'java.util.Map<String, {}>'.format(getJavaType(type.valueType, False))
     elif isinstance(type, model.ComplexType):
         return type.name if not isArray else 'java.util.List<{}>'.format(type.name)
     else:

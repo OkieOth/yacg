@@ -3,7 +3,7 @@
 scriptPos=${0%/*}
 
 
-imageBase=okieoth/yacg
+imageBase=ghcr.io/okieoth/yacg
 imageTag=`cat $scriptPos/../version.txt | grep -P '\d+\.\d+\.\d+'`
 
 imageName="$imageBase:$imageTag"
