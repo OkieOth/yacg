@@ -1,3 +1,7 @@
+# 3.2.4
+* improve openApi templates
+* model2yaml - remove alphabetical sorting of the output
+
 # 3.2.3
 * include also a latest container image into the CI
 

@@ -33,14 +33,14 @@ def _printYaml(parsedSchema, model, destDir):
     modelFile = "{}/{}.yaml".format(destDir, modelFileNameWithoutExt)
     printInfo('\nWrite yaml: {}'.format(modelFile))
     with open(modelFile, 'w') as outfile:
-        yaml.dump(parsedSchema, outfile, indent=4)
+        yaml.dump(parsedSchema, outfile, indent=4, sort_keys=False)
 
 
 def convertModel(model, dryRun, destDir):
     parsedSchema = builder.getParsedSchemaFromJson(model)
     traverseDictAndReplaceRefExtensions(parsedSchema, True)
     if dryRun:
-        print(yaml.dump(parsedSchema))
+        print(yaml.dump(parsedSchema, sort_keys=False))
     else:
         _printYaml(parsedSchema, model, destDir)
 
@@ -86,9 +86,6 @@ def main():
     if not args.stdin:
         if args.model is None:
             printError('\nModel file not given. It can be passed as parameter or over stdin ... cancel')
-            sys.exit(1)
-        if not doesFileExist(args.model):
-            printError('\nModel file not found ... cancel: {}'.format(args.model))
             sys.exit(1)
         model = args.model
     else:

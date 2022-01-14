@@ -138,6 +138,13 @@ pipenv run python3 modelToYaml.py --model resources/models/json/yacg_model_schem
 
 # feed stdin to convert
 cat resources/models/json/yacg_model_schema.json | pipenv run python3 modelToYaml.py --stdin --dryRun
+
+
+# more sophisticated example to create openApi yaml
+pipenv run python3 yacg.py \
+    --models tests/resources/models/json/examples/openapi_v3_example_refs.json \
+    --singleFileTemplates resources/templates/examples/normalizedOpenApiJson.mako=/tmp/test.json && \
+    pipenv run python3 modelToYaml.py --model /tmp/test.json --destDir /tmp
 ```
 
 # Models to JSON
