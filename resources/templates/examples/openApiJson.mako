@@ -145,8 +145,8 @@
                             }${',' if property != type.properties[-1] else ''}
                     % endfor
                         }
-                % endif
                     }
+                % endif
                 ]
             % else:
                 % if len(type.properties) > 0:

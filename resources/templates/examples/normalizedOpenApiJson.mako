@@ -62,9 +62,18 @@
                         "required": ${'true' if param.required is True else 'false'},
                         "in": "${param.inType.value}",
                         "name": "${param.name}",
+                        % if param.type is not None:
                         "schema": {
-                            
+                            % if param.isArray:
+                            "type": "array",
+                            "items": {
+                                ${jsonFuncs.printOpenApiJsonTypeEntry(param.type)}
+                            }
+                            % else:
+                            ${jsonFuncs.printOpenApiJsonTypeEntry(param.type)}
+                            % endif
                         }
+                        % endif
                     }${',' if param != command.parameters[-1] else ''}
                     % endfor
                 ],
@@ -110,7 +119,7 @@
                                     }
                             % else:
                                     "$ref": "#/components/schemas/${content.type.name}"
-                            % endif 
+                            % endif
                                 }
                             }${',' if content != response.content[-1] else ''}
                         % endfor
@@ -149,7 +158,7 @@
                                     ${jsonFuncs.printOpenApiJsonTypeEntry(property.type)}
                             % if jsonFuncs.isEnumRequired(property.type):
                                     ,${jsonFuncs.printOpenApiJsonEnumEntry(property.type)}
-                            % endif    
+                            % endif
                             % if jsonFuncs.isFormatRequired(property.type):
                                     ${jsonFuncs.printOpenApiJsonFormatEntry(property.type)}
                             % endif
@@ -173,10 +182,10 @@
                                 ${jsonFuncs.printOpenApiJsonTypeEntry(property.type)}
                             % if jsonFuncs.isEnumRequired(property.type):
                                 ,${jsonFuncs.printOpenApiJsonEnumEntry(property.type)}
-                            % endif    
+                            % endif
                             % if jsonFuncs.isFormatRequired(property.type):
                                 ${jsonFuncs.printOpenApiJsonFormatEntry(property.type)}
-                            % endif    
+                            % endif
                             % if jsonFuncs.isMinRequired(property.type):
                                 ,"minimum": "${property.type.minimum}"
                             % endif
@@ -192,12 +201,12 @@
                             % if jsonFuncs.isDefaultRequired(property.type):
                                 ,"default": "${property.type.default}"
                             % endif
-                        % endif    
+                        % endif
                             }${',' if property != type.properties[-1] else ''}
                     % endfor
                         }
-                % endif
                     }
+                % endif
                 ]
             % else:
                 % if len(type.properties) > 0:
@@ -213,10 +222,10 @@
                             ${jsonFuncs.printOpenApiJsonTypeEntry(property.type)}
                             % if jsonFuncs.isEnumRequired(property.type):
                             ,${jsonFuncs.printOpenApiJsonEnumEntry(property.type)}
-                            % endif    
+                            % endif
                             % if jsonFuncs.isFormatRequired(property.type):
                             ${jsonFuncs.printOpenApiJsonFormatEntry(property.type)}
-                            % endif    
+                            % endif
                             % if jsonFuncs.isMinRequired(property.type):
                             ,"minimum": "${property.type.minimum}"
                             % endif
@@ -237,10 +246,10 @@
                         ${jsonFuncs.printOpenApiJsonTypeEntry(property.type)}
                             % if jsonFuncs.isEnumRequired(property.type):
                         ,${jsonFuncs.printOpenApiJsonEnumEntry(property.type)}
-                            % endif    
+                            % endif
                             % if jsonFuncs.isFormatRequired(property.type):
                         ${jsonFuncs.printOpenApiJsonFormatEntry(property.type)}
-                            % endif    
+                            % endif
                             % if jsonFuncs.isMinRequired(property.type):
                         ,"minimum": "${property.type.minimum}"
                             % endif
@@ -256,7 +265,7 @@
                             % if jsonFuncs.isDefaultRequired(property.type):
                         ,"default": "${property.type.default}"
                             % endif
-                        % endif    
+                        % endif
                     }${',' if property != type.properties[-1] else ''}
                     % endfor
                 }

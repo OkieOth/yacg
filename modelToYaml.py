@@ -18,6 +18,7 @@ parser = argparse.ArgumentParser(prog='modelToYaml', description=description)
 parser.add_argument('--model', help='model schema to convert to yaml')
 parser.add_argument('--stdin', help='reads the model content from stdin', action='store_true')
 parser.add_argument('--destDir', help='directory to write the yaml versions')
+parser.add_argument('--destFile', help='file name to write the yaml versions, mandatory when read from stdin')
 parser.add_argument('--dryRun', help='if set, then no output file is created', action='store_true')
 
 
@@ -33,16 +34,16 @@ def _printYaml(parsedSchema, model, destDir):
     modelFile = "{}/{}.yaml".format(destDir, modelFileNameWithoutExt)
     printInfo('\nWrite yaml: {}'.format(modelFile))
     with open(modelFile, 'w') as outfile:
-        yaml.dump(parsedSchema, outfile, indent=4)
+        yaml.dump(parsedSchema, outfile, indent=4, sort_keys=False)
 
 
-def convertModel(model, dryRun, destDir):
+def convertModel(model, dryRun, destDir, destFileName):
     parsedSchema = builder.getParsedSchemaFromJson(model)
     traverseDictAndReplaceRefExtensions(parsedSchema, True)
     if dryRun:
-        print(yaml.dump(parsedSchema))
+        print(yaml.dump(parsedSchema, sort_keys=False))
     else:
-        _printYaml(parsedSchema, model, destDir)
+        _printYaml(parsedSchema, destFileName, destDir)
 
 
 def readStdin():
@@ -87,16 +88,16 @@ def main():
         if args.model is None:
             printError('\nModel file not given. It can be passed as parameter or over stdin ... cancel')
             sys.exit(1)
-        if not doesFileExist(args.model):
-            printError('\nModel file not found ... cancel: {}'.format(args.model))
-            sys.exit(1)
         model = args.model
     else:
+        if args.destFile is None:
+            printError('\nIf model is read from stdin then destFile is needed ... cancel')
+            sys.exit(1)
         model = readStdin()
     if (not args.dryRun) and ((args.destDir is None) or (not os.path.isdir(args.destDir))):
         printError('\nDest dir for yaml output not found ... cancel: {}'.format(args.destDir))
         sys.exit(1)
-    convertModel(model, args.dryRun, args.destDir)
+    convertModel(model, args.dryRun, args.destDir, model if not args.stdin else "my_yaml.yaml")
 
 
 if __name__ == '__main__':
