@@ -542,9 +542,7 @@ def _extractExternalReferenceTypeFromYaml(refEntry, modelTypes, originModelFileC
     """
 
     fileExt = '.yaml' if refEntry.find('.yaml') != -1 else '.yml'
-    fileName = _extractFileNameFromRefEntry(refEntry, fileExt)
-
-    refEntryFileName = _extractFileNameFromRefEntry(refEntry, '.json')
+    refEntryFileName = _extractFileNameFromRefEntry(refEntry, fileExt)
     fileName = refEntryFileName
     if not os.path.isfile(fileName):
         # maybe the path is relative to the current type file
