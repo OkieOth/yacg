@@ -1,3 +1,6 @@
+# 3.2.5
+* fix bug in calculating absolute filenames for referenced yaml files
+
 # 3.2.4
 * improve openApi templates
 * model2yaml - remove alphabetical sorting of the output
