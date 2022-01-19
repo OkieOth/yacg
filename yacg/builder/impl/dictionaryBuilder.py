@@ -16,7 +16,7 @@ from yacg.model.model import StringType, UuidType, BytesType, ObjectType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, DictionaryType, Tag
 from yacg.util.fileUtils import doesFileExist
-
+from yacg.model.modelFuncs import isBaseType
 import yacg.model.openapi as openapi
 
 
@@ -199,8 +199,8 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
     """
 
     for key in definitions.keys():
-        if (desiredTypeName is not None) and (key != desiredTypeName):
-            continue
+#        if (desiredTypeName is not None) and (key != desiredTypeName):
+#            continue
         object = definitions[key]
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
@@ -595,7 +595,7 @@ def _getTypeFromParsedSchema(modelFileContainer, desiredTypeName, modelTypes):
             "can't find external type: desiredTypeName=%s, file=%s" %
             (desiredTypeName, modelFileContainer.fileName))
         return None
-    # _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,modelTypes)
+    _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType, modelTypes)
     return desiredType
 
 
@@ -609,8 +609,10 @@ def _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTy
     """
 
     _appendToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTypes)
+    if not hasattr(desiredType, 'properties'):
+        return
     for property in desiredType.properties:
-        if not property.type.isBaseType:
+        if not isBaseType(property.type):
             _putAllNewRelatedTypesToAlreadyLoadedTypes(property.type, alreadyLoadedModelTypes)
 
 
