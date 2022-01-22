@@ -1,3 +1,7 @@
+# 3.3.0
+* add 'tasks' switch to yacg command line to include only named tasks in the codegen run
+* add 'jobs' switch to yacg command line to include only named jobs in the codegen run
+
 # 3.2.5
 * fix bug in calculating absolute filenames for referenced yaml files
 
