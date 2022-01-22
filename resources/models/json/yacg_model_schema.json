@@ -130,6 +130,15 @@
                     "properties": {
                         "default": {
                             "type": "string"
+                        },
+                        "minLength": {
+                            "type": "number"
+                        },
+                        "maxLength": {
+                            "type": "number"
+                        },
+                        "pattern": {
+                            "type": "string"
                         }
                     }
                 }
