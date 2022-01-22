@@ -339,6 +339,12 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
                 newProperty.type.maximum = propDict.get('maximum', None)
             if hasattr(newProperty.type, 'exclusiveMaximum'):
                 newProperty.type.exclusiveMaximum = propDict.get('exclusiveMaximum', None)
+            if hasattr(newProperty.type, 'minLength'):
+                newProperty.type.minLength = propDict.get('minLength', None)
+            if hasattr(newProperty.type, 'maxLength'):
+                newProperty.type.maxLength = propDict.get('maxLength', None)
+            if hasattr(newProperty.type, 'pattern'):
+                newProperty.type.pattern = propDict.get('pattern', None)
 
         newProperty.isKey = propDict.get('x-key', False)
         newProperty.isVisualKey = propDict.get('x-visualKey', False)
