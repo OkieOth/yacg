@@ -8,7 +8,7 @@ from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError
 
 
-def getJobConfigurationsFromConfigFile(configFile, additionalVarsDict={}):
+def getJobConfigurationsFromConfigFile(configFile, additionalVarsDict={}, jobsToInclude=[], tasksToInclude=[]):
     if not doesFileExist(configFile):
         printError('\ncan not find config file: {}'.format(configFile))
         return []
@@ -25,9 +25,21 @@ def getJobConfigurationsFromConfigFile(configFile, additionalVarsDict={}):
     jobArray = []
     for conf in configurations:
         job = config.Job(conf)
+        if (len(jobsToInclude) > 0) and (job.name not in jobsToInclude):
+            continue
+        __removeUndesiredTasksIfNeeded(tasksToInclude, job)
         jobArray.append(job)
     __replaceEnvVars(jobArray, additionalVarsDict)
     return jobArray
+
+
+def __removeUndesiredTasksIfNeeded(tasksToInclude, job):
+    if len(tasksToInclude) > 0:
+        tasksFromConfig = job.tasks
+        job.tasks = []
+        for task in tasksFromConfig:
+            if task.name in tasksToInclude:
+                job.tasks.append(task)
 
 
 def __replaceEnvVars(jobArray, additionalVarsDict):
