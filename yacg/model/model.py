@@ -55,12 +55,60 @@ class IntegerType (Type):
 
         self.exclusiveMaximum = None
 
+        self.format = None
+
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
+        self.format = None
+
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.format = IntegerTypeFormatEnum.valueForString(dictObj.get('format', None))
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
+
+        self.format = IntegerTypeFormatEnum.valueForString(dictObj.get('format', None))
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
         self.format = IntegerTypeFormatEnum.valueForString(dictObj.get('format', None))
 
@@ -123,12 +171,60 @@ class NumberType (Type):
 
         self.exclusiveMaximum = None
 
+        self.format = None
+
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
+        self.format = None
+
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.format = NumberTypeFormatEnum.valueForString(dictObj.get('format', None))
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
+
+        self.format = NumberTypeFormatEnum.valueForString(dictObj.get('format', None))
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
         self.format = NumberTypeFormatEnum.valueForString(dictObj.get('format', None))
 
@@ -181,12 +277,20 @@ class BooleanType (Type):
 
         self.default = None
 
+        self.default = None
+
+        self.default = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.default = dictObj.get('default', None)
+
+        self.default = dictObj.get('default', None)
 
         self.default = dictObj.get('default', None)
 
@@ -200,6 +304,28 @@ class StringType (Type):
 
         self.default = None
 
+        self.minLength = None
+
+        self.maxLength = None
+
+        self.pattern = None
+
+        self.default = None
+
+        self.minLength = None
+
+        self.maxLength = None
+
+        self.pattern = None
+
+        self.default = None
+
+        self.minLength = None
+
+        self.maxLength = None
+
+        self.pattern = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -208,6 +334,28 @@ class StringType (Type):
             return
 
         self.default = dictObj.get('default', None)
+
+        self.minLength = dictObj.get('minLength', None)
+
+        self.maxLength = dictObj.get('maxLength', None)
+
+        self.pattern = dictObj.get('pattern', None)
+
+        self.default = dictObj.get('default', None)
+
+        self.minLength = dictObj.get('minLength', None)
+
+        self.maxLength = dictObj.get('maxLength', None)
+
+        self.pattern = dictObj.get('pattern', None)
+
+        self.default = dictObj.get('default', None)
+
+        self.minLength = dictObj.get('minLength', None)
+
+        self.maxLength = dictObj.get('maxLength', None)
+
+        self.pattern = dictObj.get('pattern', None)
 
 
 class UuidType (Type):
@@ -219,12 +367,20 @@ class UuidType (Type):
 
         self.default = None
 
+        self.default = None
+
+        self.default = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.default = dictObj.get('default', None)
+
+        self.default = dictObj.get('default', None)
 
         self.default = dictObj.get('default', None)
 
@@ -256,12 +412,94 @@ class EnumType (Type):
         #: additional flags to mark a type
         self.tags = []
 
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        self.description = None
+
+        self.values = []
+
+        self.default = None
+
+        #: additional flags to mark a type
+        self.tags = []
+
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        self.description = None
+
+        self.values = []
+
+        self.default = None
+
+        #: additional flags to mark a type
+        self.tags = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        self.description = dictObj.get('description', None)
+
+        arrayValues = dictObj.get('values', [])
+        for elemValues in arrayValues:
+            self.values.append(elemValues)
+
+        self.default = dictObj.get('default', None)
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        self.description = dictObj.get('description', None)
+
+        arrayValues = dictObj.get('values', [])
+        for elemValues in arrayValues:
+            self.values.append(elemValues)
+
+        self.default = dictObj.get('default', None)
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
 
         self.version = dictObj.get('version', None)
 
@@ -324,12 +562,52 @@ class DateType (Type):
 
         self.exclusiveMaximum = None
 
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
         self.default = dictObj.get('default', None)
 
@@ -359,12 +637,52 @@ class DateTimeType (Type):
 
         self.exclusiveMaximum = None
 
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
         self.default = dictObj.get('default', None)
 
@@ -386,12 +704,20 @@ class BytesType (Type):
 
         self.default = None
 
+        self.default = None
+
+        self.default = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.default = dictObj.get('default', None)
+
+        self.default = dictObj.get('default', None)
 
         self.default = dictObj.get('default', None)
 
@@ -431,12 +757,136 @@ class ComplexType (Type):
         #: additional flags to mark a type
         self.tags = []
 
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        self.description = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        #: in case of inheritance points this attrib to the base type
+        self.extendsType = None
+
+        #: list of types that extend this type
+        self.extendedBy = []
+
+        #: types that hold attribute references to that type
+        self.referencedBy = []
+
+        #: properties of that type
+        self.properties = []
+
+        #: additional flags to mark a type
+        self.tags = []
+
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        self.description = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        #: in case of inheritance points this attrib to the base type
+        self.extendsType = None
+
+        #: list of types that extend this type
+        self.extendedBy = []
+
+        #: types that hold attribute references to that type
+        self.referencedBy = []
+
+        #: properties of that type
+        self.properties = []
+
+        #: additional flags to mark a type
+        self.tags = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.description = dictObj.get('description', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        subDictObj = dictObj.get('extendsType', None)
+        if subDictObj is not None:
+            self.extendsType = ComplexType(subDictObj)
+
+        arrayExtendedBy = dictObj.get('extendedBy', [])
+        for elemExtendedBy in arrayExtendedBy:
+            self.extendedBy.append(
+                ComplexType(elemExtendedBy))
+
+        arrayReferencedBy = dictObj.get('referencedBy', [])
+        for elemReferencedBy in arrayReferencedBy:
+            self.referencedBy.append(
+                ComplexType(elemReferencedBy))
+
+        arrayProperties = dictObj.get('properties', [])
+        for elemProperties in arrayProperties:
+            self.properties.append(
+                Property(elemProperties))
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.description = dictObj.get('description', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        subDictObj = dictObj.get('extendsType', None)
+        if subDictObj is not None:
+            self.extendsType = ComplexType(subDictObj)
+
+        arrayExtendedBy = dictObj.get('extendedBy', [])
+        for elemExtendedBy in arrayExtendedBy:
+            self.extendedBy.append(
+                ComplexType(elemExtendedBy))
+
+        arrayReferencedBy = dictObj.get('referencedBy', [])
+        for elemReferencedBy in arrayReferencedBy:
+            self.referencedBy.append(
+                ComplexType(elemReferencedBy))
+
+        arrayProperties = dictObj.get('properties', [])
+        for elemProperties in arrayProperties:
+            self.properties.append(
+                Property(elemProperties))
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
 
         self.version = dictObj.get('version', None)
 
@@ -594,12 +1044,104 @@ class DictionaryType (Type):
         #: additional flags to mark a type
         self.tags = []
 
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        self.description = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        #: types that hold attribute references to that type
+        self.referencedBy = []
+
+        #: either a basic or a complex type
+        self.valueType = None
+
+        #: additional flags to mark a type
+        self.tags = []
+
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        self.description = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        #: types that hold attribute references to that type
+        self.referencedBy = []
+
+        #: either a basic or a complex type
+        self.valueType = None
+
+        #: additional flags to mark a type
+        self.tags = []
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.description = dictObj.get('description', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        arrayReferencedBy = dictObj.get('referencedBy', [])
+        for elemReferencedBy in arrayReferencedBy:
+            self.referencedBy.append(
+                ComplexType(elemReferencedBy))
+
+        subDictObj = dictObj.get('valueType', None)
+        if subDictObj is not None:
+            self.valueType = Type(subDictObj)
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.description = dictObj.get('description', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        arrayReferencedBy = dictObj.get('referencedBy', [])
+        for elemReferencedBy in arrayReferencedBy:
+            self.referencedBy.append(
+                ComplexType(elemReferencedBy))
+
+        subDictObj = dictObj.get('valueType', None)
+        if subDictObj is not None:
+            self.valueType = Type(subDictObj)
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
 
         self.version = dictObj.get('version', None)
 
