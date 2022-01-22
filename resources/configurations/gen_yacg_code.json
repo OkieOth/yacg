@@ -1,6 +1,6 @@
 [
     {
-        "name": "yacg models types",
+        "name": "yacg_types",
         "description": "code gen configuration for yacg base model types",
         "models": [ {
             "schema": "resources/models/json/yacg_model_schema.json"
@@ -8,14 +8,16 @@
         ],
         "tasks": [
             {
-                "name": "create Python types",
+                "name": "python_types",
+                "description": "create Python types",
                 "singleFileTask": {
                     "template": "pythonBeans",
                     "destFile": "tmp/model.py"
                 }
             },
             {
-                "name": "create tests for Python types",
+                "name": "python_types_tests",
+                "description": "create tests for Python types",
                 "singleFileTask": {
                     "template": "pythonBeansTests",
                     "destFile": "tmp/test_model.py",
@@ -27,7 +29,8 @@
                 }
             },
             {
-                "name": "create PlantUML file",
+                "name": "puml",
+                "description": "create PlantUML file",
                 "singleFileTask": {
                     "template": "plantUml",
                     "destFile": "tmp/model.puml"
@@ -36,7 +39,7 @@
         ]
     },
     {
-        "name": "yacg config models types",
+        "name": "config_types",
         "description": "code gen configuration for yacg config model types",
         "models": [ {
             "schema": "resources/models/json/yacg_config_schema.json"
@@ -44,14 +47,16 @@
         ],
         "tasks": [
             {
-                "name": "create Python types",
+                "name": "python_types",
+                "description": "create Python types",
                 "singleFileTask": {
                     "template": "pythonBeans",
                     "destFile": "tmp/config.py"
                 }
             },
             {
-                "name": "create tests for Python types",
+                "name": "python_types_tests",
+                "description": "create tests for Python types",
                 "singleFileTask": {
                     "template": "pythonBeansTests",
                     "destFile": "tmp/test_config.py",
@@ -63,7 +68,8 @@
                 }
             },
             {
-                "name": "create PlantUML file",
+                "name": "puml",
+                "description": "create PlantUML file",
                 "singleFileTask": {
                     "template": "plantUml",
                     "destFile": "tmp/config.puml"
@@ -72,7 +78,7 @@
         ]
     },
     {
-        "name": "openapi models types",
+        "name": "openapi_types",
         "description": "code gen configuration for openapi model types",
         "models": [ {
             "schema": "resources/models/json/yacg_openapi_paths.json"
@@ -80,14 +86,16 @@
         ],
         "tasks": [
             {
-                "name": "create Python types",
+                "name": "python_types",
+                "description": "create Python types",
                 "singleFileTask": {
                     "template": "pythonBeans",
                     "destFile": "tmp/openapi.py"
                 }
             },
             {
-                "name": "create tests for Python types",
+                "name": "python_types_tests",
+                "description": "create tests for Python types",
                 "singleFileTask": {
                     "template": "pythonBeansTests",
                     "destFile": "tmp/test_openapi.py",
@@ -99,7 +107,8 @@
                 }
             },
             {
-                "name": "create PlantUML file",
+                "name": "puml",
+                "description": "create PlantUML file",
                 "singleFileTask": {
                     "template": "plantUml",
                     "destFile": "tmp/openapi.puml"
