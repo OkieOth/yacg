@@ -26,6 +26,8 @@ parser = argparse.ArgumentParser(prog='yacg', description=description)
 parser.add_argument_group('input')
 parser.add_argument('--models', nargs='+', help='models to process')
 parser.add_argument('--config', nargs='?', help='config file')
+parser.add_argument('--tasks', nargs='+', help='task names from a config file that should be executed')
+parser.add_argument('--jobs', nargs='+', help='job names from a config file that should be executed')
 parser.add_argument_group('processing')
 parser.add_argument('--singleFileTemplates', nargs='+', help='templates to process that creates one file')
 parser.add_argument('--multiFileTemplates', nargs='+', help='templates to process that creates one file per type')
@@ -184,8 +186,10 @@ def getJobConfigurations(args):
 
     if args.config is not None:
         templateParameters = _getTemplateParameters(args)
+        tasksToInclude = args.tasks if args.tasks is not None else []
+        jobsToInclude = args.jobs if args.jobs is not None else []
         vars = _getVars(args)
-        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config, vars)
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(args.config, vars, jobsToInclude, tasksToInclude)
         if (args.models is not None) and (len(args.models) > 0):
             # there are models from the commandline that have to be mixed in the config file data
             for job in jobArray:

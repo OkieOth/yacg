@@ -34,8 +34,11 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(mainType)
         self.assertEqual(4, len(mainType.properties))
         self.assertTrue(isinstance(mainType.properties[0].type, StringType))
-        self.assertTrue(isinstance(mainType.properties[1].type, NumberType))
+        self.assertEqual(mainType.properties[0].type.minLength, 2)
+        self.assertEqual(mainType.properties[0].type.maxLength, 200)
+        self.assertEqual(mainType.properties[0].type.pattern, "^\\d$")
 
+        self.assertTrue(isinstance(mainType.properties[1].type, NumberType))
         self.assertEqual(mainType.properties[1].type.minimum, 0.5)
         self.assertEqual(mainType.properties[1].type.maximum, 1.4)
         self.assertEqual(mainType.properties[1].type.exclusiveMinimum, -1.5)

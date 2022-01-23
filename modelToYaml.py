@@ -3,7 +3,6 @@ import sys
 import os
 import yaml
 import logging
-from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError, printInfo
 import yacg.builder.impl.dictionaryBuilder as builder
 
