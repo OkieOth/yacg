@@ -199,8 +199,6 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
     """
 
     for key in definitions.keys():
-#        if (desiredTypeName is not None) and (key != desiredTypeName):
-#            continue
         object = definitions[key]
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
@@ -226,8 +224,8 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
 
 
 def _extractObjectType(
-                typeNameStr, properties, additionalProperties, allOfEntries,
-                description, modelTypes, modelFileContainer):
+        typeNameStr, properties, additionalProperties, allOfEntries,
+        description, modelTypes, modelFileContainer):
     """build a type object
 
     Keyword arguments:

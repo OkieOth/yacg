@@ -151,7 +151,6 @@ class IntegerTypeFormatEnum(Enum):
             return ''
 
 
-
 class NumberType (Type):
     """ floating point values
     """
@@ -265,7 +264,6 @@ class NumberTypeFormatEnum(Enum):
             return 'double'
         else:
             return ''
-
 
 
 class BooleanType (Type):
@@ -1166,5 +1164,3 @@ class DictionaryType (Type):
         for elemTags in arrayTags:
             self.tags.append(
                 Tag(elemTags))
-
-
