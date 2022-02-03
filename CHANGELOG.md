@@ -1,3 +1,6 @@
+# 3.3.1
+* fix 'allOf' bug in cases that a model is referenced multiple times
+
 # 3.3.0
 * add 'tasks' switch to yacg command line to include only named tasks in the codegen run
 * add 'jobs' switch to yacg command line to include only named jobs in the codegen run
