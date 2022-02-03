@@ -248,7 +248,10 @@ def _extractObjectType(
         newType.name = typeNameStr
         newType.version = modelFileContainer.version
     else:
-        newType = alreadyCreatedType
+        if len(alreadyCreatedType.properties) > 0:
+            return alreadyCreatedType
+        else:
+            newType = alreadyCreatedType
     newType.source = modelFileContainer.fileName
     if description is not None:
         newType.description = description
