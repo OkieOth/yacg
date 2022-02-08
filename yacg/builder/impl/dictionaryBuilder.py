@@ -16,7 +16,7 @@ from yacg.model.model import StringType, UuidType, BytesType, ObjectType
 from yacg.model.model import DateType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, DictionaryType, Tag
 from yacg.util.fileUtils import doesFileExist
-
+from yacg.model.modelFuncs import isBaseType
 import yacg.model.openapi as openapi
 
 
@@ -199,8 +199,6 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
     """
 
     for key in definitions.keys():
-        if (desiredTypeName is not None) and (key != desiredTypeName):
-            continue
         object = definitions[key]
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
@@ -226,8 +224,8 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
 
 
 def _extractObjectType(
-                typeNameStr, properties, additionalProperties, allOfEntries,
-                description, modelTypes, modelFileContainer):
+        typeNameStr, properties, additionalProperties, allOfEntries,
+        description, modelTypes, modelFileContainer):
     """build a type object
 
     Keyword arguments:
@@ -250,7 +248,10 @@ def _extractObjectType(
         newType.name = typeNameStr
         newType.version = modelFileContainer.version
     else:
-        newType = alreadyCreatedType
+        if len(alreadyCreatedType.properties) > 0:
+            return alreadyCreatedType
+        else:
+            newType = alreadyCreatedType
     newType.source = modelFileContainer.fileName
     if description is not None:
         newType.description = description
@@ -339,6 +340,12 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
                 newProperty.type.maximum = propDict.get('maximum', None)
             if hasattr(newProperty.type, 'exclusiveMaximum'):
                 newProperty.type.exclusiveMaximum = propDict.get('exclusiveMaximum', None)
+            if hasattr(newProperty.type, 'minLength'):
+                newProperty.type.minLength = propDict.get('minLength', None)
+            if hasattr(newProperty.type, 'maxLength'):
+                newProperty.type.maxLength = propDict.get('maxLength', None)
+            if hasattr(newProperty.type, 'pattern'):
+                newProperty.type.pattern = propDict.get('pattern', None)
 
         newProperty.isKey = propDict.get('x-key', False)
         newProperty.isVisualKey = propDict.get('x-visualKey', False)
@@ -542,9 +549,7 @@ def _extractExternalReferenceTypeFromYaml(refEntry, modelTypes, originModelFileC
     """
 
     fileExt = '.yaml' if refEntry.find('.yaml') != -1 else '.yml'
-    fileName = _extractFileNameFromRefEntry(refEntry, fileExt)
-
-    refEntryFileName = _extractFileNameFromRefEntry(refEntry, '.json')
+    refEntryFileName = _extractFileNameFromRefEntry(refEntry, fileExt)
     fileName = refEntryFileName
     if not os.path.isfile(fileName):
         # maybe the path is relative to the current type file
@@ -597,7 +602,7 @@ def _getTypeFromParsedSchema(modelFileContainer, desiredTypeName, modelTypes):
             "can't find external type: desiredTypeName=%s, file=%s" %
             (desiredTypeName, modelFileContainer.fileName))
         return None
-    # _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType,modelTypes)
+    _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType, modelTypes)
     return desiredType
 
 
@@ -611,8 +616,10 @@ def _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTy
     """
 
     _appendToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTypes)
+    if not hasattr(desiredType, 'properties'):
+        return
     for property in desiredType.properties:
-        if not property.type.isBaseType:
+        if not isBaseType(property.type):
             _putAllNewRelatedTypesToAlreadyLoadedTypes(property.type, alreadyLoadedModelTypes)
 
 

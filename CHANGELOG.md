@@ -1,3 +1,18 @@
+# 3.3.1
+* fix 'allOf' bug in cases that a model is referenced multiple times
+
+# 3.3.0
+* add 'tasks' switch to yacg command line to include only named tasks in the codegen run
+* add 'jobs' switch to yacg command line to include only named jobs in the codegen run
+* add minLength, maxLength, pattern validation to StringType
+
+# 3.2.5
+* fix bug in calculating absolute filenames for referenced yaml files
+
+# 3.2.4
+* improve openApi templates
+* model2yaml - remove alphabetical sorting of the output
+
 # 3.2.3
 * include also a latest container image into the CI
 

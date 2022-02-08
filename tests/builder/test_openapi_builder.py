@@ -21,10 +21,10 @@ class TestOpenApiParsing (unittest.TestCase):
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(15, len(modelTypes))
+        self.assertEqual(18, len(modelTypes))
         (pathTypes, otherTypes, enumTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
         self.assertEqual(4, len(pathTypes))
-        self.assertEqual(6, len(otherTypes))
+        self.assertEqual(9, len(otherTypes))
         self.assertEqual(5, len(enumTypes))
 
     def test_getOpenApiTags(self):
@@ -32,7 +32,7 @@ class TestOpenApiParsing (unittest.TestCase):
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(15, len(modelTypes))
+        self.assertEqual(18, len(modelTypes))
         tags = modelFuncs.getOpenApiTags(modelTypes)
         self.assertEqual(1, len(tags))
 
@@ -42,7 +42,7 @@ class TestOpenApiParsing (unittest.TestCase):
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(15, len(modelTypes))
+        self.assertEqual(18, len(modelTypes))
         pathTypes = []
         coreModelTypes = []
         foundScopedCommand = False

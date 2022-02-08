@@ -72,3 +72,39 @@ class TestYacgUtils (unittest.TestCase):
     def testReplaceVar(self):
         result1 = yacg_utils.replaceVar('i{Am}AString{With}Variables', 'Am', 'AM')
         self.assertEqual('iAMAString{With}Variables', result1)
+
+    def testGetConfigJobsCmdLineSwitch1(self):
+        jobsToInclude = ["config_types"]
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(
+            'resources/configurations/gen_yacg_code.json',
+            {}, jobsToInclude)
+        self.assertIsNotNone(jobArray)
+        self.assertEqual(1, len(jobArray))
+        self.assertEqual("config_types", jobArray[0].name)
+
+    def testGetConfigJobsCmdLineSwitch2(self):
+        jobsToInclude = ["config_types", "openapi_types"]
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(
+            'resources/configurations/gen_yacg_code.json',
+            {}, jobsToInclude)
+        self.assertIsNotNone(jobArray)
+        self.assertEqual(2, len(jobArray))
+        self.assertEqual("config_types", jobArray[0].name)
+        self.assertEqual("openapi_types", jobArray[1].name)
+
+    def testGetConfigTasksCmdLineSwitch1(self):
+        tasksToInclude = ["puml", "python_types"]
+        jobArray = yacg_utils.getJobConfigurationsFromConfigFile(
+            'resources/configurations/gen_yacg_code.json',
+            {}, (), tasksToInclude)
+        self.assertIsNotNone(jobArray)
+        self.assertEqual(3, len(jobArray))
+        self.assertEqual(2, len(jobArray[0].tasks))
+        self.assertEqual(2, len(jobArray[1].tasks))
+        self.assertEqual(2, len(jobArray[2].tasks))
+        self.assertEqual("python_types", jobArray[0].tasks[0].name)
+        self.assertEqual("python_types", jobArray[1].tasks[0].name)
+        self.assertEqual("python_types", jobArray[2].tasks[0].name)
+        self.assertEqual("puml", jobArray[0].tasks[1].name)
+        self.assertEqual("puml", jobArray[1].tasks[1].name)
+        self.assertEqual("puml", jobArray[2].tasks[1].name)

@@ -88,7 +88,13 @@ def getFlattenProperties(typeObj):
     baseType = typeObj.extendsType
     while baseType is not None:
         for property in baseType.properties:
-            flattenProperties.append(property)
+            alreadyIncluded = False
+            for fp in flattenProperties:
+                if (fp.name == property.name) and (fp.type == property.type):
+                    alreadyIncluded = True
+                    break
+            if not alreadyIncluded:
+                flattenProperties.append(property)
         baseType = baseType.extendsType
 
     return flattenProperties
