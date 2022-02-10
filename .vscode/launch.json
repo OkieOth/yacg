@@ -33,7 +33,7 @@
             "program": "${workspaceFolder}/yacg.py",
             "args": [
                 "--models",
-                "resources/models/json/yacg_typicals.json",
+                "resources/models/json/yacg_typicals_2.json",
                 "--singleFileTemplates",
                 "resources/templates/examples/opcUaTypes.mako=tmp/Types-Result.xml",
                 "--templateParameters",
