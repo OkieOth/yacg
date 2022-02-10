@@ -1,3 +1,6 @@
+# 3.4.1
+* enable automatic releases with github actions
+
 # 3.4.0
 * enable http references in schemas
 
