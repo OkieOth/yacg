@@ -1,0 +1,44 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "single type schema",
+    "description": "this example references an external schema over https - inspired by my friend Sameh A.",
+    "version": "0.0.1",
+    "definitions": {
+        "OneType": {
+            "type": "object",
+            "properties": {
+                "another1": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "another2": {
+                    "type": "number"
+                }
+            }
+        },
+        "TwoType": {
+            "type": "object",
+            "properties": {
+                "aDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "aBool": {
+                    "type": "boolean"
+                },
+                "aRef": {
+                    "$ref": "https://raw.githubusercontent.com/OkieOth/yacg/master/tests/resources/models/json/examples/single_type_schema.json#/definitions/AnotherType"
+                },
+                "implicitRef": {
+                    "type": "string",
+                    "format": "uuid",
+                    "x-ref": "https://raw.githubusercontent.com/OkieOth/yacg/master/tests/resources/models/json/examples/single_type_schema.json#/definitions/AnotherType"
+                }
+            }
+        },
+        "DemoEnum": {
+            "type": "string",
+            "enum": ["X", "Y", "Z"]
+        }
+    }
+}

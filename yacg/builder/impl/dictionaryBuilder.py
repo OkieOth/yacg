@@ -6,6 +6,7 @@ of JSON and YAML sources.
 
 import logging
 import os.path
+import urllib.request
 import json
 import yaml
 
@@ -36,7 +37,10 @@ def getParsedSchemaFromJson(model):
     model -- file name and path to the model to load or model content from stdin
     """
 
-    if doesFileExist(model):
+    if __isHttpLoadableModel(model):
+        with urllib.request.urlopen(model) as url:
+            return json.loads(url.read().decode())
+    elif doesFileExist(model):
         # model is treaten as file to input
         with open(model) as json_schema:
             return json.load(json_schema)
@@ -53,13 +57,20 @@ def getParsedSchemaFromYaml(model):
     model -- file name and path to the model to load or model content from stdin
     """
 
-    if doesFileExist(model):
+    if __isHttpLoadableModel(model):
+        with urllib.request.urlopen(model) as url:
+            return yaml.loads(url.read().decode(), Loader=yaml.FullLoader)
+    elif doesFileExist(model):
         # model is treaten as file to input
         with open(model) as json_schema:
             return yaml.load(json_schema, Loader=yaml.FullLoader)
     else:
         # model is treaten as string content to get parsed
         return yaml.load(model, Loader=yaml.FullLoader)
+
+
+def __isHttpLoadableModel(model):
+    return model.startswith("https://") or model.startswith("http://")
 
 
 def __initTags(mainType, parsedSchema):
@@ -512,7 +523,7 @@ def _extractExternalReferenceTypeFromJson(refEntry, modelTypes, originModelFileC
 
     refEntryFileName = _extractFileNameFromRefEntry(refEntry, '.json')
     fileName = refEntryFileName
-    if not os.path.isfile(fileName):
+    if (not __isHttpLoadableModel(fileName)) and (not os.path.isfile(fileName)):
         # maybe the path is relative to the current type file
         originPathLength = originModelFileContainer.fileName.rfind('/')
         originPath = originModelFileContainer.fileName[:originPathLength + 1]
@@ -551,7 +562,7 @@ def _extractExternalReferenceTypeFromYaml(refEntry, modelTypes, originModelFileC
     fileExt = '.yaml' if refEntry.find('.yaml') != -1 else '.yml'
     refEntryFileName = _extractFileNameFromRefEntry(refEntry, fileExt)
     fileName = refEntryFileName
-    if not os.path.isfile(fileName):
+    if (not __isHttpLoadableModel(fileName)) and (not os.path.isfile(fileName)):
         # maybe the path is relative to the current type file
         originPathLength = originModelFileContainer.fileName.rfind('/')
         originPath = originModelFileContainer.fileName[:originPathLength + 1]
