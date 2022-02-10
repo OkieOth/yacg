@@ -28,7 +28,7 @@
                     "$ref": "#/definitions/AnotherType"
                 },
                 "prop4": {
-                    "$ref": "#/definitions/SecondType"
+                    "$ref": "#/definitions/MySecondType"
                 },
                 "prop5": {
                     "$ref": "#/definitions/AnotherType"
