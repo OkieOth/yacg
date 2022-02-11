@@ -1,3 +1,9 @@
+# 3.4.1
+* enable automatic releases with github actions
+
+# 3.4.0
+* enable http references in schemas
+
 # 3.3.1
 * fix 'allOf' bug in cases that a model is referenced multiple times
 

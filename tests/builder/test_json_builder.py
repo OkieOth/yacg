@@ -133,6 +133,23 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
+    def testSchemaWithHttpRef(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_http_ref.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(4, len(modelTypes))
+        self._checkUpType(0, 'OneType', 2, modelTypes, [])
+        self._checkUpType(1, 'TwoType', 4, modelTypes, [])
+        # TwoType->implicitRef
+        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey)
+        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey)
+        self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
+        self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
+
     def testSchemaWithExternalCircularRefs(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
         modelFileExists = os.path.isfile(modelFile)
