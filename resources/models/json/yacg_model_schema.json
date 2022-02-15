@@ -516,6 +516,18 @@
                 }
             }
         },
+        "ForeignKey": {
+            "description": "Type describes the reference of a property to another field in the model",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/Type"
+                },
+                "property": {
+                    "$ref": "#/definitions/Property"
+                }
+            }
+        },
         "Tag": {
             "type": "object",
             "description": "a tag type",
