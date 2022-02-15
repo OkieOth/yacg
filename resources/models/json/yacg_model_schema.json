@@ -523,6 +523,9 @@
                 "type": {
                     "$ref": "#/definitions/Type"
                 },
+                "propertyName": {
+                    "type": "string"
+                },
                 "property": {
                     "$ref": "#/definitions/Property"
                 }
