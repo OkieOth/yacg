@@ -1,3 +1,5 @@
+# 4.0.0
+* extend x-ref/foreign key reference with a properties reference. **Attention** this may break some templates (e.g. plantUml)
 # 3.4.1
 * enable automatic releases with github actions
 

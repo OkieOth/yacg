@@ -10,7 +10,7 @@ import urllib.request
 import json
 import yaml
 
-from yacg.model.model import Property
+from yacg.model.model import ForeignKey, Property
 from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType, ObjectType
@@ -362,7 +362,10 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
         newProperty.isVisualKey = propDict.get('x-visualKey', False)
         implicitRefEntry = propDict.get('x-ref', None)
         if implicitRefEntry is not None:
-            newProperty.foreignKey = _extractReferenceType(implicitRefEntry, modelTypes, modelFileContainer)
+            # either {TYPE_NAME} or {TYPE_NAME}.{PROPERTY_NAME}
+            splittedRef = implicitRefEntry.split(".")
+            newProperty.foreignKey = ForeignKey()
+            newProperty.foreignKey.type = _extractReferenceType(splittedRef[0], modelTypes, modelFileContainer)
         tags = propDict.get('x-tags', None)
         if tags is not None:
             newProperty.tags = _extractTags(tags)
