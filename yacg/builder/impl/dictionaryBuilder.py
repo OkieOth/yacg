@@ -137,12 +137,27 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
             modelFileContainer = ModelFileContainer(sourceFile, parsedSchema)
             _getTypeFromParsedSchema(modelFileContainer, type.name, modelTypes)
 
+    # fix missing foreign key property references
+    for type in modelTypes:
+        if (hasattr(type, 'properties')):
+            for property in type.properties:
+                if (property.foreignKey) and (property.foreignKey.propertyName) and (not property.foreignKey.property):
+                    property.foreignKey.property = __getPropertyByName(property.foreignKey.type, property.foreignKey.propertyName)
+
     # load additional types, e.g. openapi.PathType
     if not skipOpenApi:
         if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
             modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
             extractOpenApiPathTypes(modelTypes, modelFileContainer)
     return modelTypes
+
+
+def __getPropertyByName(type, propertyName):
+    if hasattr(type, "properties"):
+        for property in type.properties:
+            if property.name == propertyName:
+                return property
+    return None
 
 
 def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes):
@@ -363,9 +378,17 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
         implicitRefEntry = propDict.get('x-ref', None)
         if implicitRefEntry is not None:
             # either {TYPE_NAME} or {TYPE_NAME}.{PROPERTY_NAME}
-            splittedRef = implicitRefEntry.split(".")
+            propertyRefName = None
+            lastDefSeparator = implicitRefEntry.find("#")
+            if lastDefSeparator != -1:
+                tmpStr = implicitRefEntry[lastDefSeparator + 1:]
+                lastDot = tmpStr.find(".")
+                if lastDot != -1:
+                    implicitRefEntry = implicitRefEntry[0: lastDefSeparator + lastDot]
+                    propertyRefName = tmpStr[lastDot + 1:]
             newProperty.foreignKey = ForeignKey()
-            newProperty.foreignKey.type = _extractReferenceType(splittedRef[0], modelTypes, modelFileContainer)
+            newProperty.foreignKey.type = _extractReferenceType(implicitRefEntry, modelTypes, modelFileContainer)
+            newProperty.foreignKey.propertyName = propertyRefName
         tags = propDict.get('x-tags', None)
         if tags is not None:
             newProperty.tags = _extractTags(tags)
