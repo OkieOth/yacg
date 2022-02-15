@@ -646,6 +646,8 @@ class ForeignKey:
 
         self.type = None
 
+        self.propertyName = None
+
         self.property = None
 
         if dictObj is not None:
@@ -658,6 +660,8 @@ class ForeignKey:
         subDictObj = dictObj.get('type', None)
         if subDictObj is not None:
             self.type = Type(subDictObj)
+
+        self.propertyName = dictObj.get('propertyName', None)
 
         subDictObj = dictObj.get('property', None)
         if subDictObj is not None:

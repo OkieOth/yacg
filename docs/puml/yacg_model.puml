@@ -173,6 +173,7 @@ note top: key/value dictionary type. Keys are\nalways strings, the value type\nc
 DictionaryType --|> Type
 class ForeignKey {
         Type type 
+        StringType propertyName 
         Property property 
 }
 
