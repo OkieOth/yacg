@@ -19,18 +19,6 @@ class IntegerType {
         IntegerType exclusiveMinimum 
         IntegerType maximum 
         IntegerType exclusiveMaximum 
-        IntegerTypeFormatEnum format 
-        IntegerType default 
-        IntegerType minimum 
-        IntegerType exclusiveMinimum 
-        IntegerType maximum 
-        IntegerType exclusiveMaximum 
-        IntegerTypeFormatEnum format 
-        IntegerType default 
-        IntegerType minimum 
-        IntegerType exclusiveMinimum 
-        IntegerType maximum 
-        IntegerType exclusiveMaximum 
 }
 
 note top: integer values
@@ -43,18 +31,6 @@ enum IntegerTypeFormatEnum {
 
 
 class NumberType {
-        NumberTypeFormatEnum format 
-        NumberType default 
-        NumberType minimum 
-        NumberType exclusiveMinimum 
-        NumberType maximum 
-        NumberType exclusiveMaximum 
-        NumberTypeFormatEnum format 
-        NumberType default 
-        NumberType minimum 
-        NumberType exclusiveMinimum 
-        NumberType maximum 
-        NumberType exclusiveMaximum 
         NumberTypeFormatEnum format 
         NumberType default 
         NumberType minimum 
@@ -74,22 +50,12 @@ enum NumberTypeFormatEnum {
 
 class BooleanType {
         BooleanType default 
-        BooleanType default 
-        BooleanType default 
 }
 
 note top: boolean values
 
 BooleanType --|> Type
 class StringType {
-        StringType default 
-        NumberType minLength 
-        NumberType maxLength 
-        StringType pattern 
-        StringType default 
-        NumberType minLength 
-        NumberType maxLength 
-        StringType pattern 
         StringType default 
         NumberType minLength 
         NumberType maxLength 
@@ -101,30 +67,12 @@ note top: integer values
 StringType --|> Type
 class UuidType {
         StringType default 
-        StringType default 
-        StringType default 
 }
 
 note top: UUID values
 
 UuidType --|> Type
 class EnumType {
-        StringType version 
-        StringType name 
-        StringType domain 
-        StringType source 
-        StringType description 
-        StringType[] values 
-        StringType default 
-        Tag[] tags 
-        StringType version 
-        StringType name 
-        StringType domain 
-        StringType source 
-        StringType description 
-        StringType[] values 
-        StringType default 
-        Tag[] tags 
         StringType version 
         StringType name 
         StringType domain 
@@ -151,32 +99,12 @@ class DateType {
         DateType exclusiveMinimum 
         DateType maximum 
         DateType exclusiveMaximum 
-        DateType default 
-        DateType minimum 
-        DateType exclusiveMinimum 
-        DateType maximum 
-        DateType exclusiveMaximum 
-        DateType default 
-        DateType minimum 
-        DateType exclusiveMinimum 
-        DateType maximum 
-        DateType exclusiveMaximum 
 }
 
 note top: type for date values
 
 DateType --|> Type
 class DateTimeType {
-        DateTimeType default 
-        DateTimeType minimum 
-        DateTimeType exclusiveMinimum 
-        DateTimeType maximum 
-        DateTimeType exclusiveMaximum 
-        DateTimeType default 
-        DateTimeType minimum 
-        DateTimeType exclusiveMinimum 
-        DateTimeType maximum 
-        DateTimeType exclusiveMaximum 
         DateTimeType default 
         DateTimeType minimum 
         DateTimeType exclusiveMinimum 
@@ -189,34 +117,12 @@ note top: type for timestamp values
 DateTimeType --|> Type
 class BytesType {
         BytesType default 
-        BytesType default 
-        BytesType default 
 }
 
 note top: type for byte values, it\nwill usually be rendered to\na byte array
 
 BytesType --|> Type
 class ComplexType {
-        StringType version 
-        StringType name 
-        StringType description 
-        StringType domain 
-        StringType source 
-        ComplexType extendsType 
-        ComplexType[] extendedBy 
-        ComplexType[] referencedBy 
-        Property[] properties 
-        Tag[] tags 
-        StringType version 
-        StringType name 
-        StringType description 
-        StringType domain 
-        StringType source 
-        ComplexType extendsType 
-        ComplexType[] extendedBy 
-        ComplexType[] referencedBy 
-        Property[] properties 
-        Tag[] tags 
         StringType version 
         StringType name 
         StringType description 
@@ -260,27 +166,19 @@ class DictionaryType {
         ComplexType[] referencedBy 
         Type valueType 
         Tag[] tags 
-        StringType version 
-        StringType name 
-        StringType description 
-        StringType domain 
-        StringType source 
-        ComplexType[] referencedBy 
-        Type valueType 
-        Tag[] tags 
-        StringType version 
-        StringType name 
-        StringType description 
-        StringType domain 
-        StringType source 
-        ComplexType[] referencedBy 
-        Type valueType 
-        Tag[] tags 
 }
 
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
+class ForeignKey {
+        Type type 
+        StringType propertyName 
+        Property property 
+}
+
+note top: Type describes the reference of\na property to another field\nin the model
+
 
     
     
@@ -320,6 +218,11 @@ DictionaryType "0" *-- "n" ComplexType
 DictionaryType  *--  Type        
             
 DictionaryType "0" *-- "n" Tag        
+            
+    
+ForeignKey  *--  Type        
+            
+ForeignKey  *--  Property        
             
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

@@ -128,8 +128,10 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(0, 'OneType', 2, modelTypes, [])
         self._checkUpType(1, 'TwoType', 4, modelTypes, [])
         # TwoType->implicitRef
-        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey)
-        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey)
+        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.type)
+        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.property)
+        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey.type)
+        self.assertEqual(modelTypes[1].properties[3].foreignKey.property.name, modelTypes[1].properties[3].foreignKey.propertyName)
         self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
@@ -145,8 +147,8 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(0, 'OneType', 2, modelTypes, [])
         self._checkUpType(1, 'TwoType', 4, modelTypes, [])
         # TwoType->implicitRef
-        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey)
-        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey)
+        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.type)
+        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey.type)
         self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
