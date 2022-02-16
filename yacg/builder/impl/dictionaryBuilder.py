@@ -384,7 +384,7 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
                 tmpStr = implicitRefEntry[lastDefSeparator + 1:]
                 lastDot = tmpStr.find(".")
                 if lastDot != -1:
-                    implicitRefEntry = implicitRefEntry[0: lastDefSeparator + lastDot]
+                    implicitRefEntry = implicitRefEntry[0: lastDefSeparator + lastDot + 1]
                     propertyRefName = tmpStr[lastDot + 1:]
             newProperty.foreignKey = ForeignKey()
             newProperty.foreignKey.type = _extractReferenceType(implicitRefEntry, modelTypes, modelFileContainer)

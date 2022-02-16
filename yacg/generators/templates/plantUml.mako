@@ -20,6 +20,13 @@
             i = i + 1
         return breakedText
 
+    def printForeignKeyComment(prop):
+        ret = ''
+        if (prop.foreignKey is not None) and (prop.foreignKey.type is not None):
+            ret = " // -> {}".format(prop.foreignKey.type.name)
+            if prop.foreignKey.property is not None:
+                ret = "{}.{}".format(prop.foreignKey.property.name)
+        return ret
 %>
 @startuml
 
@@ -34,7 +41,7 @@ enum ${modelFuncs.getTypeName(type)} {
 class ${modelFuncs.getTypeName(type)} {
         % if hasattr(type,'properties'):
             % for prop in type.properties:
-        ${modelFuncs.getTypeName(prop.type)}${'[]' if prop.isArray else ''} ${prop.name} 
+        ${modelFuncs.getTypeName(prop.type)}${'[]' if prop.isArray else ''} ${prop.name}${printForeignKeyComment(prop)} 
             % endfor
         % endif
 }
