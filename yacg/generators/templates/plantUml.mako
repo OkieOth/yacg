@@ -23,9 +23,8 @@
     def printForeignKeyComment(prop):
         ret = ''
         if (prop.foreignKey is not None) and (prop.foreignKey.type is not None):
-            ret = " // -> {}".format(prop.foreignKey.type.name)
-            if prop.foreignKey.property is not None:
-                ret = "{}.{}".format(prop.foreignKey.property.name)
+            propTxt = '.' + prop.foreignKey.property.name if prop.foreignKey.property is not None else ''
+            ret = '<color:grey>"" // -> {}{}""</color>'.format(prop.foreignKey.type.name, propTxt)
         return ret
 %>
 @startuml
@@ -41,7 +40,7 @@ enum ${modelFuncs.getTypeName(type)} {
 class ${modelFuncs.getTypeName(type)} {
         % if hasattr(type,'properties'):
             % for prop in type.properties:
-        ${modelFuncs.getTypeName(prop.type)}${'[]' if prop.isArray else ''} ${prop.name}${printForeignKeyComment(prop)} 
+        ${modelFuncs.getTypeName(prop.type)}${'[]' if prop.isArray else ''} ${prop.name}${printForeignKeyComment(prop)}
             % endfor
         % endif
 }
@@ -60,18 +59,29 @@ ${modelFuncs.getTypeName(type)} --|> ${modelFuncs.getTypeName(type.extendsType)}
     <%
         ## array to store already printed links between the objects
         alreadyLinkedTypes=[]
+        alreadyLinkedTypes2=[]
     %>
     % if hasattr(type,'properties'):
         % for prop in type.properties:
-            % if (not modelFuncs.isBaseType(prop.type)) and (not (prop.type.name in alreadyLinkedTypes)):
-${modelFuncs.getTypeName(type)} ${ '"0"' if prop.isArray else '' } *-- ${'"n"' if prop.isArray else ''} ${modelFuncs.getTypeName(prop.type)}        
+            % if (not modelFuncs.isBaseType(prop.type)):
+                % if prop.type.name not in alreadyLinkedTypes:
+${modelFuncs.getTypeName(type)} ${ '"0"' if prop.isArray else '' } *-- ${'"n"' if prop.isArray else ''} ${modelFuncs.getTypeName(prop.type)}
             <%
                 ## add the current type name to the already linked types
                 alreadyLinkedTypes.append(modelFuncs.getTypeName(prop.type))
             %>
-            % endif 
+                % endif
+            % endif
+
+            % if (prop.foreignKey is not None) and (prop.foreignKey.type.name not in alreadyLinkedTypes2):
+${modelFuncs.getTypeName(type)} .. ${modelFuncs.getTypeName(prop.foreignKey.type)}
+            <%
+                ## add the current type name to the already linked types
+                alreadyLinkedTypes2.append(prop.foreignKey.type.name)
+            %>
+            % endif
         % endfor
-    % endif 
+    % endif
 % endfor
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: ${templateFile} v${templateVersion})\npowered by plantuml (https://plantuml.com/)
