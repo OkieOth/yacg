@@ -267,3 +267,14 @@ def isDateContained(modelTypes):
                 if (property.type is not None) and (isinstance(property.type, model.DateType)):
                     return True
     return False
+
+
+def doesTypeOrAttribContainsType(typeObj, type):
+    if hasattr(typeObj, "properties"):
+        for prop in typeObj.properties:
+            if isinstance(prop.type, type):
+                return True
+            if isinstance(prop.type, model.ComplexType):
+                if doesTypeOrAttribContainsType(prop.type, type):
+                    return True
+    return False
