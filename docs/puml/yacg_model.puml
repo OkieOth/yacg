@@ -219,6 +219,8 @@ NumberType  *--  NumberTypeFormatEnum
 
 
 
+EnumType  *--  EnumTypeValuesMap
+            
 
 
 EnumType "0" *-- "n" Tag

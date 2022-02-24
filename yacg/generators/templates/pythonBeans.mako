@@ -87,7 +87,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             return
         % if modelFuncs.hasTypeProperties(type):
             % for property in type.properties:
-                % if modelFuncs.isBaseType(property.type):
+                % if modelFuncs.isBaseOrDictionaryType(property.type):
                     % if not property.isArray:
 
         self.${property.name} = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})

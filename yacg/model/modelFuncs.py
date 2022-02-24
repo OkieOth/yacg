@@ -200,6 +200,12 @@ def isBaseType(type):
         return True
 
 
+def isBaseOrDictionaryType(type):
+    if isDictionaryType(type):
+        return True
+    return isBaseType(type)
+
+
 def getTypesWithTag(types, tags):
     """function returns all types that have a specific tag
 
