@@ -5,7 +5,7 @@ from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag
 
 import yacg.model.config as config
 
@@ -95,6 +95,16 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         self.assertTrue(doesTypeOrAttribContainsType(modelTypes[0], StringType))
         self.assertFalse(doesTypeOrAttribContainsType(modelTypes[0], UuidType))
+
+    def testGetTypesWithTag(self):
+        modelFile = 'tests/resources/models/json/examples/nibelheim.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        mongoTypes = getTypesWithTag(modelTypes, ["mongodb"])
+        self.assertEqual(len(mongoTypes), 3)
 
     def testSingleTypeSchema3(self):
         modelFile = 'tests/resources/models/json/examples/model_with_bytes.json'
