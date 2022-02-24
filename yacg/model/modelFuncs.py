@@ -65,6 +65,8 @@ def getFlattenProperties(typeObj):
     """
 
     flattenProperties = []
+    if isinstance(typeObj, model.DictionaryType):
+        return flattenProperties
     if typeObj.properties is not None:
         for property in typeObj.properties:
             flattenProperties.append(property)
@@ -88,6 +90,14 @@ def hasEnumTypes(modelTypes):
         if isEnumType(type):
             return True
     return False
+
+
+def hasTypeProperties(type):
+    return hasattr(type, 'properties') and len(type.properties) > 0
+
+
+def hasTypeExtendsType(type):
+    return hasattr(type, 'extendsType') and type.extendsType is not None
 
 
 def flattenTypes(loadedTypes):
@@ -122,6 +132,17 @@ def isEnumType(typeObj):
     """
 
     return isinstance(typeObj, model.EnumType)
+
+
+def isDictionaryType(typeObj):
+    """checks if the given type object is an DictionaryType. If that's the
+    case then True is returned, else the return is false
+
+    Keyword arguments:
+    typeObj -- type or property object to check up
+    """
+
+    return isinstance(typeObj, model.DictionaryType)
 
 
 def getTypeName(type):
@@ -172,6 +193,8 @@ def isBaseType(type):
     if isinstance(type, model.EnumType):
         return False
     elif isinstance(type, model.ComplexType):
+        return False
+    elif isinstance(type, model.DictionaryType):
         return False
     else:
         return True
