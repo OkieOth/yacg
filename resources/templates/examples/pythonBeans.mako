@@ -57,17 +57,17 @@ class ${type.name}(Enum):
 
 
     % else:
-class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)) if hasattr(type, 'extendsType') and type.extendsType is not None else ''}:
+class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)) if modelFuncs.hasTypeExtendsType(type) else ''}:
         % if type.description != None:
     """${templateHelper.addLineBreakToDescription(type.description,4)}
     """
 
         % endif
     def __init__(self, dictObj=None):
-        % if hasattr(type, "extendsType") and type.extendsType is not None:
+        % if modelFuncs.hasTypeExtendsType(type):
         super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
         % endif
-        % if (not hasattr(type, 'properties')) or len(type.properties) == 0:
+        % if modelFuncs.hasTypeProperties(type):
         pass
         % else:
             % for property in type.properties:
@@ -85,7 +85,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
-        % if hasattr(type, 'properties'):
+        % if modelFuncs.hasTypeProperties(type):
             % for property in type.properties:
                 % if modelFuncs.isBaseType(property.type):
                     % if not property.isArray:
