@@ -292,9 +292,7 @@ class EnumType (Type):
         for elemValues in arrayValues:
             self.values.append(elemValues)
 
-        subDictObj = dictObj.get('valuesMap', None)
-        if subDictObj is not None:
-            self.valuesMap = EnumTypeValuesMap(subDictObj)
+        self.valuesMap = dictObj.get('valuesMap', None)
 
         self.default = dictObj.get('default', None)
 
