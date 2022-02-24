@@ -2,38 +2,38 @@
 @startuml
 
 class Job {
-        StringType name 
-        StringType description 
-        Model[] models 
-        Task[] tasks 
+        StringType name
+        StringType description
+        Model[] models
+        Task[] tasks
 }
 
 note top: base object that describes a\ncomplete code generation process
 
 class Model {
-        StringType schema 
-        StringType domain 
-        BlackWhiteListEntry[] blackListed 
-        BlackWhiteListEntry[] whiteListed 
+        StringType schema
+        StringType domain
+        BlackWhiteListEntry[] blackListed
+        BlackWhiteListEntry[] whiteListed
 }
 
 note top: A model that should be\nused
 
 class Task {
-        StringType name 
-        StringType description 
-        BlackWhiteListEntry[] blackListed 
-        BlackWhiteListEntry[] whiteListed 
-        SingleFileTask singleFileTask 
-        MultiFileTask multiFileTask 
-        RandomDataTask randomDataTask 
+        StringType name
+        StringType description
+        BlackWhiteListEntry[] blackListed
+        BlackWhiteListEntry[] whiteListed
+        SingleFileTask singleFileTask
+        MultiFileTask multiFileTask
+        RandomDataTask randomDataTask
 }
 
 note top: A task to run
 
 class BlackWhiteListEntry {
-        StringType name 
-        BlackWhiteListEntryTypeEnum type 
+        StringType name
+        BlackWhiteListEntryTypeEnum type
 }
 
 note top: entry of a type back/white\nlist
@@ -49,34 +49,34 @@ enum BlackWhiteListEntryTypeEnum {
 
 
 class SingleFileTask {
-        StringType template 
-        StringType destFile 
-        TemplateParam[] templateParams 
+        StringType template
+        StringType destFile
+        TemplateParam[] templateParams
 }
 
 note top: parameter of a code generation\ntask that creates one file
 
 class TemplateParam {
-        StringType name 
-        StringType value 
-        StringType[] requiredDomains 
-        StringType[] requiredTags 
-        StringType[] requiredNames 
+        StringType name
+        StringType value
+        StringType[] requiredDomains
+        StringType[] requiredTags
+        StringType[] requiredNames
 }
 
 note top: additional, template specific custom parameter\nfor codegen task
 
 class MultiFileTask {
-        StringType template 
-        StringType destDir 
-        StringType destFilePrefix 
-        StringType destFilePostfix 
-        StringType destFileExt 
-        BooleanType upperCaseStartedDestFileName 
-        MultiFileTaskFileFilterTypeEnum fileFilterType 
-        TemplateParam[] templateParams 
-        BooleanType createOnlyIfNotExist 
-        BooleanType createTmpFileIfAlreadyExist 
+        StringType template
+        StringType destDir
+        StringType destFilePrefix
+        StringType destFilePostfix
+        StringType destFileExt
+        BooleanType upperCaseStartedDestFileName
+        MultiFileTaskFileFilterTypeEnum fileFilterType
+        TemplateParam[] templateParams
+        BooleanType createOnlyIfNotExist
+        BooleanType createTmpFileIfAlreadyExist
 }
 
 note top: parameter of a code generation\ntask that creates one file\nper model type
@@ -88,19 +88,19 @@ enum MultiFileTaskFileFilterTypeEnum {
 
 
 class RandomDataTask {
-        RandomDataTaskOutputTypeEnum outputType 
-        StringType destDir 
-        IntegerType defaultMinElemCount 
-        IntegerType defaultMaxElemCount 
-        RandomDataTaskSpecialElemCounts[] specialElemCounts 
-        StringType[] defaultKeyPropNames 
-        RandomDataTaskSpecialKeyPropNames[] specialKeyPropNames 
-        RandomDataTaskValuePools[] valuePools 
-        IntegerType defaultMinSize 
-        IntegerType defaultMaxSize 
-        RandomDataTaskSpecialArraySizes[] specialArraySizes 
-        IntegerType defaultMaxDepth 
-        RandomDataTaskSpecialMaxDepths[] specialMaxDepths 
+        RandomDataTaskOutputTypeEnum outputType
+        StringType destDir
+        IntegerType defaultMinElemCount
+        IntegerType defaultMaxElemCount
+        RandomDataTaskSpecialElemCounts[] specialElemCounts
+        StringType[] defaultKeyPropNames
+        RandomDataTaskSpecialKeyPropNames[] specialKeyPropNames
+        RandomDataTaskValuePools[] valuePools
+        IntegerType defaultMinSize
+        IntegerType defaultMaxSize
+        RandomDataTaskSpecialArraySizes[] specialArraySizes
+        IntegerType defaultMaxDepth
+        RandomDataTaskSpecialMaxDepths[] specialMaxDepths
 }
 
 
@@ -111,89 +111,150 @@ enum RandomDataTaskOutputTypeEnum {
 
 
 class RandomDataTaskSpecialElemCounts {
-        StringType typeName 
-        IntegerType minElemCount 
-        IntegerType maxElemCount 
+        StringType typeName
+        IntegerType minElemCount
+        IntegerType maxElemCount
 }
 
 
 class RandomDataTaskSpecialKeyPropNames {
-        StringType typeName 
-        StringType keyPropName 
+        StringType typeName
+        StringType keyPropName
 }
 
 
 class RandomDataTaskValuePools {
-        StringType propertyName 
-        BooleanType useAll 
-        StringType[] values 
+        StringType propertyName
+        BooleanType useAll
+        StringType[] values
 }
 
 
 class RandomDataTaskSpecialArraySizes {
-        StringType propertyName 
-        IntegerType minSize 
-        IntegerType maxSize 
+        StringType propertyName
+        IntegerType minSize
+        IntegerType maxSize
 }
 
 
 class RandomDataTaskSpecialMaxDepths {
-        StringType propertyName 
-        IntegerType maxDepth 
+        StringType propertyName
+        IntegerType maxDepth
 }
 
 
 
     
-Job "0" *-- "n" Model        
+
+
+Job "0" *-- "n" Model
             
-Job "0" *-- "n" Task        
+
+Job "0" *-- "n" Task
             
+
     
-Model "0" *-- "n" BlackWhiteListEntry        
+
+
+Model "0" *-- "n" BlackWhiteListEntry
             
+
+
     
-Task "0" *-- "n" BlackWhiteListEntry        
+
+
+Task "0" *-- "n" BlackWhiteListEntry
             
-Task  *--  SingleFileTask        
+
+
+Task  *--  SingleFileTask
             
-Task  *--  MultiFileTask        
+
+Task  *--  MultiFileTask
             
-Task  *--  RandomDataTask        
+
+Task  *--  RandomDataTask
             
+
     
-BlackWhiteListEntry  *--  BlackWhiteListEntryTypeEnum        
+
+BlackWhiteListEntry  *--  BlackWhiteListEntryTypeEnum
             
-    
-    
-SingleFileTask "0" *-- "n" TemplateParam        
-            
-    
-    
-MultiFileTask  *--  MultiFileTaskFileFilterTypeEnum        
-            
-MultiFileTask "0" *-- "n" TemplateParam        
-            
-    
-    
-RandomDataTask  *--  RandomDataTaskOutputTypeEnum        
-            
-RandomDataTask "0" *-- "n" RandomDataTaskSpecialElemCounts        
-            
-RandomDataTask "0" *-- "n" RandomDataTaskSpecialKeyPropNames        
-            
-RandomDataTask "0" *-- "n" RandomDataTaskValuePools        
-            
-RandomDataTask "0" *-- "n" RandomDataTaskSpecialArraySizes        
-            
-RandomDataTask "0" *-- "n" RandomDataTaskSpecialMaxDepths        
-            
+
     
     
+
+
+SingleFileTask "0" *-- "n" TemplateParam
+            
+
+    
+
+
+
+
+
+    
+
+
+
+
+
+
+MultiFileTask  *--  MultiFileTaskFileFilterTypeEnum
+            
+
+MultiFileTask "0" *-- "n" TemplateParam
+            
+
+
+
     
     
+RandomDataTask  *--  RandomDataTaskOutputTypeEnum
+            
+
+
+
+
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialElemCounts
+            
+
+
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialKeyPropNames
+            
+
+RandomDataTask "0" *-- "n" RandomDataTaskValuePools
+            
+
+
+
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialArraySizes
+            
+
+
+RandomDataTask "0" *-- "n" RandomDataTaskSpecialMaxDepths
+            
+
     
     
+
+
+
+    
+
+
+    
+
+
+
+    
+
+
+
+    
+
+
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
 @enduml

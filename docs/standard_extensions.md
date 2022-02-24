@@ -149,9 +149,9 @@ and c# for instance.
             "val3"
         ],
         "x-enumValues": {
-            "val1": 0,
-            "val2": 2,
-            "val3": 3
+            "val1": "1",
+            "val2": "2",
+            "val3": "true"
         }
     },
     ...

@@ -263,6 +263,9 @@ class EnumType (Type):
 
         self.values = []
 
+        #: additional enum values
+        self.valuesMap = None
+
         self.default = None
 
         #: additional flags to mark a type
@@ -288,6 +291,8 @@ class EnumType (Type):
         arrayValues = dictObj.get('values', [])
         for elemValues in arrayValues:
             self.values.append(elemValues)
+
+        self.valuesMap = dictObj.get('valuesMap', None)
 
         self.default = dictObj.get('default', None)
 

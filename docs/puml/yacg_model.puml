@@ -13,12 +13,12 @@ note top: Straight out of hell -\na undefined object type
 
 ObjectType --|> Type
 class IntegerType {
-        IntegerTypeFormatEnum format 
-        IntegerType default 
-        IntegerType minimum 
-        IntegerType exclusiveMinimum 
-        IntegerType maximum 
-        IntegerType exclusiveMaximum 
+        IntegerTypeFormatEnum format
+        IntegerType default
+        IntegerType minimum
+        IntegerType exclusiveMinimum
+        IntegerType maximum
+        IntegerType exclusiveMaximum
 }
 
 note top: integer values
@@ -31,12 +31,12 @@ enum IntegerTypeFormatEnum {
 
 
 class NumberType {
-        NumberTypeFormatEnum format 
-        NumberType default 
-        NumberType minimum 
-        NumberType exclusiveMinimum 
-        NumberType maximum 
-        NumberType exclusiveMaximum 
+        NumberTypeFormatEnum format
+        NumberType default
+        NumberType minimum
+        NumberType exclusiveMinimum
+        NumberType maximum
+        NumberType exclusiveMaximum
 }
 
 note top: floating point values
@@ -49,132 +49,133 @@ enum NumberTypeFormatEnum {
 
 
 class BooleanType {
-        BooleanType default 
+        BooleanType default
 }
 
 note top: boolean values
 
 BooleanType --|> Type
 class StringType {
-        StringType default 
-        NumberType minLength 
-        NumberType maxLength 
-        StringType pattern 
+        StringType default
+        NumberType minLength
+        NumberType maxLength
+        StringType pattern
 }
 
 note top: integer values
 
 StringType --|> Type
 class UuidType {
-        StringType default 
+        StringType default
 }
 
 note top: UUID values
 
 UuidType --|> Type
 class EnumType {
-        StringType version 
-        StringType name 
-        StringType domain 
-        StringType source 
-        StringType description 
-        StringType[] values 
-        StringType default 
-        Tag[] tags 
+        StringType version
+        StringType name
+        StringType domain
+        StringType source
+        StringType description
+        StringType[] values
+        EnumTypeValuesMap valuesMap
+        StringType default
+        Tag[] tags
 }
 
 note top: type for enum values -\nfixed value types
 
 EnumType --|> Type
 class Tag {
-        StringType name 
-        StringType value 
+        StringType name
+        StringType value
 }
 
 note top: a tag type
 
 class DateType {
-        DateType default 
-        DateType minimum 
-        DateType exclusiveMinimum 
-        DateType maximum 
-        DateType exclusiveMaximum 
+        DateType default
+        DateType minimum
+        DateType exclusiveMinimum
+        DateType maximum
+        DateType exclusiveMaximum
 }
 
 note top: type for date values
 
 DateType --|> Type
 class DateTimeType {
-        DateTimeType default 
-        DateTimeType minimum 
-        DateTimeType exclusiveMinimum 
-        DateTimeType maximum 
-        DateTimeType exclusiveMaximum 
+        DateTimeType default
+        DateTimeType minimum
+        DateTimeType exclusiveMinimum
+        DateTimeType maximum
+        DateTimeType exclusiveMaximum
 }
 
 note top: type for timestamp values
 
 DateTimeType --|> Type
 class BytesType {
-        BytesType default 
+        BytesType default
 }
 
 note top: type for byte values, it\nwill usually be rendered to\na byte array
 
 BytesType --|> Type
 class ComplexType {
-        StringType version 
-        StringType name 
-        StringType description 
-        StringType domain 
-        StringType source 
-        ComplexType extendsType 
-        ComplexType[] extendedBy 
-        ComplexType[] referencedBy 
-        Property[] properties 
-        Tag[] tags 
+        StringType version
+        StringType name
+        StringType description
+        StringType domain
+        StringType source
+        ComplexType extendsType
+        ComplexType[] extendedBy
+        ComplexType[] referencedBy
+        Property[] properties
+        Tag[] tags
 }
 
 note top: complex type description
 
 ComplexType --|> Type
 class Property {
-        StringType name 
-        BooleanType isArray 
-        IntegerType arrayMinItems 
-        IntegerType arrayMaxItems 
-        BooleanType arrayUniqueItems 
-        Type type 
-        Tag[] tags 
-        StringType description 
-        BooleanType required 
-        IntegerType ordinal 
-        BooleanType isKey 
-        BooleanType isVisualKey 
-        Type foreignKey 
-        StringType format 
+        StringType name
+        BooleanType isArray
+        IntegerType arrayMinItems
+        IntegerType arrayMaxItems
+        BooleanType arrayUniqueItems
+        Type type
+        Tag[] tags
+        StringType description
+        BooleanType required
+        IntegerType ordinal
+        BooleanType isKey
+        BooleanType isVisualKey
+        Type foreignKey
+        StringType format
 }
 
 note top: a property of a type
 
 class DictionaryType {
-        StringType version 
-        StringType name 
-        StringType description 
-        StringType domain 
-        StringType source 
-        ComplexType[] referencedBy 
-        Type valueType 
-        Tag[] tags 
+        StringType version
+        StringType name
+        StringType description
+        StringType domain
+        StringType source
+        ComplexType[] referencedBy
+        Type valueType
+        Tag[] tags
 }
 
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
 class ForeignKey {
-        Type type 
-        StringType propertyName 
-        Property property 
+        Type type
+        StringType propertyName
+        Property property
 }
 
 note top: Type describes the reference of\na property to another field\nin the model
@@ -183,47 +184,122 @@ note top: Type describes the reference of\na property to another field\nin the m
     
     
     
-IntegerType  *--  IntegerTypeFormatEnum        
+IntegerType  *--  IntegerTypeFormatEnum
             
+
+
+
+
+
+
     
     
-NumberType  *--  NumberTypeFormatEnum        
+NumberType  *--  NumberTypeFormatEnum
             
+
+
+
+
+
+
     
     
+
     
+
+
+
+
     
+
     
-EnumType "0" *-- "n" Tag        
+
+
+
+
+
+
+
+
+EnumType "0" *-- "n" Tag
             
+
     
+
+
     
+
+
+
+
+
     
+
+
+
+
+
     
+
     
-ComplexType  *--  ComplexType        
+
+
+
+
+
+ComplexType  *--  ComplexType
             
-ComplexType "0" *-- "n" Property        
+
+
+
+ComplexType "0" *-- "n" Property
             
-ComplexType "0" *-- "n" Tag        
+
+ComplexType "0" *-- "n" Tag
             
+
     
-Property  *--  Type        
+
+
+
+
+
+Property  *--  Type
             
-Property "0" *-- "n" Tag        
+
+Property "0" *-- "n" Tag
             
+
+
+
+
+
+
+
+
     
-DictionaryType "0" *-- "n" ComplexType        
+
+
+
+
+
+DictionaryType "0" *-- "n" ComplexType
             
-DictionaryType  *--  Type        
+
+DictionaryType  *--  Type
             
-DictionaryType "0" *-- "n" Tag        
+
+DictionaryType "0" *-- "n" Tag
             
+
     
-ForeignKey  *--  Type        
+ForeignKey  *--  Type
             
-ForeignKey  *--  Property        
+
+
+ForeignKey  *--  Property
             
+
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
 @enduml
