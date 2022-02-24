@@ -67,7 +67,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % if modelFuncs.hasTypeExtendsType(type):
         super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
         % endif
-        % if modelFuncs.hasTypeProperties(type):
+        % if not modelFuncs.hasTypeProperties(type):
         pass
         % else:
             % for property in type.properties:
