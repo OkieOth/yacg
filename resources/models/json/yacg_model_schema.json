@@ -201,6 +201,24 @@
                                 "type": "string"
                             }
                         },
+                        "valuesMap": {
+                            "description": "additional enum values",
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                    "intValue": {
+                                        "type": "integer"
+                                    },
+                                    "boolValue": {
+                                        "type": "boolean"
+                                    },
+                                    "strValue": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
                         "default": {
                             "type": "string"
                         },

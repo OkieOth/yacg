@@ -30,7 +30,7 @@ expected value it the same as for the '$ref' entry.
                 "aDate": {
                     "type": "string",
                     "format": "date-time"
-                },                
+                },
                 "aBool": {
                     "type": "boolean"
                 },
@@ -132,6 +132,32 @@ a property definition. This index can be used for instance as field number when 
             }
             ...
 ```
+
+## Enum Values
+In some situations are additional values for enums needed, like it is possible in Java
+and c# for instance.
+
+```json
+    ...
+    "sampleProperty": {
+        "description": "this is a enum property",
+        "type": "string",
+        "default": "val2",
+        "enum": [
+            "val1",
+            "val2",
+            "val3"
+        ],
+        "x-enumValues": {
+            "val1": 0,
+            "val2": 2,
+            "val3": 3
+        }
+    },
+    ...
+```
+
+
 
 
 # OpenApi Extensions

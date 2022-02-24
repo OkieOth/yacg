@@ -1,3 +1,6 @@
+# 4.1.0
+* add enum values
+
 # 4.0.0
 * extend x-ref/foreign key reference with a properties reference. **Attention** this may break some templates (e.g. plantUml)
 * shows foreign key references in puml diagrams
