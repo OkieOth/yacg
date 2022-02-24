@@ -2,10 +2,10 @@ import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum, ObjectType
-from yacg.model.model import StringType
+from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag
 
 import yacg.model.config as config
 
@@ -85,6 +85,26 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(7, 'MultiFileTask', 10, modelTypes, [])
         self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes, [])
         self._checkUpType(9, 'RandomDataTask', 13, modelTypes, [], ('keyProperties', 'valuePools', 'arrays'))
+
+    def testDoesTypeOrAttribContainsType(self):
+        modelFile = 'resources/models/json/yacg_config_schema.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertTrue(doesTypeOrAttribContainsType(modelTypes[0], StringType))
+        self.assertFalse(doesTypeOrAttribContainsType(modelTypes[0], UuidType))
+
+    def testGetTypesWithTag(self):
+        modelFile = 'tests/resources/models/json/examples/nibelheim.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        mongoTypes = getTypesWithTag(modelTypes, ["mongodb"])
+        self.assertEqual(len(mongoTypes), 3)
 
     def testSingleTypeSchema3(self):
         modelFile = 'tests/resources/models/json/examples/model_with_bytes.json'
