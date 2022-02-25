@@ -80,6 +80,11 @@ def __initTags(mainType, parsedSchema):
             mainType.tags = _extractTags(tags)
 
 
+def __initEnumValues(mainType, parsedSchema):
+    if mainType.valuesMap is None:
+        mainType.valuesMap = parsedSchema.get('x-enumValues', None)
+
+
 def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     """extract the types from the parsed schema
 
@@ -110,6 +115,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
         typeNameStr = toUpperCamelCase(titleStr)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
+        __initEnumValues(mainType, parsedSchema)
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -196,10 +202,8 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
         titleStr = modelFileContainer.parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
-        if len(mainType.tags) == 0:
-            tags = modelFileContainer.parsedSchema.get('x-tags', None)
-            if tags is not None:
-                mainType.tags = _extractTags(tags)
+        __initTags(mainType, modelFileContainer.parsedSchema)
+        __initEnumValues(mainType, modelFileContainer.parsedSchema)
 
     schemaDefinitions = modelFileContainer.parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
@@ -234,10 +238,8 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
         enumEntry = object.get('enum', None)
         if enumEntry is not None:
             mainType = _extractEnumType(key, None, enumEntry, modelTypes, modelFileContainer)
-            if len(mainType.tags) == 0:
-                tags = modelFileContainer.parsedSchema.get('x-tags', None)
-                if tags is not None:
-                    mainType.tags = _extractTags(tags)
+            __initTags(mainType, modelFileContainer.parsedSchema)
+            __initEnumValues(mainType, modelFileContainer.parsedSchema)
         else:
             type = _extractObjectType(
                 key, properties, additionalProperties, allOfEntry,
@@ -436,7 +438,10 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
         refEntry = propDict.get('$ref', None)
         enumEntry = propDict.get('enum', None)
         if enumEntry is not None:
-            return _extractEnumType(newTypeName, newProperty, enumEntry, modelTypes, modelFileContainer)
+            enumType = _extractEnumType(newTypeName, newProperty, enumEntry, modelTypes, modelFileContainer)
+            __initTags(enumType, propDict)
+            __initEnumValues(enumType, propDict)
+            return enumType
         elif refEntry is not None:
             return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
         elif type == 'array':
@@ -809,7 +814,10 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
     if (formatValue is None) and (enumValue is None):
         return StringType()
     elif enumValue is not None:
-        return _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileContainer)
+        enumType = _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileContainer)
+        __initTags(enumType, propDict)
+        __initEnumValues(enumType, propDict)
+        return enumType
     elif formatValue == 'date':
         return DateType()
     elif formatValue == 'date-time':
