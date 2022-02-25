@@ -41,21 +41,24 @@ ${templateHelper.addLineBreakToDescription(currentType.description,4)}
 */
     % endif
 class ${currentType.name} ${javaFuncs.printExtendsType(currentType)}{
-    % for property in currentType.properties:
-        % if property.description != None:
+    % if modelFuncs.hasTypeProperties(currentType):
+        % for property in currentType.properties:
+            % if property.description != None:
     /**
     ${templateHelper.addLineBreakToDescription(property.description,4)}
     */
-        % endif
+            % endif
     private ${javaFuncs.getJavaType(property.type, property.isArray)} ${property.name};
 
-    % endfor
+        % endfor
+    % endif
 
     public ${currentType.name}() {
         super();
     }
 
-    % for property in currentType.properties:
+    % if modelFuncs.hasTypeProperties(currentType):
+        % for property in currentType.properties:
     public ${javaFuncs.getJavaType(property.type, property.isArray)} get${stringUtils.toUpperCamelCase(property.name)}() {
         return this.${property.name};
     };
@@ -64,8 +67,8 @@ class ${currentType.name} ${javaFuncs.printExtendsType(currentType)}{
         this.${property.name} = value;
     };
 
-    % endfor
-
+        % endfor
+    % endif
     @Override
     public boolean equals(Object obj) {
         if (obj==null) return false;
@@ -73,16 +76,17 @@ class ${currentType.name} ${javaFuncs.printExtendsType(currentType)}{
 
         ${currentType.name} _typeInst = (${currentType.name}) obj;
 
-    % for property in currentType.properties:
+    % if modelFuncs.hasTypeProperties(currentType):
+        % for property in currentType.properties:
         ${javaFuncs.getJavaType(property.type, property.isArray)} _${property.name} = _typeInst.getget${stringUtils.toUpperCamelCase(property.name)}();
         if (this.${property.name} == null && _${property.name} != null) return false;
         if (this.${property.name} != null) {
             if (!this.${property.name}.equals(_${property.name})) return false;
         }
 
-    % endfor
-
-    % if currentType.extendsType != None:
+        % endfor
+    % endif
+    % if modelFuncs.hasTypeExtendsType(currentType):
         return super.equals(obj);
     % else:
         return true;

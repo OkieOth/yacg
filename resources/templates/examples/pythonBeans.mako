@@ -57,17 +57,17 @@ class ${type.name}(Enum):
 
 
     % else:
-class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)) if type.extendsType is not None else ''}:
+class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)) if modelFuncs.hasTypeExtendsType(type) else ''}:
         % if type.description != None:
     """${templateHelper.addLineBreakToDescription(type.description,4)}
     """
 
         % endif
     def __init__(self, dictObj=None):
-        % if type.extendsType is not None:
+        % if modelFuncs.hasTypeExtendsType(type):
         super(${pythonFuncs.getExtendsType(type, modelTypes, baseModelDomain)}, self).__init__()
         % endif
-        % if len(type.properties) == 0:
+        % if not modelFuncs.hasTypeProperties(type):
         pass
         % else:
             % for property in type.properties:
@@ -85,43 +85,45 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
-        % for property in type.properties:
-            % if modelFuncs.isBaseType(property.type):
-                % if not property.isArray:
+        % if modelFuncs.hasTypeProperties(type):
+            % for property in type.properties:
+                % if modelFuncs.isBaseType(property.type):
+                    % if not property.isArray:
 
         self.${property.name} = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
-                % else:
+                    % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
             self.${property.name}.append(elem${stringUtils.toUpperCamelCase(property.name)})
-                % endif
-            % elif modelFuncs.isEnumType(property.type):
-                % if not property.isArray:
+                    % endif
+                % elif modelFuncs.isEnumType(property.type):
+                    % if not property.isArray:
 
         self.${property.name} = ${property.type.name}.valueForString(dictObj.get('${property.name}', None))
-                % else:
+                    % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
             self.${property.name}.append(
                 ${property.type.name}.valueForString(elem${stringUtils.toUpperCamelCase(property.name)}))
-                % endif
-            % else:
-                % if not property.isArray:
+                    % endif
+                % else:
+                    % if not property.isArray:
 
         subDictObj = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
         if subDictObj is not None:
             self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(subDictObj)
-                % else:
+                    % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
         for elem${stringUtils.toUpperCamelCase(property.name)} in array${stringUtils.toUpperCamelCase(property.name)}:
             self.${property.name}.append(
                 ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(elem${stringUtils.toUpperCamelCase(property.name)}))
+                    % endif
                 % endif
-            % endif
-        % endfor
+            % endfor
+        % endif
 
     % endif
 

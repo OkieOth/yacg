@@ -80,11 +80,11 @@
                 "description": "${type.description}",
             % endif
                 "type": "object"
-            % if type.extendsType is not None:
+            % if modelFuncs.hasTypeExtendsType(type):
                 ,"allOf": [{
                         "$ref": "#/components/schemas/${type.extendsType.name}"
                     }
-                % if len(type.properties) > 0:
+                % if modelFuncs.hasTypeProperties(type):
                     ,{
                         "properties": {
                     % for property in type.properties:
@@ -149,7 +149,7 @@
                 % endif
                 ]
             % else:
-                % if len(type.properties) > 0:
+                % if modelFuncs.hasTypeProperties(type):
                 ,"properties": {
                     % for property in type.properties:
                     "${property.name}": {

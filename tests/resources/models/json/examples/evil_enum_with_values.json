@@ -1,0 +1,10 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Demo",
+	"enum": [
+	"1"
+	],
+	"x-enumValues": {
+		"1": "true"
+	}
+}

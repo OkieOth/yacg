@@ -201,6 +201,13 @@
                                 "type": "string"
                             }
                         },
+                        "valuesMap": {
+                            "description": "additional enum values",
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        },
                         "default": {
                             "type": "string"
                         },

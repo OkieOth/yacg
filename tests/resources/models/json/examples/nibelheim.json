@@ -1,0 +1,198 @@
+  {
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Nibelheim Types",
+  "description": "General datamodel for the players in Nibelheim",
+  "definitions": {
+    "Mine": {
+      "description": "the place where you find all the gems",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "storage": {
+          "description": "storage for already digged gems and stuff",
+          "$ref": "#/definitions/Storage"
+        },
+        "time": {
+          "description": "current time in the Mine simulation",
+          "type": "string",
+          "format": "date-time"
+        },
+        "dwarfs": {
+          "$comment": "only put to the model to have a uuid array for mongo :D",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": ["id", "name", "time"],
+      "x-tags": ["mongodb"]
+    },
+    "MineSpotMaterial": {
+      "type": "string",
+      "enum": [
+        "MITHRIL",
+        "GOLD",
+        "SILVER",
+        "DIAMOND",
+        "IRON",
+        "CUPPER",
+        "ROCK"
+      ]
+    },
+    "MineSpot": {
+      "description": "Brick, from which the mine is built",
+      "type": "object",
+      "properties": {
+        "material": {
+          "$ref": "#/definitions/MineSpotMaterial"
+        },
+        "initialAmountOfMaterial": {
+          "description": "how many material contained the spot in the beginning",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "currentAmountOfMaterial": {
+          "description": "how many material contains the spot in the moment",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "miningDifficulty": {
+          "description": "factor that describes how more complicated is the mining of the material is",
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 3.0
+        }
+      },
+      "required": ["id", "material", "initialAmountOfMaterial", "currentAmountOfMaterial", "miningDifficulty"]
+
+    },
+    "MineSpotRow": {
+      "description": "One row of mine spots",
+      "type": "object",
+      "properties": {
+        "mine_id": {
+          "type": "string",
+          "format": "uuid",
+          "x-ref": "#/definitions/Mine.id"
+        },
+        "row_number": {
+          "description": "order of the rows in one level",
+          "type": "integer"
+        },
+        "level": {
+          "description": "level of the row to make the mine 3 dimensional",
+          "type": "integer"
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MineSpot"
+          }
+        }
+      },
+      "required":["mine_id", "order", "level"],
+      "x-tags": ["mongodb"]
+    },
+    "Dwarf": {
+      "description": "A guy that runs around in the mine an dig for gems",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "mine_id": {
+          "type": "string",
+          "format": "uuid",
+          "x-ref": "#/definitions/Mine.id"
+        },
+        "pocket": {
+          "description": "small storage of mined material",
+          "$ref": "#/definitions/Storage"
+        },
+        "strongness": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "currentStrongness": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "hunger": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "healthiness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.0
+        },
+        "motivation": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.0
+        },
+        "way": {
+          "description": "ids of the minespots, from the entry/storage to the current spot",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "row_number": {
+                "type": "integer"
+              },
+              "spot": {
+                "type": "integer"
+              },
+              "level": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "required":["name", "mine_id"],
+      "x-tags": ["mongodb"]
+    },
+    "Storage": {
+      "description": "A storage stores produced gems",
+      "type": "object",
+      "properties": {
+        "mithril": {
+          "type": "integer"
+        },
+        "gold": {
+          "type": "integer"
+        },
+        "silver":  {
+          "type": "integer"
+        },
+        "diamond": {
+          "type": "integer"
+        },
+        "iron":  {
+          "type": "integer"
+        },
+        "cupper":  {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

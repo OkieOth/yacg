@@ -4,6 +4,7 @@ from mako.template import Template
 from yacg.builder.jsonBuilder import getModelFromJson
 
 import yacg.model.config as config
+from yacg.model.model import EnumType
 
 
 class TestOpenApi (unittest.TestCase):
@@ -35,6 +36,11 @@ class TestOpenApi (unittest.TestCase):
         model = config.Model()
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
+        # tests for enum values
+
+        self.assertTrue(modelTypes[4], EnumType)
+        self.assertIsNone(modelTypes[4].valuesMap)
+
         templateFile = 'resources/templates/examples/normalizedOpenApiJson.mako'
         templateFileExists = os.path.isfile(templateFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
