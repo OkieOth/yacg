@@ -2,6 +2,7 @@ import unittest
 import os.path
 from mako.template import Template
 from yacg.builder.jsonBuilder import getModelFromJson
+from yacg.model.model import EnumType
 
 import yacg.model.config as config
 import yacg.generators.helper.generatorHelperFuncs as generatorHelperFuncs
@@ -58,6 +59,10 @@ class TestDictToObject (unittest.TestCase):
         model = config.Model()
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
+
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNone(modelTypes[0].valuesMap)
+
         templateFile = 'resources/templates/examples/pythonBeans.mako'
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)

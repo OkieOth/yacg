@@ -326,20 +326,60 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[0].valueType)
         self.assertTrue(isinstance(modelTypes[0].valueType, ComplexType))
 
-    def testDictionary3(self):
-        modelFile = 'tests/resources/models/json/examples/simple_dictionary3.json'
+    def testExternalEnum(self):
+        modelFile = 'tests/resources/models/json/examples/ExternalEnum.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(3, len(modelTypes))
-        self.assertTrue(isinstance(modelTypes[0], DictionaryType))
-        self.assertTrue(isinstance(modelTypes[0].valueType, DictionaryType))
-        self.assertTrue(isinstance(modelTypes[1], DictionaryType))
-        self.assertTrue(isinstance(modelTypes[1].valueType, ComplexType))
-        self.assertTrue(isinstance(modelTypes[2], ComplexType))
+        self.assertEqual(1, len(modelTypes))
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNone(modelTypes[0].valuesMap)
+
+    def testExternalEnumWithValues(self):
+        modelFile = 'tests/resources/models/json/examples/ExternalEnumWithValues.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(1, len(modelTypes))
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNotNone(modelTypes[0].valuesMap)
+        keys = modelTypes[0].valuesMap.keys()
+        self.assertEqual(3, len(keys))
+        self.assertEqual('10', modelTypes[0].valuesMap['A'])
+        self.assertEqual('20', modelTypes[0].valuesMap['B'])
+        self.assertEqual('30', modelTypes[0].valuesMap['C'])
+
+    def testExternalEnumWithValues2(self):
+        modelFile = 'tests/resources/models/json/examples/openapi_v3_example_refs2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes[4].valuesMap)
+        keys = modelTypes[4].valuesMap.keys()
+        self.assertEqual(3, len(keys))
+        self.assertEqual('10', modelTypes[4].valuesMap['A'])
+        self.assertEqual('20', modelTypes[4].valuesMap['B'])
+        self.assertEqual('30', modelTypes[4].valuesMap['C'])
+
+    def testEvilEnum2(self):
+        modelFile = 'tests/resources/models/json/examples/evil_enum_with_values.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNotNone(modelTypes[0].valuesMap)
+        self.assertEqual('true', modelTypes[0].valuesMap['1'])
 
     def testDictionary4(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'
