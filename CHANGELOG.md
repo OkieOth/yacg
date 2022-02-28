@@ -1,3 +1,6 @@
+# 4.1.1
+* fix bug with 'additionalProperties'. From JSON schema specs this value can be boolean or object. The boolean version can't used before.
+
 # 4.1.0
 * add enum values
 
