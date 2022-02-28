@@ -1053,7 +1053,7 @@ def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFi
 
 def __getAdditionalPropertiesForDictionaryType(dictionary):
     additionalProperties = dictionary.get('additionalProperties', None)
-    if additionalProperties=='true' or additionalProperties=='false':
+    if (additionalProperties is not None) and (type(additionalProperties) == bool):
         # additionalProperties are only handled as objects here
         return None
     return additionalProperties

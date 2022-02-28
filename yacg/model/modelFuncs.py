@@ -56,7 +56,7 @@ def hasKey(typeObj):
 
 
 def getKeyProperty(typeObj):
-    """Returns the Property object that is marked as key. 
+    """Returns the Property object that is marked as key.
     Attention, key tupels are not supported.
     If no key is contained, the function returns 'None'
 

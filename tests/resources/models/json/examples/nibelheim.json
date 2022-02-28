@@ -6,6 +6,7 @@
     "Mine": {
       "description": "the place where you find all the gems",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "id": {
           "type": "string",
