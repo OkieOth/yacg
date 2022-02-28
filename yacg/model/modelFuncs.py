@@ -38,6 +38,40 @@ def hasProperty(propertyName, typeObj):
     return False
 
 
+def hasKey(typeObj):
+    """checks if a specific type object has a property that is marked as
+    unique key.
+    Returns 'True' if a key property is contained, else 'False'
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    """
+
+    if not hasattr(typeObj, 'properties'):
+        return False
+    for property in typeObj.properties:
+        if property.isKey:
+            return True
+    return False
+
+
+def getKeyProperty(typeObj):
+    """Returns the Property object that is marked as key. 
+    Attention, key tupels are not supported.
+    If no key is contained, the function returns 'None'
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    """
+
+    if not hasattr(typeObj, 'properties'):
+        return None
+    for property in typeObj.properties:
+        if property.isKey:
+            return property
+    return None
+
+
 def getPropertiesThatHasTag(tagName, typeObj):
     """check up if the as parameter given type has attributes that
     contain tag with the given name

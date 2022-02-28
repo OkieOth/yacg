@@ -1,3 +1,6 @@
+# 4.1.1
+* add key related model funcs
+
 # 4.1.0
 * add enum values
 
