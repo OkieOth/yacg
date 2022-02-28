@@ -98,7 +98,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
     schemaProperties = parsedSchema.get('properties', None)
     allOfEntry = parsedSchema.get('allOf', None)
-    additionalProperties = parsedSchema.get('additionalProperties', None)
+    additionalProperties = __getAdditionalPropertiesForDictionaryType(parsedSchema)
     if (schemaProperties is not None) or (allOfEntry is not None) or (additionalProperties is not None):
         # extract top level type
         titleStr = parsedSchema.get('title', None)
@@ -176,7 +176,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
 
     schemaProperties = modelFileContainer.parsedSchema.get('properties', None)
     allOfEntry = modelFileContainer.parsedSchema.get('allOf', None)
-    additionalProperties = modelFileContainer.parsedSchema.get('additionalProperties', None)
+    additionalProperties = __getAdditionalPropertiesForDictionaryType(modelFileContainer.parsedSchema)
     if (schemaProperties is not None) or (allOfEntry is not None) or (additionalProperties is not None):
         # extract top level type
         titleStr = modelFileContainer.parsedSchema.get('title', None)
@@ -232,7 +232,7 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
         object = definitions[key]
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
-        additionalProperties = object.get('additionalProperties', None)
+        additionalProperties = __getAdditionalPropertiesForDictionaryType(object)
         description = object.get('description', None)
 
         enumEntry = object.get('enum', None)
@@ -429,7 +429,7 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif type == 'object':
         subProps = propDict.get('properties', None)
         subAllOf = propDict.get('allOf', None)
-        subAdditionalProperties = propDict.get('additionalProperties', None)
+        subAdditionalProperties = __getAdditionalPropertiesForDictionaryType(propDict)
         if (subProps is None) and (subAllOf is None) and (subAdditionalProperties is None):
             return ObjectType()
         else:
@@ -755,7 +755,7 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
 
     innerTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name)
     properties = propDict.get('properties', None)
-    additionalProperties = propDict.get('additionalProperties', None)
+    additionalProperties = __getAdditionalPropertiesForDictionaryType(propDict)
     newInnerType = ComplexType() if additionalProperties is None else DictionaryType()
     newInnerType.domain = modelFileContainer.domain
     newInnerType.name = innerTypeName
@@ -1049,3 +1049,11 @@ def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFi
                 contentEntry = openapi.ContentEntry()
                 response.content.append(contentEntry)
                 __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
+
+
+def __getAdditionalPropertiesForDictionaryType(dictionary):
+    additionalProperties = dictionary.get('additionalProperties', None)
+    if (additionalProperties is not None) and (type(additionalProperties) == bool):
+        # additionalProperties are only handled as objects here
+        return None
+    return additionalProperties

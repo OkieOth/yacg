@@ -151,7 +151,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.type)
         self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.property)
         self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey.type)
-        self.assertEqual(modelTypes[1].properties[3].foreignKey.property.name, modelTypes[1].properties[3].foreignKey.propertyName)
+        self.assertEqual(modelTypes[1].properties[3].foreignKey.property.name, modelTypes[1].properties[3].foreignKey.propertyName)  # noqa: E501
         self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
