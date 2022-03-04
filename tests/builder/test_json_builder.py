@@ -2,10 +2,10 @@ import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum, ObjectType
-from yacg.model.model import StringType
+from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag
 
 import yacg.model.config as config
 
@@ -86,6 +86,26 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes, [])
         self._checkUpType(9, 'RandomDataTask', 13, modelTypes, [], ('keyProperties', 'valuePools', 'arrays'))
 
+    def testDoesTypeOrAttribContainsType(self):
+        modelFile = 'resources/models/json/yacg_config_schema.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertTrue(doesTypeOrAttribContainsType(modelTypes[0], StringType))
+        self.assertFalse(doesTypeOrAttribContainsType(modelTypes[0], UuidType))
+
+    def testGetTypesWithTag(self):
+        modelFile = 'tests/resources/models/json/examples/nibelheim.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        mongoTypes = getTypesWithTag(modelTypes, ["mongodb"])
+        self.assertEqual(len(mongoTypes), 3)
+
     def testSingleTypeSchema3(self):
         modelFile = 'tests/resources/models/json/examples/model_with_bytes.json'
         modelFileExists = os.path.isfile(modelFile)
@@ -128,8 +148,27 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(0, 'OneType', 2, modelTypes, [])
         self._checkUpType(1, 'TwoType', 4, modelTypes, [])
         # TwoType->implicitRef
-        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey)
-        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey)
+        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.type)
+        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.property)
+        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey.type)
+        self.assertEqual(modelTypes[1].properties[3].foreignKey.property.name, modelTypes[1].properties[3].foreignKey.propertyName)  # noqa: E501
+        self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
+        self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
+
+    def testSchemaWithHttpRef(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_http_ref.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(4, len(modelTypes))
+        self._checkUpType(0, 'OneType', 2, modelTypes, [])
+        self._checkUpType(1, 'TwoType', 4, modelTypes, [])
+        # TwoType->implicitRef
+        self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.type)
+        self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey.type)
         self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
@@ -304,20 +343,60 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[0].valueType)
         self.assertTrue(isinstance(modelTypes[0].valueType, ComplexType))
 
-    def testDictionary3(self):
-        modelFile = 'tests/resources/models/json/examples/simple_dictionary3.json'
+    def testExternalEnum(self):
+        modelFile = 'tests/resources/models/json/examples/ExternalEnum.json'
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(3, len(modelTypes))
-        self.assertTrue(isinstance(modelTypes[0], DictionaryType))
-        self.assertTrue(isinstance(modelTypes[0].valueType, DictionaryType))
-        self.assertTrue(isinstance(modelTypes[1], DictionaryType))
-        self.assertTrue(isinstance(modelTypes[1].valueType, ComplexType))
-        self.assertTrue(isinstance(modelTypes[2], ComplexType))
+        self.assertEqual(1, len(modelTypes))
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNone(modelTypes[0].valuesMap)
+
+    def testExternalEnumWithValues(self):
+        modelFile = 'tests/resources/models/json/examples/ExternalEnumWithValues.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(1, len(modelTypes))
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNotNone(modelTypes[0].valuesMap)
+        keys = modelTypes[0].valuesMap.keys()
+        self.assertEqual(3, len(keys))
+        self.assertEqual('10', modelTypes[0].valuesMap['A'])
+        self.assertEqual('20', modelTypes[0].valuesMap['B'])
+        self.assertEqual('30', modelTypes[0].valuesMap['C'])
+
+    def testExternalEnumWithValues2(self):
+        modelFile = 'tests/resources/models/json/examples/openapi_v3_example_refs2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes[4].valuesMap)
+        keys = modelTypes[4].valuesMap.keys()
+        self.assertEqual(3, len(keys))
+        self.assertEqual('10', modelTypes[4].valuesMap['A'])
+        self.assertEqual('20', modelTypes[4].valuesMap['B'])
+        self.assertEqual('30', modelTypes[4].valuesMap['C'])
+
+    def testEvilEnum2(self):
+        modelFile = 'tests/resources/models/json/examples/evil_enum_with_values.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNotNone(modelTypes[0].valuesMap)
+        self.assertEqual('true', modelTypes[0].valuesMap['1'])
 
     def testDictionary4(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'

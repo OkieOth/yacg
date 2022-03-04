@@ -201,6 +201,13 @@
                                 "type": "string"
                             }
                         },
+                        "valuesMap": {
+                            "description": "additional enum values",
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        },
                         "default": {
                             "type": "string"
                         },
@@ -513,6 +520,21 @@
                 "format": {
                     "description": "holds the original 'format' value from the schema",
                     "type": "string"
+                }
+            }
+        },
+        "ForeignKey": {
+            "description": "Type describes the reference of a property to another field in the model",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/Type"
+                },
+                "propertyName": {
+                    "type": "string"
+                },
+                "property": {
+                    "$ref": "#/definitions/Property"
                 }
             }
         },

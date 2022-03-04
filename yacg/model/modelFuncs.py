@@ -52,6 +52,37 @@ def getProperty(propertyName, typeObj):
             if property.name == propertyName:
                 return property
 
+def hasKey(typeObj):
+    """checks if a specific type object has a property that is marked as
+    unique key.
+    Returns 'True' if a key property is contained, else 'False'
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    """
+
+    if not hasattr(typeObj, 'properties'):
+        return False
+    for property in typeObj.properties:
+        if property.isKey:
+            return True
+    return False
+
+
+def getKeyProperty(typeObj):
+    """Returns the Property object that is marked as key.
+    Attention, key tupels are not supported.
+    If no key is contained, the function returns 'None'
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    """
+
+    if not hasattr(typeObj, 'properties'):
+        return None
+    for property in typeObj.properties:
+        if property.isKey:
+            return property
     return None
 
 
@@ -82,6 +113,8 @@ def getFlattenProperties(typeObj):
     """
 
     flattenProperties = []
+    if isinstance(typeObj, model.DictionaryType):
+        return flattenProperties
     if typeObj.properties is not None:
         for property in typeObj.properties:
             flattenProperties.append(property)
@@ -105,6 +138,14 @@ def hasEnumTypes(modelTypes):
         if isEnumType(type):
             return True
     return False
+
+
+def hasTypeProperties(type):
+    return hasattr(type, 'properties') and len(type.properties) > 0
+
+
+def hasTypeExtendsType(type):
+    return hasattr(type, 'extendsType') and type.extendsType is not None
 
 
 def flattenTypes(loadedTypes):
@@ -139,6 +180,17 @@ def isEnumType(typeObj):
     """
 
     return isinstance(typeObj, model.EnumType)
+
+
+def isDictionaryType(typeObj):
+    """checks if the given type object is an DictionaryType. If that's the
+    case then True is returned, else the return is false
+
+    Keyword arguments:
+    typeObj -- type or property object to check up
+    """
+
+    return isinstance(typeObj, model.DictionaryType)
 
 
 def getTypeName(type):
@@ -190,8 +242,16 @@ def isBaseType(type):
         return False
     elif isinstance(type, model.ComplexType):
         return False
+    elif isinstance(type, model.DictionaryType):
+        return False
     else:
         return True
+
+
+def isBaseOrDictionaryType(type):
+    if isDictionaryType(type):
+        return True
+    return isBaseType(type)
 
 
 def getTypesWithTag(types, tags):
@@ -282,5 +342,16 @@ def isDateContained(modelTypes):
         if isinstance(type, model.ComplexType):
             for property in type.properties:
                 if (property.type is not None) and (isinstance(property.type, model.DateType)):
+                    return True
+    return False
+
+
+def doesTypeOrAttribContainsType(typeObj, type):
+    if hasattr(typeObj, "properties"):
+        for prop in typeObj.properties:
+            if isinstance(prop.type, type):
+                return True
+            if isinstance(prop.type, model.ComplexType):
+                if doesTypeOrAttribContainsType(prop.type, type):
                     return True
     return False

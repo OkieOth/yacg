@@ -10,7 +10,7 @@ import urllib.request
 import json
 import yaml
 
-from yacg.model.model import Property
+from yacg.model.model import ForeignKey, Property
 from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType, ObjectType
@@ -80,6 +80,11 @@ def __initTags(mainType, parsedSchema):
             mainType.tags = _extractTags(tags)
 
 
+def __initEnumValues(mainType, parsedSchema):
+    if mainType.valuesMap is None:
+        mainType.valuesMap = parsedSchema.get('x-enumValues', None)
+
+
 def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     """extract the types from the parsed schema
 
@@ -93,7 +98,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
     schemaProperties = parsedSchema.get('properties', None)
     allOfEntry = parsedSchema.get('allOf', None)
-    additionalProperties = parsedSchema.get('additionalProperties', None)
+    additionalProperties = __getAdditionalPropertiesForDictionaryType(parsedSchema)
     if (schemaProperties is not None) or (allOfEntry is not None) or (additionalProperties is not None):
         # extract top level type
         titleStr = parsedSchema.get('title', None)
@@ -110,6 +115,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
         typeNameStr = toUpperCamelCase(titleStr)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
+        __initEnumValues(mainType, parsedSchema)
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -137,12 +143,27 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
             modelFileContainer = ModelFileContainer(sourceFile, parsedSchema)
             _getTypeFromParsedSchema(modelFileContainer, type.name, modelTypes)
 
+    # fix missing foreign key property references
+    for type in modelTypes:
+        if (hasattr(type, 'properties')):
+            for property in type.properties:
+                if (property.foreignKey) and (property.foreignKey.propertyName) and (not property.foreignKey.property):
+                    property.foreignKey.property = __getPropertyByName(property.foreignKey.type, property.foreignKey.propertyName)
+
     # load additional types, e.g. openapi.PathType
     if not skipOpenApi:
         if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
             modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
             extractOpenApiPathTypes(modelTypes, modelFileContainer)
     return modelTypes
+
+
+def __getPropertyByName(type, propertyName):
+    if hasattr(type, "properties"):
+        for property in type.properties:
+            if property.name == propertyName:
+                return property
+    return None
 
 
 def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes):
@@ -155,7 +176,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
 
     schemaProperties = modelFileContainer.parsedSchema.get('properties', None)
     allOfEntry = modelFileContainer.parsedSchema.get('allOf', None)
-    additionalProperties = modelFileContainer.parsedSchema.get('additionalProperties', None)
+    additionalProperties = __getAdditionalPropertiesForDictionaryType(modelFileContainer.parsedSchema)
     if (schemaProperties is not None) or (allOfEntry is not None) or (additionalProperties is not None):
         # extract top level type
         titleStr = modelFileContainer.parsedSchema.get('title', None)
@@ -181,10 +202,8 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
         titleStr = modelFileContainer.parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
-        if len(mainType.tags) == 0:
-            tags = modelFileContainer.parsedSchema.get('x-tags', None)
-            if tags is not None:
-                mainType.tags = _extractTags(tags)
+        __initTags(mainType, modelFileContainer.parsedSchema)
+        __initEnumValues(mainType, modelFileContainer.parsedSchema)
 
     schemaDefinitions = modelFileContainer.parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
@@ -213,16 +232,14 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
         object = definitions[key]
         properties = object.get('properties', None)
         allOfEntry = object.get('allOf', None)
-        additionalProperties = object.get('additionalProperties', None)
+        additionalProperties = __getAdditionalPropertiesForDictionaryType(object)
         description = object.get('description', None)
 
         enumEntry = object.get('enum', None)
         if enumEntry is not None:
             mainType = _extractEnumType(key, None, enumEntry, modelTypes, modelFileContainer)
-            if len(mainType.tags) == 0:
-                tags = modelFileContainer.parsedSchema.get('x-tags', None)
-                if tags is not None:
-                    mainType.tags = _extractTags(tags)
+            __initTags(mainType, modelFileContainer.parsedSchema)
+            __initEnumValues(mainType, modelFileContainer.parsedSchema)
         else:
             type = _extractObjectType(
                 key, properties, additionalProperties, allOfEntry,
@@ -362,7 +379,18 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
         newProperty.isVisualKey = propDict.get('x-visualKey', False)
         implicitRefEntry = propDict.get('x-ref', None)
         if implicitRefEntry is not None:
-            newProperty.foreignKey = _extractReferenceType(implicitRefEntry, modelTypes, modelFileContainer)
+            # either {TYPE_NAME} or {TYPE_NAME}.{PROPERTY_NAME}
+            propertyRefName = None
+            lastDefSeparator = implicitRefEntry.find("#")
+            if lastDefSeparator != -1:
+                tmpStr = implicitRefEntry[lastDefSeparator + 1:]
+                lastDot = tmpStr.find(".")
+                if lastDot != -1:
+                    implicitRefEntry = implicitRefEntry[0: lastDefSeparator + lastDot + 1]
+                    propertyRefName = tmpStr[lastDot + 1:]
+            newProperty.foreignKey = ForeignKey()
+            newProperty.foreignKey.type = _extractReferenceType(implicitRefEntry, modelTypes, modelFileContainer)
+            newProperty.foreignKey.propertyName = propertyRefName
         tags = propDict.get('x-tags', None)
         if tags is not None:
             newProperty.tags = _extractTags(tags)
@@ -401,7 +429,7 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif type == 'object':
         subProps = propDict.get('properties', None)
         subAllOf = propDict.get('allOf', None)
-        subAdditionalProperties = propDict.get('additionalProperties', None)
+        subAdditionalProperties = __getAdditionalPropertiesForDictionaryType(propDict)
         if (subProps is None) and (subAllOf is None) and (subAdditionalProperties is None):
             return ObjectType()
         else:
@@ -410,7 +438,10 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
         refEntry = propDict.get('$ref', None)
         enumEntry = propDict.get('enum', None)
         if enumEntry is not None:
-            return _extractEnumType(newTypeName, newProperty, enumEntry, modelTypes, modelFileContainer)
+            enumType = _extractEnumType(newTypeName, newProperty, enumEntry, modelTypes, modelFileContainer)
+            __initTags(enumType, propDict)
+            __initEnumValues(enumType, propDict)
+            return enumType
         elif refEntry is not None:
             return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
         elif type == 'array':
@@ -724,7 +755,7 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
 
     innerTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name)
     properties = propDict.get('properties', None)
-    additionalProperties = propDict.get('additionalProperties', None)
+    additionalProperties = __getAdditionalPropertiesForDictionaryType(propDict)
     newInnerType = ComplexType() if additionalProperties is None else DictionaryType()
     newInnerType.domain = modelFileContainer.domain
     newInnerType.name = innerTypeName
@@ -783,7 +814,10 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
     if (formatValue is None) and (enumValue is None):
         return StringType()
     elif enumValue is not None:
-        return _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileContainer)
+        enumType = _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileContainer)
+        __initTags(enumType, propDict)
+        __initEnumValues(enumType, propDict)
+        return enumType
     elif formatValue == 'date':
         return DateType()
     elif formatValue == 'date-time':
@@ -1015,3 +1049,11 @@ def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFi
                 contentEntry = openapi.ContentEntry()
                 response.content.append(contentEntry)
                 __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
+
+
+def __getAdditionalPropertiesForDictionaryType(dictionary):
+    additionalProperties = dictionary.get('additionalProperties', None)
+    if (additionalProperties is not None) and (type(additionalProperties) == bool):
+        # additionalProperties are only handled as objects here
+        return None
+    return additionalProperties

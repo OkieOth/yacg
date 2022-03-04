@@ -1,3 +1,17 @@
+# 4.1.1
+* add key related model funcs
+* fix bug with 'additionalProperties'. From JSON schema specs this value can be boolean or object. The boolean version can't used before.
+
+# 4.1.0
+* add enum values
+
+# 4.0.1
+* add `doesTypeOrAttribContainsType` to modelFuncs
+
+# 4.0.0
+* extend x-ref/foreign key reference with a properties reference. **Attention** this may break some templates (e.g. plantUml)
+* shows foreign key references in puml diagrams
+
 # 3.4.1
 * enable automatic releases with github actions
 
