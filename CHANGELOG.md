@@ -1,3 +1,6 @@
+# 4.1.2
+
+
 # 4.1.1
 * add key related model funcs
 * fix bug with 'additionalProperties'. From JSON schema specs this value can be boolean or object. The boolean version can't used before.
