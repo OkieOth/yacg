@@ -1,5 +1,5 @@
 # 4.1.2
-
+* add typescript helper funcs
 
 # 4.1.1
 * add key related model funcs
