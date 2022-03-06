@@ -20,7 +20,7 @@ def printTypescriptType(type, isArray):
         return 'string' if not isArray else 'string[]'
     elif isinstance(type, model.UuidType):
         # instead of the original type definition, here is only string used
-        return 'string' if not isArray else 'string[] | any[]'
+        return 'string | any' if not isArray else 'string[] | any[]'
     elif isinstance(type, model.EnumType):
         return "{type}".format(type=type.name) if not isArray else "{type}[]".format(type=type.name)
     elif isinstance(type, model.DateTimeType):
