@@ -341,3 +341,13 @@ def doesTypeOrAttribContainsType(typeObj, type):
                 if doesTypeOrAttribContainsType(prop.type, type):
                     return True
     return False
+
+
+def getPropertyTagsForType(typeObj):
+    ret = []
+    if hasattr(typeObj, "properties"):
+        for prop in typeObj.properties:
+            for tag in prop.tags:
+                if tag not in ret:
+                    ret.append(tag);
+    return ret
