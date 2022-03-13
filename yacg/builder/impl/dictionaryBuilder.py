@@ -239,7 +239,7 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
         if enumEntry is not None:
             mainType = _extractEnumType(key, None, enumEntry, modelTypes, modelFileContainer)
             __initTags(mainType, modelFileContainer.parsedSchema)
-            __initEnumValues(mainType, modelFileContainer.parsedSchema)
+            __initEnumValues(mainType, object)
         else:
             type = _extractObjectType(
                 key, properties, additionalProperties, allOfEntry,
