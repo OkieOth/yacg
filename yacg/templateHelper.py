@@ -2,7 +2,7 @@
 """
 
 
-def addLineBreakToDescription(textLine, indent):
+def addLineBreakToDescription(textLine, indent=0):
     indentStr = ' ' * indent if indent > 0 else ''
     breakedText = ''
     currentLen = 0

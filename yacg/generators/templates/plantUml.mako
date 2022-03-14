@@ -26,7 +26,7 @@
             propTxt = '.' + prop.foreignKey.property.name if prop.foreignKey.property is not None else ''
             ret = '<color:grey>"" // -> {}{}""</color>'.format(prop.foreignKey.type.name, propTxt)
         return ret
-    
+
     def printTypeTags(type):
         ret = ''
         tagCount = 0
@@ -34,7 +34,7 @@
             if tagCount == 4:
                 ret = ret + '\n'
                 tagCount = 0
-            tmp = '**#{}**'.format(ret, tag)
+            tmp = '**#{}**'.format(tag.name)
             ret = '{}, {}'.format(ret, tmp) if len(ret)>0 else '{}'.format(tmp)
             tagCount = tagCount + 1
         return ret
@@ -81,17 +81,19 @@ class ${modelFuncs.getTypeName(type)} {
             % endfor
         % endif
         % if shouldTypeTagsBePrinted and (len(type.tags) > 0):
-        ==
+
+        == // Type-Tags // ==
         ${printTypeTags(type)}
-        ==
         % endif
         % if shouldPropertyTagsBePrinted:
-        <%
-            propertyTags = modelFuncs.getPropertyTagsForType(type)
-        %>
-            % for tag in propertyTags:
-        ${printPropertyTag(type, tag)}
+        <% propertyTags = modelFuncs.getPropertyTagNamesForType(type) %>
+        % for tag in propertyTags:
+            % if tag == propertyTags[0]:
+        --- // Property-Tags // ---
+            % else:
         --
+            % endif
+        ${printPropertyTag(type, tag)}
             % endfor
         % endif
 }

@@ -1,5 +1,6 @@
 # 4.1.2
 * add typescript helper funcs
+* enable plantuml template to visualize type and property tags
 
 # 4.1.1
 * add key related model funcs

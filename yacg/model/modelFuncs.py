@@ -343,11 +343,39 @@ def doesTypeOrAttribContainsType(typeObj, type):
     return False
 
 
-def getPropertyTagsForType(typeObj):
+def getPropertyTagNamesForType(typeObj):
     ret = []
     if hasattr(typeObj, "properties"):
         for prop in typeObj.properties:
             for tag in prop.tags:
-                if tag not in ret:
-                    ret.append(tag);
+                if tag.name not in ret:
+                    ret.append(tag.name);
     return ret
+
+
+def __copyTypeAndAllChildTypes(type, alreadyFoundNamesList, alreadyFoundTypesList):
+    if type.name not in alreadyFoundNamesList:
+        alreadyFoundNamesList.append(type.name)
+        alreadyFoundTypesList.append(type)
+        if hasattr(type, 'properties'):
+            for prop in type.properties:
+                if not isBaseType(prop.type):
+                    __copyTypeAndAllChildTypes(prop.type, alreadyFoundNamesList, alreadyFoundTypesList)
+
+
+def getTypesRelatedTagName(types, tagName):
+    """function returns all types that have a relation to a type that
+    contains a specific tag
+
+    Keyword arguments:
+    types -- list of model.Type instances
+    tagName -- name of the tag to search for
+    """
+
+    typesWithTag = getTypesWithTag(types, [tagName])
+    alreadyFoundTypeNames = []
+    ret = []
+    for type in typesWithTag:
+        __copyTypeAndAllChildTypes(type, alreadyFoundTypeNames, ret)
+    return ret
+
