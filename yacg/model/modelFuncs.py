@@ -353,6 +353,23 @@ def getPropertyTagNamesForType(typeObj):
     return ret
 
 
+def __getTypeAndAllChildTypesImpl(type, alreadyFoundTypeNames, alreadyFoundTypes):
+    if type.name not in alreadyFoundTypeNames:
+        alreadyFoundTypeNames.append(type.name)
+        alreadyFoundTypes.append(type)
+        if hasattr(type, 'properties'):
+            for prop in type.properties:
+                if not isBaseType(prop.type):
+                    __getTypeAndAllChildTypesImpl(prop.type, alreadyFoundTypeNames, alreadyFoundTypes)
+
+
+def getTypeAndAllChildTypes(type):
+    alreadyFoundTypeNames = []
+    ret = []
+    __getTypeAndAllChildTypesImpl(type, alreadyFoundTypeNames, ret)
+    return ret
+
+
 def __copyTypeAndAllChildTypes(type, alreadyFoundNamesList, alreadyFoundTypesList):
     if type.name not in alreadyFoundNamesList:
         alreadyFoundNamesList.append(type.name)
