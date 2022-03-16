@@ -1,3 +1,11 @@
+# 4.2.0
+* add typescript helper funcs
+* enable plantuml template to visualize type and property tags
+* introduce handling of multidimensional arrays
+
+# 4.1.2
+* fixed bug for x-enumValues
+
 # 4.1.1
 * add key related model funcs
 * fix bug with 'additionalProperties'. From JSON schema specs this value can be boolean or object. The boolean version can't used before.

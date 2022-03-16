@@ -463,17 +463,15 @@
                     "type": "boolean",
                     "default": false
                 },
-                "arrayMinItems": {
-                    "description": "defined minimum of elements in the array/list",
+                "arrayDimensions": {
+                    "description": "if isArray true you can specify here the number of the array dimensions",
                     "type": "integer"
                 },
-                "arrayMaxItems": {
-                    "description": "defined maximum of elements in the array/list",
-                    "type": "integer"
-                },
-                "arrayUniqueItems": {
-                    "description": "the elements in the array/list have to be unique",
-                    "type": "boolean"
+                "arrayConstraints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ArrayConstraints"
+                    }
                 },
                 "type": {
                     "description": "either a basic or a complex type",
@@ -520,6 +518,23 @@
                 "format": {
                     "description": "holds the original 'format' value from the schema",
                     "type": "string"
+                }
+            }
+        },
+        "ArrayConstraints": {
+            "type": "object",
+            "properties": {
+                "arrayMinItems": {
+                    "description": "defined minimum of elements in the array/list",
+                    "type": "integer"
+                },
+                "arrayMaxItems": {
+                    "description": "defined maximum of elements in the array/list",
+                    "type": "integer"
+                },
+                "arrayUniqueItems": {
+                    "description": "the elements in the array/list have to be unique",
+                    "type": "boolean"
                 }
             }
         },

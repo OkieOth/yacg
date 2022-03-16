@@ -10,7 +10,7 @@ import urllib.request
 import json
 import yaml
 
-from yacg.model.model import ForeignKey, Property
+from yacg.model.model import ArrayConstraints, ForeignKey, Property
 from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType, ObjectType
@@ -445,7 +445,10 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
         elif refEntry is not None:
             return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
         elif type == 'array':
-            return _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
+            arrayType = _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
+            if hasattr(newProperty, 'arrayDimensions'):
+                newProperty.arrayDimensions = len(newProperty.arrayConstraints)
+            return arrayType
         else:
             logging.error(
                 "modelFile: %s, type=%s, property=%s: unknown property type: %s" %
@@ -466,13 +469,19 @@ def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileC
     """
     itemsDict = propDict.get('items', None)
     if itemsDict is not None:
-        newProperty.arrayMinItems = propDict.get('minItems', None)
-        newProperty.arrayMaxItems = propDict.get('maxItems', None)
-        newProperty.arrayUniqueItems = propDict.get('uniqueItems', None)
         newProperty.isArray = True
-        return _extractAttribType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
-    # TODO
-    pass
+        if hasattr(newProperty, "arrayConstraints"):
+            arrayConstraints = ArrayConstraints()
+            arrayConstraints.arrayMinItems = itemsDict.get('minItems', None)
+            arrayConstraints.arrayMaxItems = itemsDict.get('maxItems', None)
+            arrayConstraints.arrayUniqueItems = itemsDict.get('uniqueItems', None)
+            newProperty.arrayConstraints.append(arrayConstraints)
+        itemsType = itemsDict.get('type', None)
+        itemsItemsDict = itemsDict.get('items', None)
+        if (itemsType == "array") and (itemsItemsDict is not None):
+            return _extractArrayType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
+        else:
+            return _extractAttribType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
 
 
 def _extractReferenceType(refEntry, modelTypes, modelFileContainer):
