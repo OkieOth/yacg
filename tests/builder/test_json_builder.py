@@ -5,7 +5,7 @@ from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes  # noqa: E501
 
 import yacg.model.config as config
 
@@ -407,9 +407,16 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
-        #modelTypes = getModelFromJson(model, [])
-
-        #TODO
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(len(modelTypes), 3)
+        self.assertEqual(len(modelTypes[0].properties), 3)
+        self.assertEqual(modelTypes[0].properties[0].arrayDimensions, 1)
+        self.assertIsNotNone(modelTypes[0].properties[0].type)
+        self.assertEqual(modelTypes[0].properties[1].arrayDimensions, 2)
+        self.assertIsNotNone(modelTypes[0].properties[1].type)
+        self.assertEqual(modelTypes[0].properties[2].arrayDimensions, 3)
+        self.assertIsNotNone(modelTypes[0].properties[2].type)
 
     def testDictionary4(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'

@@ -103,7 +103,6 @@ class IntegerTypeFormatEnum(Enum):
             return ''
 
 
-
 class NumberType (Type):
     """ floating point values
     """
@@ -169,7 +168,6 @@ class NumberTypeFormatEnum(Enum):
             return 'double'
         else:
             return ''
-
 
 
 class BooleanType (Type):
@@ -505,7 +503,7 @@ class Property:
         #: if isArray true you can specify here the number of the array dimensions
         self.arrayDimensions = None
 
-        self.arrayContraints = []
+        self.arrayConstraints = []
 
         #: either a basic or a complex type
         self.type = None
@@ -547,10 +545,10 @@ class Property:
 
         self.arrayDimensions = dictObj.get('arrayDimensions', None)
 
-        arrayArrayContraints = dictObj.get('arrayContraints', [])
-        for elemArrayContraints in arrayArrayContraints:
-            self.arrayContraints.append(
-                ArrayConstraints(elemArrayContraints))
+        arrayArrayConstraints = dictObj.get('arrayConstraints', [])
+        for elemArrayConstraints in arrayArrayConstraints:
+            self.arrayConstraints.append(
+                ArrayConstraints(elemArrayConstraints))
 
         subDictObj = dictObj.get('type', None)
         if subDictObj is not None:
@@ -694,5 +692,3 @@ class ForeignKey:
         subDictObj = dictObj.get('property', None)
         if subDictObj is not None:
             self.property = Property(subDictObj)
-
-

@@ -467,7 +467,7 @@
                     "description": "if isArray true you can specify here the number of the array dimensions",
                     "type": "integer"
                 },
-                "arrayContraints": {
+                "arrayConstraints": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/ArrayConstraints"

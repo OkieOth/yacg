@@ -349,7 +349,7 @@ def getPropertyTagNamesForType(typeObj):
         for prop in typeObj.properties:
             for tag in prop.tags:
                 if tag.name not in ret:
-                    ret.append(tag.name);
+                    ret.append(tag.name)
     return ret
 
 

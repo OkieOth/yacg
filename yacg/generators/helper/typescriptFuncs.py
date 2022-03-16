@@ -28,9 +28,9 @@ def printTypescriptType(type, isArray):
     elif isinstance(type, model.DateType):
         return 'Date' if not isArray else 'Date[]'
     elif isinstance(type, model.BytesType):
-            return 'number[]' if not isArray else 'number[][]'
+        return 'number[]' if not isArray else 'number[][]'
     elif isinstance(type, model.DictionaryType):
-        return "Map<String, {}>".format(printTypescriptType(type.valueType)) if not isArray else "Map<String, {}>[]".format(printTypescriptType(type.valueType))
+        return "Map<String, {}>".format(printTypescriptType(type.valueType)) if not isArray else "Map<String, {}>[]".format(printTypescriptType(type.valueType))  # noqa: E501
     elif isinstance(type, model.ComplexType):
         return "{type}".format(type=type.name) if not isArray else "{type}[]".format(type=type.name)
     else:

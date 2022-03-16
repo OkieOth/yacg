@@ -144,7 +144,7 @@ class Property {
         StringType name
         BooleanType isArray
         IntegerType arrayDimensions
-        ArrayConstraints[] arrayContraints
+        ArrayConstraints[] arrayConstraints
         Type type
         Tag[] tags
         StringType description
