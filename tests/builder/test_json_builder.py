@@ -288,7 +288,8 @@ class TestJsonBuilder (unittest.TestCase):
             'DateTimeType',
             'BytesType',
             'ComplexType',
-            'DictionaryType'
+            'DictionaryType',
+            'ArrayType'
         ]
         self.assertEqual(expectedMetaModelTypes, metaModelTypes)
 
@@ -407,10 +408,10 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
         model.schema = modelFile
-        modelTypes = getModelFromJson(model, [])
+        #modelTypes = getModelFromJson(model, [])
 
         #TODO
-        
+
     def testDictionary4(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'
         modelFileExists = os.path.isfile(modelFile)

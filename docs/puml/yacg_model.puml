@@ -1,5 +1,6 @@
 
 @startuml
+hide empty methods
 
 class Type {
 }
@@ -172,6 +173,20 @@ class DictionaryType {
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
+class ArrayType {
+        StringType version
+        StringType name
+        StringType description
+        StringType domain
+        StringType source
+        ComplexType[] referencedBy
+        Type valueType
+        Tag[] tags
+}
+
+note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
+
+ArrayType --|> Type
 class ForeignKey {
         Type type
         StringType propertyName
@@ -292,6 +307,21 @@ DictionaryType  *--  Type
             
 
 DictionaryType "0" *-- "n" Tag
+            
+
+    
+
+
+
+
+
+ArrayType "0" *-- "n" ComplexType
+            
+
+ArrayType  *--  Type
+            
+
+ArrayType "0" *-- "n" Tag
             
 
     
