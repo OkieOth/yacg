@@ -401,6 +401,16 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[0].valuesMap)
         self.assertEqual('true', modelTypes[0].valuesMap['1'])
 
+    def testEvilArray(self):
+        modelFile = 'tests/resources/models/json/examples/evil_array.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+
+        #TODO
+        
     def testDictionary4(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'
         modelFileExists = os.path.isfile(modelFile)
