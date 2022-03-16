@@ -288,8 +288,7 @@ class TestJsonBuilder (unittest.TestCase):
             'DateTimeType',
             'BytesType',
             'ComplexType',
-            'DictionaryType',
-            'ArrayType'
+            'DictionaryType'
         ]
         self.assertEqual(expectedMetaModelTypes, metaModelTypes)
 

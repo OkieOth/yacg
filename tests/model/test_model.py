@@ -76,8 +76,8 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.DictionaryType()
         self.assertIsNotNone(x)
 
-    def testArrayType(self):
-        x = yacg.model.model.ArrayType()
+    def testArrayConstraints(self):
+        x = yacg.model.model.ArrayConstraints()
         self.assertIsNotNone(x)
 
     def testForeignKey(self):

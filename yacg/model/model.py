@@ -502,14 +502,10 @@ class Property:
         #: true - if the property is an array
         self.isArray = False
 
-        #: defined minimum of elements in the array/list
-        self.arrayMinItems = None
+        #: if isArray true you can specify here the number of the array dimensions
+        self.arrayDimensions = None
 
-        #: defined maximum of elements in the array/list
-        self.arrayMaxItems = None
-
-        #: the elements in the array/list have to be unique
-        self.arrayUniqueItems = None
+        self.arrayContraints = []
 
         #: either a basic or a complex type
         self.type = None
@@ -549,11 +545,12 @@ class Property:
 
         self.isArray = dictObj.get('isArray', False)
 
-        self.arrayMinItems = dictObj.get('arrayMinItems', None)
+        self.arrayDimensions = dictObj.get('arrayDimensions', None)
 
-        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
-
-        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
+        arrayArrayContraints = dictObj.get('arrayContraints', [])
+        for elemArrayContraints in arrayArrayContraints:
+            self.arrayContraints.append(
+                ArrayConstraints(elemArrayContraints))
 
         subDictObj = dictObj.get('type', None)
         if subDictObj is not None:
@@ -643,35 +640,17 @@ class DictionaryType (Type):
                 Tag(elemTags))
 
 
-class ArrayType (Type):
-    """ key/value dictionary type. Keys are always strings, the value type can be
-    specified
-    """
-
+class ArrayConstraints:
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
 
-        #: is taken from the version entry of the file, optional
-        self.version = None
+        #: defined minimum of elements in the array/list
+        self.arrayMinItems = None
 
-        self.name = None
+        #: defined maximum of elements in the array/list
+        self.arrayMaxItems = None
 
-        self.description = None
-
-        #: scope/domain to that this type belongs
-        self.domain = None
-
-        #: from what file the Type was loaded
-        self.source = None
-
-        #: types that hold attribute references to that type
-        self.referencedBy = []
-
-        #: either a basic or a complex type
-        self.valueType = None
-
-        #: additional flags to mark a type
-        self.tags = []
+        #: the elements in the array/list have to be unique
+        self.arrayUniqueItems = None
 
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -680,29 +659,11 @@ class ArrayType (Type):
         if dictObj is None:
             return
 
-        self.version = dictObj.get('version', None)
+        self.arrayMinItems = dictObj.get('arrayMinItems', None)
 
-        self.name = dictObj.get('name', None)
+        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
 
-        self.description = dictObj.get('description', None)
-
-        self.domain = dictObj.get('domain', None)
-
-        self.source = dictObj.get('source', None)
-
-        arrayReferencedBy = dictObj.get('referencedBy', [])
-        for elemReferencedBy in arrayReferencedBy:
-            self.referencedBy.append(
-                ComplexType(elemReferencedBy))
-
-        subDictObj = dictObj.get('valueType', None)
-        if subDictObj is not None:
-            self.valueType = Type(subDictObj)
-
-        arrayTags = dictObj.get('tags', [])
-        for elemTags in arrayTags:
-            self.tags.append(
-                Tag(elemTags))
+        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
 
 
 class ForeignKey:

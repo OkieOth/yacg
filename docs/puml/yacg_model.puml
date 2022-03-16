@@ -143,9 +143,8 @@ ComplexType --|> Type
 class Property {
         StringType name
         BooleanType isArray
-        IntegerType arrayMinItems
-        IntegerType arrayMaxItems
-        BooleanType arrayUniqueItems
+        IntegerType arrayDimensions
+        ArrayConstraints[] arrayContraints
         Type type
         Tag[] tags
         StringType description
@@ -173,20 +172,13 @@ class DictionaryType {
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
-class ArrayType {
-        StringType version
-        StringType name
-        StringType description
-        StringType domain
-        StringType source
-        ComplexType[] referencedBy
-        Type valueType
-        Tag[] tags
+class ArrayConstraints {
+        IntegerType arrayMinItems
+        IntegerType arrayMaxItems
+        BooleanType arrayUniqueItems
 }
 
-note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
-ArrayType --|> Type
 class ForeignKey {
         Type type
         StringType propertyName
@@ -279,7 +271,8 @@ ComplexType "0" *-- "n" Tag
 
 
 
-
+Property "0" *-- "n" ArrayConstraints
+            
 
 Property  *--  Type
             
@@ -312,17 +305,6 @@ DictionaryType "0" *-- "n" Tag
     
 
 
-
-
-
-ArrayType "0" *-- "n" ComplexType
-            
-
-ArrayType  *--  Type
-            
-
-ArrayType "0" *-- "n" Tag
-            
 
     
 ForeignKey  *--  Type
