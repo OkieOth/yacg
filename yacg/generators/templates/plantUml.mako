@@ -26,6 +26,11 @@
             propTxt = '.' + prop.foreignKey.property.name if prop.foreignKey.property is not None else ''
             ret = '<color:grey>"" // -> {}{}""</color>'.format(prop.foreignKey.type.name, propTxt)
         return ret
+
+    def printArrayDimensions(prop):
+        if not prop.isArray:
+            return ''
+        return '[]' * prop.arrayDimensions
 %>
 @startuml
 
@@ -40,7 +45,7 @@ enum ${modelFuncs.getTypeName(type)} {
 class ${modelFuncs.getTypeName(type)} {
         % if hasattr(type,'properties'):
             % for prop in type.properties:
-        ${modelFuncs.getTypeName(prop.type)}${'[]' if prop.isArray else ''} ${prop.name}${printForeignKeyComment(prop)}
+        ${modelFuncs.getTypeName(prop.type)}${printArrayDimensions(prop)} ${prop.name}${printForeignKeyComment(prop)}
             % endfor
         % endif
 }
