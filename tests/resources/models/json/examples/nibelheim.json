@@ -243,6 +243,19 @@
         "mine": {
           "description": "stores the old value if a Mine entry was changed",
           "$ref": "#/definitions/Mine"
+        },
+        "multiDimensionalArray": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
         }
       }
     }
