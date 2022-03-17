@@ -5,7 +5,7 @@ from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes  # noqa: E501
 
 import yacg.model.config as config
 
@@ -105,6 +105,26 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         mongoTypes = getTypesWithTag(modelTypes, ["mongodb"])
         self.assertEqual(len(mongoTypes), 3)
+
+    def testGetRelatedTypesToTag(self):
+        modelFile = 'tests/resources/models/json/examples/nibelheim.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        mongoTypes = getTypesRelatedTagName(modelTypes, "mongodb")
+        self.assertEqual(len(mongoTypes), 7)
+
+    def testGetTypeAndAllChildTypes(self):
+        modelFile = 'tests/resources/models/json/examples/nibelheim.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        mongoTypes = getTypeAndAllChildTypes(modelTypes[0])
+        self.assertEqual(len(mongoTypes), 2)
 
     def testSingleTypeSchema3(self):
         modelFile = 'tests/resources/models/json/examples/model_with_bytes.json'
@@ -380,6 +400,23 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(modelTypes[0], EnumType)
         self.assertIsNotNone(modelTypes[0].valuesMap)
         self.assertEqual('true', modelTypes[0].valuesMap['1'])
+
+    def testEvilArray(self):
+        modelFile = 'tests/resources/models/json/examples/evil_array.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(len(modelTypes), 3)
+        self.assertEqual(len(modelTypes[0].properties), 3)
+        self.assertEqual(modelTypes[0].properties[0].arrayDimensions, 1)
+        self.assertIsNotNone(modelTypes[0].properties[0].type)
+        self.assertEqual(modelTypes[0].properties[1].arrayDimensions, 2)
+        self.assertIsNotNone(modelTypes[0].properties[1].type)
+        self.assertEqual(modelTypes[0].properties[2].arrayDimensions, 3)
+        self.assertIsNotNone(modelTypes[0].properties[2].type)
 
     def testDictionary4(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'

@@ -31,21 +31,74 @@
         if not prop.isArray:
             return ''
         return '[]' * prop.arrayDimensions
+
+    def printTypeTags(type):
+        ret = ''
+        tagCount = 0
+        for tag in type.tags:
+            if tagCount == 4:
+                ret = ret + '\n'
+                tagCount = 0
+            tmp = '**#{}**'.format(tag.name)
+            ret = '{}, {}'.format(ret, tmp) if len(ret)>0 else '{}'.format(tmp)
+            tagCount = tagCount + 1
+        return ret
+
+    def printPropertyTag(typeObj, tag):
+        propsWithTag = modelFuncs.getPropertiesThatHasTag(tag, typeObj)
+        if len(propsWithTag) == 0:
+            return ''
+        ret = '**#{}**: '.format(tag)
+        tagCount = 0
+        firstTag = True
+        for prop in propsWithTag:
+            tmp = ''
+            if firstTag:
+                firstTag = False
+            else:
+                ret = '{}, '.format(ret)
+            if tagCount == 4:
+                ret = ret + '\n'
+                tagCount = 0
+            ret = '{}{}'.format(ret, prop.name)
+            tagCount = tagCount + 1
+        return ret
+
+    shouldTypeTagsBePrinted = templateParameters.get('printTypeTags',False)
+    shouldPropertyTagsBePrinted = templateParameters.get('printPropertyTags',False)
+
 %>
 @startuml
+hide empty methods
 
 % for type in modelTypes:
     % if modelFuncs.isEnumType(type):
 enum ${modelFuncs.getTypeName(type)} {
         % for value in type.values:
     ${stringUtils.toUpperCaseName(value)}
-        % endfor      
+        % endfor
 }
     % else:
 class ${modelFuncs.getTypeName(type)} {
         % if hasattr(type,'properties'):
             % for prop in type.properties:
         ${modelFuncs.getTypeName(prop.type)}${printArrayDimensions(prop)} ${prop.name}${printForeignKeyComment(prop)}
+            % endfor
+        % endif
+        % if shouldTypeTagsBePrinted and (len(type.tags) > 0):
+
+        == // Type-Tags // ==
+        ${printTypeTags(type)}
+        % endif
+        % if shouldPropertyTagsBePrinted:
+        <% propertyTags = modelFuncs.getPropertyTagNamesForType(type) %>
+        % for tag in propertyTags:
+            % if tag == propertyTags[0]:
+        --- // Property-Tags // ---
+            % else:
+        --
+            % endif
+        ${printPropertyTag(type, tag)}
             % endfor
         % endif
 }

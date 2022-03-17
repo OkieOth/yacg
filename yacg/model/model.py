@@ -103,7 +103,6 @@ class IntegerTypeFormatEnum(Enum):
             return ''
 
 
-
 class NumberType (Type):
     """ floating point values
     """
@@ -169,7 +168,6 @@ class NumberTypeFormatEnum(Enum):
             return 'double'
         else:
             return ''
-
 
 
 class BooleanType (Type):
@@ -502,14 +500,10 @@ class Property:
         #: true - if the property is an array
         self.isArray = False
 
-        #: defined minimum of elements in the array/list
-        self.arrayMinItems = None
+        #: if isArray true you can specify here the number of the array dimensions
+        self.arrayDimensions = None
 
-        #: defined maximum of elements in the array/list
-        self.arrayMaxItems = None
-
-        #: the elements in the array/list have to be unique
-        self.arrayUniqueItems = None
+        self.arrayConstraints = []
 
         #: either a basic or a complex type
         self.type = None
@@ -549,11 +543,12 @@ class Property:
 
         self.isArray = dictObj.get('isArray', False)
 
-        self.arrayMinItems = dictObj.get('arrayMinItems', None)
+        self.arrayDimensions = dictObj.get('arrayDimensions', None)
 
-        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
-
-        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
+        arrayArrayConstraints = dictObj.get('arrayConstraints', [])
+        for elemArrayConstraints in arrayArrayConstraints:
+            self.arrayConstraints.append(
+                ArrayConstraints(elemArrayConstraints))
 
         subDictObj = dictObj.get('type', None)
         if subDictObj is not None:
@@ -643,6 +638,32 @@ class DictionaryType (Type):
                 Tag(elemTags))
 
 
+class ArrayConstraints:
+    def __init__(self, dictObj=None):
+
+        #: defined minimum of elements in the array/list
+        self.arrayMinItems = None
+
+        #: defined maximum of elements in the array/list
+        self.arrayMaxItems = None
+
+        #: the elements in the array/list have to be unique
+        self.arrayUniqueItems = None
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.arrayMinItems = dictObj.get('arrayMinItems', None)
+
+        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
+
+        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
+
+
 class ForeignKey:
     """ Type describes the reference of a property to another field in the model
     """
@@ -671,5 +692,3 @@ class ForeignKey:
         subDictObj = dictObj.get('property', None)
         if subDictObj is not None:
             self.property = Property(subDictObj)
-
-

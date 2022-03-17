@@ -217,83 +217,45 @@
         }
       }
     },
-    "Headers": {
-      "description": "Set of headers for this DataPacket",
+    "History": {
       "type": "object",
       "properties": {
-        "Osi3": {
-          "description": "TLS remote bus OSI3 routing header",
-          "type": "object",
-          "properties": {
-            "priority": {
-              "description": "OSI3 routing priority",
-              "type": "string",
-              "default": "high",
-              "enum": [
-                "high",
-                "undef_1",
-                "low",
-                "undef_2"
-              ],
-              "x-enumValues": {
-                "high": 0,
-                "undef_1": 1,
-                "low": 2,
-                "undef_2": 3
-              }
-            },
-            "pointer": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 7,
-              "example": 1
-            },
-            "routing2": {
-              "$ref": "#/definitions/IntIntArray"
-            },
-            "routing": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "change": {
+          "type": "string",
+          "enum": [
+            "insert",
+            "edit",
+            "delete"
+          ]
+        },
+        "dwarf": {
+          "description": "stores the old value if a Dwarf entry was changed",
+          "$ref": "#/definitions/Dwarf"
+        },
+        "mineSpotRow": {
+          "description": "stores the old value if a MineSpotRow entry was changed",
+          "$ref": "#/definitions/MineSpotRow"
+        },
+        "mine": {
+          "description": "stores the old value if a Mine entry was changed",
+          "$ref": "#/definitions/Mine"
+        },
+        "multiDimensionalArray": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
               "type": "array",
-              "minItems": 0,
-              "maxItems": 7,
-              "example": [
-                200,
-                1
-              ],
               "items": {
-                "type": "array",
-                "minItems": 2,
-                "maxItems": 2,
-                "items": {
-                  "type": "integer",
-                  "format": "int8",
-                  "default": 0,
-                  "minimum": 0,
-                  "maximum": 255
-                }
+                "type": "string",
+                "format": "date-time"
               }
             }
           }
-        }
-      }
-    },
-    "IntIntArray": {
-      "type": "array",
-      "minItems": 0,
-      "maxItems": 7,
-      "example": [
-        200,
-        1
-      ],
-      "items": {
-        "type": "array",
-        "minItems": 2,
-        "maxItems": 2,
-        "items": {
-          "type": "integer",
-          "format": "int8",
-          "default": 0,
-          "minimum": 0,
-          "maximum": 255
         }
       }
     }
