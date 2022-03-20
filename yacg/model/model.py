@@ -103,6 +103,7 @@ class IntegerTypeFormatEnum(Enum):
             return ''
 
 
+
 class NumberType (Type):
     """ floating point values
     """
@@ -168,6 +169,7 @@ class NumberTypeFormatEnum(Enum):
             return 'double'
         else:
             return ''
+
 
 
 class BooleanType (Type):
@@ -692,3 +694,5 @@ class ForeignKey:
         subDictObj = dictObj.get('property', None)
         if subDictObj is not None:
             self.property = Property(subDictObj)
+
+

@@ -1,5 +1,6 @@
 import unittest
 import yacg.util.yacg_utils as yacg_utils
+import yacg.util.protocol_funcs as protocol_funcs
 
 
 class TestYacgUtils (unittest.TestCase):
@@ -108,3 +109,40 @@ class TestYacgUtils (unittest.TestCase):
         self.assertEqual("puml", jobArray[0].tasks[1].name)
         self.assertEqual("puml", jobArray[1].tasks[1].name)
         self.assertEqual("puml", jobArray[2].tasks[1].name)
+
+    def testGetModelMetaData(self):
+        s = []
+        s.append('/home/eiko/prog/git/yacg/resources/models/json/yacg_openapi_paths.json')
+        s.append('/home/eiko/prog/git/yacg/resources/models/json/yacg_model_schema.json')
+        identicalPart = protocol_funcs.scanForIdenticalModelParts(s)
+        self.assertEqual(identicalPart, '/home/eiko/prog/git/yacg/resources/models/json/')
+        s = []
+        s.append('yacg_openapi_paths.json')
+        s.append('/home/eiko/prog/git/yacg/resources/models/json/yacg_model_schema.json')
+        s.append('/home/eiko/prog/git/yacg/resources/models/json/yacg_model_schema.json')
+        identicalPart = protocol_funcs.scanForIdenticalModelParts(s)
+        self.assertEqual(identicalPart, '')
+        s = []
+        s.append('')
+        s.append('')
+        s.append('')
+        identicalPart = protocol_funcs.scanForIdenticalModelParts(s)
+        self.assertEqual(identicalPart, '')
+        s = []
+        s.append('yacg_openapi_paths.json')
+        s.append('yacg_model_schema.json')
+        s.append('yacg_model_schema.json')
+        identicalPart = protocol_funcs.scanForIdenticalModelParts(s)
+        self.assertEqual(identicalPart, '')
+        s = []
+        s.append('test/yacg_openapi_paths.json')
+        s.append('test/yacg_model_schema.json')
+        s.append('test/yacg_model_schema.json')
+        identicalPart = protocol_funcs.scanForIdenticalModelParts(s)
+        self.assertEqual(identicalPart, 'test/')
+        s = []
+        s.append('/test/yacg_openapi_paths.json')
+        s.append('/test/yacg_model_schema.json')
+        s.append('/test/yacg_model_schema.json')
+        identicalPart = protocol_funcs.scanForIdenticalModelParts(s)
+        self.assertEqual(identicalPart, '/test/')

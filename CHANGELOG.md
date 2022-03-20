@@ -1,3 +1,7 @@
+# 4.3.0
+* yacg commandline switch to protocol the codegen
+* yacg commandline switch to skip codegen when model version hasn't change to the last protocolled run
+
 # 4.2.0
 * add typescript helper funcs
 * enable plantuml template to visualize type and property tags
