@@ -43,7 +43,6 @@ if ! pipenv run python3 yacg.py --models \
                 plantUml=${scriptPos}/../docs/puml/yacg_openapi.puml \
     --blackListed yacg.model.model=domain \
     --protocolFile logs/gen_openapi_model.log \
-    --skipCodeGenIfVersionUnchanged \
     --templateParameters baseModelDomain=yacg.model.openapi \
                          title="yacg openapi model"; then
     echo "    ERROR while create openapi model classes"

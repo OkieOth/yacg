@@ -96,6 +96,8 @@ def writeProtocolFile(protocolFile, codeGenMetaData):
 
 
 def getPreviousMetaData(protocolFile, noLogs):
+    if protocolFile is None:
+        return {}
     if doesFileExist(protocolFile):
         with open(protocolFile) as input:
             return json.load(input)
@@ -112,8 +114,10 @@ def shouldSkipCodeGen(
         modelMetaData,
         jobName,
         noLogs):
+    if (previousJobsMetaData is None) or (modelMetaData is None):
+        return False
     if skipCodeGenIfVersionUnchanged or skipCodeGenIfMd5Unchanged:
-        previousJobMetaData = previousJobsMetaData.get(jobName)
+        previousJobMetaData = previousJobsMetaData.get(jobName, {})
         skip = True
         for k in modelMetaData.keys():
             currentModelMeta = modelMetaData.get(k, None)
