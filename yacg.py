@@ -41,8 +41,8 @@ parser.add_argument('--usedFilesOnly', help='import models but only print the us
 parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
 parser.add_argument('--noLogs', help='do not print logs', action='store_true')
 parser.add_argument('--protocolFile', help='where the metadata of the used models for this specifig gen job are stored')
-parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model versions are unchanged, then the codegen is skipped', action='store_true')
-parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5 is unchanged, then the codegen is skipped', action='store_true')
+parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model versions are unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
+parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5 is unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
 parser.add_argument('--skipCodeGenDryRun', help='prints only the log messages if codegen should be skipped', action='store_true')
 
 

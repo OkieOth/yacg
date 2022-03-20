@@ -128,7 +128,7 @@ def shouldSkipCodeGen(
                     previousVersion = previousModelMeta.get("version", "0")
                     if currentVersion != previousVersion:
                         if not noLogs:
-                            logging.info("NEED TO RENDER - version difference: {}, last: {}, current: {}".format(k, previousVersion, currentVersion))
+                            logging.info("NEED TO RENDER - version difference: {}, last: {}, current: {}".format(k, previousVersion, currentVersion))  # noqa: E501
                         skip = False
                         break
                 elif skipCodeGenIfMd5Unchanged:
@@ -136,7 +136,7 @@ def shouldSkipCodeGen(
                     previousMd5 = previousModelMeta.get("md5", "0")
                     if currentMd5 != previousMd5:
                         if not noLogs:
-                            logging.info("NEED TO RENDER - md5 difference: {}, last: {}, current: {}".format(k, previousMd5, currentMd5))
+                            logging.info("NEED TO RENDER - md5 difference: {}, last: {}, current: {}".format(k, previousMd5, currentMd5))  # noqa: E501
                         skip = False
                         break
             else:
