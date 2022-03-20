@@ -21,14 +21,14 @@
           "description": "list of models used for that job",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Model"           
+            "$ref": "#/definitions/Model"
           }
         },
         "tasks": {
           "description": "list of tasks that should run",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Task"           
+            "$ref": "#/definitions/Task"
           }
         }
       },

@@ -1,5 +1,7 @@
 import hashlib
 import json
+import logging
+from yacg.util.fileUtils import doesFileExist
 from yacg.model.model import EnumType, ComplexType
 
 
@@ -91,3 +93,53 @@ def writeProtocolFile(protocolFile, codeGenMetaData):
     if protocolFile is not None:
         with open(protocolFile, 'w') as outfile:
             json.dump(codeGenMetaData, outfile, indent=4)
+
+
+def getPreviousMetaData(protocolFile, noLogs):
+    if doesFileExist(protocolFile):
+        with open(protocolFile) as input:
+            return json.load(input)
+    else:
+        if not noLogs:
+            logging.info('No protocol file found, skip import: {}'.format(protocolFile))
+        return {}
+
+
+def shouldSkipCodeGen(
+        skipCodeGenIfVersionUnchanged,
+        skipCodeGenIfMd5Unchanged,
+        previousJobsMetaData,
+        modelMetaData,
+        jobName,
+        noLogs):
+    if skipCodeGenIfVersionUnchanged or skipCodeGenIfMd5Unchanged:
+        previousJobMetaData = previousJobsMetaData.get(jobName)
+        skip = True
+        for k in modelMetaData.keys():
+            currentModelMeta = modelMetaData.get(k, None)
+            previousModelMeta = previousJobMetaData.get(k, None)
+            if (currentModelMeta is not None) and (previousModelMeta is not None):
+                if skipCodeGenIfVersionUnchanged:
+                    currentVersion = currentModelMeta.get("version", "1")
+                    previousVersion = previousModelMeta.get("version", "0")
+                    if currentVersion != previousVersion:
+                        if not noLogs:
+                            logging.info("NEED TO RENDER - version difference: {}, last: {}, current: {}".format(k, previousVersion, currentVersion))
+                        skip = False
+                        break
+                elif skipCodeGenIfMd5Unchanged:
+                    currentMd5 = currentModelMeta.get("md5", "1")
+                    previousMd5 = previousModelMeta.get("md5", "0")
+                    if currentMd5 != previousMd5:
+                        if not noLogs:
+                            logging.info("NEED TO RENDER - md5 difference: {}, last: {}, current: {}".format(k, previousMd5, currentMd5))
+                        skip = False
+                        break
+            else:
+                if not noLogs:
+                    logging.info("NEED TO RENDER - new model: {}".format(k))
+                skip = False
+                break
+        return skip
+    else:
+        return False

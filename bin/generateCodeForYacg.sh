@@ -14,6 +14,7 @@ if ! pipenv run python3 yacg.py --models \
                 pythonBeansTests=${scriptPos}/../tests/model/test_model.py \
                 plantUml=${scriptPos}/../docs/puml/yacg_model.puml \
     --protocolFile logs/gen_yacg_model.log \
+    --skipCodeGenIfVersionUnchanged \
     --templateParameters baseModelDomain=yacg.model.model \
                          title="yacg model"; then
     echo "    ERROR while create meta model classes"
@@ -27,6 +28,7 @@ if ! pipenv run python3 yacg.py --models \
                 pythonBeansTests=${scriptPos}/../tests/model/test_config.py \
                 plantUml=${scriptPos}/../docs/puml/yacg_config_schema.puml \
     --protocolFile logs/gen_config_model.log \
+    --skipCodeGenIfVersionUnchanged \
     --templateParameters baseModelDomain=yacg.model.config \
                          title="yacg configuration model"; then
     echo "    ERROR while create config model classes"
@@ -41,6 +43,7 @@ if ! pipenv run python3 yacg.py --models \
                 plantUml=${scriptPos}/../docs/puml/yacg_openapi.puml \
     --blackListed yacg.model.model=domain \
     --protocolFile logs/gen_openapi_model.log \
+    --skipCodeGenIfVersionUnchanged \
     --templateParameters baseModelDomain=yacg.model.openapi \
                          title="yacg openapi model"; then
     echo "    ERROR while create openapi model classes"

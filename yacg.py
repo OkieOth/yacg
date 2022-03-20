@@ -41,7 +41,8 @@ parser.add_argument('--usedFilesOnly', help='import models but only print the us
 parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
 parser.add_argument('--noLogs', help='do not print logs', action='store_true')
 parser.add_argument('--protocolFile', help='where the metadata of the used models for this specifig gen job are stored')
-parser.add_argument('--skipCodeGenIfUnchanged', help='when the protocol versions are unchanged, then the codegen is skipped', action='store_true')
+parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model versions are unchanged, then the codegen is skipped', action='store_true')
+parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5 is unchanged, then the codegen is skipped', action='store_true')
 
 
 def getFileExt(fileName):
@@ -297,19 +298,33 @@ def _isConfigurationValid(codeGenerationJobs):
 def __doCodeGen(codeGenerationJobs, args):
     """process the jobs to do the actual code generation
     """
+    previousCodeGenMetaData = protocolFuncs.getPreviousMetaData(args.protocolFile, args.noLogs)
+    previousJobsMetaData = previousCodeGenMetaData.get("jobs", {})
     codeGenMetaData = {}
     jobsMetaData = {}
     codeGenMetaData["date"] = datetime.now().strftime("%d-%m-%Y %H:%M:%S.%f")
     codeGenMetaData["jobs"] = jobsMetaData
+    allSkipped = True
     jobIndex = 1
     for job in codeGenerationJobs:
         alloadedTypes = readModels(job, args.flattenInheritance)
         modelMetaData = protocolFuncs.getModelMetaData(alloadedTypes, job.models[0].schema)
         jobName = job.name if job.name else "UNKNOWN_JOB_{}".format(jobIndex)
         jobsMetaData[jobName] = modelMetaData
-        jobIndex = jobIndex +1
+        jobIndex = jobIndex + 1
+        if protocolFuncs.shouldSkipCodeGen(
+                args.skipCodeGenIfVersionUnchanged,
+                args.skipCodeGenIfMd5Unchanged,
+                previousJobsMetaData,
+                modelMetaData,
+                jobName,
+                args.noLogs) is True:
+            if not args.noLogs:
+                logging.info(" SKIP CODEGEN: {}".format(jobName))
+            continue
         # dictionary types are not really useful as toplevel types ... so it's
         # better to remove them - TODO add a commandline switch for that
+        allSkipped = False
         loadedTypes = []
         for t in alloadedTypes:
             if not isinstance(t, DictionaryType):
@@ -333,7 +348,8 @@ def __doCodeGen(codeGenerationJobs, args):
                     task.blackListed,
                     task.whiteListed,
                     task.randomDataTask)
-    protocolFuncs.writeProtocolFile(args.protocolFile, codeGenMetaData)
+    if not allSkipped:
+        protocolFuncs.writeProtocolFile(args.protocolFile, codeGenMetaData)
 
 
 def __printUsedFiles(codeGenerationJobs, args):
