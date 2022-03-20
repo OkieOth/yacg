@@ -1,4 +1,4 @@
-# 4.2.1
+# 4.3.0
 * yacg commandline switch to protocol the codegen
 * yacg commandline switch to skip codegen when model version hasn't change to the last protocolled run
 

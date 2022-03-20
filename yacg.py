@@ -43,6 +43,7 @@ parser.add_argument('--noLogs', help='do not print logs', action='store_true')
 parser.add_argument('--protocolFile', help='where the metadata of the used models for this specifig gen job are stored')
 parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model versions are unchanged, then the codegen is skipped', action='store_true')
 parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5 is unchanged, then the codegen is skipped', action='store_true')
+parser.add_argument('--skipCodeGenDryRun', help='prints only the log messages if codegen should be skipped', action='store_true')
 
 
 def getFileExt(fileName):
@@ -322,6 +323,13 @@ def __doCodeGen(codeGenerationJobs, args):
             if not args.noLogs:
                 logging.info(" SKIP CODEGEN: {}".format(jobName))
             continue
+        if not args.noLogs:
+            logging.info(" do codeGen: {}".format(jobName))
+        if args.skipCodeGenDryRun is True:
+            if not args.noLogs:
+                logging.info(" 'skipCodeGenDryRun' is set, so no codeGen is executed': {}".format(jobName))
+            continue
+
         # dictionary types are not really useful as toplevel types ... so it's
         # better to remove them - TODO add a commandline switch for that
         allSkipped = False
@@ -348,7 +356,7 @@ def __doCodeGen(codeGenerationJobs, args):
                     task.blackListed,
                     task.whiteListed,
                     task.randomDataTask)
-    if not allSkipped:
+    if (not allSkipped) and (args.skipCodeGenDryRun is not True):
         protocolFuncs.writeProtocolFile(args.protocolFile, codeGenMetaData)
 
 
