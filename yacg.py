@@ -1,7 +1,7 @@
 import argparse
 import sys
 import logging
-
+from datetime import datetime
 from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError, getErrorTxt, getOkTxt
 from yacg.builder.jsonBuilder import getModelFromJson
@@ -40,7 +40,7 @@ parser.add_argument('--vars', nargs='+', help='variables that are passed to the 
 parser.add_argument('--usedFilesOnly', help='import models but only print the used files to stdout', action='store_true')
 parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
 parser.add_argument('--noLogs', help='do not print logs', action='store_true')
-parser.add_argument('--protocolDir', help='directory where the information about the used models are stored')
+parser.add_argument('--protocolFile', help='where the metadata of the used models for this specifig gen job are stored')
 parser.add_argument('--skipCodeGenIfUnchanged', help='when the protocol versions are unchanged, then the codegen is skipped', action='store_true')
 
 
@@ -297,10 +297,17 @@ def _isConfigurationValid(codeGenerationJobs):
 def __doCodeGen(codeGenerationJobs, args):
     """process the jobs to do the actual code generation
     """
-
+    codeGenMetaData = {}
+    jobsMetaData = {}
+    codeGenMetaData["date"] = datetime.now().strftime("%d-%m-%Y %H:%M:%S.%f")
+    codeGenMetaData["jobs"] = jobsMetaData
+    jobIndex = 1
     for job in codeGenerationJobs:
         alloadedTypes = readModels(job, args.flattenInheritance)
-        protocolFuncs.getModelMetaData(alloadedTypes, job.models[0].schema)
+        modelMetaData = protocolFuncs.getModelMetaData(alloadedTypes, job.models[0].schema)
+        jobName = job.name if job.name else "UNKNOWN_JOB_{}".format(jobIndex)
+        jobsMetaData[jobName] = modelMetaData
+        jobIndex = jobIndex +1
         # dictionary types are not really useful as toplevel types ... so it's
         # better to remove them - TODO add a commandline switch for that
         loadedTypes = []
@@ -326,6 +333,7 @@ def __doCodeGen(codeGenerationJobs, args):
                     task.blackListed,
                     task.whiteListed,
                     task.randomDataTask)
+    protocolFuncs.writeProtocolFile(args.protocolFile, codeGenMetaData)
 
 
 def __printUsedFiles(codeGenerationJobs, args):

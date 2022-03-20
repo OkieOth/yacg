@@ -1,0 +1,11 @@
+{
+    "date": "20-03-2022 11:32:07.224664",
+    "jobs": {
+        "default": {
+            "yacg_config_schema.json": {
+                "version": "0.0.1",
+                "md5": "d95fdcabb7a1ef4579c38f86dc502857"
+            }
+        }
+    }
+}

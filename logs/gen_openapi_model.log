@@ -1,0 +1,15 @@
+{
+    "date": "20-03-2022 11:32:07.822084",
+    "jobs": {
+        "default": {
+            "yacg_openapi_paths.json": {
+                "version": "0.0.1",
+                "md5": "a1894122ff8326f4e6298ce7b195eefd"
+            },
+            "yacg_model_schema.json": {
+                "version": "0.0.1",
+                "md5": "72d627008a787dbdcd88135ee5b35f38"
+            }
+        }
+    }
+}

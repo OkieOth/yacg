@@ -1,4 +1,5 @@
 import hashlib
+import json
 from yacg.model.model import EnumType, ComplexType
 
 
@@ -62,8 +63,14 @@ def scanForIdenticalModelParts(strArray):
 
 
 def getModelMetaData(alloadedTypes, modelFile):
+    """check the involved model schemas for md5 sums and the
+    contained version
+
+    returns a dictionary that contains a short path form the model as key and
+    a dictionary with a 'version' and a 'md5' entry
+    """
+
     usedFilesDict = {}
-    print(">>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>".format(modelFile))
     for type in alloadedTypes:
         if isinstance(type, EnumType) or isinstance(type, ComplexType):
             if type.source is not None:
@@ -77,6 +84,10 @@ def getModelMetaData(alloadedTypes, modelFile):
         trimmedModel = k[trimLen:]
         v = usedFilesDict[k]
         ret[trimmedModel] = {"version": v[0], "md5": v[1]}
-        #print("file: {}, version: {}, md5: {}".format(trimmedModel, v[0], v[1]))
-    print(ret)
-    print("<<<<<<<<<<<<<<<<<<<<<<<<<")
+    return ret
+
+
+def writeProtocolFile(protocolFile, codeGenMetaData):
+    if protocolFile is not None:
+        with open(protocolFile, 'w') as outfile:
+            json.dump(codeGenMetaData, outfile, indent=4)
