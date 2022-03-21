@@ -33,8 +33,8 @@
             "program": "${workspaceFolder}/yacg.py",
             "args": [
                 "--models",
-                //"../typical_json_models/yacg_typicals_2.json",
-                "../datamodels.core/models/tls/fg1/fg1_type62.json",
+                "../typical_json_models/yacg_typicals_2.json",
+                // "../datamodels.core/models/tls/fg1/fg1_type62.json",
                 "--singleFileTemplates",
                 "resources/templates/examples/opcUaTypes.mako=tmp/Types-Result.xml",
                 "--templateParameters",
