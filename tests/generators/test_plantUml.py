@@ -18,7 +18,7 @@ class TestPlantUml (unittest.TestCase):
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
-        renderResult = template.render(modelTypes=modelTypes)
+        renderResult = template.render(modelTypes=modelTypes, templateParameters={})
         self.assertIsNotNone(renderResult)
 
         testOutputFile = "tmp/singleTypeSchema.puml"
@@ -37,7 +37,7 @@ class TestPlantUml (unittest.TestCase):
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
-        renderResult = template.render(modelTypes=modelTypes)
+        renderResult = template.render(modelTypes=modelTypes, templateParameters={})
         self.assertIsNotNone(renderResult)
 
         testOutputFile = "tmp/singleTypeSchema2.puml"
@@ -56,10 +56,30 @@ class TestPlantUml (unittest.TestCase):
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
-        renderResult = template.render(modelTypes=modelTypes)
+        renderResult = template.render(modelTypes=modelTypes, templateParameters={})
         self.assertIsNotNone(renderResult)
 
         testOutputFile = "tmp/yacg_config_schema.puml"
+        f = open(testOutputFile, "w+")
+        f.write(renderResult)
+        f.close()
+
+    def testNibelDings(self):
+        modelFile = 'tests/resources/models/json/examples/nibelheim.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+
+        templateFile = 'yacg/generators/templates/plantUml.mako'
+        template = Template(filename=templateFile)
+        templateFileExists = os.path.isfile(modelFile)
+        self.assertTrue('template file exists: ' + templateFile, templateFileExists)
+        renderResult = template.render(modelTypes=modelTypes, templateParameters={})
+        self.assertIsNotNone(renderResult)
+
+        testOutputFile = "tmp/nibelheim.puml"
         f = open(testOutputFile, "w+")
         f.write(renderResult)
         f.close()
@@ -75,7 +95,7 @@ class TestPlantUml (unittest.TestCase):
         template = Template(filename=templateFile)
         templateFileExists = os.path.isfile(modelFile)
         self.assertTrue('template file exists: ' + templateFile, templateFileExists)
-        renderResult = template.render(modelTypes=modelTypes)
+        renderResult = template.render(modelTypes=modelTypes, templateParameters={})
         self.assertIsNotNone(renderResult)
 
         testOutputFile = "tmp/schema_with_circular_deps.puml"

@@ -500,14 +500,10 @@ class Property:
         #: true - if the property is an array
         self.isArray = False
 
-        #: defined minimum of elements in the array/list
-        self.arrayMinItems = None
+        #: if isArray true you can specify here the number of the array dimensions
+        self.arrayDimensions = None
 
-        #: defined maximum of elements in the array/list
-        self.arrayMaxItems = None
-
-        #: the elements in the array/list have to be unique
-        self.arrayUniqueItems = None
+        self.arrayConstraints = []
 
         #: either a basic or a complex type
         self.type = None
@@ -547,11 +543,12 @@ class Property:
 
         self.isArray = dictObj.get('isArray', False)
 
-        self.arrayMinItems = dictObj.get('arrayMinItems', None)
+        self.arrayDimensions = dictObj.get('arrayDimensions', None)
 
-        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
-
-        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
+        arrayArrayConstraints = dictObj.get('arrayConstraints', [])
+        for elemArrayConstraints in arrayArrayConstraints:
+            self.arrayConstraints.append(
+                ArrayConstraints(elemArrayConstraints))
 
         subDictObj = dictObj.get('type', None)
         if subDictObj is not None:
@@ -578,6 +575,123 @@ class Property:
 
         self.format = dictObj.get('format', None)
 
+
+class DictionaryType (Type):
+    """ key/value dictionary type. Keys are always strings, the value type can be
+    specified
+    """
+
+    def __init__(self, dictObj=None):
+        super(Type, self).__init__()
+
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        self.description = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        #: types that hold attribute references to that type
+        self.referencedBy = []
+
+        #: either a basic or a complex type
+        self.valueType = None
+
+        #: additional flags to mark a type
+        self.tags = []
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.description = dictObj.get('description', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        arrayReferencedBy = dictObj.get('referencedBy', [])
+        for elemReferencedBy in arrayReferencedBy:
+            self.referencedBy.append(
+                ComplexType(elemReferencedBy))
+
+        subDictObj = dictObj.get('valueType', None)
+        if subDictObj is not None:
+            self.valueType = Type(subDictObj)
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
+
+
+class ArrayConstraints:
+    def __init__(self, dictObj=None):
+
+        #: defined minimum of elements in the array/list
+        self.arrayMinItems = None
+
+        #: defined maximum of elements in the array/list
+        self.arrayMaxItems = None
+
+        #: the elements in the array/list have to be unique
+        self.arrayUniqueItems = None
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.arrayMinItems = dictObj.get('arrayMinItems', None)
+
+        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
+
+        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
+
+
+class ForeignKey:
+    """ Type describes the reference of a property to another field in the model
+    """
+
+    def __init__(self, dictObj=None):
+
+        self.type = None
+
+        self.propertyName = None
+
+        self.property = None
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        subDictObj = dictObj.get('type', None)
+        if subDictObj is not None:
+            self.type = Type(subDictObj)
+
+        self.propertyName = dictObj.get('propertyName', None)
+
+        subDictObj = dictObj.get('property', None)
+        if subDictObj is not None:
+            self.property = Property(subDictObj)
 
 class DictionaryType (Type):
     """ key/value dictionary type. Keys are always strings, the value type can be

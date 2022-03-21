@@ -1,4 +1,4 @@
-  {
+{
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Nibelheim Types",
   "description": "General datamodel for the players in Nibelheim",
@@ -33,8 +33,14 @@
           }
         }
       },
-      "required": ["id", "name", "time"],
-      "x-tags": ["mongodb"]
+      "required": [
+        "id",
+        "name",
+        "time"
+      ],
+      "x-tags": [
+        "mongodb"
+      ]
     },
     "MineSpotMaterial": {
       "type": "string",
@@ -74,8 +80,13 @@
           "maximum": 3.0
         }
       },
-      "required": ["id", "material", "initialAmountOfMaterial", "currentAmountOfMaterial", "miningDifficulty"]
-
+      "required": [
+        "id",
+        "material",
+        "initialAmountOfMaterial",
+        "currentAmountOfMaterial",
+        "miningDifficulty"
+      ]
     },
     "MineSpotRow": {
       "description": "One row of mine spots",
@@ -101,8 +112,14 @@
           }
         }
       },
-      "required":["mine_id", "order", "level"],
-      "x-tags": ["mongodb"]
+      "required": [
+        "mine_id",
+        "order",
+        "level"
+      ],
+      "x-tags": [
+        "mongodb"
+      ]
     },
     "Dwarf": {
       "description": "A guy that runs around in the mine an dig for gems",
@@ -168,8 +185,13 @@
           }
         }
       },
-      "required":["name", "mine_id"],
-      "x-tags": ["mongodb"]
+      "required": [
+        "name",
+        "mine_id"
+      ],
+      "x-tags": [
+        "mongodb"
+      ]
     },
     "Storage": {
       "description": "A storage stores produced gems",
@@ -181,17 +203,59 @@
         "gold": {
           "type": "integer"
         },
-        "silver":  {
+        "silver": {
           "type": "integer"
         },
         "diamond": {
           "type": "integer"
         },
-        "iron":  {
+        "iron": {
           "type": "integer"
         },
-        "cupper":  {
+        "cupper": {
           "type": "integer"
+        }
+      }
+    },
+    "History": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "change": {
+          "type": "string",
+          "enum": [
+            "insert",
+            "edit",
+            "delete"
+          ]
+        },
+        "dwarf": {
+          "description": "stores the old value if a Dwarf entry was changed",
+          "$ref": "#/definitions/Dwarf"
+        },
+        "mineSpotRow": {
+          "description": "stores the old value if a MineSpotRow entry was changed",
+          "$ref": "#/definitions/MineSpotRow"
+        },
+        "mine": {
+          "description": "stores the old value if a Mine entry was changed",
+          "$ref": "#/definitions/Mine"
+        },
+        "multiDimensionalArray": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
         }
       }
     }

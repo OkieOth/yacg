@@ -1,5 +1,6 @@
 
 @startuml
+hide empty methods
 
 class Type {
 }
@@ -142,9 +143,8 @@ ComplexType --|> Type
 class Property {
         StringType name
         BooleanType isArray
-        IntegerType arrayMinItems
-        IntegerType arrayMaxItems
-        BooleanType arrayUniqueItems
+        IntegerType arrayDimensions
+        ArrayConstraints[] arrayConstraints
         Type type
         Tag[] tags
         StringType description
@@ -172,6 +172,13 @@ class DictionaryType {
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
+class ArrayConstraints {
+        IntegerType arrayMinItems
+        IntegerType arrayMaxItems
+        BooleanType arrayUniqueItems
+}
+
+
 class ForeignKey {
         Type type
         StringType propertyName
@@ -264,7 +271,8 @@ ComplexType "0" *-- "n" Tag
 
 
 
-
+Property "0" *-- "n" ArrayConstraints
+            
 
 Property  *--  Type
             
@@ -295,18 +303,15 @@ DictionaryType "0" *-- "n" Tag
             
 
     
+
+
+
+    
 ForeignKey  *--  Type
             
 
 
 ForeignKey  *--  Property
-            
-    
-DictionaryType "0" *-- "n" ComplexType        
-            
-DictionaryType  *--  Type        
-            
-DictionaryType "0" *-- "n" Tag        
             
 
 
