@@ -88,7 +88,7 @@ def getKeyProperty(typeObj):
 
 
 def getPropertiesThatHasTag(tagName, typeObj):
-    """check up if the as parameter given type has attributes that
+    """check up if the as parameter given type has properties that
     contain tag with the given name
 
     Keyword arguments:
