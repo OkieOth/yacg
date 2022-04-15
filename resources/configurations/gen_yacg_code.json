@@ -29,7 +29,7 @@
                 }
             },
             {
-                "name": "puml",
+                "name": "yacg_puml",
                 "description": "create PlantUML file",
                 "singleFileTask": {
                     "template": "plantUml",
@@ -107,8 +107,8 @@
                 }
             },
             {
-                "name": "puml",
-                "description": "create PlantUML file",
+                "name": "openapi_puml",
+                "description": "create PlantUML file for openapi",
                 "singleFileTask": {
                     "template": "plantUml",
                     "destFile": "tmp/openapi.puml"

@@ -1,0 +1,296 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "yacg types for asyncapi support",
+    "description": "the yacg standard model included the type spefic aspects, this model cares about the additional definitions",
+    "version": "0.0.1",
+    "x-domain": "yacg.model.asyncapi",
+    "definitions": {
+        "OperationBase": {
+            "type": "object",
+            "properties": {
+                "operationId": {
+                    "type": "string",
+                    "description": "unique identifier for this operation"
+                },
+                "summary": {
+                    "type": "string",
+                    "description": "some words to explain to topic"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "some words to explain to topic"
+                },
+                "message": {
+                    "description": "some words to explain to topic",
+                    "$ref": "#/definitions/Message"
+                },
+                "xToken": {
+                    "description": "claims that are expected as part of a attached JWT token",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/XTokenContent"
+                    }
+                },
+                "amqpBinding": {
+                    "description": "amqp 0.9.1 related binding parameters",
+                    "$ref": "#/definitions/AmqpBinding"
+                }
+            }
+        },
+        "AsyncApiType": {
+            "description": "Base type to identify AsyncApi types",
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "yacg_model_schema.json#/definitions/Type"
+                }
+            ]
+        },
+        "AsyncApiInfoType": {
+            "description": "Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject",
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
+                },
+                {
+                    "properties": {
+                        "title": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "AsyncApiServerType": {
+            "description": "one entry of the servers section",
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "url": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "protocol": {
+                            "type": "string"
+                        },
+                        "protocolVersion": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "AsyncApiChannelType": {
+            "description": "one entry of the channels section",
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
+                },
+                {
+                    "properties": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "parameters": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Parameter"
+                            }
+                        },
+                        "publish": {
+                            "$ref": "#/definitions/PublishDescription"
+                        },
+                        "subscribe": {
+                            "$ref": "#/definitions/SubscribeDescription"
+                        }
+                    }
+                }
+            ]
+        },
+        "PublishDescription": {
+            "description": "Configuration parameter needed for publishing",
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/OperationBase"
+                },
+                {
+                    "properties": {
+                        "amqpSubscriberImplementation": {
+                            "description": "basically AMQP queue attributes, set by the subscriber",
+                            "$ref": "#/definitions/AmqpSubscriberImplementation"
+                        },
+                        "responseType": {
+                            "description": "covers the responded type in RPC style communication",
+                            "$ref": "#/definitions/XResponseType"
+                        }
+                    }
+                }
+            ]
+        },
+        "SubscribeDescription": {
+            "description": "Configuration parameter needed to subscribe data",
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/OperationBase"
+                }
+            ]
+        },
+        "Message": {
+            "description": "Container that describes the messages are sent",
+            "type": "object",
+            "properties": {
+                "xParameters": {
+                    "description": "models the custom parameters",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/XParameter"
+                    }
+                },
+                "payload": {
+                    "description": "either a basic or a complex type",
+                    "$ref": "#/definitions/PayloadType"
+                }
+            }
+        },
+        "PayloadType": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "description": "meta model type that is passed in the body",
+                    "$ref": "./yacg_model_schema.json#/definitions/Type"
+                },
+                "isArray": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "AmqpBinding": {
+            "description": "specific AMQP binding properties",
+            "type": "object",
+            "properties": {
+                "exchangeName": {
+                    "type": "string"
+                },
+                "exchangeType": {
+                    "type": "string",
+                    "enum": [
+                        "topic",
+                        "fan",
+                        "direct",
+                        "header"
+                    ]
+                },
+                "replyTo": {
+                    "type": "string",
+                    "default": "amq.rabbitmq.reply-to"
+                }
+            }
+        },
+        "AmqpSubscriberImplementation": {
+            "description": "AMQP specific subscriber settings",
+            "type": "object",
+            "properties": {
+                "queue": {
+                    "$ref": "#/definitions/AmqpQueue"
+                }
+            }
+        },
+        "AmqpQueue": {
+            "description": "AMQP specific queue settings",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "quorum",
+                        "classic"
+                    ]
+                },
+                "durable": {
+                    "type": "boolean"
+                },
+                "exclusive": {
+                    "type": "boolean"
+                },
+                "maxLength": {
+                    "type": "boolean"
+                },
+                "msgTtl": {
+                    "description": "message TTL set on queue level. not possible with quorum queues",
+                    "type": "integer"
+                }
+            }
+        },
+        "XResponseType": {
+            "description": "type that is responded in RPC style communication",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "isArray": {
+                    "description": "true - if the property is an array",
+                    "type": "boolean",
+                    "default": false
+                },
+                "arrayMinItems": {
+                    "description": "defined minimum of elements in the array/list",
+                    "type": "integer"
+                },
+                "arrayMaxItems": {
+                    "description": "defined maximum of elements in the array/list",
+                    "type": "integer"
+                },
+                "arrayUniqueItems": {
+                    "description": "the elements in the array/list have to be unique",
+                    "type": "boolean"
+                },
+                "type": {
+                    "description": "either a basic or a complex type",
+                    "$ref": "./yacg_model_schema.json#/definitions/Type"
+                }
+            }
+        },
+        "Parameter": {
+            "type": "object",
+            "description": "Parameters contained in the channel key",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "./yacg_model_schema.json#/definitions/Type"
+                }
+            }
+        }
+    }
+}

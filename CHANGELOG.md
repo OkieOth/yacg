@@ -1,3 +1,6 @@
+# 5.0.0
+* add basic asyncapi support
+
 # 4.3.1
 * add model `hasPropertyWithTag`
 
