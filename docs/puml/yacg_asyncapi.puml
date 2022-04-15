@@ -86,7 +86,7 @@ class ChannelBindingsAmqp {
         ChannelBindingsAmqpExchange exchange
 }
 
-note top: https://github.com/asyncapi/bindings/ blob/master/amqp/README.md#channel
+note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
 
 enum ChannelBindingsAmqpIsEnum {
     QUEUE
@@ -143,7 +143,7 @@ class MessageBindingsAmqp {
         StringType messageType
 }
 
-note top: https://github.com/asyncapi/bindings/blob/ master/amqp/README.md#message-binding-object
+note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
 
 
     

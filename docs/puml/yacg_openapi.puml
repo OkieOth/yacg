@@ -1,6 +1,7 @@
 
 @startuml
 hide empty methods
+hide empty fields
 
 class PathType {
         StringType pathPattern
