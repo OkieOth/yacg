@@ -29,7 +29,7 @@ def getPythonValueForType(type, value):
     elif (isinstance(type, model.EnumType)):
         return '''{}.{}'''.format(type.name, stringUtils.toUpperCaseName(value))
     elif (isinstance(type, model.StringType)):
-        return '''{}'''.format(str(value))
+        return '"{}"'.format(str(value))
     else:
         return str(value)
 

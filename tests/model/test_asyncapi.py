@@ -49,9 +49,9 @@ class TestYacgAsyncapiModel (unittest.TestCase):
         x = yacg.model.asyncapi.ChannelBindingsAmqp()
         self.assertIsNotNone(x)
 
-    def testChannelBindingsAmqpIsEnum(self):
-        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpIsEnum.QUEUE)
-        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpIsEnum.ROUTINGKEY)
+    def testChannelBindingsAmqpIsTypeEnum(self):
+        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpIsTypeEnum.QUEUE)
+        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY)
 
     def testChannelBindingsAmqpQueue(self):
         x = yacg.model.asyncapi.ChannelBindingsAmqpQueue()

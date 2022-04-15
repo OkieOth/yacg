@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg types for asyncapi support",
     "description": "the yacg standard model included the type spefic aspects, this model cares about the additional definitions",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "x-domain": "yacg.model.asyncapi",
     "definitions": {
         "OperationBase": {
@@ -127,7 +127,7 @@
             "type": "object",
             "description": "https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel",
             "properties": {
-                "is": {
+                "isType": {
                     "type": "string",
                     "enum": ["queue", "routingKey"]
                 },

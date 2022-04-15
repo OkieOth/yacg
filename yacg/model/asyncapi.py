@@ -84,7 +84,7 @@ class OperationBindingAmqp:
 
         self.mandatory = None
 
-        self.replyTo = amq.rabbitmq.reply-to
+        self.replyTo = "amq.rabbitmq.reply-to"
 
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -280,7 +280,7 @@ class ChannelBindingsAmqp:
 
     def __init__(self, dictObj=None):
 
-        self.is = None
+        self.isType = None
 
         #: channel queue parameters
         self.queue = None
@@ -295,7 +295,7 @@ class ChannelBindingsAmqp:
         if dictObj is None:
             return
 
-        self.is = ChannelBindingsAmqpIsEnum.valueForString(dictObj.get('is', None))
+        self.isType = ChannelBindingsAmqpIsTypeEnum.valueForString(dictObj.get('isType', None))
 
         subDictObj = dictObj.get('queue', None)
         if subDictObj is not None:
@@ -306,7 +306,7 @@ class ChannelBindingsAmqp:
             self.exchange = ChannelBindingsAmqpExchange(subDictObj)
 
 
-class ChannelBindingsAmqpIsEnum(Enum):
+class ChannelBindingsAmqpIsTypeEnum(Enum):
     QUEUE = 'queue'
     ROUTINGKEY = 'routingKey'
 
@@ -316,9 +316,9 @@ class ChannelBindingsAmqpIsEnum(Enum):
         if lowerStringValue is None:
             return None
         elif lowerStringValue == 'queue':
-            return ChannelBindingsAmqpIsEnum.QUEUE
+            return ChannelBindingsAmqpIsTypeEnum.QUEUE
         elif lowerStringValue == 'routingkey':
-            return ChannelBindingsAmqpIsEnum.ROUTINGKEY
+            return ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY
         else:
             return None
 
@@ -326,9 +326,9 @@ class ChannelBindingsAmqpIsEnum(Enum):
     def valueAsString(cls, enumValue):
         if enumValue is None:
             return ''
-        elif enumValue == ChannelBindingsAmqpIsEnum.QUEUE:
+        elif enumValue == ChannelBindingsAmqpIsTypeEnum.QUEUE:
             return 'queue'
-        elif enumValue == ChannelBindingsAmqpIsEnum.ROUTINGKEY:
+        elif enumValue == ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY:
             return 'routingKey'
         else:
             return ''

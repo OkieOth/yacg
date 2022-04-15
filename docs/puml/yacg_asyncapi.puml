@@ -81,14 +81,14 @@ note top: Configuration parameter needed for publishing
 
 PublishOperation --|> OperationBase
 class ChannelBindingsAmqp {
-        ChannelBindingsAmqpIsEnum is
+        ChannelBindingsAmqpIsTypeEnum isType
         ChannelBindingsAmqpQueue queue
         ChannelBindingsAmqpExchange exchange
 }
 
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
 
-enum ChannelBindingsAmqpIsEnum {
+enum ChannelBindingsAmqpIsTypeEnum {
     QUEUE
     ROUTINGKEY
 }
@@ -202,7 +202,7 @@ PublishOperation  *--  XResponseType
             
 
     
-ChannelBindingsAmqp  *--  ChannelBindingsAmqpIsEnum
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpIsTypeEnum
             
 
 ChannelBindingsAmqp  *--  ChannelBindingsAmqpQueue
