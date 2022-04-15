@@ -1,0 +1,247 @@
+
+@startuml
+hide empty methods
+hide empty fields
+
+class OperationBase {
+        StringType operationId
+        StringType summary
+        StringType description
+        Message message
+        OperationBindingAmqp amqpBinding
+}
+
+
+class Message {
+        Payload payload
+        MessageBindingsAmqp amqpBindings
+}
+
+note top: Container that describes the messages\nare sent
+
+class OperationBindingAmqp {
+        IntegerType expiration
+        BooleanType mandatory
+        StringType replyTo
+}
+
+note top: specific AMQP binding properties
+
+class AsyncApiType {
+}
+
+note top: Base type to identify AsyncApi\ntypes
+
+AsyncApiType --|> Type
+class AsyncApiInfo {
+        StringType title
+        StringType version
+        StringType description
+}
+
+note top: Subset of the info object\nattribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
+
+AsyncApiInfo --|> AsyncApiType
+class AsyncApiServer {
+        StringType name
+        StringType url
+        StringType description
+        StringType protocol
+        StringType protocolVersion
+}
+
+note top: one entry of the servers\nsection
+
+AsyncApiServer --|> AsyncApiType
+class Channel {
+        StringType key
+        StringType description
+        Parameter[] parameters
+        PublishOperation publish
+        OperationBase subscribe
+        ChannelBindingsAmqp amqpBindings
+}
+
+note top: one entry of the channels\nsection
+
+Channel --|> AsyncApiType
+class Parameter {
+        StringType name
+        StringType description
+        StringType type
+}
+
+note top: Parameters contained in the channel\nkey
+
+class PublishOperation {
+        XResponseType xResponseType
+}
+
+note top: Configuration parameter needed for publishing
+
+PublishOperation --|> OperationBase
+class ChannelBindingsAmqp {
+        ChannelBindingsAmqpIsEnum is
+        ChannelBindingsAmqpQueue queue
+        ChannelBindingsAmqpExchange exchange
+}
+
+note top: https://github.com/asyncapi/bindings/ blob/master/amqp/README.md#channel
+
+enum ChannelBindingsAmqpIsEnum {
+    QUEUE
+    ROUTINGKEY
+}
+
+
+class ChannelBindingsAmqpQueue {
+        StringType name
+        BooleanType durable
+        BooleanType exclusive
+        BooleanType autodelete
+}
+
+note top: channel queue parameters
+
+class ChannelBindingsAmqpExchange {
+        StringType name
+        ChannelBindingsAmqpExchangeTypeEnum type
+        BooleanType durable
+        BooleanType autodelete
+}
+
+note top: channel exchange parameters
+
+enum ChannelBindingsAmqpExchangeTypeEnum {
+    TOPIC
+    DIRECT
+    FANOUT
+    DEFAULT
+    HEADERS
+}
+
+
+class XResponseType {
+        StringType description
+        BooleanType isArray
+        IntegerType arrayMinItems
+        IntegerType arrayMaxItems
+        BooleanType arrayUniqueItems
+        Type type
+}
+
+note top: type that is responded in\nRPC style communication
+
+class Payload {
+        Type type
+        BooleanType isArray
+}
+
+
+class MessageBindingsAmqp {
+        StringType contentEncoding
+        StringType messageType
+}
+
+note top: https://github.com/asyncapi/bindings/blob/ master/amqp/README.md#message-binding-object
+
+
+    
+
+
+
+OperationBase  *--  Message
+            
+
+OperationBase  *--  OperationBindingAmqp
+            
+
+    
+Message  *--  Payload
+            
+
+Message  *--  MessageBindingsAmqp
+            
+
+    
+
+
+
+    
+    
+
+
+
+    
+
+
+
+
+
+    
+
+
+Channel "0" *-- "n" Parameter
+            
+
+Channel  *--  PublishOperation
+            
+
+Channel  *--  OperationBase
+            
+
+Channel  *--  ChannelBindingsAmqp
+            
+
+    
+
+
+
+    
+PublishOperation  *--  XResponseType
+            
+
+    
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpIsEnum
+            
+
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpQueue
+            
+
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpExchange
+            
+
+    
+    
+
+
+
+
+    
+
+ChannelBindingsAmqpExchange  *--  ChannelBindingsAmqpExchangeTypeEnum
+            
+
+
+
+    
+    
+
+
+
+
+
+XResponseType  *--  Type
+            
+
+    
+Payload  *--  Type
+            
+
+
+    
+
+
+
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
+@enduml

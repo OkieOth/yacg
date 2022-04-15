@@ -70,6 +70,7 @@
 %>
 @startuml
 hide empty methods
+hide empty fields
 
 % for type in modelTypes:
     % if modelFuncs.isEnumType(type):
