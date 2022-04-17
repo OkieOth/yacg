@@ -3,28 +3,10 @@
 # created by yacg (template: pythonBeans.mako v1.0.0)
 
 from enum import Enum
-import yacg.model.model
 
 
-class AsyncApiType (yacg.model.model.Type):
-    """ Base type to identify AsyncApi types
-    """
-
+class OperationBase:
     def __init__(self, dictObj=None):
-        super(yacg.model.model.Type, self).__init__()
-        pass
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-
-class OperationBase (AsyncApiType):
-    def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         #: unique identifier for this operation
         self.operationId = None
@@ -63,12 +45,11 @@ class OperationBase (AsyncApiType):
             self.amqpBinding = OperationBindingAmqp(subDictObj)
 
 
-class Message (AsyncApiType):
+class Message:
     """ Container that describes the messages are sent
     """
 
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         #: either a basic or a complex type
         self.payload = None
@@ -92,12 +73,11 @@ class Message (AsyncApiType):
             self.amqpBindings = MessageBindingsAmqp(subDictObj)
 
 
-class OperationBindingAmqp (AsyncApiType):
+class OperationBindingAmqp:
     """ specific AMQP binding properties
     """
 
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         self.expiration = None
 
@@ -119,12 +99,11 @@ class OperationBindingAmqp (AsyncApiType):
         self.replyTo = dictObj.get('replyTo', amq.rabbitmq.reply-to)
 
 
-class AsyncApiInfo (AsyncApiType):
+class AsyncApiInfo:
     """ Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
     """
 
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         self.title = None
 
@@ -146,12 +125,11 @@ class AsyncApiInfo (AsyncApiType):
         self.description = dictObj.get('description', None)
 
 
-class AsyncApiServer (AsyncApiType):
+class AsyncApiServer:
     """ one entry of the servers section
     """
 
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         self.name = None
 
@@ -181,12 +159,11 @@ class AsyncApiServer (AsyncApiType):
         self.protocolVersion = dictObj.get('protocolVersion', None)
 
 
-class Channel (AsyncApiType):
+class Channel:
     """ one entry of the channels section
     """
 
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         self.key = None
 
@@ -229,12 +206,11 @@ class Channel (AsyncApiType):
             self.amqpBindings = ChannelBindingsAmqp(subDictObj)
 
 
-class Parameter (AsyncApiType):
+class Parameter:
     """ Parameters contained in the channel key
     """
 
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         self.name = None
 
@@ -278,12 +254,11 @@ class PublishOperation (OperationBase):
             self.xResponseMessage = Message(subDictObj)
 
 
-class ChannelBindingsAmqp (AsyncApiType):
+class ChannelBindingsAmqp:
     """ https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
     """
 
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         self.isType = None
 
@@ -444,9 +419,8 @@ class ChannelBindingsAmqpExchangeTypeEnum(Enum):
 
 
 
-class Payload (AsyncApiType):
+class Payload:
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         #: meta model type that is passed in the body
         self.type = None
@@ -467,12 +441,11 @@ class Payload (AsyncApiType):
         self.isArray = dictObj.get('isArray', False)
 
 
-class MessageBindingsAmqp (AsyncApiType):
+class MessageBindingsAmqp:
     """ https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
     """
 
     def __init__(self, dictObj=None):
-        super(AsyncApiType, self).__init__()
 
         #: A MIME encoding for the message content.
         self.contentEncoding = None

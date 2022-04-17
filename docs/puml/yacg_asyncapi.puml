@@ -3,12 +3,6 @@
 hide empty methods
 hide empty fields
 
-class AsyncApiType {
-}
-
-note top: Base type to identify AsyncApi\ntypes
-
-AsyncApiType --|> Type
 class OperationBase {
         StringType operationId
         StringType summary
@@ -18,7 +12,6 @@ class OperationBase {
 }
 
 
-OperationBase --|> AsyncApiType
 class Message {
         Payload payload
         MessageBindingsAmqp amqpBindings
@@ -26,7 +19,6 @@ class Message {
 
 note top: Container that describes the messages\nare sent
 
-Message --|> AsyncApiType
 class OperationBindingAmqp {
         IntegerType expiration
         BooleanType mandatory
@@ -35,7 +27,6 @@ class OperationBindingAmqp {
 
 note top: specific AMQP binding properties
 
-OperationBindingAmqp --|> AsyncApiType
 class AsyncApiInfo {
         StringType title
         StringType version
@@ -44,7 +35,6 @@ class AsyncApiInfo {
 
 note top: Subset of the info object\nattribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
 
-AsyncApiInfo --|> AsyncApiType
 class AsyncApiServer {
         StringType name
         StringType url
@@ -55,7 +45,6 @@ class AsyncApiServer {
 
 note top: one entry of the servers\nsection
 
-AsyncApiServer --|> AsyncApiType
 class Channel {
         StringType key
         StringType description
@@ -67,7 +56,6 @@ class Channel {
 
 note top: one entry of the channels\nsection
 
-Channel --|> AsyncApiType
 class Parameter {
         StringType name
         StringType description
@@ -76,7 +64,6 @@ class Parameter {
 
 note top: Parameters contained in the channel\nkey
 
-Parameter --|> AsyncApiType
 class PublishOperation {
         Message xResponseMessage
 }
@@ -92,7 +79,6 @@ class ChannelBindingsAmqp {
 
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
 
-ChannelBindingsAmqp --|> AsyncApiType
 enum ChannelBindingsAmqpIsTypeEnum {
     QUEUE
     ROUTINGKEY
@@ -132,7 +118,6 @@ class Payload {
 }
 
 
-Payload --|> AsyncApiType
 class MessageBindingsAmqp {
         StringType contentEncoding
         StringType messageType
@@ -140,9 +125,7 @@ class MessageBindingsAmqp {
 
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
 
-MessageBindingsAmqp --|> AsyncApiType
 
-    
     
 
 

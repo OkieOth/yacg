@@ -5,14 +5,9 @@
 import unittest
 
 import yacg.model.asyncapi
-import yacg.model.model
 
 
 class TestYacgAsyncapiModel (unittest.TestCase):
-    def testAsyncApiType(self):
-        x = yacg.model.asyncapi.AsyncApiType()
-        self.assertIsNotNone(x)
-
     def testOperationBase(self):
         x = yacg.model.asyncapi.OperationBase()
         self.assertIsNotNone(x)
