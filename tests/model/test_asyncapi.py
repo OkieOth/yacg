@@ -9,6 +9,10 @@ import yacg.model.model
 
 
 class TestYacgAsyncapiModel (unittest.TestCase):
+    def testAsyncApiType(self):
+        x = yacg.model.asyncapi.AsyncApiType()
+        self.assertIsNotNone(x)
+
     def testOperationBase(self):
         x = yacg.model.asyncapi.OperationBase()
         self.assertIsNotNone(x)
@@ -19,10 +23,6 @@ class TestYacgAsyncapiModel (unittest.TestCase):
 
     def testOperationBindingAmqp(self):
         x = yacg.model.asyncapi.OperationBindingAmqp()
-        self.assertIsNotNone(x)
-
-    def testAsyncApiType(self):
-        x = yacg.model.asyncapi.AsyncApiType()
         self.assertIsNotNone(x)
 
     def testAsyncApiInfo(self):
@@ -74,10 +74,6 @@ class TestYacgAsyncapiModel (unittest.TestCase):
 
     def testMessageBindingsAmqp(self):
         x = yacg.model.asyncapi.MessageBindingsAmqp()
-        self.assertIsNotNone(x)
-
-    def testXResponseType(self):
-        x = yacg.model.asyncapi.XResponseType()
         self.assertIsNotNone(x)
 
 

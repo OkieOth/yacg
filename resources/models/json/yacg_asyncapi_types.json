@@ -5,37 +5,44 @@
     "version": "0.1.1",
     "x-domain": "yacg.model.asyncapi",
     "definitions": {
-        "OperationBase": {
-            "type": "object",
-            "properties": {
-                "operationId": {
-                    "type": "string",
-                    "description": "unique identifier for this operation"
-                },
-                "summary": {
-                    "type": "string",
-                    "description": "some words to explain to topic"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "some words to explain to topic"
-                },
-                "message": {
-                    "description": "some words to explain to topic",
-                    "$ref": "#/definitions/Message"
-                },
-                "amqpBinding": {
-                    "description": "amqp 0.9.1 related binding parameters",
-                    "$ref": "#/definitions/OperationBindingAmqp"
-                }
-            }
-        },
         "AsyncApiType": {
             "description": "Base type to identify AsyncApi types",
             "type": "object",
             "allOf": [
                 {
                     "$ref": "yacg_model_schema.json#/definitions/Type"
+                }
+            ]
+        },
+        "OperationBase": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
+                },
+                {
+                    "properties": {
+                        "operationId": {
+                            "type": "string",
+                            "description": "unique identifier for this operation"
+                        },
+                        "summary": {
+                            "type": "string",
+                            "description": "some words to explain to topic"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "some words to explain to topic"
+                        },
+                        "message": {
+                            "description": "some words to explain to topic",
+                            "$ref": "#/definitions/Message"
+                        },
+                        "amqpBinding": {
+                            "description": "amqp 0.9.1 related binding parameters",
+                            "$ref": "#/definitions/OperationBindingAmqp"
+                        }
+                    }
                 }
             ]
         },
@@ -126,49 +133,56 @@
         "ChannelBindingsAmqp": {
             "type": "object",
             "description": "https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel",
-            "properties": {
-                "isType": {
-                    "type": "string",
-                    "enum": ["queue", "routingKey"]
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
                 },
-                "queue": {
-                    "description": "channel queue parameters",
-                    "type": "object",
+                {
                     "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "durable": {
-                            "type": "boolean"
-                        },
-                        "exclusive": {
-                            "type": "boolean"
-                        },
-                        "autodelete": {
-                            "type": "boolean"
-                        }
-                    }
-                },
-                "exchange": {
-                    "description": "channel exchange parameters",
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "type": {
+                        "isType": {
                             "type": "string",
-                            "enum": ["topic", "direct", "fanout", "default", "headers"]
+                            "enum": ["queue", "routingKey"]
                         },
-                        "durable": {
-                            "type": "boolean"
+                        "queue": {
+                            "description": "channel queue parameters",
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "durable": {
+                                    "type": "boolean"
+                                },
+                                "exclusive": {
+                                    "type": "boolean"
+                                },
+                                "autodelete": {
+                                    "type": "boolean"
+                                }
+                            }
                         },
-                        "autodelete": {
-                            "type": "boolean"
+                        "exchange": {
+                            "description": "channel exchange parameters",
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "enum": ["topic", "direct", "fanout", "default", "headers"]
+                                },
+                                "durable": {
+                                    "type": "boolean"
+                                },
+                                "autodelete": {
+                                    "type": "boolean"
+                                }
+                            }
                         }
                     }
-                }
-            }
+                        }
+            ]
         },
         "PublishOperation": {
             "description": "Configuration parameter needed for publishing",
@@ -190,105 +204,110 @@
         "Message": {
             "description": "Container that describes the messages are sent",
             "type": "object",
-            "properties": {
-                "payload": {
-                    "description": "either a basic or a complex type",
-                    "$ref": "#/definitions/Payload"
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
                 },
-                "amqpBindings": {
-                    "description": "additional message parameters",
-                    "$ref": "#/definitions/MessageBindingsAmqp"
-                }
-            }
+                {
+                    "properties": {
+                        "payload": {
+                            "description": "either a basic or a complex type",
+                            "$ref": "#/definitions/Payload"
+                        },
+                        "amqpBindings": {
+                            "description": "additional message parameters",
+                            "$ref": "#/definitions/MessageBindingsAmqp"
+                        }
+                    }
+                        }
+            ]
         },
         "MessageBindingsAmqp": {
             "type": "object",
             "description": "https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object",
-            "properties": {
-                "contentEncoding": {
-                    "description": "A MIME encoding for the message content.",
-                    "type": "string"
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
                 },
-                "messageType": {
-                    "description": "Application defined text",
-                    "type": "string"
-                }
-            }
+                {
+                    "properties": {
+                        "contentEncoding": {
+                            "description": "A MIME encoding for the message content.",
+                            "type": "string"
+                        },
+                        "messageType": {
+                            "description": "Application defined text",
+                            "type": "string"
+                        }
+                    }
+                        }
+            ]
         },
         "Payload": {
             "type": "object",
-            "properties": {
-                "type": {
-                    "description": "meta model type that is passed in the body",
-                    "$ref": "./yacg_model_schema.json#/definitions/Type"
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
                 },
-                "isArray": {
-                    "type": "boolean",
-                    "default": false
-                }
-            }
+                {
+                    "properties": {
+                        "type": {
+                            "description": "meta model type that is passed in the body",
+                            "$ref": "./yacg_model_schema.json#/definitions/Type"
+                        },
+                        "isArray": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    }
+                        }
+            ]
         },
         "OperationBindingAmqp": {
             "description": "specific AMQP binding properties",
             "type": "object",
-            "properties": {
-                "expiration": {
-                    "type": "integer"
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
                 },
-                "mandatory": {
-                    "type": "boolean"
-                },
-                "replyTo": {
-                    "type": "string",
-                    "default": "amq.rabbitmq.reply-to"
-                }
-            }
-        },
-        "XResponseType": {
-            "description": "type that is responded in RPC style communication",
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "isArray": {
-                    "description": "true - if the property is an array",
-                    "type": "boolean",
-                    "default": false
-                },
-                "arrayMinItems": {
-                    "description": "defined minimum of elements in the array/list",
-                    "type": "integer"
-                },
-                "arrayMaxItems": {
-                    "description": "defined maximum of elements in the array/list",
-                    "type": "integer"
-                },
-                "arrayUniqueItems": {
-                    "description": "the elements in the array/list have to be unique",
-                    "type": "boolean"
-                },
-                "type": {
-                    "description": "either a basic or a complex type",
-                    "$ref": "./yacg_model_schema.json#/definitions/Type"
-                }
-            }
+                {
+                    "properties": {
+                        "expiration": {
+                            "type": "integer"
+                        },
+                        "mandatory": {
+                            "type": "boolean"
+                        },
+                        "replyTo": {
+                            "type": "string",
+                            "default": "amq.rabbitmq.reply-to"
+                        }
+                    }
+                        }
+            ]
         },
         "Parameter": {
             "type": "object",
             "description": "Parameters contained in the channel key",
-            "properties": {
-                "name": {
-                    "type": "string"
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AsyncApiType"
                 },
-                "description": {
-                    "type": "string"
-                },
-                "type": {
-                    "$comment": "The specs of asyncapi name here a object type, but I can't imagine anything else than string",
-                    "type": "string"
+                {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "$comment": "The specs of asyncapi name here a object type, but I can't imagine anything else than string",
+                            "type": "string"
+                        }
+                    }
                 }
-            }
+            ]
         }
     }
 }

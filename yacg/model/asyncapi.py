@@ -6,8 +6,25 @@ from enum import Enum
 import yacg.model.model
 
 
-class OperationBase:
+class AsyncApiType (yacg.model.model.Type):
+    """ Base type to identify AsyncApi types
+    """
+
     def __init__(self, dictObj=None):
+        super(yacg.model.model.Type, self).__init__()
+        pass
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+
+class OperationBase (AsyncApiType):
+    def __init__(self, dictObj=None):
+        super(AsyncApiType, self).__init__()
 
         #: unique identifier for this operation
         self.operationId = None
@@ -46,11 +63,12 @@ class OperationBase:
             self.amqpBinding = OperationBindingAmqp(subDictObj)
 
 
-class Message:
+class Message (AsyncApiType):
     """ Container that describes the messages are sent
     """
 
     def __init__(self, dictObj=None):
+        super(AsyncApiType, self).__init__()
 
         #: either a basic or a complex type
         self.payload = None
@@ -74,11 +92,12 @@ class Message:
             self.amqpBindings = MessageBindingsAmqp(subDictObj)
 
 
-class OperationBindingAmqp:
+class OperationBindingAmqp (AsyncApiType):
     """ specific AMQP binding properties
     """
 
     def __init__(self, dictObj=None):
+        super(AsyncApiType, self).__init__()
 
         self.expiration = None
 
@@ -98,22 +117,6 @@ class OperationBindingAmqp:
         self.mandatory = dictObj.get('mandatory', None)
 
         self.replyTo = dictObj.get('replyTo', amq.rabbitmq.reply-to)
-
-
-class AsyncApiType (yacg.model.model.Type):
-    """ Base type to identify AsyncApi types
-    """
-
-    def __init__(self, dictObj=None):
-        super(yacg.model.model.Type, self).__init__()
-        pass
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
 
 
 class AsyncApiInfo (AsyncApiType):
@@ -226,11 +229,12 @@ class Channel (AsyncApiType):
             self.amqpBindings = ChannelBindingsAmqp(subDictObj)
 
 
-class Parameter:
+class Parameter (AsyncApiType):
     """ Parameters contained in the channel key
     """
 
     def __init__(self, dictObj=None):
+        super(AsyncApiType, self).__init__()
 
         self.name = None
 
@@ -274,11 +278,12 @@ class PublishOperation (OperationBase):
             self.xResponseMessage = Message(subDictObj)
 
 
-class ChannelBindingsAmqp:
+class ChannelBindingsAmqp (AsyncApiType):
     """ https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
     """
 
     def __init__(self, dictObj=None):
+        super(AsyncApiType, self).__init__()
 
         self.isType = None
 
@@ -439,8 +444,9 @@ class ChannelBindingsAmqpExchangeTypeEnum(Enum):
 
 
 
-class Payload:
+class Payload (AsyncApiType):
     def __init__(self, dictObj=None):
+        super(AsyncApiType, self).__init__()
 
         #: meta model type that is passed in the body
         self.type = None
@@ -461,11 +467,12 @@ class Payload:
         self.isArray = dictObj.get('isArray', False)
 
 
-class MessageBindingsAmqp:
+class MessageBindingsAmqp (AsyncApiType):
     """ https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
     """
 
     def __init__(self, dictObj=None):
+        super(AsyncApiType, self).__init__()
 
         #: A MIME encoding for the message content.
         self.contentEncoding = None
@@ -483,50 +490,5 @@ class MessageBindingsAmqp:
         self.contentEncoding = dictObj.get('contentEncoding', None)
 
         self.messageType = dictObj.get('messageType', None)
-
-
-class XResponseType:
-    """ type that is responded in RPC style communication
-    """
-
-    def __init__(self, dictObj=None):
-
-        self.description = None
-
-        #: true - if the property is an array
-        self.isArray = False
-
-        #: defined minimum of elements in the array/list
-        self.arrayMinItems = None
-
-        #: defined maximum of elements in the array/list
-        self.arrayMaxItems = None
-
-        #: the elements in the array/list have to be unique
-        self.arrayUniqueItems = None
-
-        #: either a basic or a complex type
-        self.type = None
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.description = dictObj.get('description', None)
-
-        self.isArray = dictObj.get('isArray', False)
-
-        self.arrayMinItems = dictObj.get('arrayMinItems', None)
-
-        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
-
-        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
-
-        subDictObj = dictObj.get('type', None)
-        if subDictObj is not None:
-            self.type = yacg.model.model.Type(subDictObj)
 
 

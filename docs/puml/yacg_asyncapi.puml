@@ -3,6 +3,12 @@
 hide empty methods
 hide empty fields
 
+class AsyncApiType {
+}
+
+note top: Base type to identify AsyncApi\ntypes
+
+AsyncApiType --|> Type
 class OperationBase {
         StringType operationId
         StringType summary
@@ -12,6 +18,7 @@ class OperationBase {
 }
 
 
+OperationBase --|> AsyncApiType
 class Message {
         Payload payload
         MessageBindingsAmqp amqpBindings
@@ -19,6 +26,7 @@ class Message {
 
 note top: Container that describes the messages\nare sent
 
+Message --|> AsyncApiType
 class OperationBindingAmqp {
         IntegerType expiration
         BooleanType mandatory
@@ -27,12 +35,7 @@ class OperationBindingAmqp {
 
 note top: specific AMQP binding properties
 
-class AsyncApiType {
-}
-
-note top: Base type to identify AsyncApi\ntypes
-
-AsyncApiType --|> Type
+OperationBindingAmqp --|> AsyncApiType
 class AsyncApiInfo {
         StringType title
         StringType version
@@ -73,6 +76,7 @@ class Parameter {
 
 note top: Parameters contained in the channel\nkey
 
+Parameter --|> AsyncApiType
 class PublishOperation {
         Message xResponseMessage
 }
@@ -88,6 +92,7 @@ class ChannelBindingsAmqp {
 
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
 
+ChannelBindingsAmqp --|> AsyncApiType
 enum ChannelBindingsAmqpIsTypeEnum {
     QUEUE
     ROUTINGKEY
@@ -127,6 +132,7 @@ class Payload {
 }
 
 
+Payload --|> AsyncApiType
 class MessageBindingsAmqp {
         StringType contentEncoding
         StringType messageType
@@ -134,18 +140,9 @@ class MessageBindingsAmqp {
 
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
 
-class XResponseType {
-        StringType description
-        BooleanType isArray
-        IntegerType arrayMinItems
-        IntegerType arrayMaxItems
-        BooleanType arrayUniqueItems
-        Type type
-}
+MessageBindingsAmqp --|> AsyncApiType
 
-note top: type that is responded in\nRPC style communication
-
-
+    
     
 
 
@@ -167,7 +164,6 @@ Message  *--  MessageBindingsAmqp
 
 
 
-    
     
 
 
@@ -232,15 +228,6 @@ Payload  *--  Type
 
     
 
-
-    
-
-
-
-
-
-XResponseType  *--  Type
-            
 
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
