@@ -68,16 +68,16 @@ class TestYacgAsyncapiModel (unittest.TestCase):
         self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpExchangeTypeEnum.DEFAULT)
         self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpExchangeTypeEnum.HEADERS)
 
-    def testXResponseType(self):
-        x = yacg.model.asyncapi.XResponseType()
-        self.assertIsNotNone(x)
-
     def testPayload(self):
         x = yacg.model.asyncapi.Payload()
         self.assertIsNotNone(x)
 
     def testMessageBindingsAmqp(self):
         x = yacg.model.asyncapi.MessageBindingsAmqp()
+        self.assertIsNotNone(x)
+
+    def testXResponseType(self):
+        x = yacg.model.asyncapi.XResponseType()
         self.assertIsNotNone(x)
 
 

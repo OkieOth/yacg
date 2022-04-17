@@ -74,7 +74,7 @@ class Parameter {
 note top: Parameters contained in the channel\nkey
 
 class PublishOperation {
-        XResponseType xResponseType
+        Message xResponseMessage
 }
 
 note top: Configuration parameter needed for publishing
@@ -121,17 +121,6 @@ enum ChannelBindingsAmqpExchangeTypeEnum {
 }
 
 
-class XResponseType {
-        StringType description
-        BooleanType isArray
-        IntegerType arrayMinItems
-        IntegerType arrayMaxItems
-        BooleanType arrayUniqueItems
-        Type type
-}
-
-note top: type that is responded in\nRPC style communication
-
 class Payload {
         Type type
         BooleanType isArray
@@ -144,6 +133,17 @@ class MessageBindingsAmqp {
 }
 
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
+
+class XResponseType {
+        StringType description
+        BooleanType isArray
+        IntegerType arrayMinItems
+        IntegerType arrayMaxItems
+        BooleanType arrayUniqueItems
+        Type type
+}
+
+note top: type that is responded in\nRPC style communication
 
 
     
@@ -198,7 +198,7 @@ Channel  *--  ChannelBindingsAmqp
 
 
     
-PublishOperation  *--  XResponseType
+PublishOperation  *--  Message
             
 
     
@@ -226,6 +226,14 @@ ChannelBindingsAmqpExchange  *--  ChannelBindingsAmqpExchangeTypeEnum
 
     
     
+Payload  *--  Type
+            
+
+
+    
+
+
+    
 
 
 
@@ -233,14 +241,6 @@ ChannelBindingsAmqpExchange  *--  ChannelBindingsAmqpExchangeTypeEnum
 
 XResponseType  *--  Type
             
-
-    
-Payload  *--  Type
-            
-
-
-    
-
 
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

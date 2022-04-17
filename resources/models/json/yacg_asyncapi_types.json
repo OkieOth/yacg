@@ -179,9 +179,9 @@
                 },
                 {
                     "properties": {
-                        "xResponseType": {
-                            "description": "covers the responded type in RPC style communication, custom extension",
-                            "$ref": "#/definitions/XResponseType"
+                        "xResponseMessage": {
+                            "description": "covers the responded message in RPC style communication, custom extension",
+                            "$ref": "#/definitions/Message"
                         }
                     }
                 }

@@ -85,14 +85,14 @@ def __initEnumValues(mainType, parsedSchema):
         mainType.valuesMap = parsedSchema.get('x-enumValues', None)
 
 
-def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
+def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=False):
     """extract the types from the parsed schema
 
 
     Keyword arguments:
     parsedSchema -- dictionary with the loaded schema
     modelFile -- file name and path to the model to load
-    skipOpenApi -- if true, then openApi paths are not extracted for the model
+    skipAdditionalSpecTypes -- if true, then openApi paths and asyncApi types are not extracted for the model
     """
 
     modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
@@ -121,12 +121,19 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
         # extract types from extra definitions section
         _extractDefinitionsTypes(schemaDefinitions, modelTypes, modelFileContainer, None)
     else:
-        openApiComponents = parsedSchema.get('components', None)
-        if openApiComponents is not None:
-            schemas = openApiComponents.get('schemas', None)
+        componentsDict = parsedSchema.get('components', None)
+        if componentsDict is not None:
+            schemas = componentsDict.get('schemas', None)
             if schemas is not None:
                 # extract types from extra components section (OpenApi v3)
                 _extractDefinitionsTypes(schemas, modelTypes, modelFileContainer, None)
+            if not skipAdditionalSpecTypes:
+                _extractAsyncApiMessageTypes(componentsDict, modelTypes, modelFileContainer)
+                _extractAsyncApiParameterTypes(componentsDict, modelTypes, modelFileContainer)
+                _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer)
+                _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer)
+                _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer)
+
 
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
@@ -151,10 +158,13 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
                     property.foreignKey.property = __getPropertyByName(property.foreignKey.type, property.foreignKey.propertyName)
 
     # load additional types, e.g. openapi.PathType
-    if not skipOpenApi:
+    if not skipAdditionalSpecTypes:
         if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
             modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
             extractOpenApiPathTypes(modelTypes, modelFileContainer)
+        if parsedSchema.get('asyncapi', None):
+            modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
+            extractAsyncApiTypes(modelTypes, modelFileContainer)
     return modelTypes
 
 
@@ -1066,3 +1076,22 @@ def __getAdditionalPropertiesForDictionaryType(dictionary):
         # additionalProperties are only handled as objects here
         return None
     return additionalProperties
+
+def extractAsyncApiTypes(modelTypes, modelFileContainer):
+    pass # TODO
+
+def _extractAsyncApiMessageTypes(componentsDict, modelTypes, modelFileContainer):
+    pass # TODO
+
+def _extractAsyncApiParameterTypes(componentsDict, modelTypes, modelFileContainer):
+    pass # TODO
+
+def _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer):
+    pass # TODO
+
+def _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer):
+    pass # TODO
+
+def _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer):
+    pass # TODO
+

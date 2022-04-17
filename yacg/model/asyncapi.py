@@ -259,8 +259,8 @@ class PublishOperation (OperationBase):
     def __init__(self, dictObj=None):
         super(OperationBase, self).__init__()
 
-        #: covers the responded type in RPC style communication, custom extension
-        self.xResponseType = None
+        #: covers the responded message in RPC style communication, custom extension
+        self.xResponseMessage = None
 
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -269,9 +269,9 @@ class PublishOperation (OperationBase):
         if dictObj is None:
             return
 
-        subDictObj = dictObj.get('xResponseType', None)
+        subDictObj = dictObj.get('xResponseMessage', None)
         if subDictObj is not None:
-            self.xResponseType = XResponseType(subDictObj)
+            self.xResponseMessage = Message(subDictObj)
 
 
 class ChannelBindingsAmqp:
@@ -439,51 +439,6 @@ class ChannelBindingsAmqpExchangeTypeEnum(Enum):
 
 
 
-class XResponseType:
-    """ type that is responded in RPC style communication
-    """
-
-    def __init__(self, dictObj=None):
-
-        self.description = None
-
-        #: true - if the property is an array
-        self.isArray = False
-
-        #: defined minimum of elements in the array/list
-        self.arrayMinItems = None
-
-        #: defined maximum of elements in the array/list
-        self.arrayMaxItems = None
-
-        #: the elements in the array/list have to be unique
-        self.arrayUniqueItems = None
-
-        #: either a basic or a complex type
-        self.type = None
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.description = dictObj.get('description', None)
-
-        self.isArray = dictObj.get('isArray', False)
-
-        self.arrayMinItems = dictObj.get('arrayMinItems', None)
-
-        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
-
-        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
-
-        subDictObj = dictObj.get('type', None)
-        if subDictObj is not None:
-            self.type = yacg.model.model.Type(subDictObj)
-
-
 class Payload:
     def __init__(self, dictObj=None):
 
@@ -528,5 +483,50 @@ class MessageBindingsAmqp:
         self.contentEncoding = dictObj.get('contentEncoding', None)
 
         self.messageType = dictObj.get('messageType', None)
+
+
+class XResponseType:
+    """ type that is responded in RPC style communication
+    """
+
+    def __init__(self, dictObj=None):
+
+        self.description = None
+
+        #: true - if the property is an array
+        self.isArray = False
+
+        #: defined minimum of elements in the array/list
+        self.arrayMinItems = None
+
+        #: defined maximum of elements in the array/list
+        self.arrayMaxItems = None
+
+        #: the elements in the array/list have to be unique
+        self.arrayUniqueItems = None
+
+        #: either a basic or a complex type
+        self.type = None
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.description = dictObj.get('description', None)
+
+        self.isArray = dictObj.get('isArray', False)
+
+        self.arrayMinItems = dictObj.get('arrayMinItems', None)
+
+        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
+
+        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
+
+        subDictObj = dictObj.get('type', None)
+        if subDictObj is not None:
+            self.type = yacg.model.model.Type(subDictObj)
 
 
