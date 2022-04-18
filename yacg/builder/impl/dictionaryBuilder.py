@@ -1228,7 +1228,7 @@ def __initChannelBindingsExchange(exchangeDict):
     exchangeObj.name = exchangeDict.get("name", None)
     exchangeObj.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.valueForString(exchangeDict.get("type", None))
     exchangeObj.durable = exchangeDict.get("durable", False)
-    exchangeObj.autodelete = exchangeDict.get("autodelete", False)
+    exchangeObj.autoDelete = exchangeDict.get("autoDelete", False)
     return exchangeObj
 
 
@@ -1239,7 +1239,7 @@ def __initChannelBindingsQueue(queueDict):
     queueObj.name = queueDict.get("name", None)
     queueObj.durable = queueDict.get("durable", False)
     queueObj.exclusive = queueDict.get("exclusive", False)
-    queueObj.autodelete = queueDict.get("autoDelete", False)
+    queueObj.autoDelete = queueDict.get("autoDelete", False)
     return queueObj
 
 
