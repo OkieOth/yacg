@@ -93,50 +93,67 @@
                 }
             }
         },
+        "ChannelBindingAmqpExchange": {
+            "description": "channel exchange parameters",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": ["topic", "direct", "fanout", "default", "headers"]
+                },
+                "durable": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "autoDelete": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "required": ["name", "type"]
+        },
+        "ChannelBindingAmqpQueue": {
+            "description": "channel queue parameters",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "durable": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "exclusive": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "autoDelete": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
         "ChannelBindingsAmqp": {
             "type": "object",
             "description": "https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel",
             "properties": {
+                "name": {
+                    "description": "optional name, is used when defined in the components section",
+                    "type": "string"
+                },
                 "isType": {
                     "type": "string",
-                    "enum": ["queue", "routingKey"]
+                    "enum": ["queue", "routingKey"],
+                    "default": "routingKey"
                 },
                 "queue": {
-                    "description": "channel queue parameters",
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "durable": {
-                            "type": "boolean"
-                        },
-                        "exclusive": {
-                            "type": "boolean"
-                        },
-                        "autodelete": {
-                            "type": "boolean"
-                        }
-                    }
+                    "$ref": "#/definitions/ChannelBindingAmqpQueue"
                 },
                 "exchange": {
-                    "description": "channel exchange parameters",
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "type": {
-                            "type": "string",
-                            "enum": ["topic", "direct", "fanout", "default", "headers"]
-                        },
-                        "durable": {
-                            "type": "boolean"
-                        },
-                        "autodelete": {
-                            "type": "boolean"
-                        }
-                    }
+                    "$ref": "#/definitions/ChannelBindingAmqpExchange"
                 }
             }
         },
@@ -161,6 +178,10 @@
             "description": "Container that describes the messages are sent",
             "type": "object",
             "properties": {
+                "name": {
+                    "description": "optional name, is used when defined in the components section",
+                    "type": "string"
+                },
                 "payload": {
                     "description": "either a basic or a complex type",
                     "$ref": "#/definitions/Payload"
@@ -175,6 +196,10 @@
             "type": "object",
             "description": "https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object",
             "properties": {
+                "name": {
+                    "description": "optional name, is used when defined in the components section",
+                    "type": "string"
+                },
                 "contentEncoding": {
                     "description": "A MIME encoding for the message content.",
                     "type": "string"
@@ -202,6 +227,10 @@
             "description": "specific AMQP binding properties",
             "type": "object",
             "properties": {
+                "name": {
+                    "description": "optional name, is used when defined in the components section",
+                    "type": "string"
+                },
                 "expiration": {
                     "type": "integer"
                 },

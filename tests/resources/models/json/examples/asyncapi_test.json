@@ -389,6 +389,52 @@
                     }
                 }
             }
+        },
+        "channelBindings": {
+            "myChannelBinding1": {
+                "amqp": {
+                    "is": "routingKey",
+                    "exchange": {
+                        "name": "xxx",
+                        "type": "topic",
+                        "durable": true
+                    },
+                    "queue": {
+                        "name": "myQueue-xxx",
+                        "durable": true,
+                        "exclusive": true,
+                        "autoDelete": true
+                    }
+                }
+            },
+            "myChannelBinding2": {
+                "amqp": {
+                    "is": "queue",
+                    "queue": {
+                        "name": "myQueue-1"
+                    }
+                }
+            },
+            "myChannelBinding4": {
+                "amqp": {
+                    "exchange": {
+                        "name": "xxy",
+                        "type": "fanout",
+                        "durable": true,
+                        "autodelete": true
+                    }
+                }
+            },
+            "myChannelBinding5": {
+                "kafka": {
+                    "exchange": {
+                        "name": "xxy",
+                        "type": "fanout",
+                        "durable": true,
+                        "autodelete": true
+                    }
+                }
+            }
         }
     }
 }

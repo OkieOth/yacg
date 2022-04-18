@@ -1203,7 +1203,44 @@ def _extractAsyncApiParameterTypes(componentsDict, modelTypes, modelFileContaine
 
 
 def _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer):
-    pass # TODO
+    channelBinddingsDict = componentsDict.get("channelBindings", {})
+    for key in channelBinddingsDict.keys():
+        dict = channelBinddingsDict.get(key, {})
+        amqpBindingsDict = dict.get("amqp", None)
+        if amqpBindingsDict is None:
+            continue
+        __initChannelBindingsAmqpObj(key, amqpBindingsDict, modelTypes)
+
+
+def __initChannelBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
+    bindingsObj = asyncapi.ChannelBindingsAmqp()
+    bindingsObj.name = name 
+    bindingsObj.isType = asyncapi.ChannelBindingsAmqpIsTypeEnum.valueForString(amqpBindingsDict.get("is", "routingKey"))
+    bindingsObj.exchange = __initChannelBindingsExchange(amqpBindingsDict.get("exchange", None))
+    bindingsObj.queue = __initChannelBindingsQueue(amqpBindingsDict.get("queue", None))
+    modelTypes.append(bindingsObj)
+
+
+def __initChannelBindingsExchange(exchangeDict):
+    if exchangeDict is None:
+        return None
+    exchangeObj = asyncapi.ChannelBindingsAmqpExchange()
+    exchangeObj.name = exchangeDict.get("name", None)
+    exchangeObj.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.valueForString(exchangeDict.get("type", None))
+    exchangeObj.durable = exchangeDict.get("durable", False)
+    exchangeObj.autodelete = exchangeDict.get("autodelete", False)
+    return exchangeObj
+
+
+def __initChannelBindingsQueue(queueDict):
+    if queueDict is None:
+        return None
+    queueObj = asyncapi.ChannelBindingsAmqpQueue()
+    queueObj.name = queueDict.get("name", None)
+    queueObj.durable = queueDict.get("durable", False)
+    queueObj.exclusive = queueDict.get("exclusive", False)
+    queueObj.autodelete = queueDict.get("autoDelete", False)
+    return queueObj
 
 
 def _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer):
