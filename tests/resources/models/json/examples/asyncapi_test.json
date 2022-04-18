@@ -7,8 +7,14 @@
     },
     "servers": {
         "dev": {
-            "url": "broker.test:5672",
+            "url": "broker.dev:5672",
             "description": "Development server",
+            "protocol": "amqp",
+            "protocolVersion": "0.9.1"
+        },
+        "test": {
+            "url": "broker.test:5672",
+            "description": "Test server",
             "protocol": "amqp",
             "protocolVersion": "0.9.1"
         }
