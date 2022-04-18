@@ -19,6 +19,7 @@ from yacg.model.model import EnumType, ComplexType, DictionaryType, Tag
 from yacg.util.fileUtils import doesFileExist
 from yacg.model.modelFuncs import isBaseType
 import yacg.model.openapi as openapi
+import yacg.model.asyncapi as asyncapi
 
 
 class ModelFileContainer:
@@ -972,10 +973,10 @@ def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileC
     requestBody.description = requestBodyDict.get('description', None)
     requestBody.required = requestBodyDict.get('required', None)
     contentDict = requestBodyDict.get('content', None)
-    __extractOpenApiContentSectionAndAppend(contentDict, requestBody, modelTypes, modelFileContainer)
+    __extractOpenApiContentSectionAndAppend(contentDict, requestBody, modelTypes, modelFileContainer, command.operationId)
 
 
-def __extractOpenApiContentSectionAndAppend(contentDict, contentHost, modelTypes, modelFileContainer):
+def __extractOpenApiContentSectionAndAppend(contentDict, contentHost, modelTypes, modelFileContainer, innerTypeName):
     if contentDict is None:
         return
     for contentDictKey in contentDict.keys():
@@ -983,11 +984,11 @@ def __extractOpenApiContentSectionAndAppend(contentDict, contentHost, modelTypes
         contentEntry = openapi.ContentEntry()
         contentEntry.mimeType = contentDictKey
         schema = content.get('schema', None)
-        __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
+        __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer, innerTypeName)
         contentHost.content.append(contentEntry)
 
 
-def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileContainer):
+def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileContainer, innerTypeName):
     if schema is None:
         return
     itemsEntry = schema.get("items", None)
@@ -1000,9 +1001,19 @@ def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileCon
     if refEntry is not None:
         typeHost.type = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
     else:
-        errorMsg = 'Missing refEntry for requestBody entry!'
-        errorMsg2 = ' Attention, inner type declarations are currently not implemented for PathTypes.'
-        logging.error(errorMsg + errorMsg2)
+        dictToUse = itemsEntry if typeHost.isArray is True else schema
+        propertiesDict = dictToUse.get('properties', None)
+        if propertiesDict is not None:
+            # this handling is needed because for the same e.g. operationId can exists
+            # more inner type definitions
+            currentInnerTypeCount = modelFileContainer.innerTypeNames.get(innerTypeName, 1)
+            currentInnerTypeCount = currentInnerTypeCount + 1
+            newInnerTypeName = '{}_{}'.format(innerTypeName, currentInnerTypeCount)
+            modelFileContainer.innerTypeNames[innerTypeName] = currentInnerTypeCount
+            typeHost.type = _extractObjectType(newInnerTypeName, propertiesDict, None, None, modelTypes, modelFileContainer)
+        else:
+            errorMsg = 'Attention, inner type declarations are currently not implemented for some additional model scenarios.'
+            logging.error(errorMsg)
 
 
 def __extractOpenApiCommandParameters(command, parametersList, modelTypes, modelFileContainer):
@@ -1018,7 +1029,7 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
             if schema is not None:
                 contentEntry = openapi.ContentEntry()
                 requestBody.content.append(contentEntry)
-                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
+                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer, command.operationId)
         else:
             parameter = openapi.Parameter()
             command.parameters.append(parameter)
@@ -1026,27 +1037,30 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
             parameter.name = param.get('name', None)
             parameter.description = param.get('description', None)
             parameter.required = param.get('required', False)
-            paramSchema = param.get('schema', None)
-            paramType = param.get('type', None)
-            if (paramSchema is None) and (paramType is None):
-                logging.error(
-                    "modelFile: %s, path=%s: missing schema or type entry" %
-                    (modelFileContainer.fileName, command.path))
-                continue
-            if paramSchema is not None:
-                parameter.type = _extractAttribType(
-                    command.operationId.capitalize(),
-                    parameter,
-                    paramSchema,
-                    modelTypes,
-                    modelFileContainer)
-            elif paramType is not None:
-                parameter.type = _extractAttribType(
-                    command.operationId.capitalize(),
-                    parameter,
-                    param,
-                    modelTypes,
-                    modelFileContainer)
+            __extractParameterType(param, modelTypes, modelFileContainer, parameter, command.operationId)
+
+
+def __extractParameterType(paramDict, modelTypes, modelFileContainer, parameterObj, paramName):
+    paramSchema = paramDict.get('schema', None)
+    paramType = paramDict.get('type', None)
+    if (paramSchema is None) and (paramType is None):
+        logging.error(
+            "modelFile: %s, name=%s: missing schema or type entry" %
+            (modelFileContainer.fileName, paramName))
+    if paramSchema is not None:
+        parameterObj.type = _extractAttribType(
+            paramName.capitalize(),
+            parameterObj,
+            paramSchema,
+            modelTypes,
+            modelFileContainer)
+    elif paramType is not None:
+        parameterObj.type = _extractAttribType(
+            paramName.capitalize(),
+            parameterObj,
+            paramDict,
+            modelTypes,
+            modelFileContainer)
 
 
 def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFileContainer):
@@ -1060,14 +1074,14 @@ def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFi
         response.description = responseDict.get('description', None)
         contentDict = responseDict.get('content', None)
         if contentDict is not None:
-            __extractOpenApiContentSectionAndAppend(contentDict, response, modelTypes, modelFileContainer)
+            __extractOpenApiContentSectionAndAppend(contentDict, response, modelTypes, modelFileContainer, command.operationId)
         else:
             # swagger v2
             schema = responseDict.get('schema', None)
             if schema is not None:
                 contentEntry = openapi.ContentEntry()
                 response.content.append(contentEntry)
-                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
+                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer, command.operationId)
 
 
 def __getAdditionalPropertiesForDictionaryType(dictionary):
@@ -1077,21 +1091,124 @@ def __getAdditionalPropertiesForDictionaryType(dictionary):
         return None
     return additionalProperties
 
+def _parseInfoType(modelTypes, parsedSchema):
+    infoDict = parsedSchema.get('info', None)
+    if infoDict is None:
+        return
+    infoType = asyncapi.AsyncApiInfo()
+    infoType.description = infoDict.get('description', None)
+    infoType.title = infoDict.get('title', None)
+    infoType.version = infoDict.get('version', None)
+    modelTypes.append(infoType)
+
+
+def _parseAsyncApiInfo(modelTypes, parsedSchema):
+    infoDict = parsedSchema.get('info', None)
+    if infoDict is None:
+        return
+    infoType = asyncapi.AsyncApiInfo()
+    infoType.description = infoDict.get('description', None)
+    infoType.title = infoDict.get('title', None)
+    infoType.version = infoDict.get('version', None)
+    modelTypes.append(infoType)
+
+
+def _parseAsyncApiServers(modelTypes, parsedSchema):
+    serversDict = parsedSchema.get('servers', None)
+    if serversDict is None:
+        return
+    for key in serversDict.keys():
+        serverDict = serversDict.get(key, None)
+        if serverDict is None:
+            continue
+        serverType = asyncapi.AsyncApiServer()
+        serverType.name = key
+        serverType.url = serverDict.get('url', None)
+        serverType.description = serverDict.get('description', None)
+        serverType.protocol = serverDict.get('protocol', None)
+        serverType.protocolVersion = serverDict.get('protocolVersion', None)
+        modelTypes.append(serverType)
+
+
+def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer):
+    parametersDict = channelDict.get('parameters', None)
+    if parametersDict is None:
+        return
+    for key in parametersDict.keys():
+        paramDict = parametersDict.get(key, None)
+        if paramDict is None:
+            continue
+        paramType = asyncapi.Parameter()
+        paramType.name = key
+        paramType.description = paramDict.get('description', None)
+        __extractParameterType(paramDict, modelTypes, modelFileContainer, paramType, key)
+
+        channelType.parameters.append(paramType)
+
+
+def _initAsyncApiOperationBase(operationDict, operationType, modelTypes, modelFileContainer):
+    operationType.operationId = operationDict.get('operationId', None)
+    operationType.summary = operationDict.get('summary', None)
+    operationType.description = operationDict.get('description', None)
+    # TODO _initAsyncApiMessage(operationDict, operationType, modelTypes, modelFileContainer)
+    # TODO _initAsyncApiAmqpBinding(operationDict, operationType)
+
+
+def _initAsyncApiMessagePayload(messageDict, operationType, modelTypes, modelFileContainer):
+    payloadDict = messageDict.get('payload', None)
+    if payloadDict is None:
+        return
+    operationType.payload = asyncapi.PayloadType()
+    __getTypeFromSchemaDictAndAsignId(payloadDict, operationType.payload, modelTypes, modelFileContainer, operationType.operationId)
+
+
+def _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer):
+    channelsDict = parsedSchema.get('channels', None)
+    if channelsDict is None:
+        return
+    for key in channelsDict.keys():
+        channelDict = channelsDict.get(key, None)
+        if channelDict is None:
+            continue
+        channelType = asyncapi.Channel()
+        channelType.key = key
+        channelType.description = channelDict.get('description', None)
+        _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer)
+        # TODO _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer)
+        # TODO _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFileContainer)
+        modelTypes.append(channelType)
+
+
 def extractAsyncApiTypes(modelTypes, modelFileContainer):
-    pass # TODO
+    """extract the asyncapi specific types from the parsed schema
+
+
+    Keyword arguments:
+    modelTypes -- dictionary with the loaded schema
+    modelFileContainer -- container that bundles data around the file to parse
+    """
+
+    parsedSchema = modelFileContainer.parsedSchema
+    _parseAsyncApiInfo(modelTypes, parsedSchema)
+    _parseAsyncApiServers(modelTypes, parsedSchema)
+    _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer)
+
 
 def _extractAsyncApiMessageTypes(componentsDict, modelTypes, modelFileContainer):
     pass # TODO
 
+
 def _extractAsyncApiParameterTypes(componentsDict, modelTypes, modelFileContainer):
     pass # TODO
+
 
 def _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer):
     pass # TODO
 
+
 def _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer):
     pass # TODO
 
+
 def _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer):
     pass # TODO
-
