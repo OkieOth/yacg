@@ -235,7 +235,8 @@
                     "type": "integer"
                 },
                 "mandatory": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "replyTo": {
                     "type": "string",

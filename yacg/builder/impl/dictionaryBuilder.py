@@ -1203,9 +1203,9 @@ def _extractAsyncApiParameterTypes(componentsDict, modelTypes, modelFileContaine
 
 
 def _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer):
-    channelBinddingsDict = componentsDict.get("channelBindings", {})
-    for key in channelBinddingsDict.keys():
-        dict = channelBinddingsDict.get(key, {})
+    bindingsDict = componentsDict.get("channelBindings", {})
+    for key in bindingsDict.keys():
+        dict = bindingsDict.get(key, {})
         amqpBindingsDict = dict.get("amqp", None)
         if amqpBindingsDict is None:
             continue
@@ -1248,4 +1248,19 @@ def _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileCon
 
 
 def _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer):
-    pass # TODO
+    bindingsDict = componentsDict.get("operationBindings", {})
+    for key in bindingsDict.keys():
+        dict = bindingsDict.get(key, {})
+        amqpBindingsDict = dict.get("amqp", None)
+        if amqpBindingsDict is None:
+            continue
+        __initOperationBindingsAmqpObj(key, amqpBindingsDict, modelTypes)
+
+
+def __initOperationBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
+    bindingsObj = asyncapi.OperationBindingAmqp()
+    bindingsObj.name = name
+    bindingsObj.expiration = amqpBindingsDict.get("expiration", None)
+    bindingsObj.replyTo = amqpBindingsDict.get("replyTo", "amq.rabbitmq.reply-to")
+    bindingsObj.mandatory = amqpBindingsDict.get("mandatory", False)
+    modelTypes.append(bindingsObj)

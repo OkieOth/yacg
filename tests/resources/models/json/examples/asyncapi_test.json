@@ -435,6 +435,24 @@
                     }
                 }
             }
+        },
+        "messageBindings": {
+            "msgBinding1": {
+
+            }
+        },
+        "operationBindings":{
+            "opBinding1": {
+                "amqp": {
+                    "expiration": 10,
+                    "replyTo": "test-reply-to"
+                }
+            },
+            "opBinding2": {
+                "amqp": {
+                    "mandatory": true
+                }
+            }
         }
     }
 }
