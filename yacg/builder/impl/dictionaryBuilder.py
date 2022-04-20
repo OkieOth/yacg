@@ -1244,7 +1244,21 @@ def __initChannelBindingsQueue(queueDict):
 
 
 def _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer):
-    pass # TODO
+    bindingsDict = componentsDict.get("messageBindings", {})
+    for key in bindingsDict.keys():
+        dict = bindingsDict.get(key, {})
+        amqpBindingsDict = dict.get("amqp", None)
+        if amqpBindingsDict is None:
+            continue
+        __initMessageBindingsAmqpObj(key, amqpBindingsDict, modelTypes)
+
+
+def __initMessageBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
+    bindingsObj = asyncapi.MessageBindingsAmqp()
+    bindingsObj.name = name
+    bindingsObj.contentEncoding = amqpBindingsDict.get("contentEncoding", None)
+    bindingsObj.messageType = amqpBindingsDict.get("messageType", None)
+    modelTypes.append(bindingsObj)
 
 
 def _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer):
