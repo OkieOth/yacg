@@ -3,7 +3,40 @@
 # created by yacg (template: pythonBeans.mako v1.0.0)
 
 from enum import Enum
+import yacg.model.shared.info
 import yacg.model.model
+
+
+class OpenApiServer:
+    def __init__(self, dictObj=None):
+
+        self.url = None
+
+        self.description = None
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.url = dictObj.get('url', None)
+
+        self.description = dictObj.get('description', None)
+
+
+class OpenApiInfo (yacg.model.shared.info.InfoSection):
+    def __init__(self, dictObj=None):
+        super(yacg.model.shared.info.InfoSection, self).__init__()
+        pass
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
 
 class PathType (yacg.model.model.Type):
@@ -144,7 +177,6 @@ class CommandCommandEnum(Enum):
             return 'PATCH'
         else:
             return ''
-
 
 
 class Parameter:

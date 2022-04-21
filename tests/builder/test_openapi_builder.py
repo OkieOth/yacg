@@ -10,39 +10,41 @@ class TestOpenApiParsing (unittest.TestCase):
 
     def test_openApiExample(self):
         modelFile = 'tests/resources/models/json/examples/openapi_v3_example_small.json'
-        self.__doTest(modelFile, False)
+        self.__doTest(modelFile, False, 21)
 
     def test_swaggerExample(self):
         modelFile = 'tests/resources/models/json/examples/swagger_v2_example_small.json'
-        self.__doTest(modelFile, True, True)
+        self.__doTest(modelFile, True, 19, True)
 
     def test_separateOpenApiPathTypes(self):
         modelFile = 'tests/resources/models/json/examples/openapi_v3_example_small.json'
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(18, len(modelTypes))
-        (pathTypes, otherTypes, enumTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
+        self.assertEqual(21, len(modelTypes))
+        (pathTypes, otherTypes, enumTypes, infoType, serverTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
         self.assertEqual(4, len(pathTypes))
         self.assertEqual(9, len(otherTypes))
         self.assertEqual(5, len(enumTypes))
+        self.assertIsNotNone(infoType)
+        self.assertEqual(2, len(serverTypes))
 
     def test_getOpenApiTags(self):
         modelFile = 'tests/resources/models/json/examples/openapi_v3_example_small.json'
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(18, len(modelTypes))
+        self.assertEqual(21, len(modelTypes))
         tags = modelFuncs.getOpenApiTags(modelTypes)
         self.assertEqual(1, len(tags))
 
-    def __doTest(self, modelFile, skipScopeTest, requestBodyMimeTypeCanBeNone=False):
+    def __doTest(self, modelFile, skipScopeTest, typesCount, requestBodyMimeTypeCanBeNone=False):
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(18, len(modelTypes))
+        self.assertEqual(typesCount, len(modelTypes))
         pathTypes = []
         coreModelTypes = []
         foundScopedCommand = False

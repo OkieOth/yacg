@@ -10,13 +10,29 @@
     templateFile = 'openApiJson.mako'
     templateVersion = '1.0.0'
 
-    title = templateParameters.get('title',"If you set a template param called 'title', then this text appears here")
-    description = templateParameters.get('description','This is a simple template that create an OpenApi file')
-    description = description + "(created by yacg, template: {} v{})".format(templateFile,templateVersion)
-    version = templateParameters.get('version','1.0.0')
+    title = templateParameters.get('title', None)
+    description = templateParameters.get('description', None)
+    version = templateParameters.get('version', None)
 
     tags = modelFuncs.getOpenApiTags(modelTypes)
-    (pathTypes, nonEnumTypes, enumTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
+    (pathTypes, nonEnumTypes, enumTypes, infoType, serverTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
+
+    if infoType is not None:
+        if description is None:
+            description = infoType.description
+        if title is None:
+            title = infoType.title
+        if version is None:
+            version = infoType.version
+        else:
+            "1.0.0"
+
+    descriptionExt = "(created by yacg, template: {} v{})".format(templateFile,templateVersion)
+    if description is None:
+        description = descriptionExt
+    else:
+        description = description + descriptionExt
+
 %>{
     "openapi": "3.0.1",
     "info": {

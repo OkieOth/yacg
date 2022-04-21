@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Info Section",
+    "description": "Info section for API definition specs as openapi and ayncapi",
+    "version": "0.1.0",
+    "x-domain": "yacg.model.shared.info",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "license": {
+            "type": "string"
+        }
+    }
+}

@@ -57,7 +57,7 @@ class TestJavaBean (unittest.TestCase):
         blackListEntry.type = BlackWhiteListEntryTypeEnum.TYPETYPE
         blackList.append(blackListEntry)
         modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, ())
-        self.assertEqual(18, len(modelTypesToUse))
+        self.assertEqual(19, len(modelTypesToUse))
 
     def testWhiteListedPathTypes(self):
         modelFile = 'resources/models/yaml/userConfig.swagger.yaml'
@@ -103,6 +103,11 @@ class TestJavaBean (unittest.TestCase):
         blackListEntry.name = 'PathType'
         blackListEntry.type = BlackWhiteListEntryTypeEnum.TYPETYPE
         blackList.append(blackListEntry)
+
+        blackListEntry2 = BlackWhiteListEntry()
+        blackListEntry2.name = 'OpenApiInfo'
+        blackListEntry2.type = BlackWhiteListEntryTypeEnum.TYPETYPE
+        blackList.append(blackListEntry2)
 
         renderMultiFileTemplate(
             modelTypes,
