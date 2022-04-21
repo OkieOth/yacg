@@ -168,6 +168,7 @@ def extractOpenApiInfo(modelTypes, modelFileContainer):
     infoObj.description = infoDict.get("description", None)
     infoObj.license = infoDict.get("license", None)
     infoObj.title = infoDict.get("title", None)
+    infoObj.version = infoDict.get("version", None)
     modelTypes.append(infoObj)
 
 
