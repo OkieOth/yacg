@@ -17,8 +17,8 @@ class TestYacgAsyncapiModel (unittest.TestCase):
         x = yacg.model.asyncapi.Message()
         self.assertIsNotNone(x)
 
-    def testOperationBindingAmqp(self):
-        x = yacg.model.asyncapi.OperationBindingAmqp()
+    def testOperationBindingsAmqp(self):
+        x = yacg.model.asyncapi.OperationBindingsAmqp()
         self.assertIsNotNone(x)
 
     def testAsyncApiInfo(self):
@@ -45,19 +45,19 @@ class TestYacgAsyncapiModel (unittest.TestCase):
         x = yacg.model.asyncapi.ChannelBindingsAmqp()
         self.assertIsNotNone(x)
 
-    def testChannelBindingAmqpExchange(self):
-        x = yacg.model.asyncapi.ChannelBindingAmqpExchange()
+    def testChannelBindingsAmqpExchange(self):
+        x = yacg.model.asyncapi.ChannelBindingsAmqpExchange()
         self.assertIsNotNone(x)
 
-    def testChannelBindingAmqpExchangeTypeEnum(self):
-        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingAmqpExchangeTypeEnum.TOPIC)
-        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingAmqpExchangeTypeEnum.DIRECT)
-        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingAmqpExchangeTypeEnum.FANOUT)
-        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingAmqpExchangeTypeEnum.DEFAULT)
-        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingAmqpExchangeTypeEnum.HEADERS)
+    def testChannelBindingsAmqpExchangeTypeEnum(self):
+        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpExchangeTypeEnum.TOPIC)
+        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpExchangeTypeEnum.DIRECT)
+        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpExchangeTypeEnum.FANOUT)
+        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpExchangeTypeEnum.DEFAULT)
+        self.assertIsNotNone(yacg.model.asyncapi.ChannelBindingsAmqpExchangeTypeEnum.HEADERS)
 
-    def testChannelBindingAmqpQueue(self):
-        x = yacg.model.asyncapi.ChannelBindingAmqpQueue()
+    def testChannelBindingsAmqpQueue(self):
+        x = yacg.model.asyncapi.ChannelBindingsAmqpQueue()
         self.assertIsNotNone(x)
 
     def testChannelBindingsAmqpIsTypeEnum(self):

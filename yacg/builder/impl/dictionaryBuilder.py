@@ -1305,7 +1305,7 @@ def _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileC
 
 
 def __initOperationBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
-    bindingsObj = asyncapi.OperationBindingAmqp()
+    bindingsObj = asyncapi.OperationBindingsAmqp()
     bindingsObj.name = name
     bindingsObj.expiration = amqpBindingsDict.get("expiration", None)
     bindingsObj.replyTo = amqpBindingsDict.get("replyTo", "amq.rabbitmq.reply-to")

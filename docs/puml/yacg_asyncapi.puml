@@ -8,7 +8,7 @@ class OperationBase {
         StringType summary
         StringType description
         Message message
-        OperationBindingAmqp amqpBinding
+        OperationBindingsAmqp amqpBindings
 }
 
 
@@ -20,7 +20,7 @@ class Message {
 
 note top: Container that describes the messages\nare sent
 
-class OperationBindingAmqp {
+class OperationBindingsAmqp {
         StringType name
         IntegerType expiration
         BooleanType mandatory
@@ -74,22 +74,22 @@ PublishOperation --|> OperationBase
 class ChannelBindingsAmqp {
         StringType name
         ChannelBindingsAmqpIsTypeEnum isType
-        ChannelBindingAmqpQueue queue
-        ChannelBindingAmqpExchange exchange
+        ChannelBindingsAmqpQueue queue
+        ChannelBindingsAmqpExchange exchange
 }
 
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
 
-class ChannelBindingAmqpExchange {
+class ChannelBindingsAmqpExchange {
         StringType name
-        ChannelBindingAmqpExchangeTypeEnum type
+        ChannelBindingsAmqpExchangeTypeEnum type
         BooleanType durable
         BooleanType autoDelete
 }
 
 note top: channel exchange parameters
 
-enum ChannelBindingAmqpExchangeTypeEnum {
+enum ChannelBindingsAmqpExchangeTypeEnum {
     TOPIC
     DIRECT
     FANOUT
@@ -98,7 +98,7 @@ enum ChannelBindingAmqpExchangeTypeEnum {
 }
 
 
-class ChannelBindingAmqpQueue {
+class ChannelBindingsAmqpQueue {
         StringType name
         BooleanType durable
         BooleanType exclusive
@@ -135,7 +135,7 @@ note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#messag
 OperationBase  *--  Message
             
 
-OperationBase  *--  OperationBindingAmqp
+OperationBase  *--  OperationBindingsAmqp
             
 
     
@@ -186,15 +186,15 @@ PublishOperation  *--  Message
 ChannelBindingsAmqp  *--  ChannelBindingsAmqpIsTypeEnum
             
 
-ChannelBindingsAmqp  *--  ChannelBindingAmqpQueue
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpQueue
             
 
-ChannelBindingsAmqp  *--  ChannelBindingAmqpExchange
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpExchange
             
 
     
 
-ChannelBindingAmqpExchange  *--  ChannelBindingAmqpExchangeTypeEnum
+ChannelBindingsAmqpExchange  *--  ChannelBindingsAmqpExchangeTypeEnum
             
 
 

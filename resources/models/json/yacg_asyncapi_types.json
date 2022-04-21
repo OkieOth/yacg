@@ -24,9 +24,9 @@
                     "description": "some words to explain to topic",
                     "$ref": "#/definitions/Message"
                 },
-                "amqpBinding": {
+                "amqpBindings": {
                     "description": "amqp 0.9.1 related binding parameters",
-                    "$ref": "#/definitions/OperationBindingAmqp"
+                    "$ref": "#/definitions/OperationBindingsAmqp"
                 }
             }
         },
@@ -87,7 +87,7 @@
                 }
             }
         },
-        "ChannelBindingAmqpExchange": {
+        "ChannelBindingsAmqpExchange": {
             "description": "channel exchange parameters",
             "type": "object",
             "properties": {
@@ -109,7 +109,7 @@
             },
             "required": ["name", "type"]
         },
-        "ChannelBindingAmqpQueue": {
+        "ChannelBindingsAmqpQueue": {
             "description": "channel queue parameters",
             "type": "object",
             "properties": {
@@ -144,10 +144,10 @@
                     "default": "routingKey"
                 },
                 "queue": {
-                    "$ref": "#/definitions/ChannelBindingAmqpQueue"
+                    "$ref": "#/definitions/ChannelBindingsAmqpQueue"
                 },
                 "exchange": {
-                    "$ref": "#/definitions/ChannelBindingAmqpExchange"
+                    "$ref": "#/definitions/ChannelBindingsAmqpExchange"
                 }
             }
         },
@@ -217,7 +217,7 @@
                 }
             }
         },
-        "OperationBindingAmqp": {
+        "OperationBindingsAmqp": {
             "description": "specific AMQP binding properties",
             "type": "object",
             "properties": {

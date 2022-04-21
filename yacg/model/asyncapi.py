@@ -22,7 +22,7 @@ class OperationBase:
         self.message = None
 
         #: amqp 0.9.1 related binding parameters
-        self.amqpBinding = None
+        self.amqpBindings = None
 
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -41,9 +41,9 @@ class OperationBase:
         if subDictObj is not None:
             self.message = Message(subDictObj)
 
-        subDictObj = dictObj.get('amqpBinding', None)
+        subDictObj = dictObj.get('amqpBindings', None)
         if subDictObj is not None:
-            self.amqpBinding = OperationBindingAmqp(subDictObj)
+            self.amqpBindings = OperationBindingsAmqp(subDictObj)
 
 
 class Message:
@@ -79,7 +79,7 @@ class Message:
             self.amqpBindings = MessageBindingsAmqp(subDictObj)
 
 
-class OperationBindingAmqp:
+class OperationBindingsAmqp:
     """ specific AMQP binding properties
     """
 
@@ -107,7 +107,7 @@ class OperationBindingAmqp:
 
         self.mandatory = dictObj.get('mandatory', False)
 
-        self.replyTo = dictObj.get('replyTo', amq.rabbitmq.reply-to)
+        self.replyTo = dictObj.get('replyTo', "amq.rabbitmq.reply-to")
 
 
 class AsyncApiInfo (yacg.model.shared.info.InfoSection):
@@ -283,14 +283,14 @@ class ChannelBindingsAmqp:
 
         subDictObj = dictObj.get('queue', None)
         if subDictObj is not None:
-            self.queue = ChannelBindingAmqpQueue(subDictObj)
+            self.queue = ChannelBindingsAmqpQueue(subDictObj)
 
         subDictObj = dictObj.get('exchange', None)
         if subDictObj is not None:
-            self.exchange = ChannelBindingAmqpExchange(subDictObj)
+            self.exchange = ChannelBindingsAmqpExchange(subDictObj)
 
 
-class ChannelBindingAmqpExchange:
+class ChannelBindingsAmqpExchange:
     """ channel exchange parameters
     """
 
@@ -313,14 +313,14 @@ class ChannelBindingAmqpExchange:
 
         self.name = dictObj.get('name', None)
 
-        self.type = ChannelBindingAmqpExchangeTypeEnum.valueForString(dictObj.get('type', None))
+        self.type = ChannelBindingsAmqpExchangeTypeEnum.valueForString(dictObj.get('type', None))
 
         self.durable = dictObj.get('durable', False)
 
         self.autoDelete = dictObj.get('autoDelete', False)
 
 
-class ChannelBindingAmqpExchangeTypeEnum(Enum):
+class ChannelBindingsAmqpExchangeTypeEnum(Enum):
     TOPIC = 'topic'
     DIRECT = 'direct'
     FANOUT = 'fanout'
@@ -333,15 +333,15 @@ class ChannelBindingAmqpExchangeTypeEnum(Enum):
         if lowerStringValue is None:
             return None
         elif lowerStringValue == 'topic':
-            return ChannelBindingAmqpExchangeTypeEnum.TOPIC
+            return ChannelBindingsAmqpExchangeTypeEnum.TOPIC
         elif lowerStringValue == 'direct':
-            return ChannelBindingAmqpExchangeTypeEnum.DIRECT
+            return ChannelBindingsAmqpExchangeTypeEnum.DIRECT
         elif lowerStringValue == 'fanout':
-            return ChannelBindingAmqpExchangeTypeEnum.FANOUT
+            return ChannelBindingsAmqpExchangeTypeEnum.FANOUT
         elif lowerStringValue == 'default':
-            return ChannelBindingAmqpExchangeTypeEnum.DEFAULT
+            return ChannelBindingsAmqpExchangeTypeEnum.DEFAULT
         elif lowerStringValue == 'headers':
-            return ChannelBindingAmqpExchangeTypeEnum.HEADERS
+            return ChannelBindingsAmqpExchangeTypeEnum.HEADERS
         else:
             return None
 
@@ -349,22 +349,22 @@ class ChannelBindingAmqpExchangeTypeEnum(Enum):
     def valueAsString(cls, enumValue):
         if enumValue is None:
             return ''
-        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.TOPIC:
+        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.TOPIC:
             return 'topic'
-        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.DIRECT:
+        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.DIRECT:
             return 'direct'
-        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.FANOUT:
+        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.FANOUT:
             return 'fanout'
-        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.DEFAULT:
+        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.DEFAULT:
             return 'default'
-        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.HEADERS:
+        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.HEADERS:
             return 'headers'
         else:
             return ''
 
 
 
-class ChannelBindingAmqpQueue:
+class ChannelBindingsAmqpQueue:
     """ channel queue parameters
     """
 
