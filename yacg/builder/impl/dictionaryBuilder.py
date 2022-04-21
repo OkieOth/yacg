@@ -172,7 +172,14 @@ def extractOpenApiInfo(modelTypes, modelFileContainer):
 
 
 def extractOpenApiServer(modelTypes, modelFileContainer):
-    pass
+    serverList = modelFileContainer.parsedSchema.get('servers', None)
+    if serverList is None:
+        return
+    for serverDict in serverList:
+        serverObj = openapi.OpenApiServer()
+        serverObj.url = serverDict.get("url", "UNKNOWN_URL")
+        serverObj.description = serverDict.get("description", None)
+        modelTypes.append(serverObj)
 
 
 def __getPropertyByName(type, propertyName):
