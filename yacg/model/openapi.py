@@ -179,7 +179,6 @@ class CommandCommandEnum(Enum):
             return ''
 
 
-
 class Parameter:
     """ definition of a parameter that is used in the request
     """

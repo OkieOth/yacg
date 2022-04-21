@@ -186,8 +186,10 @@ def getTypeName(type):
 def separateOpenApiPathTypes(types):
     """function returns a list that consists of three elems:
     1. OpenApi PathTypes
-    2. Non enum types
+    2. Other types
     3. Enum types
+    4. Info type
+    5. Servers type
 
     Keyword arguments:
     types -- list of model.Type instances
@@ -196,14 +198,20 @@ def separateOpenApiPathTypes(types):
     pathTypes = []
     nonEnumTypes = []
     enumTypes = []
+    infoType = None
+    serverTypes = []
     for type in types:
         if isinstance(type, openapi.PathType):
             pathTypes.append(type)
         elif isinstance(type, model.EnumType):
             enumTypes.append(type)
+        elif isinstance(type, openapi.OpenApiInfo):
+            infoType = type
+        elif isinstance(type, openapi.OpenApiServer):
+            serverTypes.append(type)
         else:
             nonEnumTypes.append(type)
-    return (pathTypes, nonEnumTypes, enumTypes)
+    return (pathTypes, nonEnumTypes, enumTypes, infoType, serverTypes)
 
 
 def getOpenApiTags(types):

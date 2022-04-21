@@ -16,7 +16,7 @@
     version = templateParameters.get('version','1.0.0')
 
     tags = modelFuncs.getOpenApiTags(modelTypes)
-    (pathTypes, nonEnumTypes, enumTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
+    (pathTypes, nonEnumTypes, enumTypes, infoType, serverTypes) = modelFuncs.separateOpenApiPathTypes(modelTypes)
 %>{
     "openapi": "3.0.1",
     "info": {

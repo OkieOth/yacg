@@ -154,8 +154,25 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
     if not skipOpenApi:
         if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
             modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
+            extractOpenApiInfo(modelTypes, modelFileContainer)
+            extractOpenApiServer(modelTypes, modelFileContainer)
             extractOpenApiPathTypes(modelTypes, modelFileContainer)
     return modelTypes
+
+
+def extractOpenApiInfo(modelTypes, modelFileContainer):
+    infoDict = modelFileContainer.parsedSchema.get('info', None)
+    if infoDict is None:
+        return
+    infoObj = openapi.OpenApiInfo()
+    infoObj.description = infoDict.get("description", None)
+    infoObj.license = infoDict.get("license", None)
+    infoObj.title = infoDict.get("title", None)
+    modelTypes.append(infoObj)
+
+
+def extractOpenApiServer(modelTypes, modelFileContainer):
+    pass
 
 
 def __getPropertyByName(type, propertyName):
@@ -645,6 +662,8 @@ def _getTypeFromParsedSchema(modelFileContainer, desiredTypeName, modelTypes):
     newModelTypes = _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
     desiredType = None
     for type in newModelTypes:
+        if not hasattr(type, "name"):
+            continue
         if (type.name == desiredTypeName) and (type.source == modelFileContainer.fileName):
             desiredType = type
             break
@@ -685,6 +704,8 @@ def _getAlreadyLoadedType(typeName, typeSource, alreadyLoadedModelTypes):
     """
 
     for type in alreadyLoadedModelTypes:
+        if not hasattr(type, "name"):
+            continue
         if (typeName == type.name) and (typeSource == type.source):
             return type
     return None
@@ -702,6 +723,8 @@ def _appendToAlreadyLoadedTypes(newType, alreadyLoadedModelTypes):
     newTypeName = newType.name
     newTypeSource = newType.source
     for type in alreadyLoadedModelTypes:
+        if not hasattr(type, "name"):
+            continue
         if (newTypeName == type.name) and (newTypeSource == type.source):
             return
     alreadyLoadedModelTypes.append(newType)
@@ -720,6 +743,8 @@ def _getTypeIfAlreadyLoaded(typeName, fileName, modelTypes):
     """
 
     for type in modelTypes:
+        if not hasattr(type, "name"):
+            continue
         if (type.name == typeName) and (fileName == type.source):
             return type
     return None
