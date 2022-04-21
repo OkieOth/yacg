@@ -30,13 +30,11 @@ class OperationBindingAmqp {
 note top: specific AMQP binding properties
 
 class AsyncApiInfo {
-        StringType title
-        StringType version
-        StringType description
 }
 
 note top: Subset of the info object\nattribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
 
+AsyncApiInfo --|> InfoSection
 class AsyncApiServer {
         StringType name
         StringType url
@@ -154,9 +152,6 @@ Message  *--  MessageBindingsAmqp
 
 
     
-
-
-
     
 
 

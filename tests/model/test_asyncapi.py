@@ -5,6 +5,7 @@
 import unittest
 
 import yacg.model.asyncapi
+import yacg.model.shared.info
 
 
 class TestYacgAsyncapiModel (unittest.TestCase):

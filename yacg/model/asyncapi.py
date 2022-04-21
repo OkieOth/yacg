@@ -3,6 +3,7 @@
 # created by yacg (template: pythonBeans.mako v1.0.0)
 
 from enum import Enum
+import yacg.model.shared.info
 
 
 class OperationBase:
@@ -109,17 +110,13 @@ class OperationBindingAmqp:
         self.replyTo = dictObj.get('replyTo', amq.rabbitmq.reply-to)
 
 
-class AsyncApiInfo:
+class AsyncApiInfo (yacg.model.shared.info.InfoSection):
     """ Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
     """
 
     def __init__(self, dictObj=None):
-
-        self.title = None
-
-        self.version = None
-
-        self.description = None
+        super(yacg.model.shared.info.InfoSection, self).__init__()
+        pass
 
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -127,12 +124,6 @@ class AsyncApiInfo:
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
-
-        self.title = dictObj.get('title', None)
-
-        self.version = dictObj.get('version', None)
-
-        self.description = dictObj.get('description', None)
 
 
 class AsyncApiServer:
