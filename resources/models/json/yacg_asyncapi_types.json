@@ -33,17 +33,11 @@
         "AsyncApiInfo": {
             "description": "Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject",
             "type": "object",
-            "properties": {
-                "title": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
+            "allOf": [
+                {
+                    "$ref": "./shared/info.json"
                 }
-            }
+            ]
         },
         "AsyncApiServer": {
             "description": "one entry of the servers section",

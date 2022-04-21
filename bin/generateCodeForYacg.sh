@@ -72,7 +72,7 @@ if ! pipenv run python3 yacg.py --models \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/asyncapi.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_asyncapi.py \
                 plantUml=${scriptPos}/../docs/puml/yacg_asyncapi.puml \
-    --blackListed yacg.model.model=domain \
+    --blackListed yacg.model.model=domain yacg.model.shared.info=domain \
     --protocolFile logs/gen_asyncapi_model.log \
     --skipCodeGenIfVersionUnchanged $* \
     --templateParameters baseModelDomain=yacg.model.asyncapi \
