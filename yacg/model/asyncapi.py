@@ -51,6 +51,9 @@ class Message:
 
     def __init__(self, dictObj=None):
 
+        #: optional name, is used when defined in the components section
+        self.name = None
+
         #: either a basic or a complex type
         self.payload = None
 
@@ -63,6 +66,8 @@ class Message:
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.name = dictObj.get('name', None)
 
         subDictObj = dictObj.get('payload', None)
         if subDictObj is not None:
@@ -79,9 +84,12 @@ class OperationBindingAmqp:
 
     def __init__(self, dictObj=None):
 
+        #: optional name, is used when defined in the components section
+        self.name = None
+
         self.expiration = None
 
-        self.mandatory = None
+        self.mandatory = False
 
         self.replyTo = "amq.rabbitmq.reply-to"
 
@@ -92,9 +100,11 @@ class OperationBindingAmqp:
         if dictObj is None:
             return
 
+        self.name = dictObj.get('name', None)
+
         self.expiration = dictObj.get('expiration', None)
 
-        self.mandatory = dictObj.get('mandatory', None)
+        self.mandatory = dictObj.get('mandatory', False)
 
         self.replyTo = dictObj.get('replyTo', amq.rabbitmq.reply-to)
 
@@ -260,12 +270,13 @@ class ChannelBindingsAmqp:
 
     def __init__(self, dictObj=None):
 
-        self.isType = None
+        #: optional name, is used when defined in the components section
+        self.name = None
 
-        #: channel queue parameters
+        self.isType = ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY
+
         self.queue = None
 
-        #: channel exchange parameters
         self.exchange = None
 
         if dictObj is not None:
@@ -275,15 +286,121 @@ class ChannelBindingsAmqp:
         if dictObj is None:
             return
 
+        self.name = dictObj.get('name', None)
+
         self.isType = ChannelBindingsAmqpIsTypeEnum.valueForString(dictObj.get('isType', None))
 
         subDictObj = dictObj.get('queue', None)
         if subDictObj is not None:
-            self.queue = ChannelBindingsAmqpQueue(subDictObj)
+            self.queue = ChannelBindingAmqpQueue(subDictObj)
 
         subDictObj = dictObj.get('exchange', None)
         if subDictObj is not None:
-            self.exchange = ChannelBindingsAmqpExchange(subDictObj)
+            self.exchange = ChannelBindingAmqpExchange(subDictObj)
+
+
+class ChannelBindingAmqpExchange:
+    """ channel exchange parameters
+    """
+
+    def __init__(self, dictObj=None):
+
+        self.name = None
+
+        self.type = None
+
+        self.durable = False
+
+        self.autoDelete = False
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.name = dictObj.get('name', None)
+
+        self.type = ChannelBindingAmqpExchangeTypeEnum.valueForString(dictObj.get('type', None))
+
+        self.durable = dictObj.get('durable', False)
+
+        self.autoDelete = dictObj.get('autoDelete', False)
+
+
+class ChannelBindingAmqpExchangeTypeEnum(Enum):
+    TOPIC = 'topic'
+    DIRECT = 'direct'
+    FANOUT = 'fanout'
+    DEFAULT = 'default'
+    HEADERS = 'headers'
+
+    @classmethod
+    def valueForString(cls, stringValue):
+        lowerStringValue = stringValue.lower() if stringValue is not None else None
+        if lowerStringValue is None:
+            return None
+        elif lowerStringValue == 'topic':
+            return ChannelBindingAmqpExchangeTypeEnum.TOPIC
+        elif lowerStringValue == 'direct':
+            return ChannelBindingAmqpExchangeTypeEnum.DIRECT
+        elif lowerStringValue == 'fanout':
+            return ChannelBindingAmqpExchangeTypeEnum.FANOUT
+        elif lowerStringValue == 'default':
+            return ChannelBindingAmqpExchangeTypeEnum.DEFAULT
+        elif lowerStringValue == 'headers':
+            return ChannelBindingAmqpExchangeTypeEnum.HEADERS
+        else:
+            return None
+
+    @classmethod
+    def valueAsString(cls, enumValue):
+        if enumValue is None:
+            return ''
+        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.TOPIC:
+            return 'topic'
+        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.DIRECT:
+            return 'direct'
+        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.FANOUT:
+            return 'fanout'
+        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.DEFAULT:
+            return 'default'
+        elif enumValue == ChannelBindingAmqpExchangeTypeEnum.HEADERS:
+            return 'headers'
+        else:
+            return ''
+
+
+
+class ChannelBindingAmqpQueue:
+    """ channel queue parameters
+    """
+
+    def __init__(self, dictObj=None):
+
+        self.name = None
+
+        self.durable = False
+
+        self.exclusive = False
+
+        self.autoDelete = False
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.name = dictObj.get('name', None)
+
+        self.durable = dictObj.get('durable', False)
+
+        self.exclusive = dictObj.get('exclusive', False)
+
+        self.autoDelete = dictObj.get('autoDelete', False)
 
 
 class ChannelBindingsAmqpIsTypeEnum(Enum):
@@ -310,110 +427,6 @@ class ChannelBindingsAmqpIsTypeEnum(Enum):
             return 'queue'
         elif enumValue == ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY:
             return 'routingKey'
-        else:
-            return ''
-
-
-
-class ChannelBindingsAmqpQueue:
-    """ channel queue parameters
-    """
-
-    def __init__(self, dictObj=None):
-
-        self.name = None
-
-        self.durable = None
-
-        self.exclusive = None
-
-        self.autodelete = None
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.name = dictObj.get('name', None)
-
-        self.durable = dictObj.get('durable', None)
-
-        self.exclusive = dictObj.get('exclusive', None)
-
-        self.autodelete = dictObj.get('autodelete', None)
-
-
-class ChannelBindingsAmqpExchange:
-    """ channel exchange parameters
-    """
-
-    def __init__(self, dictObj=None):
-
-        self.name = None
-
-        self.type = None
-
-        self.durable = None
-
-        self.autodelete = None
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.name = dictObj.get('name', None)
-
-        self.type = ChannelBindingsAmqpExchangeTypeEnum.valueForString(dictObj.get('type', None))
-
-        self.durable = dictObj.get('durable', None)
-
-        self.autodelete = dictObj.get('autodelete', None)
-
-
-class ChannelBindingsAmqpExchangeTypeEnum(Enum):
-    TOPIC = 'topic'
-    DIRECT = 'direct'
-    FANOUT = 'fanout'
-    DEFAULT = 'default'
-    HEADERS = 'headers'
-
-    @classmethod
-    def valueForString(cls, stringValue):
-        lowerStringValue = stringValue.lower() if stringValue is not None else None
-        if lowerStringValue is None:
-            return None
-        elif lowerStringValue == 'topic':
-            return ChannelBindingsAmqpExchangeTypeEnum.TOPIC
-        elif lowerStringValue == 'direct':
-            return ChannelBindingsAmqpExchangeTypeEnum.DIRECT
-        elif lowerStringValue == 'fanout':
-            return ChannelBindingsAmqpExchangeTypeEnum.FANOUT
-        elif lowerStringValue == 'default':
-            return ChannelBindingsAmqpExchangeTypeEnum.DEFAULT
-        elif lowerStringValue == 'headers':
-            return ChannelBindingsAmqpExchangeTypeEnum.HEADERS
-        else:
-            return None
-
-    @classmethod
-    def valueAsString(cls, enumValue):
-        if enumValue is None:
-            return ''
-        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.TOPIC:
-            return 'topic'
-        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.DIRECT:
-            return 'direct'
-        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.FANOUT:
-            return 'fanout'
-        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.DEFAULT:
-            return 'default'
-        elif enumValue == ChannelBindingsAmqpExchangeTypeEnum.HEADERS:
-            return 'headers'
         else:
             return ''
 
@@ -447,6 +460,9 @@ class MessageBindingsAmqp:
 
     def __init__(self, dictObj=None):
 
+        #: optional name, is used when defined in the components section
+        self.name = None
+
         #: A MIME encoding for the message content.
         self.contentEncoding = None
 
@@ -459,6 +475,8 @@ class MessageBindingsAmqp:
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.name = dictObj.get('name', None)
 
         self.contentEncoding = dictObj.get('contentEncoding', None)
 
