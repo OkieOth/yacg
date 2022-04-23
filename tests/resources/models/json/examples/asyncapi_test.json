@@ -171,26 +171,8 @@
                 "operationId": "ttGetAll",
                 "summary": "get all stored tt's",
                 "message": {
-                    "x-parameters": {
-                        "filtering": {
-                            "description": "json serialized filter object. By default adds 'isTemplate=false'",
-                            "$ref": "./qinfo.json#/definitions/Filtering"
-                        },
-                        "sorting": {
-                            "description": "json serialized sorting object",
-                            "$ref": "./qinfo.json#/definitions/Sorting"
-                        }
-                    }
                 },
-                "x-token": {
-                    "testId": {
-                        "$comment": "some token",
-                        "description": "testId claim in the token",
-                        "type": "string",
-                        "format": "uuid"
-                    }
-                },
-                "x-responseType": {
+                "x-responseMessage": {
                     "description": "collection of requested items",
                     "type": "array",
                     "items": {
@@ -438,7 +420,10 @@
         },
         "messageBindings": {
             "msgBinding1": {
-
+                "amqp": {
+                    "contentEncoding": "UTF-8",
+                    "messageType": "typenamestring"
+                }
             }
         },
         "operationBindings":{

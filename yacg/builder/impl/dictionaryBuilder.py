@@ -176,11 +176,15 @@ def extractOpenApiInfo(modelTypes, modelFileContainer):
     if infoDict is None:
         return
     infoObj = openapi.OpenApiInfo()
+    __initInfoObj(infoObj, infoDict)
+    modelTypes.append(infoObj)
+
+
+def __initInfoObj(infoObj, infoDict):
     infoObj.description = infoDict.get("description", None)
     infoObj.license = infoDict.get("license", None)
     infoObj.title = infoDict.get("title", None)
     infoObj.version = infoDict.get("version", None)
-    modelTypes.append(infoObj)
 
 
 def extractOpenApiServer(modelTypes, modelFileContainer):
@@ -1124,26 +1128,14 @@ def __getAdditionalPropertiesForDictionaryType(dictionary):
         return None
     return additionalProperties
 
-def _parseInfoType(modelTypes, parsedSchema):
-    infoDict = parsedSchema.get('info', None)
-    if infoDict is None:
-        return
-    infoType = asyncapi.AsyncApiInfo()
-    infoType.description = infoDict.get('description', None)
-    infoType.title = infoDict.get('title', None)
-    infoType.version = infoDict.get('version', None)
-    modelTypes.append(infoType)
-
 
 def _parseAsyncApiInfo(modelTypes, parsedSchema):
     infoDict = parsedSchema.get('info', None)
     if infoDict is None:
         return
-    infoType = asyncapi.AsyncApiInfo()
-    infoType.description = infoDict.get('description', None)
-    infoType.title = infoDict.get('title', None)
-    infoType.version = infoDict.get('version', None)
-    modelTypes.append(infoType)
+    infoObj = asyncapi.AsyncApiInfo()
+    __initInfoObj(infoObj, infoDict)
+    modelTypes.append(infoObj)
 
 
 def _parseAsyncApiServers(modelTypes, parsedSchema):

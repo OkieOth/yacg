@@ -183,8 +183,27 @@
                 "amqpBindings": {
                     "description": "additional message parameters",
                     "$ref": "#/definitions/MessageBindingsAmqp"
+                },
+                "contentType": {
+                    "description": "mime type of the content, e.g. application/json",
+                    "type": "string"
+                },
+                "headers": {
+                    "description": "this is basically a complex type, whos top-level properties are used as keys for AMQP headers",
+                    "$ref": "#/definitions/AsyncApiHeaders"
+                },
+                "description": {
+                    "type": "string"
                 }
             }
+        },
+        "AsyncApiHeaders": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "./yacg_model_schema.json#/definitions/ComplexType"
+                }
+            ]
         },
         "MessageBindingsAmqp": {
             "type": "object",
