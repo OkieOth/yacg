@@ -443,6 +443,15 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(isinstance(modelTypes[1].properties[5].type, DictionaryType))
         self.assertTrue(isinstance(modelTypes[1].properties[5].type.valueType, StringType))
 
+    def testEndlessRecursion(self):
+        modelFile = 'resources/models/json/yacg_asyncapi_types.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+
 
 if __name__ == '__main__':
     unittest.main()

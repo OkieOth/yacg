@@ -4,6 +4,7 @@
 
 from enum import Enum
 import yacg.model.shared.info
+import yacg.model.model
 
 
 class OperationBase:
@@ -61,6 +62,14 @@ class Message:
         #: additional message parameters
         self.amqpBindings = None
 
+        #: mime type of the content, e.g. application/json
+        self.contentType = None
+
+        #: this is basically a complex type, whos top-level properties are used as keys for AMQP headers
+        self.headers = None
+
+        self.description = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -77,6 +86,14 @@ class Message:
         subDictObj = dictObj.get('amqpBindings', None)
         if subDictObj is not None:
             self.amqpBindings = MessageBindingsAmqp(subDictObj)
+
+        self.contentType = dictObj.get('contentType', None)
+
+        subDictObj = dictObj.get('headers', None)
+        if subDictObj is not None:
+            self.headers = AsyncApiHeaders(subDictObj)
+
+        self.description = dictObj.get('description', None)
 
 
 class OperationBindingsAmqp:
@@ -472,5 +489,18 @@ class MessageBindingsAmqp:
         self.contentEncoding = dictObj.get('contentEncoding', None)
 
         self.messageType = dictObj.get('messageType', None)
+
+
+class AsyncApiHeaders (yacg.model.model.ComplexType):
+    def __init__(self, dictObj=None):
+        super(yacg.model.model.ComplexType, self).__init__()
+        pass
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
 
 

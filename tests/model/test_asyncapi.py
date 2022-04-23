@@ -6,6 +6,7 @@ import unittest
 
 import yacg.model.asyncapi
 import yacg.model.shared.info
+import yacg.model.model
 
 
 class TestYacgAsyncapiModel (unittest.TestCase):
@@ -70,6 +71,10 @@ class TestYacgAsyncapiModel (unittest.TestCase):
 
     def testMessageBindingsAmqp(self):
         x = yacg.model.asyncapi.MessageBindingsAmqp()
+        self.assertIsNotNone(x)
+
+    def testAsyncApiHeaders(self):
+        x = yacg.model.asyncapi.AsyncApiHeaders()
         self.assertIsNotNone(x)
 
 

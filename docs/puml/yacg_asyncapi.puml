@@ -16,6 +16,9 @@ class Message {
         StringType name
         Payload payload
         MessageBindingsAmqp amqpBindings
+        StringType contentType
+        AsyncApiHeaders headers
+        StringType description
 }
 
 note top: Container that describes the messages\nare sent
@@ -127,6 +130,11 @@ class MessageBindingsAmqp {
 
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
 
+class AsyncApiHeaders {
+}
+
+
+AsyncApiHeaders --|> ComplexType
 
     
 
@@ -145,6 +153,11 @@ Message  *--  Payload
 
 Message  *--  MessageBindingsAmqp
             
+
+
+Message  *--  AsyncApiHeaders
+            
+
 
     
 
@@ -215,6 +228,7 @@ Payload  *--  Type
 
 
 
+    
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
 @enduml

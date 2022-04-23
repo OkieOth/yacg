@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg types for asyncapi support",
     "description": "the yacg standard model included the type spefic aspects, this model cares about the additional definitions",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "x-domain": "yacg.model.asyncapi",
     "definitions": {
         "OperationBase": {

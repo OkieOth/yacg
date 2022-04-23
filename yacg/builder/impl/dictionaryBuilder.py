@@ -708,7 +708,9 @@ def _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTy
     alreadyLoadedModelTypes -- list with already loaded types
     """
 
-    _appendToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTypes)
+    if not _appendToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTypes):
+        # type already exists
+        return
     if not hasattr(desiredType, 'properties'):
         return
     for property in desiredType.properties:
@@ -737,6 +739,8 @@ def _getAlreadyLoadedType(typeName, typeSource, alreadyLoadedModelTypes):
 def _appendToAlreadyLoadedTypes(newType, alreadyLoadedModelTypes):
     """Tests if the new type is already contained in the list of
     loaded types. If not then the new type is appended.
+    Function returns True if the type was added and False
+    in case that the type already exists.
 
     Keyword arguments:
     newType -- new type that should be added
@@ -749,8 +753,9 @@ def _appendToAlreadyLoadedTypes(newType, alreadyLoadedModelTypes):
         if not hasattr(type, "name"):
             continue
         if (newTypeName == type.name) and (newTypeSource == type.source):
-            return
+            return False
     alreadyLoadedModelTypes.append(newType)
+    return True
 
 
 def _getTypeIfAlreadyLoaded(typeName, fileName, modelTypes):
