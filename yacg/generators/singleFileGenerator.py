@@ -2,6 +2,7 @@
 one single output file"""
 
 import yacg.generators.helper.generatorHelperFuncs as generatorHelper
+import sys, os
 
 from mako.template import Template
 
@@ -19,6 +20,9 @@ def renderSingleFileTemplate(modelTypes, blackList, whiteList, singleFileTask):
     singleFileTask - configuration for the single file task
     """
 
+    template_dir = os.path.dirname(singleFileTask.template)
+    if not template_dir in sys.path:
+        sys.path.append(template_dir)
     template = Template(filename=singleFileTask.template)
     modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, whiteList)
     templateParameterDict = {}
@@ -32,6 +36,9 @@ def renderSingleFileTemplate(modelTypes, blackList, whiteList, singleFileTask):
         print(renderResult)
     else:
         outputFile = singleFileTask.destFile
+        outputDir = os.path.dirname(outputFile)
+        if not os.path.exists(outputDir):
+            os.mkdir(outputDir)
         f = open(outputFile, "w+")
         f.write(renderResult)
         f.close()
