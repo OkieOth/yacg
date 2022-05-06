@@ -418,7 +418,7 @@
                         "name": "xxy",
                         "type": "fanout",
                         "durable": true,
-                        "autodelete": true
+                        "autoDelete": true
                     }
                 }
             },
