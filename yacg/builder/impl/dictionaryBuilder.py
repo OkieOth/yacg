@@ -1171,7 +1171,7 @@ def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelF
         paramType.name = key
         paramType.description = paramDict.get('description', None)
         __extractParameterType(paramDict, modelTypes, modelFileContainer, paramType, key)
-        modelTypes.add(paramType)
+        modelTypes.append(paramType)
         if channelType is not None:
             channelType.parameters.append(paramType)
 
