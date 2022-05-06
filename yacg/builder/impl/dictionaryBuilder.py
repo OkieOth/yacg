@@ -129,8 +129,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
                 # extract types from extra components section (OpenApi v3)
                 _extractDefinitionsTypes(schemas, modelTypes, modelFileContainer, None)
             if not skipAdditionalSpecTypes:
-                _extractAsyncApiMessageTypes(componentsDict, modelTypes, modelFileContainer)
-                _extractAsyncApiParameterTypes(componentsDict, modelTypes, modelFileContainer)
+                _parseAsyncApiChannelParameters(modelTypes, componentsDict, None, modelFileContainer)
                 _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer)
                 _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer)
                 _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer)
@@ -1172,8 +1171,9 @@ def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelF
         paramType.name = key
         paramType.description = paramDict.get('description', None)
         __extractParameterType(paramDict, modelTypes, modelFileContainer, paramType, key)
-
-        channelType.parameters.append(paramType)
+        modelTypes.add(paramType)
+        if channelType is not None:
+            channelType.parameters.append(paramType)
 
 
 def _initAsyncApiOperationBase(operationDict, operationType, modelTypes, modelFileContainer):
@@ -1222,14 +1222,6 @@ def extractAsyncApiTypes(modelTypes, modelFileContainer):
     _parseAsyncApiInfo(modelTypes, parsedSchema)
     _parseAsyncApiServers(modelTypes, parsedSchema)
     _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer)
-
-
-def _extractAsyncApiMessageTypes(componentsDict, modelTypes, modelFileContainer):
-    pass # TODO
-
-
-def _extractAsyncApiParameterTypes(componentsDict, modelTypes, modelFileContainer):
-    pass # TODO
 
 
 def _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer):

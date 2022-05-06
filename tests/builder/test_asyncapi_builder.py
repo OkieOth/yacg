@@ -32,16 +32,27 @@ class TestAsyncApiParsing (unittest.TestCase):
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertTrue(len(modelTypes)>0)
         serverTypes = []
+        infoTypes = []
+        channelBindings = []
+        operationBindings = []
+        messageBindings = []
         for type in modelTypes:
             if isinstance(type, asyncapi.AsyncApiServer):
                 serverTypes.append(type)
-        self.assertEqual(len(serverTypes), 2)
-        self.checkServerTypes(serverTypes)
-        infoTypes = []
-        for type in modelTypes:
             if isinstance(type, asyncapi.AsyncApiInfo):
                 infoTypes.append(type)
+            if isinstance(type, asyncapi.ChannelBindingsAmqp):
+                channelBindings.append(type)
+            if isinstance(type, asyncapi.MessageBindingsAmqp):
+                messageBindings.append(type)
+            if isinstance(type, asyncapi.OperationBindingsAmqp):
+                operationBindings.append(type)
+        self.assertEqual(len(serverTypes), 2)
+        self.checkServerTypes(serverTypes)
         self.assertEqual(len(infoTypes), 1)
         self.checkInfoType(infoTypes[0])
+        self.assertEqual(len(channelBindings), 3)  # 4 are given in the test file, but one isn't amqp
+        self.assertEqual(len(messageBindings), 1)
+        self.assertEqual(len(operationBindings), 2)
 
 

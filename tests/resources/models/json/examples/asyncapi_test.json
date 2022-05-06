@@ -18,7 +18,7 @@
             "protocol": "amqp",
             "protocolVersion": "0.9.1"
         }
-    },
+       },
     "channels": {
         "xxy.{param1}.yyx.{param2}": {
             "description": "First channel",
@@ -369,6 +369,21 @@
                     "message": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "parameters": {
+            "myParam1": {
+                "description": "I am a dummy parameter",
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "myParam2": {
+                "description": "I am a dummy complex parameter",
+                "schema": {
+                    "$ref": "#/components/schemas/Order"
                 }
             }
         },
