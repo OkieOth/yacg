@@ -4,6 +4,7 @@ import os
 import yacg.builder.impl.dictionaryBuilder as dictionaryBuilder
 import yacg.model.openapi as openapi
 import yacg.model.asyncapi as asyncapi
+import yacg.model.model as model
 
 
 class TestAsyncApiParsing (unittest.TestCase):
@@ -95,12 +96,35 @@ class TestAsyncApiParsing (unittest.TestCase):
 
     def checkMessageBindings(self, messageBindings):
         self.assertEqual(len(messageBindings), 1)
+        self.assertEqual(messageBindings[0].messageType, 'typenamestring')
+        self.assertEqual(messageBindings[0].name, 'msgBinding1')
+        self.assertEqual(messageBindings[0].contentEncoding, 'UTF-8')
+
+    def checkOperationBinding(self, operationBinding, name, mandatory, expiration, replyTo):
+        self.assertEqual(operationBinding.name, name)
+        self.assertEqual(operationBinding.mandatory, mandatory)
+        self.assertEqual(operationBinding.expiration, expiration)
+        self.assertEqual(operationBinding.replyTo, replyTo)
 
     def checkOperationBindings(self, operationBindings):
         self.assertEqual(len(operationBindings), 2)
+        self.checkOperationBinding(operationBindings[0], 'opBinding1', False, 10, 'test-reply-to')
+        self.checkOperationBinding(operationBindings[1], 'opBinding2', True, None, 'amq.rabbitmq.reply-to')
+
+    def checkParameter(self, parameter, name, description, type):
+        self.assertEqual(parameter.name, name)
+        self.assertEqual(parameter.description, description)
+        self.assertTrue(isinstance(parameter.type, type))
 
     def checkParameters(self, parameters):
         self.assertEqual(len(parameters), 7)
+        self.checkParameter(parameters[0], 'myParam1', 'I am a dummy parameter', model.UuidType)
+        self.checkParameter(parameters[1], 'myParam2', 'I am a dummy complex parameter', model.ComplexType)
+        self.checkParameter(parameters[2], 'param1', 'a param', model.UuidType)
+        self.checkParameter(parameters[3], 'param2', 'another param', model.UuidType)
+        self.checkParameter(parameters[4], 'param1', 'a param', model.UuidType)
+        self.checkParameter(parameters[5], 'param2', 'another param', model.UuidType)
+        self.checkParameter(parameters[6], 'param3', 'yet another param', model.UuidType)
 
     def test_asyncApiExample(self):
         modelFile = 'tests/resources/models/json/examples/asyncapi_test.json'
@@ -135,5 +159,6 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.checkChannelBindings(channelBindings)
         self.checkMessageBindings(messageBindings)
         self.checkOperationBindings(operationBindings)
+        self.checkParameters(parameters)
 
 
