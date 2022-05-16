@@ -90,6 +90,27 @@ class TestModelFuncs (unittest.TestCase):
         self.assertIsNotNone(dictProps)
         self.assertEqual(0, len(dictProps))
 
+    def testGetComplexTypesInProperties(self):
+        myType = getComplexTypeNoBase()
+        self.assertEqual('ExampleType', myType.name)
+        self.assertTrue(myType.extendsType is None)
+
+        # should find the following sequence of properties
+        expPropNameSequence = ['complexProp', 'complexRefProp', 'complexArrayRef']
+        # Reasoning:
+        # should ignore property ExampleType.complexDuplicate as it uses the same type as property ExampleType.complexRefProp
+        # should ignore property ExampleType.complexRefProp.recursiveComplexReference as the search is not recursive!
+
+        # corresponding sequence of complex types:
+        expComplexTypeSequence = ['ExampleTypeInlineComplexProp', 'OtherComplexType', 'OtherComplexTypeForArray']
+
+        actComplexTypes = modelFuncs.getComplexTypesInProperties(myType)
+        self.assertIsNotNone(actComplexTypes)
+        self.assertEqual(len(expComplexTypeSequence), len(actComplexTypes))
+
+        for expName, actProp in zip(expComplexTypeSequence, actComplexTypes):
+            self.assertEqual(expName, actProp.name)
+
 
     def testWithBaseTyp(self):
         self.assertTrue('True')

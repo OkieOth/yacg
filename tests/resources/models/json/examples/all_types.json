@@ -141,6 +141,63 @@
             "items": {
               "type": "boolean"
             }
+          },
+          "inlineComplexProp": {
+            "type" : "object",
+            "properties": {
+              "someDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "someDateTime": {
+                  "type": "string",
+                  "format": "date-time"
+              }
+            }
+          },
+          "complexRefProp": {
+            "description": "first referenc of OtherComplexType",
+            "$ref": "#/definitions/OtherComplexType"
+          },
+          "complexDuplicate": {
+            "description": "second referenc of OtherComplexType",
+            "$ref": "#/definitions/OtherComplexType"
+          },
+          "complexArrayRef": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OtherComplexTypeForArray" 
+            }
+          }
+        }
+      },
+      "OtherComplexType": {
+        "type": "object",
+        "properties": {
+          "someString": {
+            "type": "string"
+          },
+          "recursiveComplexReference": {
+            "$ref": "#/definitions/InnerOtherComplex"
+          }
+        }
+      },
+      "InnerOtherComplex": {
+        "type": "object", 
+        "properties": {
+          "someBoolean": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OtherComplexTypeForArray": {
+        "type": "object",
+        "properties": {
+          "someInteger": {
+            "type": "integer"
+          },
+          "recursiveComplexReference": {
+            "$ref": "#/definitions/InnerOtherComplex"
           }
         }
       }
