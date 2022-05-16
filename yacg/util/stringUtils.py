@@ -89,6 +89,8 @@ def snakeToLowerCamelCase(text):
 def toLowerCase(text):
     """ ensures that the first letter of the text is lower case
     AbCdE -> abCdE"""
+    if text is None:
+        return None
     lowerCase = text[0:1].lower()
     lowerCase += text[1:]
     return lowerCase
@@ -97,6 +99,8 @@ def toLowerCase(text):
 def toUpperCase(text):
     """ ensures that the first letter of the text is upper case
     aBcDe -> ABcDe"""
+    if text is None:
+        return None
     upperCase = text[0:1].upper()
     upperCase += text[1:]
     return upperCase

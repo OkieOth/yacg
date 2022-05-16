@@ -61,6 +61,8 @@ class TestStringUtils (unittest.TestCase):
         self.assertEqual('ALLUPPERSNAKE', t)
 
     def testToLowerCase(self):
+        t = toLowerCase(None)
+        self.assertEqual(None, t)
         # test text starting with upper case character
         t = toLowerCase('AbCdE')
         self.assertEqual('abCdE', t)
@@ -81,6 +83,8 @@ class TestStringUtils (unittest.TestCase):
         self.assertEqual('', t)
 
     def testToUpperCase(self):
+        t = toUpperCase(None)
+        self.assertEqual(None, t)
         # test text starting with upper case character
         t = toUpperCase('AbCdE')
         self.assertEqual('AbCdE', t)
