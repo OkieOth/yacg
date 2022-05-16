@@ -1,3 +1,12 @@
+# 4.5.0
+* javaFuncs: fixed typos
+* javaFuncs: map to wrapper types Float and Long when applicable
+* stringUtils: methods for converting *snake_case* to *CamelCase*
+* modelFuncs: added some methods to work with the properties of a type (none recursive)
+
+# 4.4.0
+* Create missing directories for output files on singleFileGenerator 
+
 # 4.3.0
 * yacg commandline switch to protocol the codegen
 * yacg commandline switch to skip codegen when model version hasn't change to the last protocolled run
