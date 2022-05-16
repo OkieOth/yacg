@@ -1,0 +1,206 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Example Type",
+    "description": "Example types for tests",
+    "version": "0.0.1",
+    "definitions": {
+      "ExampleType": {
+        "type": "object",
+        "properties": {
+          "stringProp": {
+            "type": "string"
+          },
+          "stringArr": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },"uuidProp": {
+            "type": "string",
+            "format": "uuid",
+            "x-key": true
+          },
+          "uuidArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "dateProp": {
+            "type": "string",
+            "format": "date"
+          },
+          "dateArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "dateTimeProp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateTimeArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "byteProp": {
+            "type": "string",
+            "format": "byte"
+          },
+          "byteArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "enumProp": {
+            "type": "string",
+            "enum": ["AAA", "BBB", "CCC"]
+          },
+          "enumArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["AAA", "BBB", "CCC"]
+            }
+          },
+          "intProp": {
+            "type":"integer"
+          },
+          "intArr": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "int32Prop": {
+            "type":"integer",
+            "format": "int32"
+          },
+          "int32Arr": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "longProp": {
+            "type":"integer",
+            "format": "int64"
+          },
+          "longArr": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "numberProp": {
+            "type":"number"
+          },
+          "numberArr": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "floatProp": {
+            "type":"number",
+            "format": "float"
+          },
+          "floatArr": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "doubleProp": {
+            "type":"number",
+            "format": "double"
+          },
+          "doubleArr": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "boolProp": {
+            "type": "boolean"
+          },
+          "boolArr": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            }
+          },
+          "inlineComplexProp": {
+            "type" : "object",
+            "properties": {
+              "someDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "someDateTime": {
+                  "type": "string",
+                  "format": "date-time"
+              }
+            }
+          },
+          "complexRefProp": {
+            "description": "first referenc of OtherComplexType",
+            "$ref": "#/definitions/OtherComplexType"
+          },
+          "complexDuplicate": {
+            "description": "second referenc of OtherComplexType",
+            "$ref": "#/definitions/OtherComplexType"
+          },
+          "complexArrayRef": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/OtherComplexTypeForArray" 
+            }
+          }
+        }
+      },
+      "OtherComplexType": {
+        "type": "object",
+        "properties": {
+          "someString": {
+            "type": "string"
+          },
+          "recursiveComplexReference": {
+            "$ref": "#/definitions/InnerOtherComplex"
+          }
+        }
+      },
+      "InnerOtherComplex": {
+        "type": "object", 
+        "properties": {
+          "someBoolean": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OtherComplexTypeForArray": {
+        "type": "object",
+        "properties": {
+          "someInteger": {
+            "type": "integer"
+          },
+          "recursiveComplexReference": {
+            "$ref": "#/definitions/InnerOtherComplex"
+          }
+        }
+      }
+    }
+  }
+  
