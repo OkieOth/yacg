@@ -1,0 +1,149 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Example Type",
+    "description": "Example types for tests",
+    "version": "0.0.1",
+    "definitions": {
+      "ExampleType": {
+        "type": "object",
+        "properties": {
+          "stringProp": {
+            "type": "string"
+          },
+          "stringArr": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },"uuidProp": {
+            "type": "string",
+            "format": "uuid",
+            "x-key": true
+          },
+          "uuidArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "dateProp": {
+            "type": "string",
+            "format": "date"
+          },
+          "dateArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "dateTimeProp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateTimeArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "byteProp": {
+            "type": "string",
+            "format": "byte"
+          },
+          "byteArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "enumProp": {
+            "type": "string",
+            "enum": ["AAA", "BBB", "CCC"]
+          },
+          "enumArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["AAA", "BBB", "CCC"]
+            }
+          },
+          "intProp": {
+            "type":"integer"
+          },
+          "intArr": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "int32Prop": {
+            "type":"integer",
+            "format": "int32"
+          },
+          "int32Arr": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "longProp": {
+            "type":"integer",
+            "format": "int64"
+          },
+          "longArr": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "numberProp": {
+            "type":"number"
+          },
+          "numberArr": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "floatProp": {
+            "type":"number",
+            "format": "float"
+          },
+          "floatArr": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "doubleProp": {
+            "type":"number",
+            "format": "double"
+          },
+          "doubleArr": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "boolProp": {
+            "type": "boolean"
+          },
+          "boolArr": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+  
