@@ -9,11 +9,17 @@ def getJavaType(type, isArray):
     if type is None:
         return '???'
     elif isinstance(type, model.IntegerType):
-        return 'Integer' if not isArray else 'java.util.List<Integer>'
+        if type.format is None or type.format == model.IntegerTypeFormatEnum.INT32:
+            return 'Integer' if not isArray else 'java.util.List<Integer>'
+        else:
+            return 'Long' if not isArray else 'java.util.List<Long>'
     elif isinstance(type, model.ObjectType):
         return 'Object'
     elif isinstance(type, model.NumberType):
-        return 'Double' if not isArray else 'java.util.List<Double>'
+        if type.format is None or type.format == model.NumberTypeFormatEnum.DOUBLE:
+            return 'Double' if not isArray else 'java.util.List<Double>'
+        else:
+            return 'Float' if not isArray else 'java.util.List<Float>'
     elif isinstance(type, model.BooleanType):
         return 'Boolean' if not isArray else 'java.util.List<Boolean>'
     elif isinstance(type, model.StringType):
