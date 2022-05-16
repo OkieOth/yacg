@@ -25,9 +25,9 @@ def getJavaType(type, isArray):
     elif isinstance(type, model.EnumType):
         return type.name if not isArray else 'java.util.List<{}>'.format(type.name)
     elif isinstance(type, model.DateType):
-        return 'java.time.LocalDate' if not isArray else 'java.util.List<java.time.LocalData>'
+        return 'java.time.LocalDate' if not isArray else 'java.util.List<java.time.LocalDate>'
     elif isinstance(type, model.DateTimeType):
-        return 'java.time.LocalDateTime' if not isArray else 'java.util.List<java.time.LocalDataTime>'
+        return 'java.time.LocalDateTime' if not isArray else 'java.util.List<java.time.LocalDateTime>'
     elif isinstance(type, model.DictionaryType):
         return 'java.util.Map<String, {}>'.format(getJavaType(type.valueType, False))
     elif isinstance(type, model.ComplexType):
