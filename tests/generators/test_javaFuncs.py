@@ -8,21 +8,81 @@ from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
 import yacg.generators.helper.javaFuncs as javaFuncs
+import yacg.model.modelFuncs as modelFuncs
+
+
+def getExampleType():
+    modelFile = 'tests/resources/models/json/examples/all_types.json'
+    modelFileExists = os.path.isfile(modelFile)
+    model = config.Model()
+    model.schema = modelFile
+    modelTypes = getModelFromJson(model, [])
+    return modelTypes[0]
+
 
 # For executing these tests run: pipenv run python3 -m unittest -v tests/generators/test_javaFuncs.py
 class TestJavaFuncs (unittest.TestCase):
-    def testJavaFuncs(self):
-        modelFile = 'tests/resources/models/json/examples/all_types.json'
-        modelFileExists = os.path.isfile(modelFile)
-        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
-        model = config.Model()
-        model.schema = modelFile
-        modelTypes = getModelFromJson(model, [])
-        self.assertIsNotNone(modelTypes)
-        self.assertTrue(isinstance(modelTypes[0], ComplexType))
 
-        myType = modelTypes[0]
+    def testSanitizeRestorePropertyNames(self):
+        myType = getExampleType()
         self.assertEqual('ExampleType', myType.name)
+        self.assertTrue(isinstance(myType, ComplexType))
+
+        allProps = modelFuncs.getFlattenProperties(myType)
+        countProps = len(allProps)
+        first = allProps[0]
+        sixth = allProps[5]
+        first.name = 'enum'
+        sixth.name = 'class'
+
+
+        # replace problematic property names
+        idx2origName = javaFuncs.sanitizePropertyNames(myType)
+        self.assertEqual(2, len(idx2origName))
+        self.assertEqual(countProps, len(modelFuncs.getFlattenProperties(myType)))
+
+        # check exactly one property with name enumValue
+        props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'enumValue')
+        self.assertEqual(1, len(props))
+        self.assertEqual('enumValue', first.name)
+        
+        actName = idx2origName[0]
+        self.assertIsNotNone(actName)
+        self.assertEqual('enum', actName)
+
+        # check exactly one property with name clazz
+        props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'clazz')
+        self.assertEqual(1, len(props))
+        self.assertEqual('clazz', sixth.name)
+
+        actName = idx2origName[5]
+        self.assertIsNotNone(actName)
+        self.assertEqual('class', actName)
+
+
+        # restore original property names
+        javaFuncs.restorePropertyNames(myType, idx2origName)
+        self.assertEqual(countProps, len(modelFuncs.getFlattenProperties(myType)))
+
+        # check exactly one property with name enum and none with enumValue
+        props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'enumValue')
+        self.assertEqual(0, len(props))
+        props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'enum')
+        self.assertEqual(1, len(props))
+        self.assertEqual('enum', first.name)
+
+        # check exactly one property with name class and none with clazz
+        props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'clazz')
+        self.assertEqual(0, len(props))
+        props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'class')
+        self.assertEqual(1, len(props))
+        self.assertEqual('class', sixth.name)
+
+
+    def testJavaFuncs(self):
+        myType = getExampleType()
+        self.assertEqual('ExampleType', myType.name)
+        self.assertTrue(isinstance(myType, ComplexType))
 
         # ComplexType
         self.assertEqual('ExampleType', javaFuncs.getJavaType(myType, False))

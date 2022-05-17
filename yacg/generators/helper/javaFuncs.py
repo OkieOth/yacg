@@ -46,3 +46,43 @@ def printExtendsType(type):
     if (not hasattr(type, 'extendsType')) or (type.extendsType is None):
         return ''
     return 'extends {} '.format(type.extendsType.name)
+
+
+def sanitizePropertyNames(typeObj):
+    """This method will visit all properties of the (ComplexType) 'typeObj' and
+    check, whether the property name is not suited for java attribute (class, enum, for etc)
+    It will replace thes property name in-place with unproblematic ones.
+    These changes are recorded in a Dictionary object and returned to the call so
+    that the original property names can be restore, see method 'restorePropertyNames(typeObj, propIdx2originalName)'
+
+    Keyword arguments:
+    typeObj -- type object to propcess
+    """
+    propIdx2originalName = {}
+    if isinstance(typeObj, model.ComplexType):
+        illegalNames = ['enum', 'class']
+        alternativeNames = ['enumValue', 'clazz']
+        for idxProp, prop in enumerate(typeObj.properties):
+            for idxName, name in enumerate(illegalNames):
+                if prop.name == name:
+                    propIdx2originalName[idxProp] = prop.name
+                    prop.name = alternativeNames[idxName]
+                    break
+    return propIdx2originalName
+
+
+def restorePropertyNames(typeObj, propIdx2originalName):
+    """This method can be used to restore the original property names of the (Complex) 'typeObj',
+    which were altered by method 'sanitizePropertyNames(typeObj)' as they are not suited for java
+    attribute (class, enum, for etc). 
+    It needs the Dictionary with the records of the changes, which was returned by said function,
+    for restoring the property names.
+
+    Keyword arguments:
+    typeObj -- type object to propcess
+    propIdx2originalName -- The record of the rename operations, which are to be reverted.
+    """
+    if isinstance(typeObj, model.ComplexType):
+        for idx, name in propIdx2originalName.items():
+            typeObj.properties[idx].name = name
+

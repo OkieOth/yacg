@@ -10,6 +10,7 @@ from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType, DictionaryType, Property
 import yacg.model.modelFuncs as modelFuncs
 
+
 def getComplexTypeNoBase():
     modelFile = 'tests/resources/models/json/examples/all_types.json'
     modelFileExists = os.path.isfile(modelFile)
@@ -18,6 +19,7 @@ def getComplexTypeNoBase():
     modelTypes = getModelFromJson(model, [])
     myType = modelTypes[0]
     return myType
+
 
 def getComplexTypeWithBase():
     myType = getComplexTypeNoBase()
@@ -30,11 +32,9 @@ def getComplexTypeWithBase():
     nameProp.name = 'name'
     nameProp.type = StringType()
 
-
     commentProp = Property()
     commentProp.name = 'comment'
     commentProp.type = StringType()
-
 
     baseType = ComplexType()
     baseType.name = 'IdNamePair'

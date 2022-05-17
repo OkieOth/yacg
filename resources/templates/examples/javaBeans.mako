@@ -11,6 +11,10 @@
 
     packageName = templateParameters.get('modelPackage','<<PLEASE SET modelPackage TEMPLATE PARAM>>')
 
+    # temporarely replace problematic property names with unproblematic alternatives:
+    propIdx2originalName = javaFuncs.sanitizePropertyNames(currentType)
+
+
 %>// Attention, this file is generated. Manual changes get lost with the next
 // run of the code generation.
 // created by yacg (template: ${templateFile} v${templateVersion})
@@ -94,3 +98,9 @@ class ${currentType.name} ${javaFuncs.printExtendsType(currentType)}{
     }
 }
 % endif
+<%
+    # restore original property names:
+    if len(propIdx2originalName) > 0:
+        print (currentType.name + 'undo sanitizing property names!')
+    javaFuncs.restorePropertyNames(currentType, propIdx2originalName)
+%>
