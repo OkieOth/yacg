@@ -11,6 +11,25 @@
 
     packageName = templateParameters.get('modelPackage','<<PLEASE SET modelPackage TEMPLATE PARAM>>')
 
+    # temporarely replace problematic property names with unproblematic alternatives:
+    illegalNames = ['enum']
+    alternativeNames = ['enumValue']
+
+    # TODO change to dictionary, move to method in javaFuncs!
+    idxAlterdProp = []
+    originalPropName = []
+    if not isinstance(currentType, model.EnumType):
+        print (currentType.name + 'start sanitizing property names!')
+        for idxProp, prop in enumerate(currentType.properties):
+            for idxName, name in enumerate(illegalNames):
+                if prop.name == name:
+                    print('altering prop #{}: {}->{}'.format(idxProp prop.name, alternativeNames[idxName]))
+                    idxAlterdProp.append(idxProp)
+                    originalPropName.append(prop.name)
+                    prop.name = alternativeNames[idxName]
+                    break
+
+
 %>// Attention, this file is generated. Manual changes get lost with the next
 // run of the code generation.
 // created by yacg (template: ${templateFile} v${templateVersion})
@@ -94,3 +113,11 @@ class ${currentType.name} ${javaFuncs.printExtendsType(currentType)}{
     }
 }
 % endif
+<%
+    # restore original property names;
+    if (len(idxAlterdProp) > 0):
+        print (currentType.name + 'undo sanitizing property names!')
+    for i, idx in enumerate(idxAlterdProp):
+        print("restoring name {} of prop #{}".format(originalPropName[i], idx))
+        currentType.properties[idx].name = originalPropName[i]
+%>
