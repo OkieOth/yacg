@@ -1,3 +1,6 @@
+# 4.6.0
+* javaFuncs: added method to sanitize property named (class->clazz etc.) and another one to restore them at the end of the template
+
 # 4.5.0
 * javaFuncs: fixed typos
 * javaFuncs: map to wrapper types Float and Long when applicable
