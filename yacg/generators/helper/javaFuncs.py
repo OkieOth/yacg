@@ -46,3 +46,25 @@ def printExtendsType(type):
     if (not hasattr(type, 'extendsType')) or (type.extendsType is None):
         return ''
     return 'extends {} '.format(type.extendsType.name)
+
+
+def sanitizePropertyNames(typeObj):
+    propIdx2originalName = {}
+    if isinstance(typeObj, model.ComplexType):
+        illegalNames = ['enum', ]
+        alternativeNames = ['enumValue']
+        for idxProp, prop in enumerate(typeObj.properties):
+            for idxName, name in enumerate(illegalNames):
+                if prop.name == name:
+                    print('altering prop #{}: {}->{}'.format(idxProp, prop.name, alternativeNames[idxName]))
+                    propIdx2originalName[idxProp] = prop.name
+                    prop.name = alternativeNames[idxName]
+                    break
+    return propIdx2originalName
+
+
+def restorePropertyNames(typeObj, propIdx2originalName):
+    if isinstance(typeObj, model.ComplexType):
+        for idx, name in propIdx2originalName.items():
+            typeObj.properties[idx].name = name
+
