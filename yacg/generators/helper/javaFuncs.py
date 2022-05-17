@@ -65,7 +65,6 @@ def sanitizePropertyNames(typeObj):
         for idxProp, prop in enumerate(typeObj.properties):
             for idxName, name in enumerate(illegalNames):
                 if prop.name == name:
-                    print('altering prop #{}: {}->{}'.format(idxProp, prop.name, alternativeNames[idxName]))
                     propIdx2originalName[idxProp] = prop.name
                     prop.name = alternativeNames[idxName]
                     break
