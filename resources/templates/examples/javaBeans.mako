@@ -15,17 +15,15 @@
     illegalNames = ['enum']
     alternativeNames = ['enumValue']
 
-    # TODO change to dictionary, move to method in javaFuncs!
-    idxAlterdProp = []
-    originalPropName = []
+    # TODO move creation of dictionary to method in javaFuncs!
+    propIdx2originalName = {}
     if not isinstance(currentType, model.EnumType):
         print (currentType.name + 'start sanitizing property names!')
         for idxProp, prop in enumerate(currentType.properties):
             for idxName, name in enumerate(illegalNames):
                 if prop.name == name:
-                    print('altering prop #{}: {}->{}'.format(idxProp prop.name, alternativeNames[idxName]))
-                    idxAlterdProp.append(idxProp)
-                    originalPropName.append(prop.name)
+                    print('altering prop #{}: {}->{}'.format(idxProp, prop.name, alternativeNames[idxName]))
+                    propIdx2originalName[idxProp] = prop.name
                     prop.name = alternativeNames[idxName]
                     break
 
@@ -114,10 +112,11 @@ class ${currentType.name} ${javaFuncs.printExtendsType(currentType)}{
 }
 % endif
 <%
-    # restore original property names;
-    if (len(idxAlterdProp) > 0):
+    # restore original property names:
+    if len(propIdx2originalName) > 0:
         print (currentType.name + 'undo sanitizing property names!')
-    for i, idx in enumerate(idxAlterdProp):
-        print("restoring name {} of prop #{}".format(originalPropName[i], idx))
-        currentType.properties[idx].name = originalPropName[i]
+    # TODO move reconstruction of names to method in javaFuncs!
+    for idx, name in propIdx2originalName.items():
+        print("restoring name {} of prop #{}".format(name, idx))
+        currentType.properties[idx].name = name
 %>
