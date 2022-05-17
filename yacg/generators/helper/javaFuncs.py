@@ -60,8 +60,8 @@ def sanitizePropertyNames(typeObj):
     """
     propIdx2originalName = {}
     if isinstance(typeObj, model.ComplexType):
-        illegalNames = ['enum', ]
-        alternativeNames = ['enumValue']
+        illegalNames = ['enum', 'class']
+        alternativeNames = ['enumValue', 'clazz']
         for idxProp, prop in enumerate(typeObj.properties):
             for idxName, name in enumerate(illegalNames):
                 if prop.name == name:
