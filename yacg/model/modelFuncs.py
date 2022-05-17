@@ -122,7 +122,7 @@ def getFlattenProperties(typeObj):
 
 
 def hasPropertyOfType(typeObj, propType):
-    """ This method checks, whether the (ComplexType) 'typeObj' contains
+    """This method checks, whether the (ComplexType) 'typeObj' contains
     at least one property of the type 'propType' (not recursive).
 
     Keyword arguments:
@@ -136,7 +136,7 @@ def hasPropertyOfType(typeObj, propType):
 
 
 def hasSinglePropertyOfType(typeObj, propType):
-    """ This method checks, whether the (ComplexType) 'typeObj' contains
+    """This method checks, whether the (ComplexType) 'typeObj' contains
     at least one non-array property of the type 'propType' (not recursive).
 
     Keyword arguments:
@@ -150,7 +150,7 @@ def hasSinglePropertyOfType(typeObj, propType):
 
 
 def hasArrayPropertyOfType(typeObj, propType):
-    """ This method checks, whether the (ComplexType) 'typeObj' contains
+    """This method checks, whether the (ComplexType) 'typeObj' contains
     at least one array property of the type 'propType' (not recursive).
 
     Keyword arguments:
@@ -164,7 +164,7 @@ def hasArrayPropertyOfType(typeObj, propType):
 
 
 def getComplexTypesInProperties(typeObj):
-    """ This method takes a (ComplexType) 'typeObj', iterates through its properties (not recursive)
+    """This method takes a (ComplexType) 'typeObj', iterates through its properties (not recursive)
     and returns an ordered set of the complex types it encountered.
     May return an empty sets but never 'None'!
 
@@ -179,7 +179,7 @@ def getComplexTypesInProperties(typeObj):
 
 
 def mapComplexTypesInProperties(typeObj, mapFunction=None):
-    """ This method takes a (ComplexType) 'typeObj' iterates through its properties (not recursive)
+    """This method takes a (ComplexType) 'typeObj' iterates through its properties (not recursive)
     and creates an ordered set of the complex types it encountered.
     If an (optional) 'mapFunction' (e.g. a lambda) is provided, it is applied to the set of types,
     otherwise the types are returned as is.
@@ -196,7 +196,7 @@ def mapComplexTypesInProperties(typeObj, mapFunction=None):
 
 
 def filterProps(typeObj, func):
-    """ This method returns a list with all propertis of the type 'typeObj',
+    """This method returns a list with all propertis of the type 'typeObj',
     which match the provided predicate 'func' (e.g. lambda).
     May return an empty list but never 'None'!
 
