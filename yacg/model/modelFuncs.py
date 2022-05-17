@@ -120,96 +120,6 @@ def getFlattenProperties(typeObj):
 
     return flattenProperties
 
-
-def hasPropertyOfType(typeObj, propType):
-    """This method checks, whether the (ComplexType) 'typeObj' contains
-    at least one property of the type 'propType' (not recursive).
-
-    Keyword arguments:
-    typeObj -- type object to check up
-    propType -- type to search in the object's properties"""
-
-    for prop in getFlattenProperties(typeObj):
-        if isinstance(prop.type, propType):
-            return True
-    return False
-
-
-def hasSinglePropertyOfType(typeObj, propType):
-    """This method checks, whether the (ComplexType) 'typeObj' contains
-    at least one non-array property of the type 'propType' (not recursive).
-
-    Keyword arguments:
-    typeObj -- type object to check up
-    propType -- type to search in the object's properties"""
-
-    for prop in getFlattenProperties(typeObj):
-        if isinstance(prop.type, propType) and not prop.isArray:
-            return True
-    return False
-
-
-def hasArrayPropertyOfType(typeObj, propType):
-    """This method checks, whether the (ComplexType) 'typeObj' contains
-    at least one array property of the type 'propType' (not recursive).
-
-    Keyword arguments:
-    typeObj -- type object to check up
-    propType -- type to search in the object's properties"""
-
-    for prop in getFlattenProperties(typeObj):
-        if prop.isArray and isinstance(prop.type, propType):
-            return True
-    return False
-
-
-def getComplexTypesInProperties(typeObj):
-    """This method takes a (ComplexType) 'typeObj', iterates through its properties (not recursive)
-    and returns an ordered set of the complex types it encountered.
-    May return an empty sets but never 'None'!
-
-    Keyword arguments:
-    typeObj -- type object to check up"""
-
-    types = []
-    for prop in getFlattenProperties(typeObj):
-        if isinstance(prop.type, model.ComplexType):
-            types.append(prop.type)
-    return list(dict.fromkeys(types))
-
-
-def mapComplexTypesInProperties(typeObj, mapFunction=None):
-    """This method takes a (ComplexType) 'typeObj' iterates through its properties (not recursive)
-    and creates an ordered set of the complex types it encountered.
-    If an (optional) 'mapFunction' (e.g. a lambda) is provided, it is applied to the set of types,
-    otherwise the types are returned as is.
-    May return an empty sets but never 'None'!
-
-    Keyword arguments:
-    typeObj -- type object to check up
-    mapFunction -- the (optional) function, which will be applied to all complex types"""
-
-    unique = getComplexTypesInProperties(typeObj)
-    if mapFunction is None:
-        return unique
-    return list(map(mapFunction, unique))
-
-
-def filterProps(typeObj, func):
-    """This method returns a list with all propertis of the type 'typeObj',
-    which match the provided predicate 'func' (e.g. lambda).
-    May return an empty list but never 'None'!
-
-    Keyword arguments:
-    typeObj -- type object to check up
-    func -- the function, which will be used to filter the properties"""
-
-    props = getFlattenProperties(typeObj)
-    if not any(props):
-        return []
-    return list(filter(func, props))
-
-
 def hasEnumTypes(modelTypes):
     for type in modelTypes:
         if isEnumType(type):
@@ -487,3 +397,91 @@ def getTypesRelatedTagName(types, tagName):
         __copyTypeAndAllChildTypes(type, alreadyFoundTypeNames, ret)
     return ret
 
+
+def hasPropertyOfType(typeObj, propType):
+    """This method checks, whether the (ComplexType) 'typeObj' contains
+    at least one property of the type 'propType' (not recursive).
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    propType -- type to search in the object's properties"""
+
+    for prop in getFlattenProperties(typeObj):
+        if isinstance(prop.type, propType):
+            return True
+    return False
+
+
+def hasSinglePropertyOfType(typeObj, propType):
+    """This method checks, whether the (ComplexType) 'typeObj' contains
+    at least one non-array property of the type 'propType' (not recursive).
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    propType -- type to search in the object's properties"""
+
+    for prop in getFlattenProperties(typeObj):
+        if isinstance(prop.type, propType) and not prop.isArray:
+            return True
+    return False
+
+
+def hasArrayPropertyOfType(typeObj, propType):
+    """This method checks, whether the (ComplexType) 'typeObj' contains
+    at least one array property of the type 'propType' (not recursive).
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    propType -- type to search in the object's properties"""
+
+    for prop in getFlattenProperties(typeObj):
+        if prop.isArray and isinstance(prop.type, propType):
+            return True
+    return False
+
+
+def getComplexTypesInProperties(typeObj):
+    """This method takes a (ComplexType) 'typeObj', iterates through its properties (not recursive)
+    and returns an ordered set of the complex types it encountered.
+    May return an empty sets but never 'None'!
+
+    Keyword arguments:
+    typeObj -- type object to check up"""
+
+    types = []
+    for prop in getFlattenProperties(typeObj):
+        if isinstance(prop.type, model.ComplexType):
+            types.append(prop.type)
+    return list(dict.fromkeys(types))
+
+
+def mapComplexTypesInProperties(typeObj, mapFunction=None):
+    """This method takes a (ComplexType) 'typeObj' iterates through its properties (not recursive)
+    and creates an ordered set of the complex types it encountered.
+    If an (optional) 'mapFunction' (e.g. a lambda) is provided, it is applied to the set of types,
+    otherwise the types are returned as is.
+    May return an empty sets but never 'None'!
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    mapFunction -- the (optional) function, which will be applied to all complex types"""
+
+    unique = getComplexTypesInProperties(typeObj)
+    if mapFunction is None:
+        return unique
+    return list(map(mapFunction, unique))
+
+
+def filterProps(typeObj, func):
+    """This method returns a list with all propertis of the type 'typeObj',
+    which match the provided predicate 'func' (e.g. lambda).
+    May return an empty list but never 'None'!
+
+    Keyword arguments:
+    typeObj -- type object to check up
+    func -- the function, which will be used to filter the properties"""
+
+    props = getFlattenProperties(typeObj)
+    if not any(props):
+        return []
+    return list(filter(func, props))
