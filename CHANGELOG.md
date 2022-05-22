@@ -1,3 +1,6 @@
+# 4.7.0
+* introduce config option and commandline switch for failing when there are not unique type names
+
 # 4.6.0
 * javaFuncs: added method to sanitize property named (class->clazz etc.) and another one to restore them at the end of the template
 

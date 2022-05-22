@@ -5,10 +5,10 @@ from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes  # noqa: E501
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes, getNotUniqueTypeNames  # noqa: E501
 
 import yacg.model.config as config
-
+import yacg as yacg
 
 class TestJsonBuilder (unittest.TestCase):
     def testSingleTypeSchema(self):
@@ -442,6 +442,26 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(isinstance(modelTypes[1].properties[4].type.valueType, IntegerType))
         self.assertTrue(isinstance(modelTypes[1].properties[5].type, DictionaryType))
         self.assertTrue(isinstance(modelTypes[1].properties[5].type.valueType, StringType))
+
+    def testForDoubleTypeNames(self):
+        modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(5, len(modelTypes))
+        self.assertEqual([], (getNotUniqueTypeNames(modelTypes)))
+        modelTypes.append(modelTypes[0])
+        self.assertEqual(6, len(modelTypes))
+        self.assertEqual(['SimpleAllOfSchema'], (getNotUniqueTypeNames(modelTypes)))
+        modelTypes.append(modelTypes[0])
+        self.assertEqual(7, len(modelTypes))
+        self.assertEqual(['SimpleAllOfSchema'], (getNotUniqueTypeNames(modelTypes)))
+        modelTypes.append(modelTypes[1])
+        self.assertEqual(8, len(modelTypes))
+        self.assertEqual(['SimpleAllOfSchema', 'Address'], (getNotUniqueTypeNames(modelTypes)))
 
 
 if __name__ == '__main__':

@@ -485,3 +485,19 @@ def filterProps(typeObj, func):
     if not any(props):
         return []
     return list(filter(func, props))
+
+
+def getNotUniqueTypeNames(typeList):
+    """This method returns a list of names that are not unique in the given
+    typeList.
+
+    Keyword arguments:
+    typeList -- list of types to check for unique names"""
+
+    typeNamesList = []
+    notUniqueNames = []
+    for t in typeList:
+        if (t.name in typeNamesList) and (t.name not in notUniqueNames):
+            notUniqueNames.append(t.name)
+        typeNamesList.append(t.name)
+    return notUniqueNames
