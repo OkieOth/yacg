@@ -485,3 +485,43 @@ def filterProps(typeObj, func):
     if not any(props):
         return []
     return list(filter(func, props))
+
+
+def getNotUniqueTypeNames(typeList):
+    """This method returns a list of names that are not unique in the given
+    typeList.
+
+    Keyword arguments:
+    typeList -- list of types to check for unique names"""
+
+    typeNamesList = []
+    notUniqueNames = []
+    for t in typeList:
+        if (t.name in typeNamesList) and (t.name not in notUniqueNames):
+            notUniqueNames.append(t.name)
+        typeNamesList.append(t.name)
+    return notUniqueNames
+
+
+def makeTypeNamesUnique(typeList, redundantNamesList):
+    """This function goes over a list of loaded types and makes redundant names unique.
+    Attention, this is a dangerous function because it changes the original input,
+    instead of creating a copy
+    """
+
+    redundantTypesDict = {}
+    for redundantName in redundantNamesList:
+        for t in typeList:
+            if t.name == redundantName:
+                alreadyLoadedList = redundantTypesDict.get(redundantName, [])
+                if len(alreadyLoadedList) == 0:
+                    redundantTypesDict[redundantName] = alreadyLoadedList
+                alreadyLoadedList.append(t)
+    for key, redundantTypesList in redundantTypesDict.items():
+        counter = 1
+        for t in redundantTypesList:
+            if t == redundantTypesList[0]:
+                continue
+            counter = counter + 1
+            # sure a really simple approach, can later extracted in a more sophisticated working function
+            t.name = "{}_{}".format(t.name, counter)
