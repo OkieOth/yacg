@@ -45,6 +45,7 @@ parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model vers
 parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5 is unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
 parser.add_argument('--skipCodeGenDryRun', help='prints only the log messages if codegen should be skipped', action='store_true')
 parser.add_argument('--failIfTypeNamesNotUnique', help='the code execution fails if there are not unique type names in the loaded type tree', action='store_true')
+parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type names multiple times in the list of loaded times, they are changed to be unique', action='store_true')
 
 
 def getFileExt(fileName):
@@ -297,8 +298,12 @@ def _isConfigurationValid(codeGenerationJobs):
     return isValid
 
 
-def __failIfTypeNamesNotUnique(loadedTypes, failIfTypeNamesNotUnique, noLogs):
+def __handleNotUniqueTypeNames(loadedTypes, failIfTypeNamesNotUnique, makeMultipleTypeNamesUnique, noLogs):
     notUniqueNames = modelFuncs.getNotUniqueTypeNames(loadedTypes)
+    if makeMultipleTypeNamesUnique:
+        modelFuncs.makeTypeNamesUnique(loadedTypes, notUniqueNames)
+        logging.info("there were some not unique type names loaded, made them unique: {}".format(notUniqueNames))
+        return False
     if (len(notUniqueNames) > 0) and (not noLogs):
         logMsg = " THERE ARE NOT UNIQUE TYPE NAMES: {}".format(notUniqueNames)
         if failIfTypeNamesNotUnique:
@@ -325,7 +330,7 @@ def __doCodeGen(codeGenerationJobs, args):
         jobName = job.name if job.name else "UNKNOWN_JOB_{}".format(jobIndex)
         jobsMetaData[jobName] = modelMetaData
         jobIndex = jobIndex + 1
-        if __failIfTypeNamesNotUnique(allLoadedTypes, args.failIfTypeNamesNotUnique, args.noLogs):
+        if __handleNotUniqueTypeNames(allLoadedTypes, args.failIfTypeNamesNotUnique, args.makeMultipleTypeNamesUnique, args.noLogs):
             sys.exit(1)
 
 
