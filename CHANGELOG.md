@@ -1,6 +1,21 @@
 # 5.0.0
 * add basic asyncapi support
 
+# 4.7.0
+* introduce config option and commandline switch for failing when there are not unique type names
+
+# 4.6.0
+* javaFuncs: added method to sanitize property named (class->clazz etc.) and another one to restore them at the end of the template
+
+# 4.5.0
+* javaFuncs: fixed typos
+* javaFuncs: map to wrapper types Float and Long when applicable
+* stringUtils: methods for converting *snake_case* to *CamelCase*
+* modelFuncs: added some methods to work with the properties of a type (none recursive)
+
+# 4.4.0
+* Create missing directories for output files on singleFileGenerator 
+
 # 4.3.1
 * add model `hasPropertyWithTag`
 

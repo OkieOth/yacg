@@ -5,7 +5,7 @@ from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes  # noqa: E501
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes, getNotUniqueTypeNames, makeTypeNamesUnique  # noqa: E501
 
 import yacg.model.config as config
 
@@ -451,6 +451,44 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
+
+    def testForDoubleTypeNames(self):
+        modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(5, len(modelTypes))
+        self.assertEqual([], (getNotUniqueTypeNames(modelTypes)))
+        modelTypes.append(modelTypes[0])
+        self.assertEqual(6, len(modelTypes))
+        self.assertEqual(['SimpleAllOfSchema'], (getNotUniqueTypeNames(modelTypes)))
+        modelTypes.append(modelTypes[0])
+        self.assertEqual(7, len(modelTypes))
+        self.assertEqual(['SimpleAllOfSchema'], (getNotUniqueTypeNames(modelTypes)))
+        modelTypes.append(modelTypes[1])
+        self.assertEqual(8, len(modelTypes))
+        self.assertEqual(['SimpleAllOfSchema', 'Address'], (getNotUniqueTypeNames(modelTypes)))
+
+    def testFixDoubleTypeNames(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_external_ref_2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(7, len(modelTypes))
+        notUniqueTypeNames = getNotUniqueTypeNames(modelTypes)
+        self.assertEqual(2, len(notUniqueTypeNames))
+        makeTypeNamesUnique(modelTypes, notUniqueTypeNames)
+        self.assertEqual(7, len(modelTypes))
+        notUniqueTypeNames2 = getNotUniqueTypeNames(modelTypes)
+        self.assertEqual(0, len(notUniqueTypeNames2))
+        self.assertEqual('AnotherType_2', modelTypes[3].name)
+        self.assertEqual('MySecondType_2', modelTypes[6].name)
 
 
 if __name__ == '__main__':
