@@ -1206,7 +1206,19 @@ def _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer):
         _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer)
         # TODO _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer)
         # TODO _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFileContainer)
+        _parstAsyncApiChannelBindings(modelTypes, channelDict, channelType)
         modelTypes.append(channelType)
+
+
+def _parstAsyncApiChannelBindings(modelTypes, channelDict, channelType):
+    bindingsDict = channelDict.get("bindings", None)
+    if bindingsDict is None:
+        return
+
+    amqpBindingsDict = bindingsDict.get("amqp", None)
+    if amqpBindingsDict is not None:
+        bindingsObj = __initChannelBindingsAmqpObj(None, amqpBindingsDict, modelTypes)
+        channelType.amqpBindings = bindingsObj
 
 
 def extractAsyncApiTypes(modelTypes, modelFileContainer):
@@ -1241,6 +1253,7 @@ def __initChannelBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
     bindingsObj.exchange = __initChannelBindingsExchange(amqpBindingsDict.get("exchange", None))
     bindingsObj.queue = __initChannelBindingsQueue(amqpBindingsDict.get("queue", None))
     modelTypes.append(bindingsObj)
+    return bindingsObj
 
 
 def __initChannelBindingsExchange(exchangeDict):

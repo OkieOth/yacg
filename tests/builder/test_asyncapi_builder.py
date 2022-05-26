@@ -56,7 +56,7 @@ class TestAsyncApiParsing (unittest.TestCase):
             self.assertEqual(channelBinding.queue.exclusive, queueExclusive)
 
     def checkChannelBindings(self, channelBindings):
-        self.assertEqual(len(channelBindings), 3)  # 4 are given in the test file, but one isn't amqp
+        self.assertEqual(len(channelBindings), 4)  # 5 are given in the test file, but one isn't amqp
         self.checkChannelBinding(
             channelBindings[0],
             'myChannelBinding1',
@@ -126,6 +126,30 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.checkParameter(parameters[5], 'param2', 'another param', model.UuidType)
         self.checkParameter(parameters[6], 'param3', 'yet another param', model.UuidType)
 
+    def checkChannelObj(self, channels, key, channelBindings):
+        found = []
+        for c in channels:
+            if c.key == key:
+                found.append(c)
+        self.assertEqual(1, len(found))
+        channelToCheck = found[0]
+        if channelBindings is not None:
+            self.assertIsNotNone(channelToCheck.amqpBindings)
+            bindingsToCheck = channelToCheck.amqpBindings
+            self.assertEqual(channelBindings.isType, bindingsToCheck.isType)
+            if channelBindings.exchange is not None:
+                self.assertIsNotNone(bindingsToCheck.exchange)
+                self.assertEqual(channelBindings.exchange.name, bindingsToCheck.exchange.name)
+                self.assertEqual(channelBindings.exchange.type, bindingsToCheck.exchange.type)
+                self.assertEqual(channelBindings.exchange.durable, bindingsToCheck.exchange.durable)
+                self.assertEqual(channelBindings.exchange.autoDelete, bindingsToCheck.exchange.autoDelete)
+            if channelBindings.queue is not None:
+                self.assertIsNotNone(bindingsToCheck.queue)
+                self.assertEqual(channelBindings.queue.name, bindingsToCheck.queue.name)
+                self.assertEqual(channelBindings.queue.durable, bindingsToCheck.queue.durable)
+                self.assertEqual(channelBindings.queue.exclusive, bindingsToCheck.queue.exclusive)
+                self.assertEqual(channelBindings.queue.autoDelete, bindingsToCheck.queue.autoDelete)
+
     def test_asyncApiExample(self):
         modelFile = 'tests/resources/models/json/examples/asyncapi_test.json'
         modelFileExists = os.path.isfile(modelFile)
@@ -139,6 +163,7 @@ class TestAsyncApiParsing (unittest.TestCase):
         operationBindings = []
         messageBindings = []
         parameters = []
+        channels = []
         for type in modelTypes:
             if isinstance(type, asyncapi.AsyncApiServer):
                 serverTypes.append(type)
@@ -152,7 +177,10 @@ class TestAsyncApiParsing (unittest.TestCase):
                 operationBindings.append(type)
             if isinstance(type, asyncapi.Parameter):
                 parameters.append(type)
+            if isinstance(type, asyncapi.Channel):
+                channels.append(type)
         self.assertEqual(len(serverTypes), 2)
+        self.assertEqual(len(channels), 4)
         self.checkServerTypes(serverTypes)
         self.assertEqual(len(infoTypes), 1)
         self.checkInfoType(infoTypes[0])
@@ -160,5 +188,17 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.checkMessageBindings(messageBindings)
         self.checkOperationBindings(operationBindings)
         self.checkParameters(parameters)
+        channelBindings = asyncapi.ChannelBindingsAmqp()
+        channelBindings.exchange = asyncapi.ChannelBindingsAmqpExchange()
+        channelBindings.exchange.name = "myExchange"
+        channelBindings.exchange.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.TOPIC
+        channelBindings.exchange.durable = True
+        channelBindings.exchange.autoDelete = False
+        channelBindings.queue = asyncapi.ChannelBindingsAmqpQueue()
+        channelBindings.queue.name = "my-queue-name"
+        channelBindings.queue.durable = True
+        channelBindings.queue.exclusive = True
+        channelBindings.queue.autoDelete = False
+        self.checkChannelObj(channels, "xxy.{param1}.yyx.{param2}", channelBindings)
 
 

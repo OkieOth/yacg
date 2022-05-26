@@ -68,12 +68,22 @@
                             "type": "topic"
                         }
                     }
-                },
-                "x-subscriber-implementation": {
-                    "x-queue": {
-                        "type": "classic",
-                        "durable": false,
-                        "exclusive": false
+                }
+            },
+            "bindings": {
+                "amqp": {
+                    "is": "routingKey",
+                    "queue": {
+                        "name": "my-queue-name",
+                        "durable": true,
+                        "exclusive": true,
+                        "autoDelete": false
+                    },
+                    "exchange": {
+                        "name": "myExchange",
+                        "type": "topic",
+                        "durable": true,
+                        "autoDelete": false
                     }
                 }
             }
@@ -120,13 +130,6 @@
                             "type": "topic"
                         }
                     }
-                },
-                "x-subscriber-implementation": {
-                    "x-queue": {
-                        "type": "classic",
-                        "durable": false,
-                        "exclusive": false
-                    }
                 }
             }
         },
@@ -155,13 +158,6 @@
                             "name": "zzz",
                             "type": "topic"
                         }
-                    }
-                },
-                "x-subscriber-implementation": {
-                    "x-queue": {
-                        "type": "classic",
-                        "durable": false,
-                        "exclusive": false
                     }
                 }
             }
