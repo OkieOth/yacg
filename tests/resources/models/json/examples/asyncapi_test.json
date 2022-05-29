@@ -88,6 +88,66 @@
                 }
             }
         },
+        "xxz.{param1}.yyx.{param2}": {
+            "description": "A channel with references to the components section",
+            "parameters": {
+                "param1": {
+                    "$ref": "#/components/parameters/myParam1"
+                },
+                "param2": {
+                    "$ref": "#/components/parameters/myParam2"
+                }
+            },
+            "publish": {
+                "operationId": "writeXxxData2",
+                "summary": "published to that endpoint and trigger the endpoint",
+                "message": {
+                    "payload": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid "
+                                },
+                                "job": {
+                                    "$ref": "./model_with_bytes.json#/definitions/Job"
+                                },
+                                "valid": {
+                                    "type": "boolean"
+                                }
+                            }    
+                        }
+                    }
+                },
+                "bindings": {
+                    "amqp": {
+                        "exchange": {
+                            "name": "zzz",
+                            "type": "topic"
+                        }
+                    }
+                }
+            },
+            "bindings": {
+                "amqp": {
+                    "is": "routingKey",
+                    "queue": {
+                        "name": "my-queue-name",
+                        "durable": true,
+                        "exclusive": true,
+                        "autoDelete": false
+                    },
+                    "exchange": {
+                        "name": "myExchange",
+                        "type": "topic",
+                        "durable": true,
+                        "autoDelete": false
+                    }
+                }
+            }
+        },
         "xxx.{param1}.yyy.{param2}": {
             "description": "First channel",
             "parameters": {

@@ -129,7 +129,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
                 # extract types from extra components section (OpenApi v3)
                 _extractDefinitionsTypes(schemas, modelTypes, modelFileContainer, None)
             if not skipAdditionalSpecTypes:
-                _parseAsyncApiChannelParameters(modelTypes, componentsDict, None, modelFileContainer)
+                _parseAsyncApiChannelParameters(modelTypes, componentsDict, None, modelFileContainer, 'componentsSection')
                 _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer)
                 _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer)
                 _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer)
@@ -1159,7 +1159,7 @@ def _parseAsyncApiServers(modelTypes, parsedSchema):
         modelTypes.append(serverType)
 
 
-def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer):
+def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer, channelKey):
     parametersDict = channelDict.get('parameters', None)
     if parametersDict is None:
         return
@@ -1167,14 +1167,37 @@ def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelF
         paramDict = parametersDict.get(key, None)
         if paramDict is None:
             continue
-        paramType = asyncapi.Parameter()
-        paramType.name = key
-        paramType.description = paramDict.get('description', None)
-        __extractParameterType(paramDict, modelTypes, modelFileContainer, paramType, key)
-        modelTypes.append(paramType)
-        if channelType is not None:
-            channelType.parameters.append(paramType)
+        # could be a reference to the components section
+        refValue = paramDict.get("$ref", None)
+        if refValue is None:
+            paramType = __createNewChannelParam(modelTypes, key, paramDict, modelFileContainer)
+            modelTypes.append(paramType)
+        else:
+            paramType = __getAlreadyLoadedChannelParam(modelTypes, refValue)
+        if paramType is not None:
+            if channelType is not None:
+                channelType.parameters.append(paramType)
+        else:
+            logging.error("Parameter reference not found: channel: {}, parameter: {}".format(channelKey, key))
 
+
+def __getAlreadyLoadedChannelParam(modelTypes, refValue):
+    lastSlash = refValue.rfind('/')
+    lastSlash = lastSlash + 1
+    desiredName = refValue[lastSlash:]
+    for type in modelTypes:
+        if isinstance(type, asyncapi.Parameter):
+            if type.name == desiredName:
+                return type
+    return None
+
+
+def __createNewChannelParam(modelTypes, key, paramDict, modelFileContainer):
+    paramType = asyncapi.Parameter()
+    paramType.name = key
+    paramType.description = paramDict.get('description', None)
+    __extractParameterType(paramDict, modelTypes, modelFileContainer, paramType, key)
+    return paramType
 
 def _initAsyncApiOperationBase(operationDict, operationType, modelTypes, modelFileContainer):
     operationType.operationId = operationDict.get('operationId', None)
@@ -1203,14 +1226,27 @@ def _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer):
         channelType = asyncapi.Channel()
         channelType.key = key
         channelType.description = channelDict.get('description', None)
-        _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer)
-        # TODO _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer)
+        _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer, key)
+        _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer)
         # TODO _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFileContainer)
-        _parstAsyncApiChannelBindings(modelTypes, channelDict, channelType)
+        _parseAsyncApiChannelBindings(modelTypes, channelDict, channelType)
         modelTypes.append(channelType)
 
 
-def _parstAsyncApiChannelBindings(modelTypes, channelDict, channelType):
+def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer):
+    publishDict = channelDict.get("publish", None)
+    if publishDict is None:
+        return
+    publishObj = asyncapi.PublishOperation()
+    modelTypes.append(publishObj)    
+    publishObj.description = publishDict.get("description", None)
+    publishObj.summary = publishDict.get("summary", None)
+    publishObj.operationId = publishDict.get("operationId", None)
+    # __initOperationBindingsAmqpObj
+    pass
+
+
+def _parseAsyncApiChannelBindings(modelTypes, channelDict, channelType):
     bindingsDict = channelDict.get("bindings", None)
     if bindingsDict is None:
         return
