@@ -107,7 +107,7 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.assertEqual(operationBinding.replyTo, replyTo)
 
     def checkOperationBindings(self, operationBindings):
-        self.assertEqual(len(operationBindings), 2)
+        self.assertEqual(len(operationBindings), 6)
         self.checkOperationBinding(operationBindings[0], 'opBinding1', False, 10, 'test-reply-to')
         self.checkOperationBinding(operationBindings[1], 'opBinding2', True, None, 'amq.rabbitmq.reply-to')
 
@@ -200,5 +200,12 @@ class TestAsyncApiParsing (unittest.TestCase):
         channelBindings.queue.exclusive = True
         channelBindings.queue.autoDelete = False
         self.checkChannelObj(channels, "xxy.{param1}.yyx.{param2}", channelBindings)
+        channelBindings = asyncapi.ChannelBindingsAmqp()
+        channelBindings.exchange = asyncapi.ChannelBindingsAmqpExchange()
+        channelBindings.exchange.name = "xxy"
+        channelBindings.exchange.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.FANOUT
+        channelBindings.exchange.durable = True
+        channelBindings.exchange.autoDelete = True
+        self.checkChannelObj(channels, "xxz.{param1}.yyx.{param2}", channelBindings)
 
 

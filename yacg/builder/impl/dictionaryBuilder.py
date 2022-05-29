@@ -1174,11 +1174,10 @@ def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelF
             modelTypes.append(paramType)
         else:
             paramType = __getAlreadyLoadedChannelParam(modelTypes, refValue)
-        if paramType is not None:
-            if channelType is not None:
-                channelType.parameters.append(paramType)
-        else:
-            logging.error("Parameter reference not found: channel: {}, parameter: {}".format(channelKey, key))
+            if paramType is None:
+                logging.error("Parameter reference not found: channel: {}, parameter: {}".format(channelKey, key))
+        if (channelType is not None) and (paramType is not None):
+            channelType.parameters.append(paramType)
 
 
 def getDesiredNameFromRefValue(refValue):
@@ -1256,8 +1255,26 @@ def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFile
     publishObj.description = publishDict.get("description", None)
     publishObj.summary = publishDict.get("summary", None)
     publishObj.operationId = publishDict.get("operationId", None)
-    # __initOperationBindingsAmqpObj
-    pass
+    bindingsDict = publishDict.get("bindings", None)
+    bindingsObj = None
+    if bindingsDict is not None:
+        refValue = bindingsDict.get("$ref", None)
+        if refValue is None:
+            bindingsObj = __initOperationBindingsAmqpObj(None, bindingsDict.get("amqp", None), modelTypes)
+        else:
+            bindingsObj = __getAlreadyLoadedOperationBinding(modelTypes, refValue)
+            if bindingsObj is None:
+                logging.error("Operation binding reference not found: channel: {}, parameter: {}".format(channelType.key, refValue))  # noqa: E501
+        publishObj.amqpBindings = bindingsObj
+
+
+def __getAlreadyLoadedOperationBinding(modelTypes, refValue):
+    desiredName = getDesiredNameFromRefValue(refValue)
+    for type in modelTypes:
+        if isinstance(type, asyncapi.OperationBindingsAmqp):
+            if type.name == desiredName:
+                return type
+    return None
 
 
 def _parseAsyncApiChannelBindings(modelTypes, channelDict, channelType):
@@ -1272,10 +1289,9 @@ def _parseAsyncApiChannelBindings(modelTypes, channelDict, channelType):
             bindingsObj = __initChannelBindingsAmqpObj(None, amqpBindingsDict, modelTypes)
     else:
         bindingsObj = __getAlreadyLoadedChannelBinding(modelTypes, refValue)
-    if bindingsObj is not None:
-        channelType.amqpBindings = bindingsObj
-    else:
-        logging.error("Channel binding reference not found: channel: {}, binding: {}".format(channelType.name, refValue))
+        if bindingsObj is None:
+            logging.error("Channel binding reference not found: channel: {}, binding: {}".format(channelType.name, refValue))
+    channelType.amqpBindings = bindingsObj
 
 
 def extractAsyncApiTypes(modelTypes, modelFileContainer):
@@ -1364,9 +1380,12 @@ def _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileC
 
 
 def __initOperationBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
+    if amqpBindingsDict is None:
+        return None
     bindingsObj = asyncapi.OperationBindingsAmqp()
     bindingsObj.name = name
     bindingsObj.expiration = amqpBindingsDict.get("expiration", None)
     bindingsObj.replyTo = amqpBindingsDict.get("replyTo", "amq.rabbitmq.reply-to")
     bindingsObj.mandatory = amqpBindingsDict.get("mandatory", False)
     modelTypes.append(bindingsObj)
+    return bindingsObj

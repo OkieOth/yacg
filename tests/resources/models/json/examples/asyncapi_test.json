@@ -122,12 +122,7 @@
                     }
                 },
                 "bindings": {
-                    "amqp": {
-                        "exchange": {
-                            "name": "zzz",
-                            "type": "topic"
-                        }
-                    }
+                    "$ref": "#/components/operationBindings/opBinding2"
                 }
             },
             "bindings": {
