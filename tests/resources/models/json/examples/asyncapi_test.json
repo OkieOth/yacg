@@ -131,21 +131,7 @@
                 }
             },
             "bindings": {
-                "amqp": {
-                    "is": "routingKey",
-                    "queue": {
-                        "name": "my-queue-name",
-                        "durable": true,
-                        "exclusive": true,
-                        "autoDelete": false
-                    },
-                    "exchange": {
-                        "name": "myExchange",
-                        "type": "topic",
-                        "durable": true,
-                        "autoDelete": false
-                    }
-                }
+                "$ref": "#/components/channelBindings/myChannelBinding4"
             }
         },
         "xxx.{param1}.yyy.{param2}": {

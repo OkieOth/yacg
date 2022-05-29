@@ -56,7 +56,7 @@ class TestAsyncApiParsing (unittest.TestCase):
             self.assertEqual(channelBinding.queue.exclusive, queueExclusive)
 
     def checkChannelBindings(self, channelBindings):
-        self.assertEqual(len(channelBindings), 5)  # 5 are given in the test file, but one isn't amqp
+        self.assertEqual(len(channelBindings), 4)  # 5 are given in the test file, but one isn't amqp
         self.checkChannelBinding(
             channelBindings[0],
             'myChannelBinding1',

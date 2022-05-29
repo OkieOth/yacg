@@ -1181,10 +1181,23 @@ def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelF
             logging.error("Parameter reference not found: channel: {}, parameter: {}".format(channelKey, key))
 
 
-def __getAlreadyLoadedChannelParam(modelTypes, refValue):
+def getDesiredNameFromRefValue(refValue):
     lastSlash = refValue.rfind('/')
     lastSlash = lastSlash + 1
-    desiredName = refValue[lastSlash:]
+    return refValue[lastSlash:]
+
+
+def __getAlreadyLoadedChannelBinding(modelTypes, refValue):
+    desiredName = getDesiredNameFromRefValue(refValue)
+    for type in modelTypes:
+        if isinstance(type, asyncapi.ChannelBindingsAmqp):
+            if type.name == desiredName:
+                return type
+    return None
+
+
+def __getAlreadyLoadedChannelParam(modelTypes, refValue):
+    desiredName = getDesiredNameFromRefValue(refValue)
     for type in modelTypes:
         if isinstance(type, asyncapi.Parameter):
             if type.name == desiredName:
@@ -1198,6 +1211,7 @@ def __createNewChannelParam(modelTypes, key, paramDict, modelFileContainer):
     paramType.description = paramDict.get('description', None)
     __extractParameterType(paramDict, modelTypes, modelFileContainer, paramType, key)
     return paramType
+
 
 def _initAsyncApiOperationBase(operationDict, operationType, modelTypes, modelFileContainer):
     operationType.operationId = operationDict.get('operationId', None)
@@ -1238,7 +1252,7 @@ def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFile
     if publishDict is None:
         return
     publishObj = asyncapi.PublishOperation()
-    modelTypes.append(publishObj)    
+    modelTypes.append(publishObj)
     publishObj.description = publishDict.get("description", None)
     publishObj.summary = publishDict.get("summary", None)
     publishObj.operationId = publishDict.get("operationId", None)
@@ -1250,11 +1264,18 @@ def _parseAsyncApiChannelBindings(modelTypes, channelDict, channelType):
     bindingsDict = channelDict.get("bindings", None)
     if bindingsDict is None:
         return
-
-    amqpBindingsDict = bindingsDict.get("amqp", None)
-    if amqpBindingsDict is not None:
-        bindingsObj = __initChannelBindingsAmqpObj(None, amqpBindingsDict, modelTypes)
+    refValue = bindingsDict.get("$ref", None)
+    bindingsObj = None
+    if refValue is None:
+        amqpBindingsDict = bindingsDict.get("amqp", None)
+        if amqpBindingsDict is not None:
+            bindingsObj = __initChannelBindingsAmqpObj(None, amqpBindingsDict, modelTypes)
+    else:
+        bindingsObj = __getAlreadyLoadedChannelBinding(modelTypes, refValue)
+    if bindingsObj is not None:
         channelType.amqpBindings = bindingsObj
+    else:
+        logging.error("Channel binding reference not found: channel: {}, binding: {}".format(channelType.name, refValue))
 
 
 def extractAsyncApiTypes(modelTypes, modelFileContainer):
