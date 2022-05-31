@@ -36,6 +36,12 @@
                         "type": "string",
                         "format": "uuid"
                     }
+                },
+                "param3": {
+                    "description": "another param",
+                    "schema": {
+                        "type": "number"
+                    }
                 }
             },
             "publish": {
