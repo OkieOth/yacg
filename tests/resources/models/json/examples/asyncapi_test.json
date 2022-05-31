@@ -55,7 +55,7 @@
                             "properties": {
                                 "id": {
                                     "type": "string",
-                                    "format": "uuid "
+                                    "format": "uuid"
                                 },
                                 "job": {
                                     "$ref": "./model_with_bytes.json#/definitions/Job"
@@ -64,6 +64,13 @@
                                     "type": "boolean"
                                 }
                             }    
+                        }
+                    },
+                    "bindings": {
+                        "amqp": {
+                            "contentEncoding": "UTF-8",
+                            "messageType": "I am a strange string",
+                            "bindingVersion": "something else"
                         }
                     }
                 },
@@ -115,7 +122,7 @@
                             "properties": {
                                 "id": {
                                     "type": "string",
-                                    "format": "uuid "
+                                    "format": "uuid"
                                 },
                                 "job": {
                                     "$ref": "./model_with_bytes.json#/definitions/Job"
@@ -125,6 +132,9 @@
                                 }
                             }    
                         }
+                    },
+                    "bindings": {
+                        "$ref": "#/components/messageBindings/msgBinding1"
                     }
                 },
                 "bindings": {
@@ -162,7 +172,7 @@
                         "properties": {
                             "user": {
                                 "type": "string",
-                                "format": "uuid "
+                                "format": "uuid"
                             },
                             "job": {
                                 "$ref": "./model_with_bytes.json#/definitions/Job"

@@ -95,7 +95,7 @@ class TestAsyncApiParsing (unittest.TestCase):
             None)
 
     def checkMessageBindings(self, messageBindings):
-        self.assertEqual(len(messageBindings), 1)
+        self.assertEqual(len(messageBindings), 2)
         self.assertEqual(messageBindings[0].messageType, 'typenamestring')
         self.assertEqual(messageBindings[0].name, 'msgBinding1')
         self.assertEqual(messageBindings[0].contentEncoding, 'UTF-8')

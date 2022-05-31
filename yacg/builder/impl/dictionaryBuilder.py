@@ -1045,13 +1045,8 @@ def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileCon
         dictToUse = itemsEntry if typeHost.isArray is True else schema
         propertiesDict = dictToUse.get('properties', None)
         if propertiesDict is not None:
-            # this handling is needed because for the same e.g. operationId can exists
-            # more inner type definitions
-            currentInnerTypeCount = modelFileContainer.innerTypeNames.get(innerTypeName, 1)
-            currentInnerTypeCount = currentInnerTypeCount + 1
-            newInnerTypeName = '{}_{}'.format(innerTypeName, currentInnerTypeCount)
-            modelFileContainer.innerTypeNames[innerTypeName] = currentInnerTypeCount
-            typeHost.type = _extractObjectType(newInnerTypeName, propertiesDict, None, None, modelTypes, modelFileContainer)
+            newInnerTypeName = innerTypeName
+            typeHost.type = _extractObjectType(newInnerTypeName, propertiesDict, None, None, None, modelTypes, modelFileContainer)
         else:
             errorMsg = 'Attention, inner type declarations are currently not implemented for some additional model scenarios.'
             logging.error(errorMsg)
@@ -1212,20 +1207,13 @@ def __createNewChannelParam(modelTypes, key, paramDict, modelFileContainer):
     return paramType
 
 
-def _initAsyncApiOperationBase(operationDict, operationType, modelTypes, modelFileContainer):
-    operationType.operationId = operationDict.get('operationId', None)
-    operationType.summary = operationDict.get('summary', None)
-    operationType.description = operationDict.get('description', None)
-    # TODO _initAsyncApiMessage(operationDict, operationType, modelTypes, modelFileContainer)
-    # TODO _initAsyncApiAmqpBinding(operationDict, operationType)
-
-
-def _initAsyncApiMessagePayload(messageDict, operationType, modelTypes, modelFileContainer):
+def _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, name):
     payloadDict = messageDict.get('payload', None)
     if payloadDict is None:
-        return
-    operationType.payload = asyncapi.PayloadType()
-    __getTypeFromSchemaDictAndAsignId(payloadDict, operationType.payload, modelTypes, modelFileContainer, operationType.operationId)
+        return None
+    payload = asyncapi.Payload()
+    __getTypeFromSchemaDictAndAsignId(payloadDict, payload, modelTypes, modelFileContainer, name)
+    return payload
 
 
 def _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer):
@@ -1246,6 +1234,45 @@ def _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer):
         modelTypes.append(channelType)
 
 
+def _parseAsyncApiOperationBinding(operationDict, modelTypes, channelType):
+    bindingsDict = operationDict.get("bindings", None)
+    bindingsObj = None
+    if bindingsDict is not None:
+        refValue = bindingsDict.get("$ref", None)
+        if refValue is None:
+            bindingsObj = __initOperationBindingsAmqpObj(None, bindingsDict.get("amqp", None), modelTypes)
+        else:
+            bindingsObj = __getAlreadyLoadedOperationBinding(modelTypes, refValue)
+            if bindingsObj is None:
+                logging.error("Operation binding reference not found: channel: {}, parameter: {}".format(channelType.key, refValue))  # noqa: E501
+    return bindingsObj
+
+
+def _parseAsyncApiOperationMessageBinding(messageDict, modelTypes):
+    amqpBindingsObj = None
+    bindingsDict = messageDict.get("bindings", None)
+    if bindingsDict is not None:
+        refValue = bindingsDict.get("$ref", None)
+        if refValue is not None:
+            # binding is already loaded
+            amqpBindingsObj = __getAlreadyLoadedMessageBinding(modelTypes, refValue)
+        else:
+            amqpBindingsDict = bindingsDict.get("amqp", None)
+            if amqpBindingsDict is not None:
+                amqpBindingsObj = __initMessageBindingsAmqpObj(None, amqpBindingsDict, modelTypes)
+    return amqpBindingsObj
+
+
+def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, modelFileContainer):
+    messageDict = operationDict.get("message", None)
+    messageObj = None
+    if messageDict is not None:
+        messageObj = asyncapi.Message()
+        messageObj.amqpBindings = _parseAsyncApiOperationMessageBinding(messageDict, modelTypes)
+        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, operationType.operationId)
+    return messageObj
+
+
 def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer):
     publishDict = channelDict.get("publish", None)
     if publishDict is None:
@@ -1256,17 +1283,17 @@ def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFile
     publishObj.description = publishDict.get("description", None)
     publishObj.summary = publishDict.get("summary", None)
     publishObj.operationId = publishDict.get("operationId", None)
-    bindingsDict = publishDict.get("bindings", None)
-    bindingsObj = None
-    if bindingsDict is not None:
-        refValue = bindingsDict.get("$ref", None)
-        if refValue is None:
-            bindingsObj = __initOperationBindingsAmqpObj(None, bindingsDict.get("amqp", None), modelTypes)
-        else:
-            bindingsObj = __getAlreadyLoadedOperationBinding(modelTypes, refValue)
-            if bindingsObj is None:
-                logging.error("Operation binding reference not found: channel: {}, parameter: {}".format(channelType.key, refValue))  # noqa: E501
-        publishObj.amqpBindings = bindingsObj
+    publishObj.amqpBindings = _parseAsyncApiOperationBinding(publishDict, modelTypes, channelType)
+    publishObj.message = _parseAsyncApiOperationMessage(publishDict, modelTypes, publishObj, modelFileContainer)
+
+
+def __getAlreadyLoadedMessageBinding(modelTypes, refValue):
+    desiredName = getDesiredNameFromRefValue(refValue)
+    for type in modelTypes:
+        if isinstance(type, asyncapi.MessageBindingsAmqp):
+            if type.name == desiredName:
+                return type
+    return None
 
 
 def __getAlreadyLoadedOperationBinding(modelTypes, refValue):
@@ -1368,6 +1395,7 @@ def __initMessageBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
     bindingsObj.contentEncoding = amqpBindingsDict.get("contentEncoding", None)
     bindingsObj.messageType = amqpBindingsDict.get("messageType", None)
     modelTypes.append(bindingsObj)
+    return bindingsObj
 
 
 def _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer):
