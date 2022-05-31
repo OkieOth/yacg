@@ -1251,6 +1251,7 @@ def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFile
     if publishDict is None:
         return
     publishObj = asyncapi.PublishOperation()
+    channelType.publish = publishObj
     modelTypes.append(publishObj)
     publishObj.description = publishDict.get("description", None)
     publishObj.summary = publishDict.get("summary", None)

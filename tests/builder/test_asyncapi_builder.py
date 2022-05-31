@@ -127,7 +127,7 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.checkParameter(parameters[6], 'param2', 'another param', model.UuidType)
         self.checkParameter(parameters[7], 'param3', 'yet another param', model.UuidType)
 
-    def checkChannelObj(self, channels, key, channelBindings, parameterCount):
+    def checkChannelObj(self, channels, key, channelBindings, parameterCount, publish):
         found = []
         for c in channels:
             if c.key == key:
@@ -136,6 +136,9 @@ class TestAsyncApiParsing (unittest.TestCase):
         channelToCheck = found[0]
         self.assertEqual(parameterCount, len(channelToCheck.parameters))
         self.assertIsNotNone(channelToCheck.amqpBindings)
+        if publish:
+            self.assertIsNotNone(channelToCheck.publish)
+            self.assertIsNotNone(channelToCheck.publish.amqpBindings)
         if channelBindings is not None:
             self.assertIsNotNone(channelToCheck.amqpBindings)
             bindingsToCheck = channelToCheck.amqpBindings
@@ -202,13 +205,13 @@ class TestAsyncApiParsing (unittest.TestCase):
         channelBindings.queue.durable = True
         channelBindings.queue.exclusive = True
         channelBindings.queue.autoDelete = False
-        self.checkChannelObj(channels, "xxy.{param1}.yyx.{param2}", channelBindings, 3)
+        self.checkChannelObj(channels, "xxy.{param1}.yyx.{param2}", channelBindings, 3, True)
         channelBindings = asyncapi.ChannelBindingsAmqp()
         channelBindings.exchange = asyncapi.ChannelBindingsAmqpExchange()
         channelBindings.exchange.name = "xxy"
         channelBindings.exchange.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.FANOUT
         channelBindings.exchange.durable = True
         channelBindings.exchange.autoDelete = True
-        self.checkChannelObj(channels, "xxz.{param1}.yyx.{param2}", channelBindings, 2)
+        self.checkChannelObj(channels, "xxz.{param1}.yyx.{param2}", channelBindings, 2, True)
 
 
