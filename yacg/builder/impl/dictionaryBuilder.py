@@ -624,7 +624,6 @@ def _extractExternalReferenceTypeFromJson(refEntry, modelTypes, originModelFileC
     parsedSchema = getParsedSchemaFromJson(fileName)
     modelFileContainer = ModelFileContainer(fileName, parsedSchema)
     return _getTypeFromParsedSchema(modelFileContainer, desiredTypeName, modelTypes)
-    # TODO
 
 
 def _extractExternalReferenceTypeFromYaml(refEntry, modelTypes, originModelFileContainer):
@@ -888,7 +887,6 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif formatValue == 'byte':
         return BytesType()
     else:
-        # TODO logging
         logging.error(
             "modelFile: %s, type=%s, property=%s: unknown string type format: %s"
             % (modelFileContainer.fileName, newTypeName, newProperty.name, formatValue))
@@ -1229,7 +1227,7 @@ def _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer):
         channelType.description = channelDict.get('description', None)
         _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer, key)
         _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer)
-        # TODO _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFileContainer)
+        _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFileContainer)
         _parseAsyncApiChannelBindings(modelTypes, channelDict, channelType)
         modelTypes.append(channelType)
 
@@ -1263,8 +1261,8 @@ def _parseAsyncApiOperationMessageBinding(messageDict, modelTypes):
     return amqpBindingsObj
 
 
-def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, modelFileContainer):
-    messageDict = operationDict.get("message", None)
+def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, modelFileContainer, messageKey):
+    messageDict = operationDict.get(messageKey, None)
     messageObj = None
     if messageDict is not None:
         messageObj = asyncapi.Message()
@@ -1273,18 +1271,32 @@ def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, mod
     return messageObj
 
 
+def _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFileContainer):
+    subscribeDict = channelDict.get("subscribe", None)
+    if subscribeDict is None:
+        return
+    subscribeObj = asyncapi.OperationBase()
+    channelType.subscribe = subscribeObj
+    __parseAsyncApiOperationBase(modelTypes, subscribeObj, subscribeDict, channelType, modelFileContainer)
+
+
 def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer):
     publishDict = channelDict.get("publish", None)
     if publishDict is None:
         return
     publishObj = asyncapi.PublishOperation()
     channelType.publish = publishObj
-    modelTypes.append(publishObj)
-    publishObj.description = publishDict.get("description", None)
-    publishObj.summary = publishDict.get("summary", None)
-    publishObj.operationId = publishDict.get("operationId", None)
-    publishObj.amqpBindings = _parseAsyncApiOperationBinding(publishDict, modelTypes, channelType)
-    publishObj.message = _parseAsyncApiOperationMessage(publishDict, modelTypes, publishObj, modelFileContainer)
+    __parseAsyncApiOperationBase(modelTypes, publishObj, publishDict, channelType, modelFileContainer)
+    channelType.publish.xResponseMessage = _parseAsyncApiOperationMessage(publishDict, modelTypes, publishObj, modelFileContainer, "x-responseMessage")  # noqa: E501
+
+
+def __parseAsyncApiOperationBase(modelTypes, operationObj, operationDict, channelType, modelFileContainer):
+    modelTypes.append(operationObj)
+    operationObj.description = operationDict.get("description", None)
+    operationObj.summary = operationDict.get("summary", None)
+    operationObj.operationId = operationDict.get("operationId", None)
+    operationObj.amqpBindings = _parseAsyncApiOperationBinding(operationDict, modelTypes, channelType)
+    operationObj.message = _parseAsyncApiOperationMessage(operationDict, modelTypes, operationObj, modelFileContainer, "message")
 
 
 def __getAlreadyLoadedMessageBinding(modelTypes, refValue):

@@ -219,6 +219,35 @@
                 }
             }
         },
+        "aaa2.{param3}": {
+            "description": "endpoint triggers something",
+            "parameters": {
+                "param3": {
+                    "description": "yet another param",
+                    "schema": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "subscribe": {
+                "operationId": "triggerAaa",
+                "summary": "publish to this endpoint to trigger something",
+                "message": {
+                    "payload": {
+                        "$ref": "./model_with_bytes.json#/definitions/Job"
+                    }
+                },
+                "bindings": {
+                    "amqp": {
+                        "exchange": {
+                            "name": "zzz",
+                            "type": "topic"
+                        }
+                    }
+                }
+            }
+        },
         "tt.getAll": {
             "publish": {
                 "operationId": "ttGetAll",

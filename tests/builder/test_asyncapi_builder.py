@@ -107,7 +107,7 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.assertEqual(operationBinding.replyTo, replyTo)
 
     def checkOperationBindings(self, operationBindings):
-        self.assertEqual(len(operationBindings), 6)
+        self.assertEqual(len(operationBindings), 7)
         self.checkOperationBinding(operationBindings[0], 'opBinding1', False, 10, 'test-reply-to')
         self.checkOperationBinding(operationBindings[1], 'opBinding2', True, None, 'amq.rabbitmq.reply-to')
 
@@ -117,7 +117,7 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.assertTrue(isinstance(parameter.type, type))
 
     def checkParameters(self, parameters):
-        self.assertEqual(len(parameters), 8)
+        self.assertEqual(len(parameters), 9)
         self.checkParameter(parameters[0], 'myParam1', 'I am a dummy parameter', model.UuidType)
         self.checkParameter(parameters[1], 'myParam2', 'I am a dummy complex parameter', model.ComplexType)
         self.checkParameter(parameters[2], 'param1', 'a param', model.UuidType)
@@ -127,7 +127,7 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.checkParameter(parameters[6], 'param2', 'another param', model.UuidType)
         self.checkParameter(parameters[7], 'param3', 'yet another param', model.UuidType)
 
-    def checkChannelObj(self, channels, key, channelBindings, parameterCount, publish):
+    def checkChannelObj(self, channels, key, channelBindings, parameterCount, publish, xResponse, subscribe):
         found = []
         for c in channels:
             if c.key == key:
@@ -135,10 +135,21 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.assertEqual(1, len(found))
         channelToCheck = found[0]
         self.assertEqual(parameterCount, len(channelToCheck.parameters))
-        self.assertIsNotNone(channelToCheck.amqpBindings)
+        if channelBindings is not None:
+            self.assertIsNotNone(channelToCheck.amqpBindings)
         if publish:
             self.assertIsNotNone(channelToCheck.publish)
             self.assertIsNotNone(channelToCheck.publish.amqpBindings)
+            self.assertIsNotNone(channelToCheck.publish.message)
+            if channelToCheck.key != "tt.getAll":
+                self.assertIsNotNone(channelToCheck.publish.message.payload)
+        if xResponse:
+            self.assertIsNotNone(channelToCheck.publish.xResponseMessage)
+        if subscribe:
+            self.assertIsNotNone(channelToCheck.subscribe)
+            self.assertIsNotNone(channelToCheck.subscribe.amqpBindings)
+            self.assertIsNotNone(channelToCheck.subscribe.message)
+            self.assertIsNotNone(channelToCheck.subscribe.message.payload)
         if channelBindings is not None:
             self.assertIsNotNone(channelToCheck.amqpBindings)
             bindingsToCheck = channelToCheck.amqpBindings
@@ -186,7 +197,7 @@ class TestAsyncApiParsing (unittest.TestCase):
             if isinstance(type, asyncapi.Channel):
                 channels.append(type)
         self.assertEqual(len(serverTypes), 2)
-        self.assertEqual(len(channels), 5)
+        self.assertEqual(len(channels), 6)
         self.checkServerTypes(serverTypes)
         self.assertEqual(len(infoTypes), 1)
         self.checkInfoType(infoTypes[0])
@@ -205,13 +216,15 @@ class TestAsyncApiParsing (unittest.TestCase):
         channelBindings.queue.durable = True
         channelBindings.queue.exclusive = True
         channelBindings.queue.autoDelete = False
-        self.checkChannelObj(channels, "xxy.{param1}.yyx.{param2}", channelBindings, 3, True)
+        self.checkChannelObj(channels, "xxy.{param1}.yyx.{param2}", channelBindings, 3, True, False, False)
         channelBindings = asyncapi.ChannelBindingsAmqp()
         channelBindings.exchange = asyncapi.ChannelBindingsAmqpExchange()
         channelBindings.exchange.name = "xxy"
         channelBindings.exchange.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.FANOUT
         channelBindings.exchange.durable = True
         channelBindings.exchange.autoDelete = True
-        self.checkChannelObj(channels, "xxz.{param1}.yyx.{param2}", channelBindings, 2, True)
+        self.checkChannelObj(channels, "xxz.{param1}.yyx.{param2}", channelBindings, 2, True, False, False)
+        self.checkChannelObj(channels, "tt.getAll", None, 0, True, True, False)
+        self.checkChannelObj(channels, "aaa2.{param3}", None, 1, False, False, True)
 
 
