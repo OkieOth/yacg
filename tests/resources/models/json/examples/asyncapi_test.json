@@ -130,7 +130,7 @@
                                 "valid": {
                                     "type": "boolean"
                                 }
-                            }    
+                            }
                         }
                     },
                     "bindings": {
@@ -176,6 +176,28 @@
                             },
                             "job": {
                                 "$ref": "./model_with_bytes.json#/definitions/Job"
+                            }
+                        }
+                    },
+                    "headers": {
+                        "type": "object",
+                        "properties": {
+                            "headerKey1": {
+                                "type": "integer"
+                            },
+                            "headerKey2": {
+                                "type": "object",
+                                "properties": {
+                                    "subProp1": {
+                                        "type": "integer"
+                                    },
+                                    "subProp2": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "headerKey3": {
+                                "$ref": "./model_with_bytes.json#/definitions/BlackWhiteListEntry"
                             }
                         }
                     }

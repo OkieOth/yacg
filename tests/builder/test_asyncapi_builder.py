@@ -166,6 +166,7 @@ class TestAsyncApiParsing (unittest.TestCase):
                 self.assertEqual(channelBindings.queue.durable, bindingsToCheck.queue.durable)
                 self.assertEqual(channelBindings.queue.exclusive, bindingsToCheck.queue.exclusive)
                 self.assertEqual(channelBindings.queue.autoDelete, bindingsToCheck.queue.autoDelete)
+        return channelToCheck
 
     def test_asyncApiExample(self):
         modelFile = 'tests/resources/models/json/examples/asyncapi_test.json'
@@ -226,5 +227,16 @@ class TestAsyncApiParsing (unittest.TestCase):
         self.checkChannelObj(channels, "xxz.{param1}.yyx.{param2}", channelBindings, 2, True, False, False)
         self.checkChannelObj(channels, "tt.getAll", None, 0, True, True, False)
         self.checkChannelObj(channels, "aaa2.{param3}", None, 1, False, False, True)
-
+        channel = self.checkChannelObj(channels, "xxx.{param1}.yyy.{param2}", None, 2, True, False, False)
+        self.assertIsNotNone(channel)
+        self.assertIsNotNone(channel.publish)
+        self.assertIsNotNone(channel.publish.message)
+        self.assertIsNotNone(channel.publish.message.headers)
+        self.assertEqual(3,len(channel.publish.message.headers.properties))
+        self.assertEqual("headerKey1", channel.publish.message.headers.properties[0].name)
+        self.assertTrue(isinstance(channel.publish.message.headers.properties[0].type, model.IntegerType))
+        self.assertEqual("headerKey2", channel.publish.message.headers.properties[1].name)
+        self.assertTrue(isinstance(channel.publish.message.headers.properties[1].type, model.ComplexType))
+        self.assertEqual("headerKey3", channel.publish.message.headers.properties[2].name)
+        self.assertTrue(isinstance(channel.publish.message.headers.properties[2].type, model.ComplexType))
 

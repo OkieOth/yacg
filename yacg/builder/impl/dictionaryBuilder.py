@@ -1214,6 +1214,32 @@ def _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, nam
     return payload
 
 
+def _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, innerTypeName):
+    headersDict = messageDict.get('headers', None)
+    if headersDict is None:
+        return None
+
+    refEntry = headersDict.get("$ref", None)
+    if refEntry is not None:
+        # load reference type
+        return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+
+    typeEntry = headersDict.get("type", None)
+    if typeEntry is None:
+        logging.error("unknown headers type")
+        return None
+    if typeEntry != "object":
+        logging.error("headers type isn't object: {}".format(typeEntry))
+        return None
+
+    propertiesDict = headersDict.get('properties', None)
+    if propertiesDict is not None:
+        return _extractObjectType(innerTypeName, propertiesDict, None, None, None, modelTypes, modelFileContainer)
+    else:
+        errorMsg = 'Wrong message headers inner type'
+        logging.error(errorMsg)
+
+
 def _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer):
     channelsDict = parsedSchema.get('channels', None)
     if channelsDict is None:
@@ -1267,7 +1293,8 @@ def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, mod
     if messageDict is not None:
         messageObj = asyncapi.Message()
         messageObj.amqpBindings = _parseAsyncApiOperationMessageBinding(messageDict, modelTypes)
-        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, operationType.operationId)
+        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "Payload".format(operationType.operationId))
+        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "Headers".format(operationType.operationId))
     return messageObj
 
 
