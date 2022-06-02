@@ -17,11 +17,11 @@ def toLowerCamelCase(text):
     return lowerCamelCase
 
 
-def toUpperCamelCase(text):
+def toUpperCamelCase(text, separator=None):
     """converts a given Text to a upper camel case text
     this is an example -> ThisIsAnExample"""
 
-    splittedText = text.split()
+    splittedText = text.split() if separator is None else text.split(separator)
     upperCamelCase = ''
     for t in splittedText:
         upperCamelCase += t[0:1].capitalize()

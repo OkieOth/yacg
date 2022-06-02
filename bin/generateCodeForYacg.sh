@@ -38,13 +38,26 @@ if ! pipenv run python3 yacg.py --models \
     exit 1
 fi
 
+echo "create shared model classes ..."
+if ! pipenv run python3 yacg.py --models \
+    resources/models/json/shared/info.json \
+    --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/shared/info.py \
+    --protocolFile logs/gen_shared_info.log \
+    --skipCodeGenIfVersionUnchanged $* \
+    --templateParameters baseModelDomain=yacg.model.shared \
+                         title="yacg model shared"; then
+    echo "    ERROR while create shared model classes"
+    exit 1
+fi
+
+
 echo "create openapi model classes ..."
 if ! pipenv run python3 yacg.py --models \
     resources/models/json/yacg_openapi_paths.json \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/openapi.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_openapi.py \
                 plantUml=${scriptPos}/../docs/puml/yacg_openapi.puml \
-    --blackListed yacg.model.model=domain \
+    --blackListed yacg.model.model=domain yacg.model.shared.info=domain \
     --protocolFile logs/gen_openapi_model.log \
     --skipCodeGenIfVersionUnchanged $* \
     --templateParameters baseModelDomain=yacg.model.openapi \
@@ -52,5 +65,21 @@ if ! pipenv run python3 yacg.py --models \
     echo "    ERROR while create openapi model classes"
     exit 1
 fi
+
+echo "create asyncapi model classes ..."
+if ! pipenv run python3 yacg.py --models \
+    resources/models/json/yacg_asyncapi_types.json \
+    --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/asyncapi.py \
+                pythonBeansTests=${scriptPos}/../tests/model/test_asyncapi.py \
+                plantUml=${scriptPos}/../docs/puml/yacg_asyncapi.puml \
+    --blackListed yacg.model.model=domain yacg.model.shared.info=domain \
+    --protocolFile logs/gen_asyncapi_model.log \
+    --skipCodeGenIfVersionUnchanged $* \
+    --templateParameters baseModelDomain=yacg.model.asyncapi \
+                         title="yacg asyncapi model"; then
+    echo "    ERROR while create asyncapi model classes"
+    exit 1
+fi
+
 
 popd > /dev/null

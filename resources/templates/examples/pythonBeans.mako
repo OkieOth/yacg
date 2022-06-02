@@ -19,14 +19,14 @@
 from enum import Enum
 % endif
 % for domain in domainList:
-    % if baseModelDomain != domain:
+    % if baseModelDomain != domain :
 import ${domain}
     % endif
 % endfor
 
 
 % for type in modelTypes:
-    % if modelFuncs.isEnumType(type):    
+    % if modelFuncs.isEnumType(type):
 class ${type.name}(Enum):
         % for value in type.values:
     ${stringUtils.toUpperCaseName(value)} = '${value}'

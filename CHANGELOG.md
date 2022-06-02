@@ -1,3 +1,6 @@
+# 5.0.0
+* add basic asyncapi support
+
 # 4.7.0
 * introduce config option and commandline switch for failing when there are not unique type names
 
@@ -12,6 +15,9 @@
 
 # 4.4.0
 * Create missing directories for output files on singleFileGenerator 
+
+# 4.3.1
+* add model `hasPropertyWithTag`
 
 # 4.3.0
 * yacg commandline switch to protocol the codegen

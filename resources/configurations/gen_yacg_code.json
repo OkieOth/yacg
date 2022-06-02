@@ -108,7 +108,7 @@
             },
             {
                 "name": "puml",
-                "description": "create PlantUML file",
+                "description": "create PlantUML file for openapi",
                 "singleFileTask": {
                     "template": "plantUml",
                     "destFile": "tmp/openapi.puml"

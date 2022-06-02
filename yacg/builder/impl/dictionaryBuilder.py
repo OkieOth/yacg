@@ -19,6 +19,7 @@ from yacg.model.model import EnumType, ComplexType, DictionaryType, Tag
 from yacg.util.fileUtils import doesFileExist
 from yacg.model.modelFuncs import isBaseType
 import yacg.model.openapi as openapi
+import yacg.model.asyncapi as asyncapi
 
 
 class ModelFileContainer:
@@ -85,14 +86,14 @@ def __initEnumValues(mainType, parsedSchema):
         mainType.valuesMap = parsedSchema.get('x-enumValues', None)
 
 
-def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
+def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=False):
     """extract the types from the parsed schema
 
 
     Keyword arguments:
     parsedSchema -- dictionary with the loaded schema
     modelFile -- file name and path to the model to load
-    skipOpenApi -- if true, then openApi paths are not extracted for the model
+    skipAdditionalSpecTypes -- if true, then openApi paths and asyncApi types are not extracted for the model
     """
 
     modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
@@ -121,12 +122,18 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
         # extract types from extra definitions section
         _extractDefinitionsTypes(schemaDefinitions, modelTypes, modelFileContainer, None)
     else:
-        openApiComponents = parsedSchema.get('components', None)
-        if openApiComponents is not None:
-            schemas = openApiComponents.get('schemas', None)
+        componentsDict = parsedSchema.get('components', None)
+        if componentsDict is not None:
+            schemas = componentsDict.get('schemas', None)
             if schemas is not None:
                 # extract types from extra components section (OpenApi v3)
                 _extractDefinitionsTypes(schemas, modelTypes, modelFileContainer, None)
+            if not skipAdditionalSpecTypes:
+                _parseAsyncApiChannelParameters(modelTypes, componentsDict, None, modelFileContainer, 'componentsSection')
+                _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer)
+                _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer)
+                _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer)
+
 
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
@@ -151,11 +158,43 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipOpenApi=False):
                     property.foreignKey.property = __getPropertyByName(property.foreignKey.type, property.foreignKey.propertyName)
 
     # load additional types, e.g. openapi.PathType
-    if not skipOpenApi:
+    if not skipAdditionalSpecTypes:
         if (parsedSchema.get('openapi', None) is not None) or (parsedSchema.get('swagger', None) is not None):
             modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
+            extractOpenApiInfo(modelTypes, modelFileContainer)
+            extractOpenApiServer(modelTypes, modelFileContainer)
             extractOpenApiPathTypes(modelTypes, modelFileContainer)
+        if parsedSchema.get('asyncapi', None):
+            modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
+            extractAsyncApiTypes(modelTypes, modelFileContainer)
     return modelTypes
+
+
+def extractOpenApiInfo(modelTypes, modelFileContainer):
+    infoDict = modelFileContainer.parsedSchema.get('info', None)
+    if infoDict is None:
+        return
+    infoObj = openapi.OpenApiInfo()
+    __initInfoObj(infoObj, infoDict)
+    modelTypes.append(infoObj)
+
+
+def __initInfoObj(infoObj, infoDict):
+    infoObj.description = infoDict.get("description", None)
+    infoObj.license = infoDict.get("license", None)
+    infoObj.title = infoDict.get("title", None)
+    infoObj.version = infoDict.get("version", None)
+
+
+def extractOpenApiServer(modelTypes, modelFileContainer):
+    serverList = modelFileContainer.parsedSchema.get('servers', None)
+    if serverList is None:
+        return
+    for serverDict in serverList:
+        serverObj = openapi.OpenApiServer()
+        serverObj.url = serverDict.get("url", "UNKNOWN_URL")
+        serverObj.description = serverDict.get("description", None)
+        modelTypes.append(serverObj)
 
 
 def __getPropertyByName(type, propertyName):
@@ -585,7 +624,6 @@ def _extractExternalReferenceTypeFromJson(refEntry, modelTypes, originModelFileC
     parsedSchema = getParsedSchemaFromJson(fileName)
     modelFileContainer = ModelFileContainer(fileName, parsedSchema)
     return _getTypeFromParsedSchema(modelFileContainer, desiredTypeName, modelTypes)
-    # TODO
 
 
 def _extractExternalReferenceTypeFromYaml(refEntry, modelTypes, originModelFileContainer):
@@ -645,6 +683,8 @@ def _getTypeFromParsedSchema(modelFileContainer, desiredTypeName, modelTypes):
     newModelTypes = _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
     desiredType = None
     for type in newModelTypes:
+        if not hasattr(type, "name"):
+            continue
         if (type.name == desiredTypeName) and (type.source == modelFileContainer.fileName):
             desiredType = type
             break
@@ -666,7 +706,9 @@ def _putAllNewRelatedTypesToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTy
     alreadyLoadedModelTypes -- list with already loaded types
     """
 
-    _appendToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTypes)
+    if not _appendToAlreadyLoadedTypes(desiredType, alreadyLoadedModelTypes):
+        # type already exists
+        return
     if not hasattr(desiredType, 'properties'):
         return
     for property in desiredType.properties:
@@ -685,6 +727,8 @@ def _getAlreadyLoadedType(typeName, typeSource, alreadyLoadedModelTypes):
     """
 
     for type in alreadyLoadedModelTypes:
+        if not hasattr(type, "name"):
+            continue
         if (typeName == type.name) and (typeSource == type.source):
             return type
     return None
@@ -693,6 +737,8 @@ def _getAlreadyLoadedType(typeName, typeSource, alreadyLoadedModelTypes):
 def _appendToAlreadyLoadedTypes(newType, alreadyLoadedModelTypes):
     """Tests if the new type is already contained in the list of
     loaded types. If not then the new type is appended.
+    Function returns True if the type was added and False
+    in case that the type already exists.
 
     Keyword arguments:
     newType -- new type that should be added
@@ -702,9 +748,12 @@ def _appendToAlreadyLoadedTypes(newType, alreadyLoadedModelTypes):
     newTypeName = newType.name
     newTypeSource = newType.source
     for type in alreadyLoadedModelTypes:
+        if not hasattr(type, "name"):
+            continue
         if (newTypeName == type.name) and (newTypeSource == type.source):
-            return
+            return False
     alreadyLoadedModelTypes.append(newType)
+    return True
 
 
 def _getTypeIfAlreadyLoaded(typeName, fileName, modelTypes):
@@ -720,6 +769,8 @@ def _getTypeIfAlreadyLoaded(typeName, fileName, modelTypes):
     """
 
     for type in modelTypes:
+        if not hasattr(type, "name"):
+            continue
         if (type.name == typeName) and (fileName == type.source):
             return type
     return None
@@ -836,7 +887,6 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif formatValue == 'byte':
         return BytesType()
     else:
-        # TODO logging
         logging.error(
             "modelFile: %s, type=%s, property=%s: unknown string type format: %s"
             % (modelFileContainer.fileName, newTypeName, newProperty.name, formatValue))
@@ -962,10 +1012,10 @@ def __extractOpenApiRequestBody(command, requestBodyDict, modelTypes, modelFileC
     requestBody.description = requestBodyDict.get('description', None)
     requestBody.required = requestBodyDict.get('required', None)
     contentDict = requestBodyDict.get('content', None)
-    __extractOpenApiContentSectionAndAppend(contentDict, requestBody, modelTypes, modelFileContainer)
+    __extractOpenApiContentSectionAndAppend(contentDict, requestBody, modelTypes, modelFileContainer, command.operationId)
 
 
-def __extractOpenApiContentSectionAndAppend(contentDict, contentHost, modelTypes, modelFileContainer):
+def __extractOpenApiContentSectionAndAppend(contentDict, contentHost, modelTypes, modelFileContainer, innerTypeName):
     if contentDict is None:
         return
     for contentDictKey in contentDict.keys():
@@ -973,11 +1023,11 @@ def __extractOpenApiContentSectionAndAppend(contentDict, contentHost, modelTypes
         contentEntry = openapi.ContentEntry()
         contentEntry.mimeType = contentDictKey
         schema = content.get('schema', None)
-        __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
+        __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer, innerTypeName)
         contentHost.content.append(contentEntry)
 
 
-def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileContainer):
+def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileContainer, innerTypeName):
     if schema is None:
         return
     itemsEntry = schema.get("items", None)
@@ -990,9 +1040,14 @@ def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileCon
     if refEntry is not None:
         typeHost.type = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
     else:
-        errorMsg = 'Missing refEntry for requestBody entry!'
-        errorMsg2 = ' Attention, inner type declarations are currently not implemented for PathTypes.'
-        logging.error(errorMsg + errorMsg2)
+        dictToUse = itemsEntry if typeHost.isArray is True else schema
+        propertiesDict = dictToUse.get('properties', None)
+        if propertiesDict is not None:
+            newInnerTypeName = innerTypeName
+            typeHost.type = _extractObjectType(newInnerTypeName, propertiesDict, None, None, None, modelTypes, modelFileContainer)
+        else:
+            errorMsg = 'Attention, inner type declarations are currently not implemented for some additional model scenarios.'
+            logging.error(errorMsg)
 
 
 def __extractOpenApiCommandParameters(command, parametersList, modelTypes, modelFileContainer):
@@ -1008,7 +1063,7 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
             if schema is not None:
                 contentEntry = openapi.ContentEntry()
                 requestBody.content.append(contentEntry)
-                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
+                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer, command.operationId)
         else:
             parameter = openapi.Parameter()
             command.parameters.append(parameter)
@@ -1016,27 +1071,30 @@ def __extractOpenApiCommandParameters(command, parametersList, modelTypes, model
             parameter.name = param.get('name', None)
             parameter.description = param.get('description', None)
             parameter.required = param.get('required', False)
-            paramSchema = param.get('schema', None)
-            paramType = param.get('type', None)
-            if (paramSchema is None) and (paramType is None):
-                logging.error(
-                    "modelFile: %s, path=%s: missing schema or type entry" %
-                    (modelFileContainer.fileName, command.path))
-                continue
-            if paramSchema is not None:
-                parameter.type = _extractAttribType(
-                    command.operationId.capitalize(),
-                    parameter,
-                    paramSchema,
-                    modelTypes,
-                    modelFileContainer)
-            elif paramType is not None:
-                parameter.type = _extractAttribType(
-                    command.operationId.capitalize(),
-                    parameter,
-                    param,
-                    modelTypes,
-                    modelFileContainer)
+            __extractParameterType(param, modelTypes, modelFileContainer, parameter, command.operationId)
+
+
+def __extractParameterType(paramDict, modelTypes, modelFileContainer, parameterObj, paramName):
+    paramSchema = paramDict.get('schema', None)
+    paramType = paramDict.get('type', None)
+    if (paramSchema is None) and (paramType is None):
+        logging.error(
+            "modelFile: %s, name=%s: missing schema or type entry" %
+            (modelFileContainer.fileName, paramName))
+    if paramSchema is not None:
+        parameterObj.type = _extractAttribType(
+            paramName.capitalize(),
+            parameterObj,
+            paramSchema,
+            modelTypes,
+            modelFileContainer)
+    elif paramType is not None:
+        parameterObj.type = _extractAttribType(
+            paramName.capitalize(),
+            parameterObj,
+            paramDict,
+            modelTypes,
+            modelFileContainer)
 
 
 def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFileContainer):
@@ -1050,14 +1108,14 @@ def __extractOpenApiCommandResponses(command, responsesDict, modelTypes, modelFi
         response.description = responseDict.get('description', None)
         contentDict = responseDict.get('content', None)
         if contentDict is not None:
-            __extractOpenApiContentSectionAndAppend(contentDict, response, modelTypes, modelFileContainer)
+            __extractOpenApiContentSectionAndAppend(contentDict, response, modelTypes, modelFileContainer, command.operationId)
         else:
             # swagger v2
             schema = responseDict.get('schema', None)
             if schema is not None:
                 contentEntry = openapi.ContentEntry()
                 response.content.append(contentEntry)
-                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer)
+                __getTypeFromSchemaDictAndAsignId(schema, contentEntry, modelTypes, modelFileContainer, command.operationId)
 
 
 def __getAdditionalPropertiesForDictionaryType(dictionary):
@@ -1066,3 +1124,336 @@ def __getAdditionalPropertiesForDictionaryType(dictionary):
         # additionalProperties are only handled as objects here
         return None
     return additionalProperties
+
+
+def _parseAsyncApiInfo(modelTypes, parsedSchema):
+    infoDict = parsedSchema.get('info', None)
+    if infoDict is None:
+        return
+    infoObj = asyncapi.AsyncApiInfo()
+    __initInfoObj(infoObj, infoDict)
+    modelTypes.append(infoObj)
+
+
+def _parseAsyncApiServers(modelTypes, parsedSchema):
+    serversDict = parsedSchema.get('servers', None)
+    if serversDict is None:
+        return
+    for key in serversDict.keys():
+        serverDict = serversDict.get(key, None)
+        if serverDict is None:
+            continue
+        serverType = asyncapi.AsyncApiServer()
+        serverType.name = key
+        serverType.url = serverDict.get('url', None)
+        serverType.description = serverDict.get('description', None)
+        serverType.protocol = serverDict.get('protocol', None)
+        serverType.protocolVersion = serverDict.get('protocolVersion', None)
+        modelTypes.append(serverType)
+
+
+def _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer, channelKey):
+    parametersDict = channelDict.get('parameters', None)
+    if parametersDict is None:
+        return
+    for key in parametersDict.keys():
+        paramDict = parametersDict.get(key, None)
+        if paramDict is None:
+            continue
+        # could be a reference to the components section
+        refValue = paramDict.get("$ref", None)
+        if refValue is None:
+            paramType = __createNewChannelParam(modelTypes, key, paramDict, modelFileContainer)
+            modelTypes.append(paramType)
+        else:
+            paramType = __getAlreadyLoadedChannelParam(modelTypes, refValue)
+            if paramType is None:
+                logging.error("Parameter reference not found: channel: {}, parameter: {}".format(channelKey, key))
+        if (channelType is not None) and (paramType is not None):
+            channelType.parameters.append(paramType)
+
+
+def getDesiredNameFromRefValue(refValue):
+    lastSlash = refValue.rfind('/')
+    lastSlash = lastSlash + 1
+    return refValue[lastSlash:]
+
+
+def __getAlreadyLoadedChannelBinding(modelTypes, refValue):
+    desiredName = getDesiredNameFromRefValue(refValue)
+    for type in modelTypes:
+        if isinstance(type, asyncapi.ChannelBindingsAmqp):
+            if type.name == desiredName:
+                return type
+    return None
+
+
+def __getAlreadyLoadedChannelParam(modelTypes, refValue):
+    desiredName = getDesiredNameFromRefValue(refValue)
+    for type in modelTypes:
+        if isinstance(type, asyncapi.Parameter):
+            if type.name == desiredName:
+                return type
+    return None
+
+
+def __createNewChannelParam(modelTypes, key, paramDict, modelFileContainer):
+    paramType = asyncapi.Parameter()
+    paramType.name = key
+    paramType.description = paramDict.get('description', None)
+    __extractParameterType(paramDict, modelTypes, modelFileContainer, paramType, key)
+    return paramType
+
+
+def _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, name):
+    payloadDict = messageDict.get('payload', None)
+    if payloadDict is None:
+        return None
+    payload = asyncapi.Payload()
+    __getTypeFromSchemaDictAndAsignId(payloadDict, payload, modelTypes, modelFileContainer, name)
+    return payload
+
+
+def _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, innerTypeName):
+    headersDict = messageDict.get('headers', None)
+    if headersDict is None:
+        return None
+
+    refEntry = headersDict.get("$ref", None)
+    if refEntry is not None:
+        # load reference type
+        return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+
+    typeEntry = headersDict.get("type", None)
+    if typeEntry is None:
+        logging.error("unknown headers type")
+        return None
+    if typeEntry != "object":
+        logging.error("headers type isn't object: {}".format(typeEntry))
+        return None
+
+    propertiesDict = headersDict.get('properties', None)
+    if propertiesDict is not None:
+        return _extractObjectType(innerTypeName, propertiesDict, None, None, None, modelTypes, modelFileContainer)
+    else:
+        errorMsg = 'Wrong message headers inner type'
+        logging.error(errorMsg)
+
+
+def _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer):
+    channelsDict = parsedSchema.get('channels', None)
+    if channelsDict is None:
+        return
+    for key in channelsDict.keys():
+        channelDict = channelsDict.get(key, None)
+        if channelDict is None:
+            continue
+        channelType = asyncapi.Channel()
+        channelType.key = key
+        channelType.description = channelDict.get('description', None)
+        _parseAsyncApiChannelParameters(modelTypes, channelDict, channelType, modelFileContainer, key)
+        _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer)
+        _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFileContainer)
+        _parseAsyncApiChannelBindings(modelTypes, channelDict, channelType)
+        modelTypes.append(channelType)
+
+
+def _parseAsyncApiOperationBinding(operationDict, modelTypes, channelType):
+    bindingsDict = operationDict.get("bindings", None)
+    bindingsObj = None
+    if bindingsDict is not None:
+        refValue = bindingsDict.get("$ref", None)
+        if refValue is None:
+            bindingsObj = __initOperationBindingsAmqpObj(None, bindingsDict.get("amqp", None), modelTypes)
+        else:
+            bindingsObj = __getAlreadyLoadedOperationBinding(modelTypes, refValue)
+            if bindingsObj is None:
+                logging.error("Operation binding reference not found: channel: {}, parameter: {}".format(channelType.key, refValue))  # noqa: E501
+    return bindingsObj
+
+
+def _parseAsyncApiOperationMessageBinding(messageDict, modelTypes):
+    amqpBindingsObj = None
+    bindingsDict = messageDict.get("bindings", None)
+    if bindingsDict is not None:
+        refValue = bindingsDict.get("$ref", None)
+        if refValue is not None:
+            # binding is already loaded
+            amqpBindingsObj = __getAlreadyLoadedMessageBinding(modelTypes, refValue)
+        else:
+            amqpBindingsDict = bindingsDict.get("amqp", None)
+            if amqpBindingsDict is not None:
+                amqpBindingsObj = __initMessageBindingsAmqpObj(None, amqpBindingsDict, modelTypes)
+    return amqpBindingsObj
+
+
+def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, modelFileContainer, messageKey):
+    messageDict = operationDict.get(messageKey, None)
+    messageObj = None
+    if messageDict is not None:
+        messageObj = asyncapi.Message()
+        messageObj.amqpBindings = _parseAsyncApiOperationMessageBinding(messageDict, modelTypes)
+        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "Payload".format(operationType.operationId))
+        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "Headers".format(operationType.operationId))
+    return messageObj
+
+
+def _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFileContainer):
+    subscribeDict = channelDict.get("subscribe", None)
+    if subscribeDict is None:
+        return
+    subscribeObj = asyncapi.OperationBase()
+    channelType.subscribe = subscribeObj
+    __parseAsyncApiOperationBase(modelTypes, subscribeObj, subscribeDict, channelType, modelFileContainer)
+
+
+def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer):
+    publishDict = channelDict.get("publish", None)
+    if publishDict is None:
+        return
+    publishObj = asyncapi.PublishOperation()
+    channelType.publish = publishObj
+    __parseAsyncApiOperationBase(modelTypes, publishObj, publishDict, channelType, modelFileContainer)
+    channelType.publish.xResponseMessage = _parseAsyncApiOperationMessage(publishDict, modelTypes, publishObj, modelFileContainer, "x-responseMessage")  # noqa: E501
+
+
+def __parseAsyncApiOperationBase(modelTypes, operationObj, operationDict, channelType, modelFileContainer):
+    modelTypes.append(operationObj)
+    operationObj.description = operationDict.get("description", None)
+    operationObj.summary = operationDict.get("summary", None)
+    operationObj.operationId = operationDict.get("operationId", None)
+    operationObj.amqpBindings = _parseAsyncApiOperationBinding(operationDict, modelTypes, channelType)
+    operationObj.message = _parseAsyncApiOperationMessage(operationDict, modelTypes, operationObj, modelFileContainer, "message")
+
+
+def __getAlreadyLoadedMessageBinding(modelTypes, refValue):
+    desiredName = getDesiredNameFromRefValue(refValue)
+    for type in modelTypes:
+        if isinstance(type, asyncapi.MessageBindingsAmqp):
+            if type.name == desiredName:
+                return type
+    return None
+
+
+def __getAlreadyLoadedOperationBinding(modelTypes, refValue):
+    desiredName = getDesiredNameFromRefValue(refValue)
+    for type in modelTypes:
+        if isinstance(type, asyncapi.OperationBindingsAmqp):
+            if type.name == desiredName:
+                return type
+    return None
+
+
+def _parseAsyncApiChannelBindings(modelTypes, channelDict, channelType):
+    bindingsDict = channelDict.get("bindings", None)
+    if bindingsDict is None:
+        return
+    refValue = bindingsDict.get("$ref", None)
+    bindingsObj = None
+    if refValue is None:
+        amqpBindingsDict = bindingsDict.get("amqp", None)
+        if amqpBindingsDict is not None:
+            bindingsObj = __initChannelBindingsAmqpObj(None, amqpBindingsDict, modelTypes)
+    else:
+        bindingsObj = __getAlreadyLoadedChannelBinding(modelTypes, refValue)
+        if bindingsObj is None:
+            logging.error("Channel binding reference not found: channel: {}, binding: {}".format(channelType.name, refValue))
+    channelType.amqpBindings = bindingsObj
+
+
+def extractAsyncApiTypes(modelTypes, modelFileContainer):
+    """extract the asyncapi specific types from the parsed schema
+
+
+    Keyword arguments:
+    modelTypes -- dictionary with the loaded schema
+    modelFileContainer -- container that bundles data around the file to parse
+    """
+
+    parsedSchema = modelFileContainer.parsedSchema
+    _parseAsyncApiInfo(modelTypes, parsedSchema)
+    _parseAsyncApiServers(modelTypes, parsedSchema)
+    _parseAsyncApiChannels(modelTypes, parsedSchema, modelFileContainer)
+
+
+def _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer):
+    bindingsDict = componentsDict.get("channelBindings", {})
+    for key in bindingsDict.keys():
+        dict = bindingsDict.get(key, {})
+        amqpBindingsDict = dict.get("amqp", None)
+        if amqpBindingsDict is None:
+            continue
+        __initChannelBindingsAmqpObj(key, amqpBindingsDict, modelTypes)
+
+
+def __initChannelBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
+    bindingsObj = asyncapi.ChannelBindingsAmqp()
+    bindingsObj.name = name 
+    bindingsObj.isType = asyncapi.ChannelBindingsAmqpIsTypeEnum.valueForString(amqpBindingsDict.get("is", "routingKey"))
+    bindingsObj.exchange = __initChannelBindingsExchange(amqpBindingsDict.get("exchange", None))
+    bindingsObj.queue = __initChannelBindingsQueue(amqpBindingsDict.get("queue", None))
+    modelTypes.append(bindingsObj)
+    return bindingsObj
+
+
+def __initChannelBindingsExchange(exchangeDict):
+    if exchangeDict is None:
+        return None
+    exchangeObj = asyncapi.ChannelBindingsAmqpExchange()
+    exchangeObj.name = exchangeDict.get("name", None)
+    exchangeObj.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.valueForString(exchangeDict.get("type", None))
+    exchangeObj.durable = exchangeDict.get("durable", False)
+    exchangeObj.autoDelete = exchangeDict.get("autoDelete", False)
+    return exchangeObj
+
+
+def __initChannelBindingsQueue(queueDict):
+    if queueDict is None:
+        return None
+    queueObj = asyncapi.ChannelBindingsAmqpQueue()
+    queueObj.name = queueDict.get("name", None)
+    queueObj.durable = queueDict.get("durable", False)
+    queueObj.exclusive = queueDict.get("exclusive", False)
+    queueObj.autoDelete = queueDict.get("autoDelete", False)
+    return queueObj
+
+
+def _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer):
+    bindingsDict = componentsDict.get("messageBindings", {})
+    for key in bindingsDict.keys():
+        dict = bindingsDict.get(key, {})
+        amqpBindingsDict = dict.get("amqp", None)
+        if amqpBindingsDict is None:
+            continue
+        __initMessageBindingsAmqpObj(key, amqpBindingsDict, modelTypes)
+
+
+def __initMessageBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
+    bindingsObj = asyncapi.MessageBindingsAmqp()
+    bindingsObj.name = name
+    bindingsObj.contentEncoding = amqpBindingsDict.get("contentEncoding", None)
+    bindingsObj.messageType = amqpBindingsDict.get("messageType", None)
+    modelTypes.append(bindingsObj)
+    return bindingsObj
+
+
+def _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer):
+    bindingsDict = componentsDict.get("operationBindings", {})
+    for key in bindingsDict.keys():
+        dict = bindingsDict.get(key, {})
+        amqpBindingsDict = dict.get("amqp", None)
+        if amqpBindingsDict is None:
+            continue
+        __initOperationBindingsAmqpObj(key, amqpBindingsDict, modelTypes)
+
+
+def __initOperationBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
+    if amqpBindingsDict is None:
+        return None
+    bindingsObj = asyncapi.OperationBindingsAmqp()
+    bindingsObj.name = name
+    bindingsObj.expiration = amqpBindingsDict.get("expiration", None)
+    bindingsObj.replyTo = amqpBindingsDict.get("replyTo", "amq.rabbitmq.reply-to")
+    bindingsObj.mandatory = amqpBindingsDict.get("mandatory", False)
+    modelTypes.append(bindingsObj)
+    return bindingsObj

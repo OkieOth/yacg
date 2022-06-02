@@ -5,10 +5,19 @@
 import unittest
 
 import yacg.model.openapi
+import yacg.model.shared.info
 import yacg.model.model
 
 
 class TestYacgOpenapiModel (unittest.TestCase):
+    def testOpenApiServer(self):
+        x = yacg.model.openapi.OpenApiServer()
+        self.assertIsNotNone(x)
+
+    def testOpenApiInfo(self):
+        x = yacg.model.openapi.OpenApiInfo()
+        self.assertIsNotNone(x)
+
     def testPathType(self):
         x = yacg.model.openapi.PathType()
         self.assertIsNotNone(x)

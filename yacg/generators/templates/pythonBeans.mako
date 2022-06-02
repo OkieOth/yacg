@@ -2,6 +2,7 @@
 <%
     import yacg.templateHelper as templateHelper
     import yacg.model.modelFuncs as modelFuncs
+    import yacg.model.model as model
     import yacg.util.stringUtils as stringUtils
     import yacg.generators.helper.pythonFuncs as pythonFuncs
 
@@ -10,6 +11,20 @@
 
     baseModelDomain = templateParameters.get('baseModelDomain',None)
     domainList = modelFuncs.getDomainsAsList(modelTypes)
+
+    def printDefaultValue(property):
+        if hasattr(property.type,'default'):
+            ret = property.type.default
+            if ret is None:
+                return None
+            elif isinstance(property.type, model.StringType):
+                return '"{}"'.format(ret)
+            elif isinstance(property.type, model.UuidType):
+                return '"{}"'.format(ret)
+            else:
+                return ret
+        else:
+            return 'None'
 
 %># Attention, this file is generated. Manual changes get lost with the next
 # run of the code generation.
@@ -90,7 +105,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                 % if modelFuncs.isBaseOrDictionaryType(property.type):
                     % if not property.isArray:
 
-        self.${property.name} = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
+        self.${property.name} = dictObj.get('${property.name}', ${printDefaultValue(property)})
                     % else:
 
         array${stringUtils.toUpperCamelCase(property.name)} = dictObj.get('${property.name}', [])
@@ -111,7 +126,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                 % else:
                     % if not property.isArray:
 
-        subDictObj = dictObj.get('${property.name}', ${property.type.default if hasattr(property.type,'default') else None})
+        subDictObj = dictObj.get('${property.name}', ${printDefaultValue(property)})
         if subDictObj is not None:
             self.${property.name} = ${pythonFuncs.getTypeWithPackage(property.type, modelTypes, baseModelDomain)}(subDictObj)
                     % else:

@@ -5,7 +5,7 @@ import yacg.model.openapi as openapi
 
 
 def hasTag(tagName, typeOrPropertyObj):
-    """check up if the as parameter given object has a tag with the
+    """check up if the type or property has a tag with the
     given name
 
     Keyword arguments:
@@ -17,6 +17,21 @@ def hasTag(tagName, typeOrPropertyObj):
         return False
     for tag in typeOrPropertyObj.tags:
         if tag.name == tagName:
+            return True
+    return False
+
+
+def hasPropertyWithTag(tagName, typeObj):
+    """check up if the type has a property that contains a tag with the
+    given name
+
+    Keyword arguments:
+    tagName -- name of the tag to look for
+    typeObj -- type to check up
+    """
+
+    for property in typeObj.properties:
+        if hasTag(tagName, property):
             return True
     return False
 
@@ -73,7 +88,7 @@ def getKeyProperty(typeObj):
 
 
 def getPropertiesThatHasTag(tagName, typeObj):
-    """check up if the as parameter given type has attributes that
+    """check up if the as parameter given type has properties that
     contain tag with the given name
 
     Keyword arguments:
@@ -187,8 +202,10 @@ def getTypeName(type):
 def separateOpenApiPathTypes(types):
     """function returns a list that consists of three elems:
     1. OpenApi PathTypes
-    2. Non enum types
+    2. Other types
     3. Enum types
+    4. Info type
+    5. Servers type
 
     Keyword arguments:
     types -- list of model.Type instances
@@ -197,14 +214,20 @@ def separateOpenApiPathTypes(types):
     pathTypes = []
     nonEnumTypes = []
     enumTypes = []
+    infoType = None
+    serverTypes = []
     for type in types:
         if isinstance(type, openapi.PathType):
             pathTypes.append(type)
         elif isinstance(type, model.EnumType):
             enumTypes.append(type)
+        elif isinstance(type, openapi.OpenApiInfo):
+            infoType = type
+        elif isinstance(type, openapi.OpenApiServer):
+            serverTypes.append(type)
         else:
             nonEnumTypes.append(type)
-    return (pathTypes, nonEnumTypes, enumTypes)
+    return (pathTypes, nonEnumTypes, enumTypes, infoType, serverTypes)
 
 
 def getOpenApiTags(types):

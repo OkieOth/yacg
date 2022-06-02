@@ -1,0 +1,234 @@
+
+@startuml
+hide empty methods
+hide empty fields
+
+class OperationBase {
+        StringType operationId
+        StringType summary
+        StringType description
+        Message message
+        OperationBindingsAmqp amqpBindings
+}
+
+
+class Message {
+        StringType name
+        Payload payload
+        MessageBindingsAmqp amqpBindings
+        StringType contentType
+        AsyncApiHeaders headers
+        StringType description
+}
+
+note top: Container that describes the messages\nare sent
+
+class OperationBindingsAmqp {
+        StringType name
+        IntegerType expiration
+        BooleanType mandatory
+        StringType replyTo
+}
+
+note top: specific AMQP binding properties
+
+class AsyncApiInfo {
+}
+
+note top: Subset of the info object\nattribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
+
+AsyncApiInfo --|> InfoSection
+class AsyncApiServer {
+        StringType name
+        StringType url
+        StringType description
+        StringType protocol
+        StringType protocolVersion
+}
+
+note top: one entry of the servers\nsection
+
+class Channel {
+        StringType key
+        StringType description
+        Parameter[] parameters
+        PublishOperation publish
+        OperationBase subscribe
+        ChannelBindingsAmqp amqpBindings
+}
+
+note top: one entry of the channels\nsection
+
+class Parameter {
+        StringType name
+        StringType description
+        StringType type
+}
+
+note top: Parameters contained in the channel\nkey
+
+class PublishOperation {
+        Message xResponseMessage
+}
+
+note top: Configuration parameter needed for publishing
+
+PublishOperation --|> OperationBase
+class ChannelBindingsAmqp {
+        StringType name
+        ChannelBindingsAmqpIsTypeEnum isType
+        ChannelBindingsAmqpQueue queue
+        ChannelBindingsAmqpExchange exchange
+}
+
+note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
+
+class ChannelBindingsAmqpExchange {
+        StringType name
+        ChannelBindingsAmqpExchangeTypeEnum type
+        BooleanType durable
+        BooleanType autoDelete
+}
+
+note top: channel exchange parameters
+
+enum ChannelBindingsAmqpExchangeTypeEnum {
+    TOPIC
+    DIRECT
+    FANOUT
+    DEFAULT
+    HEADERS
+}
+
+
+class ChannelBindingsAmqpQueue {
+        StringType name
+        BooleanType durable
+        BooleanType exclusive
+        BooleanType autoDelete
+}
+
+note top: channel queue parameters
+
+enum ChannelBindingsAmqpIsTypeEnum {
+    QUEUE
+    ROUTINGKEY
+}
+
+
+class Payload {
+        Type type
+        BooleanType isArray
+}
+
+
+class MessageBindingsAmqp {
+        StringType name
+        StringType contentEncoding
+        StringType messageType
+}
+
+note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
+
+class AsyncApiHeaders {
+}
+
+
+AsyncApiHeaders --|> ComplexType
+
+    
+
+
+
+OperationBase  *--  Message
+            
+
+OperationBase  *--  OperationBindingsAmqp
+            
+
+    
+
+Message  *--  Payload
+            
+
+Message  *--  MessageBindingsAmqp
+            
+
+
+Message  *--  AsyncApiHeaders
+            
+
+
+    
+
+
+
+
+    
+    
+
+
+
+
+
+    
+
+
+Channel "0" *-- "n" Parameter
+            
+
+Channel  *--  PublishOperation
+            
+
+Channel  *--  OperationBase
+            
+
+Channel  *--  ChannelBindingsAmqp
+            
+
+    
+
+
+
+    
+PublishOperation  *--  Message
+            
+
+    
+
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpIsTypeEnum
+            
+
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpQueue
+            
+
+ChannelBindingsAmqp  *--  ChannelBindingsAmqpExchange
+            
+
+    
+
+ChannelBindingsAmqpExchange  *--  ChannelBindingsAmqpExchangeTypeEnum
+            
+
+
+
+    
+    
+
+
+
+
+    
+    
+Payload  *--  Type
+            
+
+
+    
+
+
+
+    
+
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
+@enduml

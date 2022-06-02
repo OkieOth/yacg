@@ -16,7 +16,7 @@ class TestPythonFuncs (unittest.TestCase):
             'None',
             pythonFuncs.getPythonValueForType(stringType, 'None'))
         self.assertEqual(
-            'Test',
+            '"Test"',
             pythonFuncs.getPythonValueForType(stringType, 'Test'))
 
     def testGetPythonValueForTypeBooeanType(self):
