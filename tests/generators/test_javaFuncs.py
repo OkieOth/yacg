@@ -26,6 +26,9 @@ class TestJavaFuncs (unittest.TestCase):
 
     def testIsDouble(self):
         doubleType = model.NumberType()
+        self.assertTrue(javaFuncs.isDouble(doubleType))
+        self.assertFalse(javaFuncs.isFloat(doubleType))
+
         doubleType.format = NumberTypeFormatEnum.DOUBLE
         self.assertTrue(javaFuncs.isDouble(doubleType))
         self.assertFalse(javaFuncs.isFloat(doubleType))
@@ -33,9 +36,6 @@ class TestJavaFuncs (unittest.TestCase):
 
     def testIsFloat(self):
         floatType = model.NumberType()
-        self.assertTrue(javaFuncs.isFloat(floatType))
-        self.assertFalse(javaFuncs.isDouble(floatType))
-
         floatType.format = NumberTypeFormatEnum.FLOAT
         self.assertTrue(javaFuncs.isFloat(floatType))
         self.assertFalse(javaFuncs.isDouble(floatType))
@@ -110,6 +110,26 @@ class TestJavaFuncs (unittest.TestCase):
         props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'class')
         self.assertEqual(1, len(props))
         self.assertEqual('class', sixth.name)
+
+
+    def testgetJavaTypes(self):
+        intType = model.IntegerType()
+        self.assertEqual('Integer', javaFuncs.getJavaType(intType, False))
+        self.assertEqual('java.util.List<Integer>', javaFuncs.getJavaType(intType, True))
+
+        doubleType = model.NumberType()
+        doubleType.format = model.NumberTypeFormatEnum.DOUBLE
+        self.assertEqual('Double', javaFuncs.getJavaType(doubleType, False))
+        self.assertEqual('java.util.List<Double>', javaFuncs.getJavaType(doubleType, True))
+
+        floatType = model.NumberType()
+        floatType.format = model.NumberTypeFormatEnum.FLOAT
+        self.assertEqual('Float', javaFuncs.getJavaType(floatType, False))
+        self.assertEqual('java.util.List<Float>', javaFuncs.getJavaType(floatType, True))
+
+        numberType = model.NumberType()
+        self.assertEqual('Double', javaFuncs.getJavaType(numberType, False))
+        self.assertEqual('java.util.List<Double>', javaFuncs.getJavaType(numberType, True))
 
 
     def testJavaFuncs(self):

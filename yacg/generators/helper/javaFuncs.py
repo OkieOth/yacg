@@ -76,7 +76,9 @@ def isDouble(typeObj):
     Keyword arguments:
     typeObj -- type object to propcess
     """
-    return isinstance(typeObj, model.NumberType) and model.NumberTypeFormatEnum.DOUBLE == typeObj.format
+    if isinstance(typeObj, model.NumberType):
+        return typeObj.format is None or typeObj.format == model.NumberTypeFormatEnum.DOUBLE 
+    return False
 
 
 def isFloat(typeObj):
@@ -85,9 +87,7 @@ def isFloat(typeObj):
     Keyword arguments:
     typeObj -- type object to propcess
     """
-    if isinstance(typeObj, model.NumberType):
-        return typeObj.format is None or typeObj.format == model.NumberTypeFormatEnum.FLOAT 
-    return False
+    return isinstance(typeObj, model.NumberType) and model.NumberTypeFormatEnum.FLOAT == typeObj.format
 
 
 def printExtendsType(type):
