@@ -1,3 +1,6 @@
+# 5.1.0
+* addes some convenience functions for Java templates
+
 # 5.0.0
 * add basic asyncapi support
 
