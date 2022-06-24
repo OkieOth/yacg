@@ -2,6 +2,7 @@ import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 import yacg.model.config as config
+import yacg.model.model as model
 
 from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum
 from yacg.model.model import StringType, UuidType
@@ -23,6 +24,40 @@ def getExampleType():
 # For executing these tests run: pipenv run python3 -m unittest -v tests/generators/test_javaFuncs.py
 class TestJavaFuncs (unittest.TestCase):
 
+    def testIsDouble(self):
+        doubleType = model.NumberType()
+        doubleType.format = NumberTypeFormatEnum.DOUBLE
+        self.assertTrue(javaFuncs.isDouble(doubleType))
+        self.assertFalse(javaFuncs.isFloat(doubleType))
+
+
+    def testIsFloat(self):
+        floatType = model.NumberType()
+        self.assertTrue(javaFuncs.isFloat(floatType))
+        self.assertFalse(javaFuncs.isDouble(floatType))
+
+        floatType.format = NumberTypeFormatEnum.FLOAT
+        self.assertTrue(javaFuncs.isFloat(floatType))
+        self.assertFalse(javaFuncs.isDouble(floatType))
+
+
+    def testIsLong(self):
+        longType = model.IntegerType()
+        longType.format = IntegerTypeFormatEnum.INT64
+        self.assertTrue(javaFuncs.isLong(longType))
+        self.assertFalse(javaFuncs.isInteger(longType))
+
+
+    def testIsInteger(self):
+        intType = model.IntegerType()
+        self.assertTrue(javaFuncs.isInteger(intType))
+        self.assertFalse(javaFuncs.isLong(intType))
+
+        intType.format = IntegerTypeFormatEnum.INT32
+        self.assertTrue(javaFuncs.isInteger(intType))
+        self.assertFalse(javaFuncs.isLong(intType))
+
+
     def testSanitizeRestorePropertyNames(self):
         myType = getExampleType()
         self.assertEqual('ExampleType', myType.name)
@@ -34,7 +69,6 @@ class TestJavaFuncs (unittest.TestCase):
         sixth = allProps[5]
         first.name = 'enum'
         sixth.name = 'class'
-
 
         # replace problematic property names
         idx2origName = javaFuncs.sanitizePropertyNames(myType)
@@ -58,7 +92,6 @@ class TestJavaFuncs (unittest.TestCase):
         actName = idx2origName[5]
         self.assertIsNotNone(actName)
         self.assertEqual('class', actName)
-
 
         # restore original property names
         javaFuncs.restorePropertyNames(myType, idx2origName)
