@@ -12,7 +12,7 @@ def getJavaType(typeObj, isArray):
 
     Keyword arguments:
     typeObj -- type object to propcess
-    isArray -- indicates whether 
+    isArray -- indicates whether the type is to be used as array.
     """
     if typeObj is None:
         return '???'
