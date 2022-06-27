@@ -5,41 +5,89 @@ Java code
 import yacg.model.model as model
 
 
-def getJavaType(type, isArray):
-    if type is None:
+def getJavaType(typeObj, isArray):
+    """This method returns the name of Java class representing the model type 'typeObj'.
+    If the type defined via 'typeObj' is used as array, then the name of a parameterize
+    List is returned.
+
+    Keyword arguments:
+    typeObj -- type object to propcess
+    isArray -- indicates whether the type is to be used as array.
+    """
+    if typeObj is None:
         return '???'
-    elif isinstance(type, model.IntegerType):
-        if type.format is None or type.format == model.IntegerTypeFormatEnum.INT32:
+    elif isinstance(typeObj, model.IntegerType):
+        if typeObj.format is None or typeObj.format == model.IntegerTypeFormatEnum.INT32:
             return 'Integer' if not isArray else 'java.util.List<Integer>'
         else:
             return 'Long' if not isArray else 'java.util.List<Long>'
-    elif isinstance(type, model.ObjectType):
+    elif isinstance(typeObj, model.ObjectType):
         return 'Object'
-    elif isinstance(type, model.NumberType):
-        if type.format is None or type.format == model.NumberTypeFormatEnum.DOUBLE:
+    elif isinstance(typeObj, model.NumberType):
+        if typeObj.format is None or typeObj.format == model.NumberTypeFormatEnum.DOUBLE:
             return 'Double' if not isArray else 'java.util.List<Double>'
         else:
             return 'Float' if not isArray else 'java.util.List<Float>'
-    elif isinstance(type, model.BooleanType):
+    elif isinstance(typeObj, model.BooleanType):
         return 'Boolean' if not isArray else 'java.util.List<Boolean>'
-    elif isinstance(type, model.StringType):
+    elif isinstance(typeObj, model.StringType):
         return 'String' if not isArray else 'java.util.List<String>'
-    elif isinstance(type, model.BytesType):
+    elif isinstance(typeObj, model.BytesType):
         return 'byte[]' if not isArray else 'java.util.List<byte[]>'
-    elif isinstance(type, model.UuidType):
+    elif isinstance(typeObj, model.UuidType):
         return 'java.util.UUID' if not isArray else 'java.util.List<java.util.UUID>'
-    elif isinstance(type, model.EnumType):
-        return type.name if not isArray else 'java.util.List<{}>'.format(type.name)
-    elif isinstance(type, model.DateType):
+    elif isinstance(typeObj, model.EnumType):
+        return typeObj.name if not isArray else 'java.util.List<{}>'.format(typeObj.name)
+    elif isinstance(typeObj, model.DateType):
         return 'java.time.LocalDate' if not isArray else 'java.util.List<java.time.LocalDate>'
-    elif isinstance(type, model.DateTimeType):
+    elif isinstance(typeObj, model.DateTimeType):
         return 'java.time.LocalDateTime' if not isArray else 'java.util.List<java.time.LocalDateTime>'
-    elif isinstance(type, model.DictionaryType):
-        return 'java.util.Map<String, {}>'.format(getJavaType(type.valueType, False))
-    elif isinstance(type, model.ComplexType):
-        return type.name if not isArray else 'java.util.List<{}>'.format(type.name)
+    elif isinstance(typeObj, model.DictionaryType):
+        return 'java.util.Map<String, {}>'.format(getJavaType(typeObj.valueType, False))
+    elif isinstance(typeObj, model.ComplexType):
+        return typeObj.name if not isArray else 'java.util.List<{}>'.format(typeObj.name)
     else:
         return '???'
+
+
+def isInteger(typeObj):
+    """Returns true if the type 'typeObj' represents the Java type Integer, false otherwise.
+
+    Keyword arguments:
+    typeObj -- type object to propcess
+    """
+    if isinstance(typeObj, model.IntegerType):
+        return typeObj.format is None or typeObj.format == model.IntegerTypeFormatEnum.INT32
+    return False
+
+
+def isLong(typeObj):
+    """Returns true if the type 'typeObj' represents the Java type Long, false otherwise.
+
+    Keyword arguments:
+    typeObj -- type object to propcess
+    """
+    return isinstance(typeObj, model.IntegerType) and model.IntegerTypeFormatEnum.INT64 == typeObj.format
+
+
+def isDouble(typeObj):
+    """Returns true if the type 'typeObj' represents the Java type Double, false otherwise.
+
+    Keyword arguments:
+    typeObj -- type object to propcess
+    """
+    if isinstance(typeObj, model.NumberType):
+        return typeObj.format is None or typeObj.format == model.NumberTypeFormatEnum.DOUBLE 
+    return False
+
+
+def isFloat(typeObj):
+    """Returns true if the type 'typeObj' represents the Java type Float, false otherwise.
+
+    Keyword arguments:
+    typeObj -- type object to propcess
+    """
+    return isinstance(typeObj, model.NumberType) and model.NumberTypeFormatEnum.FLOAT == typeObj.format
 
 
 def printExtendsType(type):

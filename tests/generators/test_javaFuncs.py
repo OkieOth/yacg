@@ -2,6 +2,7 @@ import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 import yacg.model.config as config
+import yacg.model.model as model
 
 from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum
 from yacg.model.model import StringType, UuidType
@@ -23,6 +24,40 @@ def getExampleType():
 # For executing these tests run: pipenv run python3 -m unittest -v tests/generators/test_javaFuncs.py
 class TestJavaFuncs (unittest.TestCase):
 
+    def testIsDouble(self):
+        doubleType = model.NumberType()
+        self.assertTrue(javaFuncs.isDouble(doubleType))
+        self.assertFalse(javaFuncs.isFloat(doubleType))
+
+        doubleType.format = NumberTypeFormatEnum.DOUBLE
+        self.assertTrue(javaFuncs.isDouble(doubleType))
+        self.assertFalse(javaFuncs.isFloat(doubleType))
+
+
+    def testIsFloat(self):
+        floatType = model.NumberType()
+        floatType.format = NumberTypeFormatEnum.FLOAT
+        self.assertTrue(javaFuncs.isFloat(floatType))
+        self.assertFalse(javaFuncs.isDouble(floatType))
+
+
+    def testIsLong(self):
+        longType = model.IntegerType()
+        longType.format = IntegerTypeFormatEnum.INT64
+        self.assertTrue(javaFuncs.isLong(longType))
+        self.assertFalse(javaFuncs.isInteger(longType))
+
+
+    def testIsInteger(self):
+        intType = model.IntegerType()
+        self.assertTrue(javaFuncs.isInteger(intType))
+        self.assertFalse(javaFuncs.isLong(intType))
+
+        intType.format = IntegerTypeFormatEnum.INT32
+        self.assertTrue(javaFuncs.isInteger(intType))
+        self.assertFalse(javaFuncs.isLong(intType))
+
+
     def testSanitizeRestorePropertyNames(self):
         myType = getExampleType()
         self.assertEqual('ExampleType', myType.name)
@@ -34,7 +69,6 @@ class TestJavaFuncs (unittest.TestCase):
         sixth = allProps[5]
         first.name = 'enum'
         sixth.name = 'class'
-
 
         # replace problematic property names
         idx2origName = javaFuncs.sanitizePropertyNames(myType)
@@ -59,7 +93,6 @@ class TestJavaFuncs (unittest.TestCase):
         self.assertIsNotNone(actName)
         self.assertEqual('class', actName)
 
-
         # restore original property names
         javaFuncs.restorePropertyNames(myType, idx2origName)
         self.assertEqual(countProps, len(modelFuncs.getFlattenProperties(myType)))
@@ -77,6 +110,26 @@ class TestJavaFuncs (unittest.TestCase):
         props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'class')
         self.assertEqual(1, len(props))
         self.assertEqual('class', sixth.name)
+
+
+    def testgetJavaTypes(self):
+        intType = model.IntegerType()
+        self.assertEqual('Integer', javaFuncs.getJavaType(intType, False))
+        self.assertEqual('java.util.List<Integer>', javaFuncs.getJavaType(intType, True))
+
+        doubleType = model.NumberType()
+        doubleType.format = model.NumberTypeFormatEnum.DOUBLE
+        self.assertEqual('Double', javaFuncs.getJavaType(doubleType, False))
+        self.assertEqual('java.util.List<Double>', javaFuncs.getJavaType(doubleType, True))
+
+        floatType = model.NumberType()
+        floatType.format = model.NumberTypeFormatEnum.FLOAT
+        self.assertEqual('Float', javaFuncs.getJavaType(floatType, False))
+        self.assertEqual('java.util.List<Float>', javaFuncs.getJavaType(floatType, True))
+
+        numberType = model.NumberType()
+        self.assertEqual('Double', javaFuncs.getJavaType(numberType, False))
+        self.assertEqual('java.util.List<Double>', javaFuncs.getJavaType(numberType, True))
 
 
     def testJavaFuncs(self):
