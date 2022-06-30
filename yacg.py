@@ -169,11 +169,7 @@ def __blackWhiteListEntries(argsList, blackWhiteListType):
     return entryObjList
 
 
-def _getJobConfigurationsFromArgs(args):
-    job = config.Job()
-    job.name = 'default'
-    _putArgModelsToJob(args, job)
-    templateParameters = _getTemplateParameters(args)
+def __getBlackWhiteListsFromArgs(args):
     blackList = __blackWhiteListEntries(args.blackListed, config.BlackWhiteListEntryTypeEnum.TYPE)
     whiteList = __blackWhiteListEntries(args.whiteListed, config.BlackWhiteListEntryTypeEnum.TYPE)
     blackListDomains = __blackWhiteListEntries(args.blackListedDomains, config.BlackWhiteListEntryTypeEnum.DOMAIN)
@@ -182,6 +178,15 @@ def _getJobConfigurationsFromArgs(args):
         blackList.extend(blackListDomains)
     if len(whiteListDomains) > 0:
         whiteList.extend(whiteListDomains)
+    return blackList, whiteList
+
+
+def _getJobConfigurationsFromArgs(args):
+    job = config.Job()
+    job.name = 'default'
+    _putArgModelsToJob(args, job)
+    templateParameters = _getTemplateParameters(args)
+    blackList, whiteList = __getBlackWhiteListsFromArgs(args)
     __getSingleFileTemplates(args, job, templateParameters, blackList, whiteList)
     __getMultiFileTemplates(args, job, templateParameters, blackList, whiteList)
     return [job]
@@ -201,6 +206,7 @@ def getJobConfigurations(args):
 
     if args.config is not None:
         templateParameters = _getTemplateParameters(args)
+        blackList, whiteList = __getBlackWhiteListsFromArgs(args)
         tasksToInclude = args.tasks if args.tasks is not None else []
         jobsToInclude = args.jobs if args.jobs is not None else []
         vars = _getVars(args)
@@ -214,6 +220,8 @@ def getJobConfigurations(args):
         # mix in of command line parameters to increase flexibility
         for job in jobArray:
             for task in job.tasks:
+                task.blackListed = blackList
+                task.whiteListed = whiteList
                 if task.singleFileTask is not None:
                     task.singleFileTask.templateParams = task.singleFileTask.templateParams + templateParameters
                 elif task.multiFileTask is not None:
