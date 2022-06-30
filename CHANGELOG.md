@@ -1,3 +1,7 @@
+# 5.2.0
+* add additional commandline switch for domain black- and whitelists
+* apply commandline black- and whitelists to the given configuration via file
+
 # 5.1.0
 * addes some convenience functions for Java templates
 

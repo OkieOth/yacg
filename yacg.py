@@ -36,6 +36,8 @@ parser.add_argument_group('additional')
 parser.add_argument('--templateParameters', nargs='+', help='additional parameters passed to the templates')
 parser.add_argument('--blackListed', nargs='+', help='types that should not be handled in the template')
 parser.add_argument('--whiteListed', nargs='+', help='types that should be handled in the template')
+parser.add_argument('--blackListedDomains', nargs='+', help='domains that should not be handled in the template')
+parser.add_argument('--whiteListedDomains', nargs='+', help='domains that should be handled in the template')
 parser.add_argument('--vars', nargs='+', help='variables that are passed to the processing')
 parser.add_argument('--usedFilesOnly', help='import models but only print the used files to stdout', action='store_true')
 parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
@@ -151,7 +153,7 @@ def __extractFromTemplateParameters(parameterName, templateParameters):
     return None
 
 
-def __blackWhiteListEntries2Objects(argsList):
+def __blackWhiteListEntries(argsList, blackWhiteListType):
     entryObjList = []
     if argsList is None:
         return []
@@ -162,9 +164,21 @@ def __blackWhiteListEntries2Objects(argsList):
         if (len(keyValueArray) == 2):
             entryObj.type = config.BlackWhiteListEntryTypeEnum.valueForString(keyValueArray[1])
         else:
-            entryObj.type = config.BlackWhiteListEntryTypeEnum.TYPE
+            entryObj.type = blackWhiteListType
         entryObjList.append(entryObj)
     return entryObjList
+
+
+def __getBlackWhiteListsFromArgs(args):
+    blackList = __blackWhiteListEntries(args.blackListed, config.BlackWhiteListEntryTypeEnum.TYPE)
+    whiteList = __blackWhiteListEntries(args.whiteListed, config.BlackWhiteListEntryTypeEnum.TYPE)
+    blackListDomains = __blackWhiteListEntries(args.blackListedDomains, config.BlackWhiteListEntryTypeEnum.DOMAIN)
+    whiteListDomains = __blackWhiteListEntries(args.whiteListedDomains, config.BlackWhiteListEntryTypeEnum.DOMAIN)
+    if len(blackListDomains) > 0:
+        blackList.extend(blackListDomains)
+    if len(whiteListDomains) > 0:
+        whiteList.extend(whiteListDomains)
+    return blackList, whiteList
 
 
 def _getJobConfigurationsFromArgs(args):
@@ -172,8 +186,7 @@ def _getJobConfigurationsFromArgs(args):
     job.name = 'default'
     _putArgModelsToJob(args, job)
     templateParameters = _getTemplateParameters(args)
-    blackList = __blackWhiteListEntries2Objects(args.blackListed)
-    whiteList = __blackWhiteListEntries2Objects(args.whiteListed)
+    blackList, whiteList = __getBlackWhiteListsFromArgs(args)
     __getSingleFileTemplates(args, job, templateParameters, blackList, whiteList)
     __getMultiFileTemplates(args, job, templateParameters, blackList, whiteList)
     return [job]
@@ -193,6 +206,7 @@ def getJobConfigurations(args):
 
     if args.config is not None:
         templateParameters = _getTemplateParameters(args)
+        blackList, whiteList = __getBlackWhiteListsFromArgs(args)
         tasksToInclude = args.tasks if args.tasks is not None else []
         jobsToInclude = args.jobs if args.jobs is not None else []
         vars = _getVars(args)
@@ -206,6 +220,8 @@ def getJobConfigurations(args):
         # mix in of command line parameters to increase flexibility
         for job in jobArray:
             for task in job.tasks:
+                task.blackListed = blackList
+                task.whiteListed = whiteList
                 if task.singleFileTask is not None:
                     task.singleFileTask.templateParams = task.singleFileTask.templateParams + templateParameters
                 elif task.multiFileTask is not None:
