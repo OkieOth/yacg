@@ -1,3 +1,6 @@
+# 5.2.2
+* Bugfix: update docker image to python:3.10-slim-buster
+
 # 5.2.1
 * Bugfix: read tags for enum types
 
