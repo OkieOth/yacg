@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "single type schema with a top level enum",
+    "description": "this example contains a top level enum definition with boxh x-enumValues and x-tags",
+    "version": "0.0.1",
+    "definitions": {
+        "DetectorEdgeType": {
+            "type": "string",
+            "enum": [
+                "UNKNOWN",
+                "FALLING",
+                "RISING"
+            ],
+            "x-enumValues": {
+                "UNKNOWN": "0",
+                "FALLING": "1",
+                "RISING": "2"
+            },
+            "x-tags": [
+                "ordinalEnum"
+            ]
+        }
+    }
+}

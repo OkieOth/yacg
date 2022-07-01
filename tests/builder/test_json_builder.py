@@ -106,6 +106,21 @@ class TestJsonBuilder (unittest.TestCase):
         mongoTypes = getTypesWithTag(modelTypes, ["mongodb"])
         self.assertEqual(len(mongoTypes), 3)
 
+    def testTopLevelEnum(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_enum.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertEqual(len(modelTypes), 1)
+        enumType = modelTypes[0]
+        self.assertEqual(enumType.name, 'DetectorEdgeType')
+        self.assertTrue(isinstance(enumType, EnumType))
+        self.assertIsNotNone(enumType.tags)
+        self.assertEqual(len(enumType.tags), 1)
+        self.assertEqual(enumType.tags[0].name, 'ordinalEnum')
+
     def testGetRelatedTypesToTag(self):
         modelFile = 'tests/resources/models/json/examples/nibelheim.json'
         modelFileExists = os.path.isfile(modelFile)
