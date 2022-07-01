@@ -1,3 +1,6 @@
+# 5.2.1
+* Bugfix: read tags for enum types
+
 # 5.2.0
 * add additional commandline switch for domain black- and whitelists
 * apply commandline black- and whitelists to the given configuration via file
