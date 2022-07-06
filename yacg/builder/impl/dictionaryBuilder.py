@@ -463,7 +463,7 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif type == 'boolean':
         return BooleanType()
     elif type == 'string':
-        # DateType, DateTimeType, StringType, EnumType
+        # DateType, TimeType, DateTimeType, StringType, EnumType
         return _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
     elif type == 'object':
         subProps = propDict.get('properties', None)

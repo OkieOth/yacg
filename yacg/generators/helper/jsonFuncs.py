@@ -24,6 +24,8 @@ def getJsonType(type):
         return 'string'
     elif isinstance(type, model.DateType):
         return 'string'
+    elif isinstance(type, model.TimeType):
+        return 'string'
     elif isinstance(type, model.DateTimeType):
         return 'string'
     elif isinstance(type, model.BytesType):
@@ -55,6 +57,8 @@ def isFormatRequired(type):
     elif isinstance(type, model.UuidType):
         return True
     elif isinstance(type, model.DateType):
+        return True
+    elif isinstance(type, model.TimeType):
         return True
     elif isinstance(type, model.DateTimeType):
         return True
@@ -118,6 +122,8 @@ def isMinRequired(type):
         return True
     elif isinstance(type, model.DateType) and (type.minimum is not None):
         return True
+    elif isinstance(type, model.TimeType) and (type.minimum is not None):
+        return True
     elif isinstance(type, model.DateTimeType) and (type.minimum is not None):
         return True
     else:
@@ -132,6 +138,8 @@ def isExclusiveMinRequired(type):
     elif isinstance(type, model.NumberType) and (type.exclusiveMinimum is not None):
         return True
     elif isinstance(type, model.DateType) and (type.exclusiveMinimum is not None):
+        return True
+    elif isinstance(type, model.TimeType) and (type.exclusiveMinimum is not None):
         return True
     elif isinstance(type, model.DateTimeType) and (type.exclusiveMinimum is not None):
         return True
@@ -148,6 +156,8 @@ def isMaxRequired(type):
         return True
     elif isinstance(type, model.DateType) and (type.maximum is not None):
         return True
+    elif isinstance(type, model.TimeType) and (type.maximum is not None):
+        return True
     elif isinstance(type, model.DateTimeType) and (type.maximum is not None):
         return True
     else:
@@ -162,6 +172,8 @@ def isExclusiveMaxRequired(type):
     elif isinstance(type, model.NumberType) and (type.exclusiveMaximum is not None):
         return True
     elif isinstance(type, model.DateType) and (type.exclusiveMaximum is not None):
+        return True
+    elif isinstance(type, model.TimeType) and (type.exclusiveMaximum is not None):
         return True
     elif isinstance(type, model.DateTimeType) and (type.exclusiveMaximum is not None):
         return True
@@ -185,6 +197,8 @@ def isDefaultRequired(type):
     elif isinstance(type, model.EnumType) and (type.default is not None):
         return True
     elif isinstance(type, model.DateType) and (type.default is not None):
+        return True
+    elif isinstance(type, model.TimeType) and (type.default is not None):
         return True
     elif isinstance(type, model.DateTimeType) and (type.default is not None):
         return True

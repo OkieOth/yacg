@@ -202,3 +202,9 @@ class TestJavaFuncs (unittest.TestCase):
         self.assertEqual('Boolean', javaFuncs.getJavaType(prop.type, prop.isArray))
         prop = myType.properties[25]
         self.assertEqual('java.util.List<Boolean>', javaFuncs.getJavaType(prop.type, prop.isArray))
+
+        # StringType with format time
+        prop = myType.properties[26]
+        self.assertEqual('java.time.LocalTime', javaFuncs.getJavaType(prop.type, prop.isArray))
+        prop = myType.properties[27]
+        self.assertEqual('java.util.List<java.time.LocalTime>', javaFuncs.getJavaType(prop.type, prop.isArray))
