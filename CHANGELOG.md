@@ -1,3 +1,6 @@
+# 5.3.0
+* Added time type
+
 # 5.2.2
 * Bugfix: update docker image to python:3.10-slim-buster
 
