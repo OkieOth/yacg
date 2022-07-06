@@ -75,6 +75,8 @@ def printOpenApiJsonFormatEntry(type):
         return ',"format": "uuid"'
     elif isinstance(type, model.DateType):
         return ',"format": "date"'
+    elif isinstance(type, model.TimeType):
+        return ',"format": "time"'
     elif isinstance(type, model.DateTimeType):
         return ',"format": "date-time"'
     elif isinstance(type, model.BytesType):
