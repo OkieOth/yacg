@@ -262,6 +262,42 @@
                 "metaModelType"
             ]
         },
+        "TimeType": {
+            "type": "object",
+            "description": "type for time values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "string",
+                            "format": "time"
+                        },
+                        "minimum": {
+                            "type": "string",
+                            "format": "time"
+                        },
+                        "exclusiveMinimum": {
+                            "type": "string",
+                            "format": "time"
+                        },
+                        "maximum": {
+                            "type": "string",
+                            "format": "time"
+                        },
+                        "exclusiveMaximum": {
+                            "type": "string",
+                            "format": "time"
+                        }
+                    }
+                }
+            ],
+            "x-tags": [
+                "metaModelType"
+            ]
+        },
         "DateTimeType": {
             "type": "object",
             "description": "type for timestamp values",
