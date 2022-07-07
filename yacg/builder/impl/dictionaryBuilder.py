@@ -14,7 +14,7 @@ from yacg.model.model import ArrayConstraints, ForeignKey, Property
 from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType, ObjectType
-from yacg.model.model import DateType, DateTimeType
+from yacg.model.model import DateType, TimeType, DateTimeType
 from yacg.model.model import EnumType, ComplexType, DictionaryType, Tag
 from yacg.util.fileUtils import doesFileExist
 from yacg.model.modelFuncs import isBaseType
@@ -463,7 +463,7 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif type == 'boolean':
         return BooleanType()
     elif type == 'string':
-        # DateType, DateTimeType, StringType, EnumType
+        # DateType, TimeType, DateTimeType, StringType, EnumType
         return _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
     elif type == 'object':
         subProps = propDict.get('properties', None)
@@ -880,6 +880,8 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
         return enumType
     elif formatValue == 'date':
         return DateType()
+    elif formatValue == 'time':
+        return TimeType()
     elif formatValue == 'date-time':
         return DateTimeType()
     elif formatValue == 'uuid':

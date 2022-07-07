@@ -300,6 +300,7 @@ class TestJsonBuilder (unittest.TestCase):
             'UuidType',
             'EnumType',
             'DateType',
+            'TimeType',
             'DateTimeType',
             'BytesType',
             'ComplexType',

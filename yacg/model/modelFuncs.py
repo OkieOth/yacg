@@ -356,6 +356,15 @@ def isDateContained(modelTypes):
     return False
 
 
+def isTimeContained(modelTypes):
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.TimeType)):
+                    return True
+    return False
+
+
 def doesTypeOrAttribContainsType(typeObj, type):
     if hasattr(typeObj, "properties"):
         for prop in typeObj.properties:

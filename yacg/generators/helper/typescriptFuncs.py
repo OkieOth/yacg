@@ -25,6 +25,8 @@ def printTypescriptType(type, isArray):
         return "{type}".format(type=type.name) if not isArray else "{type}[]".format(type=type.name)
     elif isinstance(type, model.DateTimeType):
         return 'Date' if not isArray else 'Date[]'
+    elif isinstance(type, model.TimeType):
+        return 'Date' if not isArray else 'Date[]'
     elif isinstance(type, model.DateType):
         return 'Date' if not isArray else 'Date[]'
     elif isinstance(type, model.BytesType):

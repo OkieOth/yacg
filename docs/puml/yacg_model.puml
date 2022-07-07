@@ -107,6 +107,17 @@ class DateType {
 note top: type for date values
 
 DateType --|> Type
+class TimeType {
+        StringType default
+        StringType minimum
+        StringType exclusiveMinimum
+        StringType maximum
+        StringType exclusiveMaximum
+}
+
+note top: type for time values
+
+TimeType --|> Type
 class DateTimeType {
         DateTimeType default
         DateTimeType minimum
@@ -235,6 +246,12 @@ EnumType "0" *-- "n" Tag
             
 
     
+
+
+    
+
+
+
 
 
     

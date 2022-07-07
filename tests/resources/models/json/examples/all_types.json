@@ -142,6 +142,17 @@
               "type": "boolean"
             }
           },
+          "timeProp": {
+            "type": "string",
+            "format": "time"
+          },
+          "timeArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "time"
+            }
+          },
           "inlineComplexProp": {
             "type" : "object",
             "properties": {

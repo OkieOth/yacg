@@ -40,6 +40,8 @@ def getJavaType(typeObj, isArray):
         return typeObj.name if not isArray else 'java.util.List<{}>'.format(typeObj.name)
     elif isinstance(typeObj, model.DateType):
         return 'java.time.LocalDate' if not isArray else 'java.util.List<java.time.LocalDate>'
+    elif isinstance(typeObj, model.TimeType):
+        return 'java.time.LocalTime' if not isArray else 'java.util.List<java.time.LocalTime>'
     elif isinstance(typeObj, model.DateTimeType):
         return 'java.time.LocalDateTime' if not isArray else 'java.util.List<java.time.LocalDateTime>'
     elif isinstance(typeObj, model.DictionaryType):

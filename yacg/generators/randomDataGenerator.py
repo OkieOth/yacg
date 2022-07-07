@@ -144,6 +144,10 @@ def __getRandomDateTimeValue(property, randomDataTask):
         random.randint(0, 59))
 
 
+def __getRandomTimeValue(property, randomDataTask):
+    return __getRandomDateTimeValue(property, randomDataTask).time()
+
+
 def __getRandomComplexValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth):
     # create a new dict for the type
     # initialize the keys
@@ -195,6 +199,8 @@ def __getRandomValue(typeObj, property, randomDataTask, randomDataDict, keyValue
         return __getRandomEnumValue(property, randomDataTask)
     elif isinstance(property.type, model.DateType):
         return __getRandomDateValue(property, randomDataTask)
+    elif isinstance(property.type, model.TimeType):
+        return __getRandomTimeValue(property, randomDataTask)
     elif isinstance(property.type, model.DateTimeType):
         return __getRandomDateTimeValue(property, randomDataTask)
     elif isinstance(property.type, model.ComplexType):

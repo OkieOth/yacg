@@ -39,6 +39,8 @@
             return type.name
         elif isinstance(type, model.DateType):
             return 'google.protobuf.Date'
+        elif isinstance(type, model.TimeType):
+            return 'google.protobuf.TimeOfDay'
         elif isinstance(type, model.DateTimeType):
             return 'google.protobuf.Timestamp'
         elif isinstance(type, model.ComplexType):

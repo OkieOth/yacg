@@ -359,6 +359,41 @@ class DateType (Type):
         self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
+class TimeType (Type):
+    """ type for time values
+    """
+
+    def __init__(self, dictObj=None):
+        super(Type, self).__init__()
+
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
+
+
 class DateTimeType (Type):
     """ type for timestamp values
     """

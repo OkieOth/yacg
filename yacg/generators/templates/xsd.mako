@@ -38,6 +38,8 @@
             return "tns:{}".format(type.name)
         elif isinstance(type, model.DateType):
             return 'xsd:date'
+        elif isinstance(type, model.TimeType):
+            return 'xsd:time'
         elif isinstance(type, model.DateTimeType):
             return 'xsd:dateTime'
         elif isinstance(type, model.ComplexType):
