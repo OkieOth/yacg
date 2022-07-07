@@ -26,6 +26,9 @@ class TestTemplateHelper (unittest.TestCase):
         act = templateHelper.addLineBreakToDescription(input, 0)
         self.assertEqual(act, '0123456789 0123456789 0123456789 0123456789 0123456789 0123456789abc\n0123456789')
 
+        act = templateHelper.addLineBreakToDescription(input, 4)
+        self.assertEqual(act, '0123456789 0123456789 0123456789 0123456789 0123456789 0123456789abc\n    0123456789')
+
         input = '0123456789 0123456789 0123456789 0123456789 0123456789 0123456789abc 0123456789'
         act = templateHelper.addLineBreakToDescription(input, 0, '// ')
         self.assertEqual(act, '// 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789abc\n// 0123456789')
