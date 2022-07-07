@@ -1,5 +1,9 @@
+# 5.3.1
+* Added prefix to templateHelper.addLineBreakToDescription  
+  (and removed leading space from first line)
+
 # 5.3.0
-* Added time type
+* Added TimeType to model
 
 # 5.2.2
 * Bugfix: update docker image to python:3.10-slim-buster
