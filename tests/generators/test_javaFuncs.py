@@ -1,20 +1,20 @@
 import unittest
-import os.path
+# import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 import yacg.model.config as config
 import yacg.model.model as model
 
 from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum
-from yacg.model.model import StringType, UuidType
-from yacg.model.model import DateTimeType, BytesType
-from yacg.model.model import EnumType, ComplexType
+# from yacg.model.model import StringType, UuidType
+# from yacg.model.model import EnumType, DateTimeType, TimeType
+from yacg.model.model import ComplexType, BytesType, ObjectType
 import yacg.generators.helper.javaFuncs as javaFuncs
 import yacg.model.modelFuncs as modelFuncs
 
 
 def getExampleType():
     modelFile = 'tests/resources/models/json/examples/all_types.json'
-    modelFileExists = os.path.isfile(modelFile)
+    # modelFileExists = os.path.isfile(modelFile)
     model = config.Model()
     model.schema = modelFile
     modelTypes = getModelFromJson(model, [])
@@ -25,7 +25,7 @@ def getExampleType():
 class TestJavaFuncs (unittest.TestCase):
 
     def testIsDouble(self):
-        doubleType = model.NumberType()
+        doubleType = NumberType()
         self.assertTrue(javaFuncs.isDouble(doubleType))
         self.assertFalse(javaFuncs.isFloat(doubleType))
 
@@ -35,21 +35,21 @@ class TestJavaFuncs (unittest.TestCase):
 
 
     def testIsFloat(self):
-        floatType = model.NumberType()
+        floatType = NumberType()
         floatType.format = NumberTypeFormatEnum.FLOAT
         self.assertTrue(javaFuncs.isFloat(floatType))
         self.assertFalse(javaFuncs.isDouble(floatType))
 
 
     def testIsLong(self):
-        longType = model.IntegerType()
+        longType = IntegerType()
         longType.format = IntegerTypeFormatEnum.INT64
         self.assertTrue(javaFuncs.isLong(longType))
         self.assertFalse(javaFuncs.isInteger(longType))
 
 
     def testIsInteger(self):
-        intType = model.IntegerType()
+        intType = IntegerType()
         self.assertTrue(javaFuncs.isInteger(intType))
         self.assertFalse(javaFuncs.isLong(intType))
 
@@ -79,7 +79,7 @@ class TestJavaFuncs (unittest.TestCase):
         props = modelFuncs.filterProps(myType, lambda prop: prop.name == 'enumValue')
         self.assertEqual(1, len(props))
         self.assertEqual('enumValue', first.name)
-        
+
         actName = idx2origName[0]
         self.assertIsNotNone(actName)
         self.assertEqual('enum', actName)
@@ -113,29 +113,40 @@ class TestJavaFuncs (unittest.TestCase):
 
 
     def testgetJavaTypes(self):
-        intType = model.IntegerType()
+        intType = IntegerType()
         self.assertEqual('Integer', javaFuncs.getJavaType(intType, False))
         self.assertEqual('java.util.List<Integer>', javaFuncs.getJavaType(intType, True))
 
-        doubleType = model.NumberType()
-        doubleType.format = model.NumberTypeFormatEnum.DOUBLE
+        doubleType = NumberType()
+        doubleType.format = NumberTypeFormatEnum.DOUBLE
         self.assertEqual('Double', javaFuncs.getJavaType(doubleType, False))
         self.assertEqual('java.util.List<Double>', javaFuncs.getJavaType(doubleType, True))
 
-        floatType = model.NumberType()
-        floatType.format = model.NumberTypeFormatEnum.FLOAT
+        floatType = NumberType()
+        floatType.format = NumberTypeFormatEnum.FLOAT
         self.assertEqual('Float', javaFuncs.getJavaType(floatType, False))
         self.assertEqual('java.util.List<Float>', javaFuncs.getJavaType(floatType, True))
 
-        numberType = model.NumberType()
+        numberType = NumberType()
         self.assertEqual('Double', javaFuncs.getJavaType(numberType, False))
         self.assertEqual('java.util.List<Double>', javaFuncs.getJavaType(numberType, True))
+
+        objectType = ObjectType()
+        self.assertEqual('Object', javaFuncs.getJavaType(objectType, False))
+        self.assertEqual('java.util.List<Object>', javaFuncs.getJavaType(objectType, True))
+
+        bytesType = BytesType()
+        self.assertEqual('byte[]', javaFuncs.getJavaType(bytesType, False))
+        self.assertEqual('java.util.List<byte[]>', javaFuncs.getJavaType(bytesType, True))
 
 
     def testJavaFuncs(self):
         myType = getExampleType()
         self.assertEqual('ExampleType', myType.name)
         self.assertTrue(isinstance(myType, ComplexType))
+
+        # use this line for good old print debugging
+        # print("type={} javaClass={}".format(type(prop.type), javaFuncs.getJavaType(prop.type, prop.isArray)))
 
         # ComplexType
         self.assertEqual('ExampleType', javaFuncs.getJavaType(myType, False))
@@ -208,3 +219,19 @@ class TestJavaFuncs (unittest.TestCase):
         self.assertEqual('java.time.LocalTime', javaFuncs.getJavaType(prop.type, prop.isArray))
         prop = myType.properties[27]
         self.assertEqual('java.util.List<java.time.LocalTime>', javaFuncs.getJavaType(prop.type, prop.isArray))
+
+        # StringType with format byte
+        prop = myType.properties[28]
+        self.assertTrue('bytes' in prop.name)
+        self.assertEqual('byte[]', javaFuncs.getJavaType(prop.type, prop.isArray))
+        prop = myType.properties[29]
+        self.assertTrue('bytes' in prop.name)
+        self.assertEqual('java.util.List<byte[]>', javaFuncs.getJavaType(prop.type, prop.isArray))
+
+        # ObjectType ("type": "object")
+        prop = myType.properties[30]
+        self.assertTrue('object' in prop.name)
+        self.assertEqual('Object', javaFuncs.getJavaType(prop.type, prop.isArray))
+        prop = myType.properties[31]
+        self.assertTrue('object' in prop.name)
+        self.assertEqual('java.util.List<Object>', javaFuncs.getJavaType(prop.type, prop.isArray))

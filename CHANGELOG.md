@@ -1,3 +1,6 @@
+# 5.3.2
+* javaFuncs: map array of ObjectType to *java.util.List\<Object\>*
+
 # 5.3.1
 * Added prefix to templateHelper.addLineBreakToDescription  
   (and removed leading space from first line)

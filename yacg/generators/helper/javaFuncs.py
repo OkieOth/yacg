@@ -22,7 +22,7 @@ def getJavaType(typeObj, isArray):
         else:
             return 'Long' if not isArray else 'java.util.List<Long>'
     elif isinstance(typeObj, model.ObjectType):
-        return 'Object'
+        return 'Object' if not isArray else 'java.util.List<Object>'
     elif isinstance(typeObj, model.NumberType):
         if typeObj.format is None or typeObj.format == model.NumberTypeFormatEnum.DOUBLE:
             return 'Double' if not isArray else 'java.util.List<Double>'
