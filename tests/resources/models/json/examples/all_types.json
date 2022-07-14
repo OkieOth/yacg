@@ -153,6 +153,26 @@
               "format": "time"
             }
           },
+          "bytesProp": {
+            "type": "string",
+            "format": "byte"
+          },
+          "bytesArr": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "objectProp": {
+            "type": "object"
+          },
+          "objectArr": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "inlineComplexProp": {
             "type" : "object",
             "properties": {
