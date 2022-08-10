@@ -1,3 +1,7 @@
+# 5.3.3
+* modelFuncs: added function, which checks for property of type TimeType
+* modelFuncs: added function where the target type can be provided as parameter.
+
 # 5.3.2
 * javaFuncs: map array of ObjectType to *java.util.List\<Object\>*
 

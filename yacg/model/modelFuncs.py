@@ -339,6 +339,12 @@ def getDomainsAsList(modelTypes):
 
 
 def isTimestampContained(modelTypes):
+    """returns True, if at least one of model types contains a property of type model.DateTimeType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
     for type in modelTypes:
         if isinstance(type, model.ComplexType):
             for property in type.properties:
@@ -348,6 +354,12 @@ def isTimestampContained(modelTypes):
 
 
 def isDateContained(modelTypes):
+    """returns True, if at least one of model types contains a property of type model.DateType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
     for type in modelTypes:
         if isinstance(type, model.ComplexType):
             for property in type.properties:
@@ -357,10 +369,45 @@ def isDateContained(modelTypes):
 
 
 def isTimeContained(modelTypes):
+    """returns True, if at least one of model types contains a property of type model.TimeType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
     for type in modelTypes:
         if isinstance(type, model.ComplexType):
             for property in type.properties:
                 if (property.type is not None) and (isinstance(property.type, model.TimeType)):
+                    return True
+    return False
+
+
+def isObjectContained(modelTypes):
+    """returns True, if at least one of model types contains a property of type model.ObjectType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.ObjectType)):
+                    return True
+    return False
+
+
+def isTypeContained(modelTypes, targetType):
+    """returns True, if at least one of model types contains a property of target type, e.g. model.ObjectType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    targetType -- the model type to look for, e.g. model.TimeType.
+    """
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, targetType)):
                     return True
     return False
 

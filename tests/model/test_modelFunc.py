@@ -4,9 +4,9 @@ import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 import yacg.model.config as config
 
-from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum
+from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum, ObjectType
 from yacg.model.model import StringType, UuidType
-from yacg.model.model import DateTimeType, BytesType
+from yacg.model.model import TimeType, DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType, DictionaryType, Property
 import yacg.model.modelFuncs as modelFuncs
 
@@ -288,7 +288,7 @@ class TestModelFuncs (unittest.TestCase):
         # remove relevant property from base type and try again
         myType.extendsType.properties.remove(inlineComplex)
 
-         # should find the following sequence of properties
+        # should find the following sequence of properties
         expPropNameSequence = ['complexRefProp', 'complexArrayRef']
         # Reasoning:
         # property IdNamePair.inlineComplexProp was removed!
@@ -304,3 +304,51 @@ class TestModelFuncs (unittest.TestCase):
 
         for expName, actType in zip(expComplexTypeSequence, actComplexTypes):
             self.assertEqual(expName, actType.name)
+
+    def testIsTimestampContained(self):
+        myType = getComplexTypeNoBase()
+        self.assertEqual('ExampleType', myType.name)
+
+        self.assertTrue(modelFuncs.isTimestampContained([myType]))
+        self.assertTrue(modelFuncs.isTypeContained([myType], DateTimeType))
+
+        # dateTimeProp and dateTimeArr -> index 6 & 7
+        dateTimeProp = myType.properties.pop(6)
+        self.assertEqual('dateTimeProp', dateTimeProp.name)
+        dateTimeArr = myType.properties.pop(6)
+        self.assertEqual('dateTimeArr', dateTimeArr.name)
+
+        self.assertFalse(modelFuncs.isTimestampContained([myType]))
+        self.assertFalse(modelFuncs.isTypeContained([myType], DateTimeType))
+
+    def testIsTimeContained(self):
+        myType = getComplexTypeNoBase()
+        self.assertEqual('ExampleType', myType.name)
+
+        self.assertTrue(modelFuncs.isTimeContained([myType]))
+        self.assertTrue(modelFuncs.isTypeContained([myType], TimeType))
+
+        # timeProp and timeArr -> index 26 & 27
+        timeProp = myType.properties.pop(26)
+        self.assertEqual('timeProp', timeProp.name)
+        timeArr = myType.properties.pop(26)
+        self.assertEqual('timeArr', timeArr.name)
+
+        self.assertFalse(modelFuncs.isTimeContained([myType]))
+        self.assertFalse(modelFuncs.isTypeContained([myType], TimeType))
+
+    def testIsObjectContained(self):
+        myType = getComplexTypeNoBase()
+        self.assertEqual('ExampleType', myType.name)
+
+        self.assertTrue(modelFuncs.isObjectContained([myType]))
+        self.assertTrue(modelFuncs.isTypeContained([myType], ObjectType))
+
+        # objectProp and objectArr -> index 30 & 31
+        objectProp = myType.properties.pop(30)
+        self.assertEqual('objectProp', objectProp.name)
+        objectArr = myType.properties.pop(30)
+        self.assertEqual('objectArr', objectArr.name)
+
+        self.assertFalse(modelFuncs.isObjectContained([myType]))
+        self.assertFalse(modelFuncs.isTypeContained([myType], ObjectType))
