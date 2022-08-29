@@ -334,6 +334,26 @@
                 "metaModelType"
             ]
         },
+        "DurationType": {
+            "type": "object",
+            "description": "type for date values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                }
+            ],
+            "x-tags": [
+                "metaModelType"
+            ]
+        },
         "BytesType": {
             "type": "object",
             "description": "type for byte values, it will usually be rendered to a byte array",

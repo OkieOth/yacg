@@ -1,3 +1,6 @@
+# 5.4.0
+* Introduce Duration type
+
 # 5.3.3
 * modelFuncs: added function, which checks for property of type TimeType
 * modelFuncs: added function where the target type can be provided as parameter.
