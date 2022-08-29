@@ -6,7 +6,7 @@ import yacg.model.shared.info
 
 
 class InfoSection:
-    """ Info section for API definition specs as openapi and ayncapi
+    """Info section for API definition specs as openapi and ayncapi
     """
 
     def __init__(self, dictObj=None):

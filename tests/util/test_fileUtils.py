@@ -1,7 +1,7 @@
 import unittest
 import os.path
 
-from yacg.util.fileUtils import getInternalTemplatePath
+from yacg.util.fileUtils import getInternalTemplatePath, getDirName
 
 
 class TestFileUtils (unittest.TestCase):
@@ -21,3 +21,12 @@ class TestFileUtils (unittest.TestCase):
         templateFile = getInternalTemplatePath('generators/templates/plantUml.mako')
         fileExists = os.path.exists(templateFile)
         self.assertTrue(fileExists)
+
+    def testGetDirName(self):
+        self.assertEqual(getDirName('test'), (''))
+        self.assertEqual(getDirName('/test'), (''))
+        self.assertEqual(getDirName('test/xxx.y'), ('test'))
+        self.assertEqual(getDirName('/test/o'), ('/test'))
+        self.assertEqual(getDirName('aaa/test/xxx.y'), ('aaa/test'))
+        self.assertEqual(getDirName('/something/test/o'), ('/something/test'))
+
