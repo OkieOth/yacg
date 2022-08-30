@@ -302,6 +302,7 @@ class TestJsonBuilder (unittest.TestCase):
             'DateType',
             'TimeType',
             'DateTimeType',
+            'DurationType',
             'BytesType',
             'ComplexType',
             'DictionaryType'
