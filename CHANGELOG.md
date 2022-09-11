@@ -1,3 +1,6 @@
+# 5.3.4
+* add golang type template
+
 # 5.3.3
 * modelFuncs: added function, which checks for property of type TimeType
 * modelFuncs: added function where the target type can be provided as parameter.
@@ -8,7 +11,7 @@
 * javaFuncs: map array of ObjectType to *java.util.List\<Object\>*
 
 # 5.3.1
-* Added prefix to templateHelper.addLineBreakToDescription  
+* Added prefix to templateHelper.addLineBreakToDescription
   (and removed leading space from first line)
 
 # 5.3.0

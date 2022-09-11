@@ -383,6 +383,21 @@ def isTimeContained(modelTypes):
     return False
 
 
+def isUuidContained(modelTypes):
+    """returns True, if at least one of model types contains a property of type model.UuidType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.UuidType)):
+                    return True
+    return False
+
+
 def isObjectContained(modelTypes):
     """returns True, if at least one of model types contains a property of type model.ObjectType, False otherwise.
 
