@@ -1,4 +1,5 @@
 <%
+    import re
     import yacg.model.model as model
     import yacg.templateHelper as templateHelper
     import yacg.model.modelFuncs as modelFuncs
@@ -48,21 +49,26 @@
             ret = typeObj.name
         else:
             ret = '???'
-        if not isRequired:
-            ret = "*" + ret
         if isArray:
-            return "[]" + ret
+            ret = "[]" + ret
+        if not isRequired:
+            return "*" + ret
         else:
             return ret
 
     def getEnumDefaultValue(type):
         if type.default is not None:
-            return type.default
+            return secureEnumValues(type.default)
         else:
-            return type.values[0]
+            return secureEnumValues(type.values[0])
+
+    def secureEnumValues(value):
+        pattern = re.compile("^[0-9]")
+        return '_' + value if pattern.match(value) else ret
 
     def isEnumDefaultValue(value, type):
-        return True if (type.default is not None) and (value == type.default) else False
+        return getEnumDefaultValue(type) == secureEnumValues(value)
+
 
 %>// Attention, this file is generated. Manual changes get lost with the next
 // run of the code generation.
@@ -83,19 +89,21 @@ import (
 /* ${templateHelper.addLineBreakToDescription(type.description,4)}
 */
         % endif
-const {
-    ${getEnumDefaultValue(type)} ${type.name} = ioat
+type ${type.name} int64
+
+const (
+    ${getEnumDefaultValue(type)} ${type.name} = iota
     % for value in type.values:
         % if not isEnumDefaultValue(value, type):
         ${value}
         % endif
     % endfor
-}
+)
 
 func (s ${type.name}) String() string {
 	switch s {
     % for value in type.values:
-	case ${value}:
+	case ${secureEnumValues(value)}:
 		return "${value}"
     % endfor
 	}

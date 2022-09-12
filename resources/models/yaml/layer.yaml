@@ -50,13 +50,13 @@ definitions:
     type: object
     properties:
       red:
-        type: int
+        type: integer
       green:
-        type: int
+        type: integer
       blue:
-        type: int
+        type: integer
       alpha:
-        type: int
+        type: integer
     required:
       - red
       - green
@@ -69,13 +69,13 @@ definitions:
         type: object
         properties:
           width:
-            type: int
+            type: integer
           dashArray:
             type: array
             items:
-              type: int
+              type: integer
           dashOffset:
-            type: int
+            type: integer
           color:
             "$ref": "#/definitions/Color"
       fill:
@@ -132,6 +132,3 @@ definitions:
             type: array
             items:
               "$ref": "#/definitions/Coordinate"
-
-
-
