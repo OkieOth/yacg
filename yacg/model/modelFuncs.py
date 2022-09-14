@@ -135,6 +135,7 @@ def getFlattenProperties(typeObj):
 
     return flattenProperties
 
+
 def hasEnumTypes(modelTypes):
     for type in modelTypes:
         if isEnumType(type):
@@ -193,6 +194,17 @@ def isDictionaryType(typeObj):
     """
 
     return isinstance(typeObj, model.DictionaryType)
+
+
+def isComplexType(typeObj):
+    """checks if the given type object is a ComplexType. If that's the
+    case then True is returned, else the return is false
+
+    Keyword arguments:
+    typeObj -- type or property object to check up
+    """
+
+    return isinstance(typeObj, model.ComplexType)
 
 
 def getTypeName(type):

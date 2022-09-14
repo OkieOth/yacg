@@ -17,7 +17,7 @@ COPY yacg yacg/
 #    pipenv --python 3.8 && \
 #    pipenv --three install --system
 
-RUN pipenv lock -r > requirements.txt
+RUN pipenv requirements > requirements.txt
 RUN pip install -r requirements.txt
 
 WORKDIR /yacg

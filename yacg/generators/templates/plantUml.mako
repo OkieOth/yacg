@@ -64,6 +64,12 @@
             tagCount = tagCount + 1
         return ret
 
+    def printPropType(prop):
+        if modelFuncs.isDictionaryType(prop.type):
+            return "Map<{}>".format(modelFuncs.getTypeName(prop.type.valueType))
+        else:
+            return modelFuncs.getTypeName(prop.type)
+
     shouldTypeTagsBePrinted = templateParameters.get('printTypeTags',False)
     shouldPropertyTagsBePrinted = templateParameters.get('printPropertyTags',False)
 
@@ -79,11 +85,11 @@ enum ${modelFuncs.getTypeName(type)} {
     ${stringUtils.toUpperCaseName(value)}
         % endfor
 }
-    % else:
+    % elif modelFuncs.isComplexType(type):
 class ${modelFuncs.getTypeName(type)} {
         % if hasattr(type,'properties'):
             % for prop in type.properties:
-        ${modelFuncs.getTypeName(prop.type)}${printArrayDimensions(prop)} ${prop.name}${printForeignKeyComment(prop)}
+        ${printPropType(prop)}${printArrayDimensions(prop)} ${prop.name}${printForeignKeyComment(prop)}
             % endfor
         % endif
         % if shouldTypeTagsBePrinted and (len(type.tags) > 0):
@@ -122,7 +128,7 @@ ${modelFuncs.getTypeName(type)} --|> ${modelFuncs.getTypeName(type.extendsType)}
     %>
     % if hasattr(type,'properties'):
         % for prop in type.properties:
-            % if (not modelFuncs.isBaseType(prop.type)):
+            % if (not modelFuncs.isBaseType(prop.type)) and (not modelFuncs.isDictionaryType(prop.type)):
                 % if prop.type.name not in alreadyLinkedTypes:
 ${modelFuncs.getTypeName(type)} ${ '"0"' if prop.isArray else '' } *-- ${'"n"' if prop.isArray else ''} ${modelFuncs.getTypeName(prop.type)}
             <%
