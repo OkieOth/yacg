@@ -81,7 +81,7 @@ class EnumType {
         StringType source
         StringType description
         StringType[] values
-        EnumTypeValuesMap valuesMap
+        Map<StringType> valuesMap
         StringType default
         Tag[] tags
 }
@@ -191,6 +191,20 @@ class DictionaryType {
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
+class ArrayType {
+        StringType version
+        StringType name
+        StringType description
+        StringType domain
+        StringType source
+        ComplexType[] referencedBy
+        Type itemsType
+        Tag[] tags
+}
+
+note top: Array type
+
+ArrayType --|> Type
 class ArrayConstraints {
         IntegerType arrayMinItems
         IntegerType arrayMaxItems
@@ -245,8 +259,6 @@ NumberType  *--  NumberTypeFormatEnum
 
 
 
-EnumType  *--  EnumTypeValuesMap
-            
 
 
 EnumType "0" *-- "n" Tag
@@ -327,6 +339,21 @@ DictionaryType  *--  Type
             
 
 DictionaryType "0" *-- "n" Tag
+            
+
+    
+
+
+
+
+
+ArrayType "0" *-- "n" ComplexType
+            
+
+ArrayType  *--  Type
+            
+
+ArrayType "0" *-- "n" Tag
             
 
     

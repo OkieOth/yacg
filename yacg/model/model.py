@@ -694,6 +694,67 @@ class DictionaryType (Type):
                 Tag(elemTags))
 
 
+class ArrayType (Type):
+    """Array type
+    """
+
+    def __init__(self, dictObj=None):
+        super(Type, self).__init__()
+
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        self.description = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        #: types that hold attribute references to that type
+        self.referencedBy = []
+
+        #: either a basic or a complex type
+        self.itemsType = None
+
+        #: additional flags to mark a type
+        self.tags = []
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.description = dictObj.get('description', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        arrayReferencedBy = dictObj.get('referencedBy', [])
+        for elemReferencedBy in arrayReferencedBy:
+            self.referencedBy.append(
+                ComplexType(elemReferencedBy))
+
+        subDictObj = dictObj.get('itemsType', None)
+        if subDictObj is not None:
+            self.itemsType = Type(subDictObj)
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
+
+
 class ArrayConstraints:
     def __init__(self, dictObj=None):
 
