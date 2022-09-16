@@ -1,6 +1,9 @@
-# 5.3.4
+# 5.5.0
 * add golang type template
 * add modelFuncs func 'isComplexType'
+
+# 5.4.0
+* Introduce Duration type
 
 # 5.3.3
 * modelFuncs: added function, which checks for property of type TimeType

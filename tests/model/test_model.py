@@ -64,6 +64,10 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.DateTimeType()
         self.assertIsNotNone(x)
 
+    def testDurationType(self):
+        x = yacg.model.model.DurationType()
+        self.assertIsNotNone(x)
+
     def testBytesType(self):
         x = yacg.model.model.BytesType()
         self.assertIsNotNone(x)

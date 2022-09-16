@@ -48,7 +48,7 @@ class OperationBase:
 
 
 class Message:
-    """ Container that describes the messages are sent
+    """Container that describes the messages are sent
     """
 
     def __init__(self, dictObj=None):
@@ -97,7 +97,7 @@ class Message:
 
 
 class OperationBindingsAmqp:
-    """ specific AMQP binding properties
+    """specific AMQP binding properties
     """
 
     def __init__(self, dictObj=None):
@@ -128,7 +128,7 @@ class OperationBindingsAmqp:
 
 
 class AsyncApiInfo (yacg.model.shared.info.InfoSection):
-    """ Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
+    """Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
     """
 
     def __init__(self, dictObj=None):
@@ -144,7 +144,7 @@ class AsyncApiInfo (yacg.model.shared.info.InfoSection):
 
 
 class AsyncApiServer:
-    """ one entry of the servers section
+    """one entry of the servers section
     """
 
     def __init__(self, dictObj=None):
@@ -178,7 +178,7 @@ class AsyncApiServer:
 
 
 class Channel:
-    """ one entry of the channels section
+    """one entry of the channels section
     """
 
     def __init__(self, dictObj=None):
@@ -225,7 +225,7 @@ class Channel:
 
 
 class Parameter:
-    """ Parameters contained in the channel key
+    """Parameters contained in the channel key
     """
 
     def __init__(self, dictObj=None):
@@ -251,7 +251,7 @@ class Parameter:
 
 
 class PublishOperation (OperationBase):
-    """ Configuration parameter needed for publishing
+    """Configuration parameter needed for publishing
     """
 
     def __init__(self, dictObj=None):
@@ -273,7 +273,7 @@ class PublishOperation (OperationBase):
 
 
 class ChannelBindingsAmqp:
-    """ https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
+    """https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
     """
 
     def __init__(self, dictObj=None):
@@ -308,7 +308,7 @@ class ChannelBindingsAmqp:
 
 
 class ChannelBindingsAmqpExchange:
-    """ channel exchange parameters
+    """channel exchange parameters
     """
 
     def __init__(self, dictObj=None):
@@ -382,7 +382,7 @@ class ChannelBindingsAmqpExchangeTypeEnum(Enum):
 
 
 class ChannelBindingsAmqpQueue:
-    """ channel queue parameters
+    """channel queue parameters
     """
 
     def __init__(self, dictObj=None):
@@ -463,7 +463,7 @@ class Payload:
 
 
 class MessageBindingsAmqp:
-    """ https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
+    """https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
     """
 
     def __init__(self, dictObj=None):

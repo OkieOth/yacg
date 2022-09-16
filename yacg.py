@@ -349,7 +349,6 @@ def __doCodeGen(codeGenerationJobs, args):
         if __handleNotUniqueTypeNames(allLoadedTypes, args.failIfTypeNamesNotUnique, args.makeMultipleTypeNamesUnique, args.noLogs):
             sys.exit(1)
 
-
         if protocolFuncs.shouldSkipCodeGen(
                 args.skipCodeGenIfVersionUnchanged,
                 args.skipCodeGenIfMd5Unchanged,
