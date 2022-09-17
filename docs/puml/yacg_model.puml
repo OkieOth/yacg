@@ -200,6 +200,8 @@ class ArrayType {
         ComplexType[] referencedBy
         Type itemsType
         Tag[] tags
+        ArrayConstraints[] arrayConstraints
+        IntegerType arrayDimensions
 }
 
 note top: Array type
@@ -355,6 +357,10 @@ ArrayType  *--  Type
 
 ArrayType "0" *-- "n" Tag
             
+
+ArrayType "0" *-- "n" ArrayConstraints
+            
+
 
     
 

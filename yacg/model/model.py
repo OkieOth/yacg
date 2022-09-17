@@ -723,6 +723,11 @@ class ArrayType (Type):
         #: additional flags to mark a type
         self.tags = []
 
+        self.arrayConstraints = []
+
+        #: if isArray true you can specify here the number of the array dimensions
+        self.arrayDimensions = None
+
         if dictObj is not None:
             self.initFromDict(dictObj)
 
@@ -753,6 +758,13 @@ class ArrayType (Type):
         for elemTags in arrayTags:
             self.tags.append(
                 Tag(elemTags))
+
+        arrayArrayConstraints = dictObj.get('arrayConstraints', [])
+        for elemArrayConstraints in arrayArrayConstraints:
+            self.arrayConstraints.append(
+                ArrayConstraints(elemArrayConstraints))
+
+        self.arrayDimensions = dictObj.get('arrayDimensions', None)
 
 
 class ArrayConstraints:
