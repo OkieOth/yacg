@@ -551,6 +551,16 @@
                             "items": {
                                 "$ref": "#/definitions/Tag"
                             }
+                        },
+                        "arrayConstraints": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ArrayConstraints"
+                            }
+                        },
+                        "arrayDimensions": {
+                            "description": "if isArray true you can specify here the number of the array dimensions",
+                            "type": "integer"
                         }
                     }
                 }
