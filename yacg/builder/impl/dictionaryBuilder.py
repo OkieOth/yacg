@@ -117,15 +117,14 @@ def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
 
 
 def __extractPureArrayType(parsedSchema, modelTypes, modelFileContainer):
-    itemsEntry = parsedSchema.get('items', None)
-    if itemsEntry is not None:
+    if parsedSchema.get('items', None) is not None:
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
         tmpProperty = Property()
         arrayType = ArrayType()
         arrayType.name = typeNameStr
         arrayType.description = parsedSchema.get('description', None)
-        arrayType.itemsType = _extractArrayType(typeNameStr, tmpProperty, itemsEntry, modelTypes, modelFileContainer)
+        arrayType.itemsType = _extractArrayType(typeNameStr, tmpProperty, parsedSchema, modelTypes, modelFileContainer)
         arrayType.source = modelFileContainer.fileName
         arrayType.domain = modelFileContainer.domain
         arrayType.arrayConstraints = tmpProperty.arrayConstraints
