@@ -566,7 +566,7 @@ def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileC
             arrayConstraints = ArrayConstraints()
             arrayConstraints.arrayMinItems = propDict.get('minItems', None)
             arrayConstraints.arrayMaxItems = propDict.get('maxItems', None)
-            arrayConstraints.arrayUniqueItems = propDict.get('uniqueItems', None)
+            arrayConstraints.arrayUniqueItems = propDict.get('uniqueItems', False)
             newProperty.arrayConstraints.append(arrayConstraints)
         itemsType = itemsDict.get('type', None)
         itemsItemsDict = itemsDict.get('items', None)

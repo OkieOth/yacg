@@ -777,7 +777,7 @@ class ArrayConstraints:
         self.arrayMaxItems = None
 
         #: the elements in the array/list have to be unique
-        self.arrayUniqueItems = None
+        self.arrayUniqueItems = False
 
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -790,7 +790,7 @@ class ArrayConstraints:
 
         self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
 
-        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
+        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', False)
 
 
 class ForeignKey:
