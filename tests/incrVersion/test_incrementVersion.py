@@ -17,7 +17,7 @@ class TestIncrementVersion (unittest.TestCase):
         for file in ret:
             self.assertTrue(doesFileExist(file))
         ret2 = incrementVersion._getJsonSchemaFileNames('./tests')
-        self.assertEqual(35, len(ret2))
+        self.assertEqual(37, len(ret2))
         for file in ret2:
             self.assertTrue(doesFileExist(file))
         # negative test

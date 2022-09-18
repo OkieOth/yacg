@@ -3,7 +3,7 @@
 	"title": "Demo array type 2",
 	"type": "array",
 	"items": {
-		"type": "integer"
+		"$ref": "#/definitions/SomeOtherType"
 	},
 	"maxItems": 2,
 	"minItems": 2,

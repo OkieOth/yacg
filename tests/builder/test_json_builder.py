@@ -535,13 +535,33 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(2, len(modelTypes))
-        arrayType = modelTypes[0]
+        arrayType = modelTypes[1]
         self.assertTrue(isinstance(arrayType, ArrayType))
         self.assertEqual(arrayType.name, 'DemoArrayType2')
         self.assertEqual(arrayType.arrayConstraints[0].arrayMinItems, 2)
         self.assertEqual(arrayType.arrayConstraints[0].arrayMaxItems, 2)
         self.assertEqual(arrayType.arrayConstraints[0].arrayUniqueItems, False)
         self.assertIsNotNone(arrayType.itemsType)
+
+    def testTopLevelArrayType3(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_array_type3.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(3, len(modelTypes))
+        arrayType = modelTypes[1]
+        self.assertTrue(isinstance(arrayType, ArrayType))
+        self.assertEqual(arrayType.name, 'InnerArrayType')
+        self.assertEqual(len(arrayType.arrayConstraints), 1)
+        self.assertIsNotNone(arrayType.itemsType)
+        refType = modelTypes[2]
+        self.assertEqual(refType.properties[2].name, 'things')
+        self.assertEqual(refType.properties[2].isArray, True)
+        self.assertEqual(refType.properties[2].arrayDimensions, 1)
+        self.assertEqual(refType.properties[2].type.name, 'SomeOtherType')
 
 if __name__ == '__main__':
     unittest.main()

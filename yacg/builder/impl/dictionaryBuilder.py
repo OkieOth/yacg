@@ -116,10 +116,9 @@ def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
     return False
 
 
-def __extractPureArrayType(parsedSchema, modelTypes, modelFileContainer):
+def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContainer):
     if parsedSchema.get('items', None) is not None:
-        titleStr = parsedSchema.get('title', None)
-        typeNameStr = toUpperCamelCase(titleStr)
+        typeNameStr = typeName
         tmpProperty = Property()
         arrayType = ArrayType()
         arrayType.name = typeNameStr
@@ -166,7 +165,9 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
     if not handled:
         handled = __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer)
     if not handled:
-        handled = __extractPureArrayType(parsedSchema, modelTypes, modelFileContainer)
+        titleStr = parsedSchema.get('title', None)
+        typeNameStr = toUpperCamelCase(titleStr) if titleStr is not None else None
+        handled = __extractPureArrayType(typeNameStr, parsedSchema, modelTypes, modelFileContainer)
     if not handled:
         handled = __extractTopLevelDictionaryType(parsedSchema, modelTypes, modelFileContainer)
 
@@ -333,14 +334,18 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
             __initTags(mainType, object)
             __initEnumValues(mainType, object)
         else:
-            type = _extractObjectType(
-                key, properties, additionalProperties, allOfEntry,
-                description, modelTypes, modelFileContainer)
-            if len(type.tags) == 0:
-                tags = object.get('x-tags', None)
-                if tags is not None:
-                    type.tags = _extractTags(tags)
-            _markRequiredAttributes(type, object.get('required', []))
+            itemsEntry = object.get('items', None)
+            if itemsEntry is not None:
+                __extractPureArrayType(key, object, modelTypes, modelFileContainer)
+            else:
+                type = _extractObjectType(
+                    key, properties, additionalProperties, allOfEntry,
+                    description, modelTypes, modelFileContainer)
+                if len(type.tags) == 0:
+                    tags = object.get('x-tags', None)
+                    if tags is not None:
+                        type.tags = _extractTags(tags)
+                _markRequiredAttributes(type, object.get('required', []))
 
 
 def _extractObjectType(
@@ -535,7 +540,16 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
             __initEnumValues(enumType, propDict)
             return enumType
         elif refEntry is not None:
-            return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+            tmp = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+            if isinstance(tmp, ArrayType):
+                newProperty.isArray = True
+                if hasattr(newProperty, 'arrayDimensions'):
+                    newProperty.arrayDimensions = len(tmp.arrayConstraints)
+                if hasattr(newProperty, 'arrayConstraints'):
+                    newProperty.arrayConstraints = tmp.arrayConstraints
+                return tmp.itemsType
+            else:
+                return tmp
         elif type == 'array':
             arrayType = _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
             if hasattr(newProperty, 'arrayDimensions'):
