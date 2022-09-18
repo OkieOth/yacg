@@ -526,6 +526,22 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(arrayType.arrayConstraints[0].arrayUniqueItems, True)
         self.assertIsNotNone(arrayType.itemsType)
 
+    def testTopLevelArrayType2(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_array_type2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(2, len(modelTypes))
+        arrayType = modelTypes[0]
+        self.assertTrue(isinstance(arrayType, ArrayType))
+        self.assertEqual(arrayType.name, 'DemoArrayType2')
+        self.assertEqual(arrayType.arrayConstraints[0].arrayMinItems, 2)
+        self.assertEqual(arrayType.arrayConstraints[0].arrayMaxItems, 2)
+        self.assertEqual(arrayType.arrayConstraints[0].arrayUniqueItems, False)
+        self.assertIsNotNone(arrayType.itemsType)
 
 if __name__ == '__main__':
     unittest.main()

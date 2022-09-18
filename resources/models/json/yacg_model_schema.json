@@ -658,7 +658,8 @@
                 },
                 "arrayUniqueItems": {
                     "description": "the elements in the array/list have to be unique",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 }
             }
         },
