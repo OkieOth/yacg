@@ -134,22 +134,6 @@ def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContaine
     return False
 
 
-def __extractTopLevelDictionaryType(parsedSchema, modelTypes, modelFileContainer):
-    # additionalPropertiesEntry = parsedSchema.get('additionalProperties', None)
-    # if additionalPropertiesEntry is not None:
-    #     typeEntry = additionalPropertiesEntry.get('type', None)
-    #     refEntry = additionalPropertiesEntry.get('$ref', None)
-    #     if (typeEntry is None) and (refEntry is None):
-    #         return False
-    #     titleStr = parsedSchema.get('title', None)
-    #     typeNameStr = toUpperCamelCase(titleStr)
-    #     #TODO
-    #     mainType = _extractDictType(typeNameStr, None, itemsEntry, modelTypes, modelFileContainer)
-    #     __initTags(mainType, parsedSchema)
-    #     return True
-    return False
-
-
 def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=False):
     """extract the types from the parsed schema
 
@@ -168,8 +152,6 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr) if titleStr is not None else None
         handled = __extractPureArrayType(typeNameStr, parsedSchema, modelTypes, modelFileContainer)
-    if not handled:
-        handled = __extractTopLevelDictionaryType(parsedSchema, modelTypes, modelFileContainer)
 
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
@@ -544,7 +526,8 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
             if isinstance(tmp, ArrayType):
                 newProperty.isArray = True
                 if hasattr(newProperty, 'arrayDimensions'):
-                    newProperty.arrayDimensions = len(tmp.arrayConstraints)
+                    existingDimension = len(newProperty.arrayDimensions) if newProperty.arrayDimensions is not None else 1
+                    newProperty.arrayDimensions = existingDimension + len(tmp.arrayConstraints)
                 if hasattr(newProperty, 'arrayConstraints'):
                     newProperty.arrayConstraints = tmp.arrayConstraints
                 return tmp.itemsType
@@ -582,12 +565,21 @@ def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileC
             arrayConstraints.arrayMaxItems = propDict.get('maxItems', None)
             arrayConstraints.arrayUniqueItems = propDict.get('uniqueItems', False)
             newProperty.arrayConstraints.append(arrayConstraints)
+            newProperty.arrayDimensions = len(newProperty.arrayConstraints)
         itemsType = itemsDict.get('type', None)
         itemsItemsDict = itemsDict.get('items', None)
         if (itemsType == "array") and (itemsItemsDict is not None):
-            return _extractArrayType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
+            newProperty.arrayDimensions = len(newProperty.arrayConstraints)
+            retType = _extractArrayType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
+            return retType
         else:
-            return _extractAttribType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
+            # there are situations where the attrib has a ref to an array type
+            tmpProperty = Property()
+            tmpProperty.name = "dummy"
+            retType = _extractAttribType(newTypeName, tmpProperty, itemsDict, modelTypes, modelFileContainer)
+            if tmpProperty.isArray:
+                newProperty.arrayDimensions = len(newProperty.arrayConstraints) + tmpProperty.arrayDimensions
+            return retType
 
 
 def _extractReferenceType(refEntry, modelTypes, modelFileContainer):

@@ -13,14 +13,13 @@ definitions:
         format: uuid
       name:
         type: string
-      content:
-        type: array
-        items:
-          "$ref": "#/definitions/LayerContent"
+      minZoom:
+        type: integer
+      maxZoom:
+        type: integer
     required:
       - id
       - name
-      - content
   LayerContent:
     description: a feature to display
     type: object
@@ -28,13 +27,14 @@ definitions:
       id:
         type: string
         format: uuid
+      layerId:
+        type: string
+        format: uuid
+        x-ref: '#/definitions/Layer'
       projection:
         type: string
-      geometries:
-        type: array
-        minItems: 1
-        items:
-          "$ref": "#/definitions/Geometry"
+      geometry:
+        "$ref": "#/definitions/Geometry"
       data:
         description: container for additional key/value pairs
         type: object
@@ -85,50 +85,43 @@ definitions:
             "$ref": "#/definitions/Color"
       icon:
         type: string
-  Coordinate:
-    description: lon/lat pair
+  PointGeometry:
+    description: a point geometry, lon/lat pair
     type: array
     minItems: 2
     maxItems: 2
     items:
       type: number
+  PointGeometryArray:
+    type: array
+    items:
+      $ref: "#/definitions/PointGeometry"
+  PointGeometryArrayArray:
+    type: array
+    items:
+      type: array
+      items:
+        $ref: "#/definitions/PointGeometry"
   Geometry:
     description: Geometry definition to display the feature
     type: object
     properties:
       point:
-        description: a point geometry
-        "$ref": "#/definitions/Coordinate"
+        $ref: "#/definitions/PointGeometry"
       multiPoint:
         description: a geometry consisting of multiple separate points
-        type: array
-        items:
-          "$ref": "#/definitions/Coordinate"
+        $ref: "#/definitions/PointGeometryArray"
       lineString:
         description: a geometry consisting of multiple connected line segments
-        type: array
-        items:
-          "$ref": "#/definitions/Coordinate"
+        $ref: "#/definitions/PointGeometryArray"
       multiLineString:
         description: a geometry consisting of multiple multi-lines
-        type: array
-        items:
-          type: array
-          items:
-            "$ref": "#/definitions/Coordinate"
+        $ref: "#/definitions/PointGeometryArrayArray"
       polygon:
         description: a closed geometry consisting of multiple connected line segments
-        type: array
-        items:
-          type: array
-          items:
-            "$ref": "#/definitions/Coordinate"
+        $ref: "#/definitions/PointGeometryArrayArray"
       multiPolygon:
         description: a geometry consisting of multiple separate polygons
         type: array
         items:
-          type: array
-          items:
-            type: array
-            items:
-              "$ref": "#/definitions/Coordinate"
+          $ref: "#/definitions/PointGeometryArrayArray"

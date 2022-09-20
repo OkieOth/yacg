@@ -2,6 +2,7 @@ from array import ArrayType
 import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
+from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum, ObjectType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
@@ -614,6 +615,42 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(refType.properties[2].isArray, False)
         self.assertEqual(refType.properties[2].type.name, 'InnerDictionaryType')
         self.assertTrue(isinstance(refType.properties[2].type, DictionaryType))
+
+    def testMultiDimensionalArrays(self):
+        modelFile = 'resources/models/yaml/layer.yaml'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(11, len(modelTypes))
+        arrayType1 = modelTypes[8]
+        arrayType2 = modelTypes[9]
+        arrayType3 = modelTypes[10]
+        self.assertTrue(isinstance(arrayType1, ArrayType))
+        self.assertTrue(isinstance(arrayType2, ArrayType))
+        self.assertTrue(isinstance(arrayType3, ArrayType))
+        self.assertEqual(arrayType1.arrayDimensions, 1)
+        self.assertEqual(arrayType2.arrayDimensions, 2)
+        self.assertEqual(arrayType3.arrayDimensions, 3)
+        self.assertTrue(isinstance(arrayType1.itemsType, NumberType))
+        self.assertTrue(isinstance(arrayType2.itemsType, NumberType))
+        self.assertTrue(isinstance(arrayType3.itemsType, NumberType))
+        geometry = modelTypes[2]
+        self.assertEqual(geometry.properties[0].name, 'point')
+        self.assertEqual(geometry.properties[0].arrayDimensions, 1)
+        self.assertEqual(geometry.properties[1].name, 'multiPoint')
+        self.assertEqual(geometry.properties[1].arrayDimensions, 2)
+        self.assertEqual(geometry.properties[2].name, 'lineString')
+        self.assertEqual(geometry.properties[2].arrayDimensions, 2)
+        self.assertEqual(geometry.properties[3].name, 'multiLineString')
+        self.assertEqual(geometry.properties[3].arrayDimensions, 3)
+        self.assertEqual(geometry.properties[4].name, 'polygon')
+        self.assertEqual(geometry.properties[4].arrayDimensions, 3)
+        self.assertEqual(geometry.properties[5].name, 'multiPolygon')
+        self.assertEqual(geometry.properties[6].arrayDimensions, 4)
+
 
 if __name__ == '__main__':
     unittest.main()
