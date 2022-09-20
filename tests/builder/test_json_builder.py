@@ -525,6 +525,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(arrayType.arrayConstraints[0].arrayMaxItems, 10)
         self.assertEqual(arrayType.arrayConstraints[0].arrayUniqueItems, True)
         self.assertIsNotNone(arrayType.itemsType)
+        self.assertTrue(isinstance(arrayType.itemsType, IntegerType))
 
     def testTopLevelArrayType2(self):
         modelFile = 'tests/resources/models/json/examples/top_level_array_type2.json'
@@ -542,6 +543,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(arrayType.arrayConstraints[0].arrayMaxItems, 2)
         self.assertEqual(arrayType.arrayConstraints[0].arrayUniqueItems, False)
         self.assertIsNotNone(arrayType.itemsType)
+        self.assertEqual(arrayType.itemsType.name, 'SomeOtherType')
 
     def testTopLevelArrayType3(self):
         modelFile = 'tests/resources/models/json/examples/top_level_array_type3.json'
@@ -562,6 +564,56 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(refType.properties[2].isArray, True)
         self.assertEqual(refType.properties[2].arrayDimensions, 1)
         self.assertEqual(refType.properties[2].type.name, 'SomeOtherType')
+
+    def testTopLevelDictionaryType(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_dictionary_type.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(1, len(modelTypes))
+        dictType = modelTypes[0]
+        self.assertTrue(isinstance(dictType, DictionaryType))
+        self.assertEqual(dictType.name, 'DemoDictType')
+        self.assertIsNotNone(dictType.valueType)
+        self.assertTrue(isinstance(dictType.valueType, IntegerType))
+
+    def testTopLevelDictType2(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_dictionary_type2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(2, len(modelTypes))
+        dictType = modelTypes[0]
+        self.assertTrue(isinstance(dictType, DictionaryType))
+        self.assertEqual(dictType.name, 'DemoDictType2')
+        self.assertIsNotNone(dictType.valueType)
+        self.assertTrue(isinstance(dictType.valueType, ComplexType))
+        self.assertEqual(dictType.valueType.name, 'SomeOtherType')
+
+    def testTopLevelDictType3(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_dictionary_type3.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(3, len(modelTypes))
+        dictType = modelTypes[0]
+        self.assertTrue(isinstance(dictType, DictionaryType))
+        self.assertEqual(dictType.name, 'InnerDictionaryType')
+        self.assertIsNotNone(dictType.valueType)
+        refType = modelTypes[2]
+        self.assertEqual(refType.properties[2].name, 'things')
+        self.assertEqual(refType.properties[2].isArray, False)
+        self.assertEqual(refType.properties[2].type.name, 'InnerDictionaryType')
+        self.assertTrue(isinstance(refType.properties[2].type, DictionaryType))
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,9 +2,9 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"title": "Demo array type 2",
 	"definitions": {
-		"InnerArrayType": {
-			"type": "array",
-			"items": {
+		"InnerDictionaryType": {
+			"type": "object",
+			"additionalProperties": {
 				"$ref": "#/definitions/SomeOtherType"
 			}
 		},
@@ -29,10 +29,9 @@
 					"type": "string"
 				},
 				"things": {
-					"$ref": "#/definitions/InnerArrayType"
+					"$ref": "#/definitions/InnerDictionaryType"
 				}
 			}
 		}
-
 	}
 }
