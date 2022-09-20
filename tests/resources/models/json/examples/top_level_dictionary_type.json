@@ -1,0 +1,12 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Demo Array Type",
+	"type": "array",
+	"items": {
+		"type": "integer"
+	},
+	"maxItems": 10,
+	"minItems": 2,
+	"uniqueItems": true,
+	"x-tags": ["test", "another-one"]
+}

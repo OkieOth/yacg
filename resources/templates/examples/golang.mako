@@ -93,19 +93,19 @@ type ${type.name} int64
 
 const (
     ${getEnumDefaultValue(type)} ${type.name} = iota
-    % for value in type.values:
-        % if not isEnumDefaultValue(value, type):
+        % for value in type.values:
+            % if not isEnumDefaultValue(value, type):
         ${value}
-        % endif
-    % endfor
+            % endif
+        % endfor
 )
 
 func (s ${type.name}) String() string {
 	switch s {
-    % for value in type.values:
+        % for value in type.values:
 	case ${secureEnumValues(value)}:
 		return "${value}"
-    % endfor
+        % endfor
 	}
 	return "???"
 }
@@ -114,7 +114,7 @@ func (s ${type.name}) String() string {
 % endfor
 
 % for type in modelTypes:
-    % if (not modelFuncs.isEnumType(type)) and (not modelFuncs.isDictionaryType(type)):
+    % if (not modelFuncs.isEnumType(type)) and (not modelFuncs.isBaseType(type)):
         % if type.description != None:
 /* ${templateHelper.addLineBreakToDescription(type.description,4)}
 */

@@ -1,0 +1,24 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Demo array type 2",
+	"type": "array",
+	"items": {
+		"$ref": "#/definitions/SomeOtherType"
+	},
+	"maxItems": 2,
+	"minItems": 2,
+	"x-tags": ["test", "another-one"],
+	"definitions": {
+		"SomeOtherType": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer"
+				},
+				"name": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
