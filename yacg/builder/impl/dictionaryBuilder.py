@@ -170,7 +170,6 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
                 _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer)
                 _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer)
 
-
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
     for type in modelTypes:
@@ -526,8 +525,7 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
             if isinstance(tmp, ArrayType):
                 newProperty.isArray = True
                 if hasattr(newProperty, 'arrayDimensions'):
-                    existingDimension = len(newProperty.arrayDimensions) if newProperty.arrayDimensions is not None else 1
-                    newProperty.arrayDimensions = existingDimension + len(tmp.arrayConstraints)
+                    newProperty.arrayDimensions = tmp.arrayDimensions
                 if hasattr(newProperty, 'arrayConstraints'):
                     newProperty.arrayConstraints = tmp.arrayConstraints
                 return tmp.itemsType
@@ -535,8 +533,8 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
                 return tmp
         elif type == 'array':
             arrayType = _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
-            if hasattr(newProperty, 'arrayDimensions'):
-                newProperty.arrayDimensions = len(newProperty.arrayConstraints)
+            # if hasattr(newProperty, 'arrayDimensions'):
+            #     newProperty.arrayDimensions = len(newProperty.arrayConstraints)
             return arrayType
         else:
             logging.error(
@@ -1356,8 +1354,8 @@ def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, mod
     if messageDict is not None:
         messageObj = asyncapi.Message()
         messageObj.amqpBindings = _parseAsyncApiOperationMessageBinding(messageDict, modelTypes)
-        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "Payload".format(operationType.operationId))
-        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "Headers".format(operationType.operationId))
+        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "Payload_{}".format(operationType.operationId))  # noqa: E501
+        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "Headers_{}".format(operationType.operationId))  # noqa: E501
     return messageObj
 
 
@@ -1451,7 +1449,7 @@ def _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileCon
 
 def __initChannelBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
     bindingsObj = asyncapi.ChannelBindingsAmqp()
-    bindingsObj.name = name 
+    bindingsObj.name = name
     bindingsObj.isType = asyncapi.ChannelBindingsAmqpIsTypeEnum.valueForString(amqpBindingsDict.get("is", "routingKey"))
     bindingsObj.exchange = __initChannelBindingsExchange(amqpBindingsDict.get("exchange", None))
     bindingsObj.queue = __initChannelBindingsQueue(amqpBindingsDict.get("queue", None))

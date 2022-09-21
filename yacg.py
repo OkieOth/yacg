@@ -46,8 +46,8 @@ parser.add_argument('--protocolFile', help='where the metadata of the used model
 parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model versions are unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
 parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5 is unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
 parser.add_argument('--skipCodeGenDryRun', help='prints only the log messages if codegen should be skipped', action='store_true')
-parser.add_argument('--failIfTypeNamesNotUnique', help='the code execution fails if there are not unique type names in the loaded type tree', action='store_true')
-parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type names multiple times in the list of loaded times, they are changed to be unique', action='store_true')
+parser.add_argument('--failIfTypeNamesNotUnique', help='the code execution fails if there are not unique type names in the loaded type tree', action='store_true')  # noqa: E501
+parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type names multiple times in the list of loaded times, they are changed to be unique', action='store_true')  # noqa: E501
 
 
 def getFileExt(fileName):
@@ -346,7 +346,7 @@ def __doCodeGen(codeGenerationJobs, args):
         jobName = job.name if job.name else "UNKNOWN_JOB_{}".format(jobIndex)
         jobsMetaData[jobName] = modelMetaData
         jobIndex = jobIndex + 1
-        if __handleNotUniqueTypeNames(allLoadedTypes, args.failIfTypeNamesNotUnique, args.makeMultipleTypeNamesUnique, args.noLogs):
+        if __handleNotUniqueTypeNames(allLoadedTypes, args.failIfTypeNamesNotUnique, args.makeMultipleTypeNamesUnique, args.noLogs):  # noqa: E501
             sys.exit(1)
 
         if protocolFuncs.shouldSkipCodeGen(

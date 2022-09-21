@@ -1,6 +1,9 @@
 # 5.5.0
 * add golang type template
 * add modelFuncs func 'isComplexType'
+* introduce ArrayType
+* usage of top-level Array- and DictionaryTypes in the JSON schemas enabled
+
 
 # 5.4.0
 * Introduce Duration type

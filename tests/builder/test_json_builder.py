@@ -1,4 +1,3 @@
-from array import ArrayType
 import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
@@ -649,7 +648,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(geometry.properties[4].name, 'polygon')
         self.assertEqual(geometry.properties[4].arrayDimensions, 3)
         self.assertEqual(geometry.properties[5].name, 'multiPolygon')
-        self.assertEqual(geometry.properties[6].arrayDimensions, 4)
+        self.assertEqual(geometry.properties[5].arrayDimensions, 4)
 
 
 if __name__ == '__main__':
