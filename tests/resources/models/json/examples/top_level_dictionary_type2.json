@@ -1,0 +1,22 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Demo dict type 2",
+	"type": "object",
+	"additionalProperties": {
+		"$ref": "#/definitions/SomeOtherType"
+	},
+	"x-tags": ["test", "another-one"],
+	"definitions": {
+		"SomeOtherType": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer"
+				},
+				"name": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

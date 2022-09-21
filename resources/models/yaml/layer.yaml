@@ -1,0 +1,127 @@
+---
+"$schema": http://json-schema.org/draft-07/schema#
+title: layer
+description: the way how I understand GIS layer
+version: 0.0.1
+definitions:
+  Layer:
+    description: A layer definition
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      minZoom:
+        type: integer
+      maxZoom:
+        type: integer
+    required:
+      - id
+      - name
+  LayerContent:
+    description: a feature to display
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      layerId:
+        type: string
+        format: uuid
+        x-ref: '#/definitions/Layer'
+      projection:
+        type: string
+      geometry:
+        "$ref": "#/definitions/Geometry"
+      data:
+        description: container for additional key/value pairs
+        type: object
+        additionalProperties:
+          type: string
+      display:
+          "$ref": "#/definitions/DisplayConfig"
+    required:
+      - id
+      - geometries
+  Color:
+    description: The color definition to display a feature
+    type: object
+    properties:
+      red:
+        type: integer
+      green:
+        type: integer
+      blue:
+        type: integer
+      alpha:
+        type: integer
+    required:
+      - red
+      - green
+      - blue
+  DisplayConfig:
+    description: Optional configuration to display a feature
+    type: object
+    properties:
+      stroke:
+        type: object
+        properties:
+          width:
+            type: integer
+          dashArray:
+            type: array
+            items:
+              type: integer
+          dashOffset:
+            type: integer
+          color:
+            "$ref": "#/definitions/Color"
+      fill:
+        type: object
+        properties:
+          color:
+            "$ref": "#/definitions/Color"
+      icon:
+        type: string
+  PointGeometry:
+    description: a point geometry, lon/lat pair
+    type: array
+    minItems: 2
+    maxItems: 2
+    items:
+      type: number
+  PointGeometryArray:
+    type: array
+    items:
+      $ref: "#/definitions/PointGeometry"
+  PointGeometryArrayArray:
+    type: array
+    items:
+      type: array
+      items:
+        $ref: "#/definitions/PointGeometry"
+  Geometry:
+    description: Geometry definition to display the feature
+    type: object
+    properties:
+      point:
+        $ref: "#/definitions/PointGeometry"
+      multiPoint:
+        description: a geometry consisting of multiple separate points
+        $ref: "#/definitions/PointGeometryArray"
+      lineString:
+        description: a geometry consisting of multiple connected line segments
+        $ref: "#/definitions/PointGeometryArray"
+      multiLineString:
+        description: a geometry consisting of multiple multi-lines
+        $ref: "#/definitions/PointGeometryArrayArray"
+      polygon:
+        description: a closed geometry consisting of multiple connected line segments
+        $ref: "#/definitions/PointGeometryArrayArray"
+      multiPolygon:
+        description: a geometry consisting of multiple separate polygons
+        type: array
+        items:
+          $ref: "#/definitions/PointGeometryArrayArray"

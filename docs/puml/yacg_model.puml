@@ -81,7 +81,7 @@ class EnumType {
         StringType source
         StringType description
         StringType[] values
-        EnumTypeValuesMap valuesMap
+        Map<StringType> valuesMap
         StringType default
         Tag[] tags
 }
@@ -108,11 +108,11 @@ note top: type for date values
 
 DateType --|> Type
 class TimeType {
-        StringType default
-        StringType minimum
-        StringType exclusiveMinimum
-        StringType maximum
-        StringType exclusiveMaximum
+        TimeType default
+        TimeType minimum
+        TimeType exclusiveMinimum
+        TimeType maximum
+        TimeType exclusiveMaximum
 }
 
 note top: type for time values
@@ -129,6 +129,13 @@ class DateTimeType {
 note top: type for timestamp values
 
 DateTimeType --|> Type
+class DurationType {
+        DateType default
+}
+
+note top: type for date values
+
+DurationType --|> Type
 class BytesType {
         BytesType default
 }
@@ -184,6 +191,22 @@ class DictionaryType {
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
+class ArrayType {
+        StringType version
+        StringType name
+        StringType description
+        StringType domain
+        StringType source
+        ComplexType[] referencedBy
+        Type itemsType
+        Tag[] tags
+        ArrayConstraints[] arrayConstraints
+        IntegerType arrayDimensions
+}
+
+note top: Array type
+
+ArrayType --|> Type
 class ArrayConstraints {
         IntegerType arrayMinItems
         IntegerType arrayMaxItems
@@ -238,8 +261,6 @@ NumberType  *--  NumberTypeFormatEnum
 
 
 
-EnumType  *--  EnumTypeValuesMap
-            
 
 
 EnumType "0" *-- "n" Tag
@@ -265,6 +286,8 @@ EnumType "0" *-- "n" Tag
 
 
 
+
+    
 
     
 
@@ -319,6 +342,25 @@ DictionaryType  *--  Type
 
 DictionaryType "0" *-- "n" Tag
             
+
+    
+
+
+
+
+
+ArrayType "0" *-- "n" ComplexType
+            
+
+ArrayType  *--  Type
+            
+
+ArrayType "0" *-- "n" Tag
+            
+
+ArrayType "0" *-- "n" ArrayConstraints
+            
+
 
     
 

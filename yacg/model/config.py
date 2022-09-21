@@ -6,7 +6,7 @@ from enum import Enum
 
 
 class Job:
-    """ base object that describes a complete code generation process
+    """base object that describes a complete code generation process
     """
 
     def __init__(self, dictObj=None):
@@ -46,7 +46,7 @@ class Job:
 
 
 class Model:
-    """ A model that should be used
+    """A model that should be used
     """
 
     def __init__(self, dictObj=None):
@@ -86,7 +86,7 @@ class Model:
 
 
 class Task:
-    """ A task to run
+    """A task to run
     """
 
     def __init__(self, dictObj=None):
@@ -147,7 +147,7 @@ class Task:
 
 
 class BlackWhiteListEntry:
-    """ entry of a type back/white list
+    """entry of a type back/white list
     """
 
     def __init__(self, dictObj=None):
@@ -220,7 +220,7 @@ class BlackWhiteListEntryTypeEnum(Enum):
 
 
 class SingleFileTask:
-    """ parameter of a code generation task that creates one file
+    """parameter of a code generation task that creates one file
     """
 
     def __init__(self, dictObj=None):
@@ -252,7 +252,7 @@ class SingleFileTask:
 
 
 class TemplateParam:
-    """ additional, template specific custom parameter for codegen task
+    """additional, template specific custom parameter for codegen task
     """
 
     def __init__(self, dictObj=None):
@@ -297,7 +297,7 @@ class TemplateParam:
 
 
 class MultiFileTask:
-    """ parameter of a code generation task that creates one file per model type
+    """parameter of a code generation task that creates one file per model type
     """
 
     def __init__(self, dictObj=None):

@@ -1,7 +1,9 @@
 import hashlib
 import json
 import logging
-from yacg.util.fileUtils import doesFileExist
+import os
+import pathlib
+from yacg.util.fileUtils import doesFileExist, getDirName
 from yacg.model.model import EnumType, ComplexType
 
 
@@ -91,6 +93,9 @@ def getModelMetaData(alloadedTypes, modelFile):
 
 def writeProtocolFile(protocolFile, codeGenMetaData):
     if protocolFile is not None:
+        dirName = getDirName(protocolFile)
+        if not os.path.exists(dirName):
+            pathlib.Path(dirName).mkdir(parents=True, exist_ok=True)
         with open(protocolFile, 'w') as outfile:
             json.dump(codeGenMetaData, outfile, indent=4)
 

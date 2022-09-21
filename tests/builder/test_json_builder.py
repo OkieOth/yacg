@@ -1,10 +1,11 @@
 import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
+from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum, ObjectType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
-from yacg.model.model import EnumType, ComplexType
+from yacg.model.model import EnumType, ComplexType, ArrayType
 from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes, getNotUniqueTypeNames, makeTypeNamesUnique  # noqa: E501
 
 import yacg.model.config as config
@@ -302,9 +303,11 @@ class TestJsonBuilder (unittest.TestCase):
             'DateType',
             'TimeType',
             'DateTimeType',
+            'DurationType',
             'BytesType',
             'ComplexType',
-            'DictionaryType'
+            'DictionaryType',
+            'ArrayType'
         ]
         self.assertEqual(expectedMetaModelTypes, metaModelTypes)
 
@@ -505,6 +508,147 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(0, len(notUniqueTypeNames2))
         self.assertEqual('AnotherType_2', modelTypes[3].name)
         self.assertEqual('MySecondType_2', modelTypes[6].name)
+
+    def testTopLevelArrayType(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_array_type.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(1, len(modelTypes))
+        arrayType = modelTypes[0]
+        self.assertTrue(isinstance(arrayType, ArrayType))
+        self.assertEqual(arrayType.name, 'DemoArrayType')
+        self.assertEqual(arrayType.arrayConstraints[0].arrayMinItems, 2)
+        self.assertEqual(arrayType.arrayConstraints[0].arrayMaxItems, 10)
+        self.assertEqual(arrayType.arrayConstraints[0].arrayUniqueItems, True)
+        self.assertIsNotNone(arrayType.itemsType)
+        self.assertTrue(isinstance(arrayType.itemsType, IntegerType))
+
+    def testTopLevelArrayType2(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_array_type2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(2, len(modelTypes))
+        arrayType = modelTypes[1]
+        self.assertTrue(isinstance(arrayType, ArrayType))
+        self.assertEqual(arrayType.name, 'DemoArrayType2')
+        self.assertEqual(arrayType.arrayConstraints[0].arrayMinItems, 2)
+        self.assertEqual(arrayType.arrayConstraints[0].arrayMaxItems, 2)
+        self.assertEqual(arrayType.arrayConstraints[0].arrayUniqueItems, False)
+        self.assertIsNotNone(arrayType.itemsType)
+        self.assertEqual(arrayType.itemsType.name, 'SomeOtherType')
+
+    def testTopLevelArrayType3(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_array_type3.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(3, len(modelTypes))
+        arrayType = modelTypes[1]
+        self.assertTrue(isinstance(arrayType, ArrayType))
+        self.assertEqual(arrayType.name, 'InnerArrayType')
+        self.assertEqual(len(arrayType.arrayConstraints), 1)
+        self.assertIsNotNone(arrayType.itemsType)
+        refType = modelTypes[2]
+        self.assertEqual(refType.properties[2].name, 'things')
+        self.assertEqual(refType.properties[2].isArray, True)
+        self.assertEqual(refType.properties[2].arrayDimensions, 1)
+        self.assertEqual(refType.properties[2].type.name, 'SomeOtherType')
+
+    def testTopLevelDictionaryType(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_dictionary_type.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(1, len(modelTypes))
+        dictType = modelTypes[0]
+        self.assertTrue(isinstance(dictType, DictionaryType))
+        self.assertEqual(dictType.name, 'DemoDictType')
+        self.assertIsNotNone(dictType.valueType)
+        self.assertTrue(isinstance(dictType.valueType, IntegerType))
+
+    def testTopLevelDictType2(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_dictionary_type2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(2, len(modelTypes))
+        dictType = modelTypes[0]
+        self.assertTrue(isinstance(dictType, DictionaryType))
+        self.assertEqual(dictType.name, 'DemoDictType2')
+        self.assertIsNotNone(dictType.valueType)
+        self.assertTrue(isinstance(dictType.valueType, ComplexType))
+        self.assertEqual(dictType.valueType.name, 'SomeOtherType')
+
+    def testTopLevelDictType3(self):
+        modelFile = 'tests/resources/models/json/examples/top_level_dictionary_type3.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(3, len(modelTypes))
+        dictType = modelTypes[0]
+        self.assertTrue(isinstance(dictType, DictionaryType))
+        self.assertEqual(dictType.name, 'InnerDictionaryType')
+        self.assertIsNotNone(dictType.valueType)
+        refType = modelTypes[2]
+        self.assertEqual(refType.properties[2].name, 'things')
+        self.assertEqual(refType.properties[2].isArray, False)
+        self.assertEqual(refType.properties[2].type.name, 'InnerDictionaryType')
+        self.assertTrue(isinstance(refType.properties[2].type, DictionaryType))
+
+    def testMultiDimensionalArrays(self):
+        modelFile = 'resources/models/yaml/layer.yaml'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(11, len(modelTypes))
+        arrayType1 = modelTypes[8]
+        arrayType2 = modelTypes[9]
+        arrayType3 = modelTypes[10]
+        self.assertTrue(isinstance(arrayType1, ArrayType))
+        self.assertTrue(isinstance(arrayType2, ArrayType))
+        self.assertTrue(isinstance(arrayType3, ArrayType))
+        self.assertEqual(arrayType1.arrayDimensions, 1)
+        self.assertEqual(arrayType2.arrayDimensions, 2)
+        self.assertEqual(arrayType3.arrayDimensions, 3)
+        self.assertTrue(isinstance(arrayType1.itemsType, NumberType))
+        self.assertTrue(isinstance(arrayType2.itemsType, NumberType))
+        self.assertTrue(isinstance(arrayType3.itemsType, NumberType))
+        geometry = modelTypes[2]
+        self.assertEqual(geometry.properties[0].name, 'point')
+        self.assertEqual(geometry.properties[0].arrayDimensions, 1)
+        self.assertEqual(geometry.properties[1].name, 'multiPoint')
+        self.assertEqual(geometry.properties[1].arrayDimensions, 2)
+        self.assertEqual(geometry.properties[2].name, 'lineString')
+        self.assertEqual(geometry.properties[2].arrayDimensions, 2)
+        self.assertEqual(geometry.properties[3].name, 'multiLineString')
+        self.assertEqual(geometry.properties[3].arrayDimensions, 3)
+        self.assertEqual(geometry.properties[4].name, 'polygon')
+        self.assertEqual(geometry.properties[4].arrayDimensions, 3)
+        self.assertEqual(geometry.properties[5].name, 'multiPolygon')
+        self.assertEqual(geometry.properties[5].arrayDimensions, 4)
 
 
 if __name__ == '__main__':

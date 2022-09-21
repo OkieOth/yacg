@@ -6,7 +6,7 @@ from enum import Enum
 
 
 class Type:
-    """ Dummy base class to implement strong typed references
+    """Dummy base class to implement strong typed references
     """
 
     def __init__(self, dictObj=None):
@@ -21,7 +21,7 @@ class Type:
 
 
 class ObjectType (Type):
-    """ Straight out of hell - a undefined object type
+    """Straight out of hell - a undefined object type
     """
 
     def __init__(self, dictObj=None):
@@ -37,7 +37,7 @@ class ObjectType (Type):
 
 
 class IntegerType (Type):
-    """ integer values
+    """integer values
     """
 
     def __init__(self, dictObj=None):
@@ -105,7 +105,7 @@ class IntegerTypeFormatEnum(Enum):
 
 
 class NumberType (Type):
-    """ floating point values
+    """floating point values
     """
 
     def __init__(self, dictObj=None):
@@ -173,7 +173,7 @@ class NumberTypeFormatEnum(Enum):
 
 
 class BooleanType (Type):
-    """ boolean values
+    """boolean values
     """
 
     def __init__(self, dictObj=None):
@@ -192,7 +192,7 @@ class BooleanType (Type):
 
 
 class StringType (Type):
-    """ integer values
+    """integer values
     """
 
     def __init__(self, dictObj=None):
@@ -223,7 +223,7 @@ class StringType (Type):
 
 
 class UuidType (Type):
-    """ UUID values
+    """UUID values
     """
 
     def __init__(self, dictObj=None):
@@ -242,7 +242,7 @@ class UuidType (Type):
 
 
 class EnumType (Type):
-    """ type for enum values - fixed value types
+    """type for enum values - fixed value types
     """
 
     def __init__(self, dictObj=None):
@@ -303,7 +303,7 @@ class EnumType (Type):
 
 
 class Tag:
-    """ a tag type
+    """a tag type
     """
 
     def __init__(self, dictObj=None):
@@ -325,7 +325,7 @@ class Tag:
 
 
 class DateType (Type):
-    """ type for date values
+    """type for date values
     """
 
     def __init__(self, dictObj=None):
@@ -360,7 +360,7 @@ class DateType (Type):
 
 
 class TimeType (Type):
-    """ type for time values
+    """type for time values
     """
 
     def __init__(self, dictObj=None):
@@ -395,7 +395,7 @@ class TimeType (Type):
 
 
 class DateTimeType (Type):
-    """ type for timestamp values
+    """type for timestamp values
     """
 
     def __init__(self, dictObj=None):
@@ -429,8 +429,27 @@ class DateTimeType (Type):
         self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
+class DurationType (Type):
+    """type for date values
+    """
+
+    def __init__(self, dictObj=None):
+        super(Type, self).__init__()
+
+        self.default = None
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.default = dictObj.get('default', None)
+
+
 class BytesType (Type):
-    """ type for byte values, it will usually be rendered to a byte array
+    """type for byte values, it will usually be rendered to a byte array
     """
 
     def __init__(self, dictObj=None):
@@ -449,7 +468,7 @@ class BytesType (Type):
 
 
 class ComplexType (Type):
-    """ complex type description
+    """complex type description
     """
 
     def __init__(self, dictObj=None):
@@ -526,7 +545,7 @@ class ComplexType (Type):
 
 
 class Property:
-    """ a property of a type
+    """a property of a type
     """
 
     def __init__(self, dictObj=None):
@@ -614,7 +633,7 @@ class Property:
 
 
 class DictionaryType (Type):
-    """ key/value dictionary type. Keys are always strings, the value type can be
+    """key/value dictionary type. Keys are always strings, the value type can be
     specified
     """
 
@@ -675,6 +694,79 @@ class DictionaryType (Type):
                 Tag(elemTags))
 
 
+class ArrayType (Type):
+    """Array type
+    """
+
+    def __init__(self, dictObj=None):
+        super(Type, self).__init__()
+
+        #: is taken from the version entry of the file, optional
+        self.version = None
+
+        self.name = None
+
+        self.description = None
+
+        #: scope/domain to that this type belongs
+        self.domain = None
+
+        #: from what file the Type was loaded
+        self.source = None
+
+        #: types that hold attribute references to that type
+        self.referencedBy = []
+
+        #: either a basic or a complex type
+        self.itemsType = None
+
+        #: additional flags to mark a type
+        self.tags = []
+
+        self.arrayConstraints = []
+
+        #: if isArray true you can specify here the number of the array dimensions
+        self.arrayDimensions = None
+
+        if dictObj is not None:
+            self.initFromDict(dictObj)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.version = dictObj.get('version', None)
+
+        self.name = dictObj.get('name', None)
+
+        self.description = dictObj.get('description', None)
+
+        self.domain = dictObj.get('domain', None)
+
+        self.source = dictObj.get('source', None)
+
+        arrayReferencedBy = dictObj.get('referencedBy', [])
+        for elemReferencedBy in arrayReferencedBy:
+            self.referencedBy.append(
+                ComplexType(elemReferencedBy))
+
+        subDictObj = dictObj.get('itemsType', None)
+        if subDictObj is not None:
+            self.itemsType = Type(subDictObj)
+
+        arrayTags = dictObj.get('tags', [])
+        for elemTags in arrayTags:
+            self.tags.append(
+                Tag(elemTags))
+
+        arrayArrayConstraints = dictObj.get('arrayConstraints', [])
+        for elemArrayConstraints in arrayArrayConstraints:
+            self.arrayConstraints.append(
+                ArrayConstraints(elemArrayConstraints))
+
+        self.arrayDimensions = dictObj.get('arrayDimensions', None)
+
+
 class ArrayConstraints:
     def __init__(self, dictObj=None):
 
@@ -685,7 +777,7 @@ class ArrayConstraints:
         self.arrayMaxItems = None
 
         #: the elements in the array/list have to be unique
-        self.arrayUniqueItems = None
+        self.arrayUniqueItems = False
 
         if dictObj is not None:
             self.initFromDict(dictObj)
@@ -698,11 +790,11 @@ class ArrayConstraints:
 
         self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
 
-        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', None)
+        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', False)
 
 
 class ForeignKey:
-    """ Type describes the reference of a property to another field in the model
+    """Type describes the reference of a property to another field in the model
     """
 
     def __init__(self, dictObj=None):

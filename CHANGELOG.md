@@ -1,3 +1,13 @@
+# 5.5.0
+* add golang type template
+* add modelFuncs func 'isComplexType'
+* introduce ArrayType
+* usage of top-level Array- and DictionaryTypes in the JSON schemas enabled
+
+
+# 5.4.0
+* Introduce Duration type
+
 # 5.3.3
 * modelFuncs: added function, which checks for property of type TimeType
 * modelFuncs: added function where the target type can be provided as parameter.
@@ -8,7 +18,7 @@
 * javaFuncs: map array of ObjectType to *java.util.List\<Object\>*
 
 # 5.3.1
-* Added prefix to templateHelper.addLineBreakToDescription  
+* Added prefix to templateHelper.addLineBreakToDescription
   (and removed leading space from first line)
 
 # 5.3.0

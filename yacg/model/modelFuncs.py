@@ -135,6 +135,7 @@ def getFlattenProperties(typeObj):
 
     return flattenProperties
 
+
 def hasEnumTypes(modelTypes):
     for type in modelTypes:
         if isEnumType(type):
@@ -195,6 +196,17 @@ def isDictionaryType(typeObj):
     return isinstance(typeObj, model.DictionaryType)
 
 
+def isComplexType(typeObj):
+    """checks if the given type object is a ComplexType. If that's the
+    case then True is returned, else the return is false
+
+    Keyword arguments:
+    typeObj -- type or property object to check up
+    """
+
+    return isinstance(typeObj, model.ComplexType)
+
+
 def getTypeName(type):
     return type.name if hasattr(type, 'name') else type.__class__.__name__
 
@@ -251,8 +263,6 @@ def isBaseType(type):
     if isinstance(type, model.EnumType):
         return False
     elif isinstance(type, model.ComplexType):
-        return False
-    elif isinstance(type, model.DictionaryType):
         return False
     else:
         return True
@@ -379,6 +389,21 @@ def isTimeContained(modelTypes):
         if isinstance(type, model.ComplexType):
             for property in type.properties:
                 if (property.type is not None) and (isinstance(property.type, model.TimeType)):
+                    return True
+    return False
+
+
+def isUuidContained(modelTypes):
+    """returns True, if at least one of model types contains a property of type model.UuidType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.UuidType)):
                     return True
     return False
 

@@ -14,7 +14,7 @@ from yacg.model.model import ArrayConstraints, ForeignKey, Property
 from yacg.util.stringUtils import toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType, ObjectType
-from yacg.model.model import DateType, TimeType, DateTimeType
+from yacg.model.model import DateType, TimeType, DateTimeType, DurationType, ArrayType
 from yacg.model.model import EnumType, ComplexType, DictionaryType, Tag
 from yacg.util.fileUtils import doesFileExist
 from yacg.model.modelFuncs import isBaseType
@@ -86,17 +86,7 @@ def __initEnumValues(mainType, parsedSchema):
         mainType.valuesMap = parsedSchema.get('x-enumValues', None)
 
 
-def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=False):
-    """extract the types from the parsed schema
-
-
-    Keyword arguments:
-    parsedSchema -- dictionary with the loaded schema
-    modelFile -- file name and path to the model to load
-    skipAdditionalSpecTypes -- if true, then openApi paths and asyncApi types are not extracted for the model
-    """
-
-    modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
+def __extractTopLevelObjectType(parsedSchema, modelTypes, modelFileContainer):
     schemaProperties = parsedSchema.get('properties', None)
     allOfEntry = parsedSchema.get('allOf', None)
     additionalProperties = __getAdditionalPropertiesForDictionaryType(parsedSchema)
@@ -110,6 +100,11 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
             allOfEntry, description, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
         _markRequiredAttributes(mainType, parsedSchema.get('required', []))
+        return True
+    return False
+
+
+def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
     enumEntry = parsedSchema.get('enum', None)
     if enumEntry is not None:
         titleStr = parsedSchema.get('title', None)
@@ -117,6 +112,47 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
         __initEnumValues(mainType, parsedSchema)
+        return True
+    return False
+
+
+def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContainer):
+    if parsedSchema.get('items', None) is not None:
+        typeNameStr = typeName
+        tmpProperty = Property()
+        arrayType = ArrayType()
+        arrayType.name = typeNameStr
+        arrayType.description = parsedSchema.get('description', None)
+        arrayType.itemsType = _extractArrayType(typeNameStr, tmpProperty, parsedSchema, modelTypes, modelFileContainer)
+        arrayType.source = modelFileContainer.fileName
+        arrayType.domain = modelFileContainer.domain
+        arrayType.arrayConstraints = tmpProperty.arrayConstraints
+        arrayType.arrayDimensions = tmpProperty.arrayDimensions
+        modelTypes.append(arrayType)
+        __initTags(arrayType, parsedSchema)
+        return True
+    return False
+
+
+def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=False):
+    """extract the types from the parsed schema
+
+
+    Keyword arguments:
+    parsedSchema -- dictionary with the loaded schema
+    modelFile -- file name and path to the model to load
+    skipAdditionalSpecTypes -- if true, then openApi paths and asyncApi types are not extracted for the model
+    """
+
+    modelFileContainer = ModelFileContainer(modelFile, parsedSchema)
+    handled = __extractTopLevelObjectType(parsedSchema, modelTypes, modelFileContainer)
+    if not handled:
+        handled = __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer)
+    if not handled:
+        titleStr = parsedSchema.get('title', None)
+        typeNameStr = toUpperCamelCase(titleStr) if titleStr is not None else None
+        handled = __extractPureArrayType(typeNameStr, parsedSchema, modelTypes, modelFileContainer)
+
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
         # extract types from extra definitions section
@@ -133,7 +169,6 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
                 _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileContainer)
                 _extractAsyncApiAmqpMessageBindings(componentsDict, modelTypes, modelFileContainer)
                 _extractAsyncApiAmqpOperationBindings(componentsDict, modelTypes, modelFileContainer)
-
 
     # there could be situations with circular type dependencies where are some
     # types not properly loaded ... so I search
@@ -280,14 +315,18 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
             __initTags(mainType, object)
             __initEnumValues(mainType, object)
         else:
-            type = _extractObjectType(
-                key, properties, additionalProperties, allOfEntry,
-                description, modelTypes, modelFileContainer)
-            if len(type.tags) == 0:
-                tags = object.get('x-tags', None)
-                if tags is not None:
-                    type.tags = _extractTags(tags)
-            _markRequiredAttributes(type, object.get('required', []))
+            itemsEntry = object.get('items', None)
+            if itemsEntry is not None:
+                __extractPureArrayType(key, object, modelTypes, modelFileContainer)
+            else:
+                type = _extractObjectType(
+                    key, properties, additionalProperties, allOfEntry,
+                    description, modelTypes, modelFileContainer)
+                if len(type.tags) == 0:
+                    tags = object.get('x-tags', None)
+                    if tags is not None:
+                        type.tags = _extractTags(tags)
+                _markRequiredAttributes(type, object.get('required', []))
 
 
 def _extractObjectType(
@@ -463,7 +502,7 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif type == 'boolean':
         return BooleanType()
     elif type == 'string':
-        # DateType, TimeType, DateTimeType, StringType, EnumType
+        # DateType, TimeType, DateTimeType, StringType, EnumType, DurationType
         return _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
     elif type == 'object':
         subProps = propDict.get('properties', None)
@@ -482,11 +521,20 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
             __initEnumValues(enumType, propDict)
             return enumType
         elif refEntry is not None:
-            return _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+            tmp = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+            if isinstance(tmp, ArrayType):
+                newProperty.isArray = True
+                if hasattr(newProperty, 'arrayDimensions'):
+                    newProperty.arrayDimensions = tmp.arrayDimensions
+                if hasattr(newProperty, 'arrayConstraints'):
+                    newProperty.arrayConstraints = tmp.arrayConstraints
+                return tmp.itemsType
+            else:
+                return tmp
         elif type == 'array':
             arrayType = _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer)
-            if hasattr(newProperty, 'arrayDimensions'):
-                newProperty.arrayDimensions = len(newProperty.arrayConstraints)
+            # if hasattr(newProperty, 'arrayDimensions'):
+            #     newProperty.arrayDimensions = len(newProperty.arrayConstraints)
             return arrayType
         else:
             logging.error(
@@ -511,16 +559,25 @@ def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileC
         newProperty.isArray = True
         if hasattr(newProperty, "arrayConstraints"):
             arrayConstraints = ArrayConstraints()
-            arrayConstraints.arrayMinItems = itemsDict.get('minItems', None)
-            arrayConstraints.arrayMaxItems = itemsDict.get('maxItems', None)
-            arrayConstraints.arrayUniqueItems = itemsDict.get('uniqueItems', None)
+            arrayConstraints.arrayMinItems = propDict.get('minItems', None)
+            arrayConstraints.arrayMaxItems = propDict.get('maxItems', None)
+            arrayConstraints.arrayUniqueItems = propDict.get('uniqueItems', False)
             newProperty.arrayConstraints.append(arrayConstraints)
+            newProperty.arrayDimensions = len(newProperty.arrayConstraints)
         itemsType = itemsDict.get('type', None)
         itemsItemsDict = itemsDict.get('items', None)
         if (itemsType == "array") and (itemsItemsDict is not None):
-            return _extractArrayType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
+            newProperty.arrayDimensions = len(newProperty.arrayConstraints)
+            retType = _extractArrayType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
+            return retType
         else:
-            return _extractAttribType(newTypeName, newProperty, itemsDict, modelTypes, modelFileContainer)
+            # there are situations where the attrib has a ref to an array type
+            tmpProperty = Property()
+            tmpProperty.name = "dummy"
+            retType = _extractAttribType(newTypeName, tmpProperty, itemsDict, modelTypes, modelFileContainer)
+            if tmpProperty.isArray:
+                newProperty.arrayDimensions = len(newProperty.arrayConstraints) + tmpProperty.arrayDimensions
+            return retType
 
 
 def _extractReferenceType(refEntry, modelTypes, modelFileContainer):
@@ -884,6 +941,8 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
         return TimeType()
     elif formatValue == 'date-time':
         return DateTimeType()
+    elif formatValue == 'duration':
+        return DurationType()
     elif formatValue == 'uuid':
         return UuidType()
     elif formatValue == 'byte':
@@ -1295,8 +1354,8 @@ def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, mod
     if messageDict is not None:
         messageObj = asyncapi.Message()
         messageObj.amqpBindings = _parseAsyncApiOperationMessageBinding(messageDict, modelTypes)
-        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "Payload".format(operationType.operationId))
-        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "Headers".format(operationType.operationId))
+        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "Payload_{}".format(operationType.operationId))  # noqa: E501
+        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "Headers_{}".format(operationType.operationId))  # noqa: E501
     return messageObj
 
 
@@ -1390,7 +1449,7 @@ def _extractAsyncApiAmqpChannelBindings(componentsDict, modelTypes, modelFileCon
 
 def __initChannelBindingsAmqpObj(name, amqpBindingsDict, modelTypes):
     bindingsObj = asyncapi.ChannelBindingsAmqp()
-    bindingsObj.name = name 
+    bindingsObj.name = name
     bindingsObj.isType = asyncapi.ChannelBindingsAmqpIsTypeEnum.valueForString(amqpBindingsDict.get("is", "routingKey"))
     bindingsObj.exchange = __initChannelBindingsExchange(amqpBindingsDict.get("exchange", None))
     bindingsObj.queue = __initChannelBindingsQueue(amqpBindingsDict.get("queue", None))

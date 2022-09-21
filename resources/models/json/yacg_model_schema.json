@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg inner type model",
     "description": "model types used internally to provide loaded models for the code generators",
-    "version": "0.0.1",
+    "version": "5.5.2",
     "x-domain": "yacg.model.model",
     "definitions": {
         "Type": {
@@ -334,6 +334,26 @@
                 "metaModelType"
             ]
         },
+        "DurationType": {
+            "type": "object",
+            "description": "type for date values",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "default": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                }
+            ],
+            "x-tags": [
+                "metaModelType"
+            ]
+        },
         "BytesType": {
             "type": "object",
             "description": "type for byte values, it will usually be rendered to a byte array",
@@ -481,6 +501,74 @@
                 "metaModelType"
             ]
         },
+        "ArrayType": {
+            "type": "object",
+            "description": "Array type",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Type"
+                },
+                {
+                    "properties": {
+                        "version": {
+                            "description": "is taken from the version entry of the file, optional",
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "domain": {
+                            "description": "scope/domain to that this type belongs",
+                            "$comment": "optional, can be used for domain driven modelling",
+                            "type": "string"
+                        },
+                        "source": {
+                            "description": "from what file the Type was loaded",
+                            "$comment": "basically a nomalized fileName with path",
+                            "type": "string"
+                        },
+                        "referencedBy": {
+                            "description": "types that hold attribute references to that type",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ComplexType"
+                            }
+                        },
+                        "itemsType": {
+                            "description": "either a basic or a complex type",
+                            "$ref": "#/definitions/Type",
+                            "x-tags": [
+                                "constructorValue"
+                            ]
+                        },
+                        "tags": {
+                            "description": "additional flags to mark a type",
+                            "$comment": "custom extension marked with 'x-tags'",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Tag"
+                            }
+                        },
+                        "arrayConstraints": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ArrayConstraints"
+                            }
+                        },
+                        "arrayDimensions": {
+                            "description": "if isArray true you can specify here the number of the array dimensions",
+                            "type": "integer"
+                        }
+                    }
+                }
+            ],
+            "x-tags": [
+                "metaModelType"
+            ]
+        },
         "Property": {
             "type": "object",
             "description": "a property of a type",
@@ -570,7 +658,8 @@
                 },
                 "arrayUniqueItems": {
                     "description": "the elements in the array/list have to be unique",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 }
             }
         },

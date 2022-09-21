@@ -40,7 +40,7 @@ class OpenApiInfo (yacg.model.shared.info.InfoSection):
 
 
 class PathType (yacg.model.model.Type):
-    """ base type that contains all REST path information
+    """base type that contains all REST path information
     """
 
     def __init__(self, dictObj=None):
@@ -67,7 +67,7 @@ class PathType (yacg.model.model.Type):
 
 
 class Command:
-    """ information to a specific HTTP command
+    """information to a specific HTTP command
     """
 
     def __init__(self, dictObj=None):
@@ -181,7 +181,7 @@ class CommandCommandEnum(Enum):
 
 
 class Parameter:
-    """ definition of a parameter that is used in the request
+    """definition of a parameter that is used in the request
     """
 
     def __init__(self, dictObj=None):
@@ -226,7 +226,7 @@ class Parameter:
 
 
 class RequestBody:
-    """ definition of a parameter that is used in the request
+    """definition of a parameter that is used in the request
     """
 
     def __init__(self, dictObj=None):
@@ -257,7 +257,7 @@ class RequestBody:
 
 
 class Response:
-    """ description of a response option for a request
+    """description of a response option for a request
     """
 
     def __init__(self, dictObj=None):
