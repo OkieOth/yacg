@@ -1017,13 +1017,10 @@ def _extractTags(tagArray):
             tagObj.name = tag
             tags.append(tagObj)
         elif isinstance(tag, dict):
-            keyArray = list(tag.keys())
-            if len(keyArray) > 0:
-                tagName = keyArray[0]
-                tagValue = tag.get(tagName, None)
+            for key, value in tag.items():
                 tagObj = Tag()
-                tagObj.name = tagName
-                tagObj.value = tagValue
+                tagObj.name = key
+                tagObj.value = value
                 tags.append(tagObj)
     return tags
 

@@ -106,6 +106,17 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         mongoTypes = getTypesWithTag(modelTypes, ["mongodb"])
         self.assertEqual(len(mongoTypes), 3)
+        mineType = mongoTypes[0]
+        self.assertEqual(mineType.name, 'Mine')
+        dwarfsProperty = mineType.properties[4]
+        self.assertEqual(dwarfsProperty.name, 'dwarfs')
+        self.assertEqual(len(dwarfsProperty.tags), 3)
+        self.assertEqual(dwarfsProperty.tags[0].name, 'oneTag')
+        self.assertEqual(dwarfsProperty.tags[0].value, True)
+        self.assertEqual(dwarfsProperty.tags[1].name, 'twoTag')
+        self.assertEqual(dwarfsProperty.tags[1].value, 123)
+        self.assertEqual(dwarfsProperty.tags[2].name, 'three.Tag')
+        self.assertEqual(dwarfsProperty.tags[2].value, 'I am a string value')
 
     def testTopLevelEnum(self):
         modelFile = 'tests/resources/models/json/examples/top_level_enum.json'
@@ -526,6 +537,13 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(arrayType.arrayConstraints[0].arrayUniqueItems, True)
         self.assertIsNotNone(arrayType.itemsType)
         self.assertTrue(isinstance(arrayType.itemsType, IntegerType))
+        self.assertEqual(len(arrayType.tags), 3)
+        self.assertEqual(arrayType.tags[0].name, "test")
+        self.assertEqual(arrayType.tags[0].value, True)
+        self.assertEqual(arrayType.tags[1].name, "another-one")
+        self.assertEqual(arrayType.tags[1].value, "a value")
+        self.assertEqual(arrayType.tags[2].name, "thirdTag")
+        self.assertEqual(arrayType.tags[2].value, 233)
 
     def testTopLevelArrayType2(self):
         modelFile = 'tests/resources/models/json/examples/top_level_array_type2.json'

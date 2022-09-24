@@ -30,7 +30,12 @@
           "items": {
             "type": "string",
             "format": "uuid"
-          }
+          },
+          "x-tags": [{
+            "oneTag": true,
+            "twoTag": 123,
+            "three.Tag": "I am a string value" 
+          }]
         }
       },
       "required": [

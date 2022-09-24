@@ -8,5 +8,9 @@
 	"maxItems": 10,
 	"minItems": 2,
 	"uniqueItems": true,
-	"x-tags": ["test", "another-one"]
+	"x-tags": [{
+		"test": true,
+		 "another-one": "a value",
+		 "thirdTag": 233
+	}]
 }
