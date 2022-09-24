@@ -1,3 +1,6 @@
+# 5.5.1
+* fix error, that only the first tag wi
+
 # 5.5.0
 * add golang type template
 * add modelFuncs func 'isComplexType'
