@@ -1,5 +1,8 @@
+# 5.6.0
+* tool to create normalized schemas
+
 # 5.5.1
-* fix error, that only the first tag wi
+* fix error, that only the first tag with values is used
 
 # 5.5.0
 * add golang type template

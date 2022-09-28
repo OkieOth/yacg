@@ -1,8 +1,8 @@
 import unittest
 
-import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 import yacg.model.config as config
+import yacg.builder.impl.dictionaryBuilder as builder
 
 from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum, ObjectType
 from yacg.model.model import StringType, UuidType
@@ -13,7 +13,6 @@ import yacg.model.modelFuncs as modelFuncs
 
 def getComplexTypeNoBase():
     modelFile = 'tests/resources/models/json/examples/all_types.json'
-    modelFileExists = os.path.isfile(modelFile)
     model = config.Model()
     model.schema = modelFile
     modelTypes = getModelFromJson(model, [])
@@ -352,3 +351,17 @@ class TestModelFuncs (unittest.TestCase):
 
         self.assertFalse(modelFuncs.isObjectContained([myType]))
         self.assertFalse(modelFuncs.isTypeContained([myType], ObjectType))
+
+    def testGetExternalRefStringsFromModelDict1(self):
+        modelFile = 'resources/models/json/yacg_asyncapi_types.json'
+        schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
+        references = []
+        modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
+        self.assertEqual(len(references), 3)
+
+    def testGetReferenceStringsFromModelDict2(self):
+        modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
+        schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
+        references = []
+        modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
+        self.assertEqual(len(references), 6)

@@ -629,3 +629,32 @@ def makeTypeNamesUnique(typeList, redundantNamesList):
             counter = counter + 1
             # sure a really simple approach, can later extracted in a more sophisticated working function
             t.name = "{}_{}".format(t.name, counter)
+
+
+def getExternalRefStringsFromDict(schemaDict, foundReferencesList):
+    """Travers a dictionary with a parsed schema and find all values to
+    '$ref' entries. The found values are added to foundReferencesList.
+
+    Keyword arguments:
+    schemaDict -- dictionary parsed directly from JSON or YAML
+    foundReferencesList -- string list with found references"""
+
+    for key, value in schemaDict.items():
+        if isinstance(value, dict):
+            getExternalRefStringsFromDict(value, foundReferencesList)
+        if isinstance(value, list):
+            _getExternalRefStringsFromList(value, foundReferencesList)
+        else:
+            if (key == '$ref') and isinstance(value, str):
+                lowerValue = value.lower()
+                externalRef = (lowerValue.find('.json') != -1) or (lowerValue.find('.yaml') != -1) or (lowerValue.find('.yml') != -1)
+                if externalRef and (value not in foundReferencesList):
+                    foundReferencesList.append(value)
+
+
+def _getExternalRefStringsFromList(schemaListPart, foundReferencesList):
+    for elem in schemaListPart:
+        if isinstance(elem, dict):
+            getExternalRefStringsFromDict(elem, foundReferencesList)
+        if isinstance(elem, list):
+            _getExternalRefStringsFromList(elem, foundReferencesList)
