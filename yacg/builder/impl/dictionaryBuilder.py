@@ -100,6 +100,7 @@ def __extractTopLevelObjectType(parsedSchema, modelTypes, modelFileContainer):
             allOfEntry, description, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
         _markRequiredAttributes(mainType, parsedSchema.get('required', []))
+        mainType.topLevelType = True
         return True
     return False
 
@@ -112,6 +113,7 @@ def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
         mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
         __initEnumValues(mainType, parsedSchema)
+        mainType.topLevelType = True
         return True
     return False
 
@@ -128,6 +130,7 @@ def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContaine
         arrayType.domain = modelFileContainer.domain
         arrayType.arrayConstraints = tmpProperty.arrayConstraints
         arrayType.arrayDimensions = tmpProperty.arrayDimensions
+        arrayType.topLevelType = True
         modelTypes.append(arrayType)
         __initTags(arrayType, parsedSchema)
         return True
