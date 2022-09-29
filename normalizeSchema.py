@@ -1,12 +1,10 @@
 import argparse
 import sys
-import os
-import json
-import yaml
 import logging
 from yacg.util.fileUtils import doesFileExist
-from yacg.util.outputUtils import printError, printInfo
+from yacg.util.outputUtils import printError
 import yacg.builder.impl.dictionaryBuilder as builder
+import yacg.model.modelFuncs as modelFuncs
 
 
 description = """Reads a JSON schema model in JSON our YAML format and includes all external
@@ -43,7 +41,11 @@ def main():
         schemaAsDict = builder.getParsedSchemaFromYaml(sourceFile)
     # find all external referenced types ...
     extractedTypes = builder.extractTypes(schemaAsDict, sourceFile, [], True)
+    references = []
+    modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
+
     # travers the schemaAsDict and replace all external references with internal references
+
     print(extractedTypes)
 
 

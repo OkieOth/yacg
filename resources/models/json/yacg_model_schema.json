@@ -211,6 +211,10 @@
                         "default": {
                             "type": "string"
                         },
+                        "topLevelType": {
+                            "type": "boolean",
+                            "default": false
+                        },
                         "tags": {
                             "description": "additional flags to mark a type",
                             "$comment": "custom extension marked with 'x-tags'",
@@ -428,6 +432,10 @@
                                 "$ref": "#/definitions/Property"
                             }
                         },
+                        "topLevelType": {
+                            "type": "boolean",
+                            "default": false
+                        },
                         "tags": {
                             "description": "additional flags to mark a type",
                             "$comment": "custom extension marked with 'x-tags'",
@@ -486,6 +494,10 @@
                                 "constructorValue"
                             ]
                         },
+                        "topLevelType": {
+                            "type": "boolean",
+                            "default": false
+                        },
                         "tags": {
                             "description": "additional flags to mark a type",
                             "$comment": "custom extension marked with 'x-tags'",
@@ -543,6 +555,10 @@
                             "x-tags": [
                                 "constructorValue"
                             ]
+                        },
+                        "topLevelType": {
+                            "type": "boolean",
+                            "default": false
                         },
                         "tags": {
                             "description": "additional flags to mark a type",

@@ -1,5 +1,5 @@
 import unittest
-
+import os
 from yacg.builder.jsonBuilder import getModelFromJson
 import yacg.model.config as config
 import yacg.builder.impl.dictionaryBuilder as builder
@@ -358,6 +358,12 @@ class TestModelFuncs (unittest.TestCase):
         references = []
         modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
         self.assertEqual(len(references), 3)
+        refHelperDict = modelFuncs.initReferenceHelperDict(references)
+        self.assertEqual(len(refHelperDict), 3)
+        self.assertEqual(refHelperDict['./shared/info.json'].topLevelType, True)
+        self.assertEqual(refHelperDict['./yacg_model_schema.json#/definitions/ComplexType'].topLevelType, False)
+        self.assertEqual(refHelperDict['./yacg_model_schema.json#/definitions/Type'].topLevelType, False)
+        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], True)
 
     def testGetReferenceStringsFromModelDict2(self):
         modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
@@ -365,3 +371,12 @@ class TestModelFuncs (unittest.TestCase):
         references = []
         modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
         self.assertEqual(len(references), 6)
+        refHelperDict = modelFuncs.initReferenceHelperDict(references)
+        self.assertEqual(len(refHelperDict), 6)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/Layer'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/DisplayConfig'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometry'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometryArray'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometryArrayArray'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometryArrayArrayArray'].topLevelType, False)
+        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], True)

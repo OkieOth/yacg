@@ -2,7 +2,7 @@
 
 import yacg.model.model as model
 import yacg.model.openapi as openapi
-
+import os
 
 def hasTag(tagName, typeOrPropertyObj):
     """check up if the type or property has a tag with the
@@ -658,3 +658,29 @@ def _getExternalRefStringsFromList(schemaListPart, foundReferencesList):
             getExternalRefStringsFromDict(elem, foundReferencesList)
         if isinstance(elem, list):
             _getExternalRefStringsFromList(elem, foundReferencesList)
+
+
+def initReferenceHelperDict(foundReferencesList):
+    ret = {}
+    for f in foundReferencesList:
+        ret[f] = ReferenceHelper()
+        sepIndex = f.find('#')
+        fileName = f if sepIndex == -1 else f[:sepIndex]
+        ret[f].fileName = os.path.abspath(fileName)
+        ret[f].topLevelType = True if sepIndex == -1 else False
+    return ret
+
+def initTypesInReferenceHelperDict(refHelperDict, modelTypes):
+    for ref, helperObj in refHelperDict.items():
+        if helperObj.topLevelType:
+            pass
+        else:
+            pass
+
+
+class ReferenceHelper:
+    def __init__(self):
+        self.fileName = None
+        self.type = None
+        self.typeName = None
+        self.topLevelType = False
