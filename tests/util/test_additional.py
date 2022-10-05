@@ -67,15 +67,20 @@ class TestAdditional (unittest.TestCase):
             if t.name == 'MoreSophisticatedAllOf':
                 self.assertEqual(1, len(t.properties))
                 self.assertIsNotNone(t.extendsType)
+                self.assertTrue(t.topLevelType)
             if t.name == 'Address':
                 # type Address is removed by Tag
                 self.assertIsNone(t)
+                self.assertFalse(t.topLevelType)
             if t.name == 'MainAdress':
                 self.assertEqual(6, len(t.properties))
                 self.assertIsNone(t.extendsType)
+                self.assertFalse(t.topLevelType)
             if t.name == 'SimpleAllOfSchema':
                 self.assertEqual(1, len(t.properties))
                 self.assertIsNotNone(t.extendsType)
+                self.assertTrue(t.topLevelType)
             if t.name == 'MainAddressComplex':
                 self.assertEqual(3, len(t.properties))
                 self.assertIsNone(t.extendsType)
+                self.assertFalse(t.topLevelType)

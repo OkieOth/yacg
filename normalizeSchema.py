@@ -1,5 +1,7 @@
 import argparse
 import sys
+import json
+import yaml
 import logging
 from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError
@@ -18,7 +20,6 @@ parser.add_argument('--model', help='model schema to normalize')
 parser.add_argument('--outputFile', help='name of the file to create as output')
 parser.add_argument('--json', help='JSON input given', action='store_true')
 parser.add_argument('--yaml', help='YAML input given', action='store_true')
-parser.add_argument('--dryRun', help='if set, then no output file is created', action='store_true')
 
 
 def main():
@@ -43,10 +44,67 @@ def main():
     extractedTypes = builder.extractTypes(schemaAsDict, sourceFile, [], True)
     references = []
     modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
+    refHelperDict = modelFuncs.initReferenceHelperDict(references, sourceFile)
+    modelFuncs.initTypesInReferenceHelperDict(refHelperDict, extractedTypes)
 
-    # travers the schemaAsDict and replace all external references with internal references
+    localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
+    if localTypePrefix is None:
+        printError('\nCould not decide if we have here definitions or components/schema style ... cancel')
+        sys.exit(1)
+    _replaceRefToLocalVersion(schemaAsDict, refHelperDict, localTypePrefix)
+    _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, extractedTypes)
+    _printOutput(args, schemaAsDict)
 
-    print(extractedTypes)
+
+def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, extractedTypes):
+    pass # TODO
+
+
+def _replaceRefToLocalVersionFromList(value, refHelperDict, localTypePrefix):
+    newList = []
+    for elem in value:
+        if isinstance(elem, dict):
+            _replaceRefToLocalVersion(elem, refHelperDict, localTypePrefix)
+            newList.append(elem)
+        if isinstance(elem, list):
+            newList.append(_replaceRefToLocalVersionFromList(value, refHelperDict, localTypePrefix))
+    return newList
+
+
+def _replaceRefToLocalVersion(schemaDict, refHelperDict, localTypePrefix):
+    for key in schemaDict.keys():
+        value = schemaDict.get(key)
+        if isinstance(value, dict):
+            _replaceRefToLocalVersion(value, refHelperDict, localTypePrefix)
+        if isinstance(value, list):
+            newList = _replaceRefToLocalVersionFromList(value, refHelperDict, localTypePrefix)
+            schemaDict[key] = newList
+        else:
+            _testForExternalRefAndReplace(key, value, schemaDict, refHelperDict, localTypePrefix)
+
+
+def _testForExternalRefAndReplace(key, value, originDict, refHelperDict, localTypePrefix):
+    if (key == '$ref') and isinstance(value, str):
+        lowerValue = value.lower()
+        externalRef = (lowerValue.find('.json') != -1) or (lowerValue.find('.yaml') != -1) or (lowerValue.find('.yml') != -1)
+        if externalRef:
+            for k, v in refHelperDict.items():
+                if k == value:
+                    localRef = localTypePrefix + v.typeName
+                    #originDict[key] = 'TODO_NEEDS_TO_BE_REPLACED: {}; {}'.format(localRef, value)
+                    originDict[key] = localRef
+    pass
+
+
+def _printOutput(args, schemaAsDict):
+    if args.outputFile is None:
+        json.dump(schemaAsDict, sys.stdout, indent=4)
+    elif (args.outputFile.endswith('.yaml')) or (args.outputFile.endswith('.yml')):
+        with open(args.outputFile, 'w') as outfile:
+            yaml.dump(schemaAsDict, outfile, indent=4)
+    else:
+        with open(args.outputFile, 'w') as outfile:
+            json.dump(schemaAsDict, outfile, indent=4)
 
 
 if __name__ == '__main__':

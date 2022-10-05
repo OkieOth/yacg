@@ -358,12 +358,18 @@ class TestModelFuncs (unittest.TestCase):
         references = []
         modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
         self.assertEqual(len(references), 3)
-        refHelperDict = modelFuncs.initReferenceHelperDict(references)
+        refHelperDict = modelFuncs.initReferenceHelperDict(references, modelFile)
         self.assertEqual(len(refHelperDict), 3)
         self.assertEqual(refHelperDict['./shared/info.json'].topLevelType, True)
         self.assertEqual(refHelperDict['./yacg_model_schema.json#/definitions/ComplexType'].topLevelType, False)
         self.assertEqual(refHelperDict['./yacg_model_schema.json#/definitions/Type'].topLevelType, False)
         extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], True)
+        extractedTypes[4].name = "InfoSection"
+        extractedTypes[4].topLevelType = True
+        modelFuncs.initTypesInReferenceHelperDict(refHelperDict, extractedTypes)
+        for _, value in refHelperDict.items():
+            self.assertIsNotNone(value.typeName)
+            self.assertIsNotNone(value.type)
 
     def testGetReferenceStringsFromModelDict2(self):
         modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
@@ -371,7 +377,7 @@ class TestModelFuncs (unittest.TestCase):
         references = []
         modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
         self.assertEqual(len(references), 6)
-        refHelperDict = modelFuncs.initReferenceHelperDict(references)
+        refHelperDict = modelFuncs.initReferenceHelperDict(references, modelFile)
         self.assertEqual(len(refHelperDict), 6)
         self.assertEqual(refHelperDict['./layer.yaml#/definitions/Layer'].topLevelType, False)
         self.assertEqual(refHelperDict['./layer.yaml#/definitions/DisplayConfig'].topLevelType, False)
@@ -380,3 +386,17 @@ class TestModelFuncs (unittest.TestCase):
         self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometryArrayArray'].topLevelType, False)
         self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometryArrayArrayArray'].topLevelType, False)
         extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], True)
+        modelFuncs.initTypesInReferenceHelperDict(refHelperDict, extractedTypes)
+        for _, value in refHelperDict.items():
+            self.assertIsNotNone(value.typeName)
+            self.assertIsNotNone(value.type)
+
+    def testGetLocalTypePrefix1(self):
+        modelFile = 'resources/models/json/yacg_asyncapi_types.json'
+        schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
+        self.assertEqual(modelFuncs.getLocalTypePrefix(schemaAsDict), "#/definitions/")
+
+    def testGetLocalTypePrefix2(self):
+        modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
+        schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
+        self.assertEqual(modelFuncs.getLocalTypePrefix(schemaAsDict), "#/components/schema/")

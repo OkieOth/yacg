@@ -268,6 +268,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
             type = _extractObjectType(
                 typeNameStr, schemaProperties, additionalProperties,
                 allOfEntry, description, modelTypes, modelFileContainer)
+            type.topLevelType = True
             if len(type.tags) == 0:
                 tags = modelFileContainer.parsedSchema.get('x-tags', None)
                 if tags is not None:

@@ -660,22 +660,58 @@ def _getExternalRefStringsFromList(schemaListPart, foundReferencesList):
             _getExternalRefStringsFromList(elem, foundReferencesList)
 
 
-def initReferenceHelperDict(foundReferencesList):
+def initReferenceHelperDict(foundReferencesList, modelFile):
+    absPath = os.path.abspath(modelFile)
+    lastSlash = absPath.rfind("/")
+    absDirPath = absPath[:lastSlash]
     ret = {}
     for f in foundReferencesList:
         ret[f] = ReferenceHelper()
         sepIndex = f.find('#')
         fileName = f if sepIndex == -1 else f[:sepIndex]
-        ret[f].fileName = os.path.abspath(fileName)
+        ret[f].fileName = os.path.abspath(absDirPath + "/" + fileName)
         ret[f].topLevelType = True if sepIndex == -1 else False
+        if not ret[f].topLevelType:
+            restStr = f[sepIndex:]
+            lastSlash2 = restStr.rfind("/")
+            ret[f].typeName = restStr[lastSlash2 + 1:]
     return ret
+
+
+def _traversModelTypesForRefAndTypeName(modelTypes, refFile, typeName):
+    for t in modelTypes:
+        if (t.source == refFile) and (t.name == typeName):
+            return t
+    return None
+
+
+def _traversModelTypesForRefAndTopLevelType(modelTypes, refFile):
+    for t in modelTypes:
+        if (t.source == refFile) and t.topLevelType:
+            return t
+    return None
+
 
 def initTypesInReferenceHelperDict(refHelperDict, modelTypes):
     for ref, helperObj in refHelperDict.items():
         if helperObj.topLevelType:
-            pass
+            helperObj.type = _traversModelTypesForRefAndTopLevelType(modelTypes, helperObj.fileName)
+            helperObj.typeName = helperObj.type.name if helperObj.type is not None else None
         else:
-            pass
+            helperObj.type = _traversModelTypesForRefAndTypeName(modelTypes, helperObj.fileName, helperObj.typeName)
+
+
+def getLocalTypePrefix(schemaAsDict):
+    schemaDefinitions = schemaAsDict.get('definitions', None)
+    if schemaDefinitions is not None:
+        return "#/definitions/"
+    else:
+        componentsDict = schemaAsDict.get('components', None)
+        if componentsDict is not None:
+            schemas = componentsDict.get('schemas', None)
+            if schemas is not None:
+                return "#/components/schema/"
+    return None
 
 
 class ReferenceHelper:
