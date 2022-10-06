@@ -57,7 +57,19 @@ def main():
 
 
 def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, extractedTypes):
-    pass # TODO
+    schemaDefinitions = schemaAsDict.get('definitions', None)
+    dictToAppendTypes = None
+    if schemaDefinitions is not None:
+        dictToAppendTypes = schemaDefinitions
+    else:
+        componentsDict = schemaAsDict.get('components', None)
+        if componentsDict is not None:
+            dictToAppendTypes = componentsDict
+    for _, refHelper in refHelperDict:
+        relatedTypesList = modelFuncs.getTypeAndAllChildTypes(refHelper.type)
+        for t in relatedTypesList:
+            if t.name not in dictToAppendTypes.keys():
+                dictToAppendTypes[t.name] = modelFuncs.typeToJSONDict(t)
 
 
 def _replaceRefToLocalVersionFromList(value, refHelperDict, localTypePrefix):

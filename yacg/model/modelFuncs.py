@@ -4,6 +4,7 @@ import yacg.model.model as model
 import yacg.model.openapi as openapi
 import os
 
+
 def hasTag(tagName, typeOrPropertyObj):
     """check up if the type or property has a tag with the
     given name
@@ -712,6 +713,166 @@ def getLocalTypePrefix(schemaAsDict):
             if schemas is not None:
                 return "#/components/schema/"
     return None
+
+
+def _getTypeType(type):
+    if isinstance(type, model.ComplexType):
+        return "object"
+    elif isinstance(type, model.DictionaryType):
+        return "object"
+    elif isinstance(type, model.ArrayType):
+        return "array"
+    elif isinstance(type, model.EnumType):
+        return "string"
+    elif isinstance(type, model.IntegerType):
+        return 'integer'
+    elif isinstance(type, model.ObjectType):
+        return 'object'
+    elif isinstance(type, model.NumberType):
+        return 'number'
+    elif isinstance(type, model.BooleanType):
+        return 'boolean'
+    elif isinstance(type, model.StringType):
+        return 'string'
+    elif isinstance(type, model.UuidType):
+        return 'string'
+    elif isinstance(type, model.DateType):
+        return 'string'
+    elif isinstance(type, model.TimeType):
+        return 'string'
+    elif isinstance(type, model.DateTimeType):
+        return 'string'
+    elif isinstance(type, model.BytesType):
+        return 'string'
+    else:
+        return "object"
+
+
+def _initComplexTypeDict(type, ret):
+    pass # TODO
+
+
+def _initDictionaryTypeDict(type, ret):
+    pass # TODO
+
+
+def _initArrayTypeDict(type, ret):
+    itemsDict = {}  # TODO
+    ret["items"]: itemsDict
+    pass # TODO
+
+
+def _initEnumTypeDict(type, ret):
+    __initDefaultValue(type, ret)
+    ret["enum"]: type.values
+
+
+def _initIntegerTypeDict(type, ret):
+    if type.format is not None:
+        ret["format"] = type.format
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initNumberTypeDict(type, ret):
+    if type.format is not None:
+        ret["format"] = type.format
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initBoolTypeDict(type, ret):
+    __initDefaultValue(type, ret)
+
+
+def _initStringTypeDict(type, ret):
+    __initDefaultValue(type, ret)
+    if type.minLength is not None:
+        ret["minLength"] = type.minLength
+    if type.maxLength is not None:
+        ret["maxLength"] = type.maxLength
+    if type.pattern is not None:
+        ret["pattern"] = type.pattern
+
+
+def _initUuidTypeDict(type, ret):
+    ret["format"] = "uuid"
+    __initDefaultValue(type, ret)
+
+
+def _initDateTypeDict(type, ret):
+    ret["format"] = "date"
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initTimeTypeDict(type, ret):
+    ret["format"] = "time"
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initDateTimeTypeDict(type, ret):
+    ret["format"] = "date-time"
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initBytesTypeDict(type, ret):
+    ret["format"] = "byte"
+    __initDefaultValue(type, ret)
+
+
+def __initDefaultValue(type, ret):
+    if type.default is not None:
+        ret["default"] = type.default
+
+
+def __initNumConstraints(type, ret):
+    if type.minimum is not None:
+        ret["mininum"] = type.minimum
+    if type.maximum is not None:
+        ret["maxinum"] = type.maximum
+    if type.exclusiveMinimum is not None:
+        ret["exclusiveMininum"] = type.exclusiveMinimum
+    if type.exclusiveMaximum is not None:
+        ret["exclusiveMaxinum"] = type.exclusiveMaximum
+
+
+def typeToJSONDict(type):
+    ret = {}
+    if hasattr(type, "description") and type.description is not None:
+        ret["description"] = type.description
+    ret["type"] = _getTypeType(type)
+    if isinstance(type, model.ComplexType):
+        _initComplexTypeDict(type, ret)
+    elif isinstance(type, model.DictionaryType):
+        _initDictionaryTypeDict(type, ret)
+    elif isinstance(type, model.ArrayType):
+        _initArrayTypeDict(type, ret)
+    elif isinstance(type, model.EnumType):
+        _initEnumTypeDict(type, ret)
+    elif isinstance(type, model.IntegerType):
+        _initIntegerTypeDict(type, ret)
+    elif isinstance(type, model.ObjectType):
+        pass # nothing to do
+    elif isinstance(type, model.NumberType):
+        _initNumberTypeDict(type, ret)
+    elif isinstance(type, model.BooleanType):
+        _initBoolTypeDict(type, ret)
+    elif isinstance(type, model.StringType):
+        _initStringTypeDict(type, ret)
+    elif isinstance(type, model.UuidType):
+        _initUuidTypeDict(type, ret)
+    elif isinstance(type, model.DateType):
+        _initDateTypeDict(type, ret)
+    elif isinstance(type, model.TimeType):
+        _initTimeTypeDict(type, ret)
+    elif isinstance(type, model.DateTimeType):
+        _initDateTimeTypeDict(type, ret)
+    elif isinstance(type, model.BytesType):
+        _initBytesTypeDict(type, ret)
+    return ret
 
 
 class ReferenceHelper:
