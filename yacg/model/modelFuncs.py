@@ -757,9 +757,18 @@ def _initDictionaryTypeDict(type, ret):
 
 
 def _initArrayTypeDict(type, ret):
-    itemsDict = {}  # TODO
-    ret["items"]: itemsDict
-    pass # TODO
+    __initArrayConstraints(type, ret, 0)
+    if (type.arrayDimensions is not None) and (type.arrayDimensions > 1):
+        realItemsDict = ret
+        for i in range(type.arrayDimensions - 1):
+            subDict = {}
+            subDict["type"] = "array"
+            __initArrayConstraints(type, subDict, i + 1)
+            realItemsDict["items"] = subDict
+            realItemsDict = subDict
+        realItemsDict["items"] = typeToJSONDict(type.itemsType)
+    else:
+        ret["items"] = typeToJSONDict(type.itemsType)
 
 
 def _initEnumTypeDict(type, ret):
@@ -826,6 +835,17 @@ def _initBytesTypeDict(type, ret):
 def __initDefaultValue(type, ret):
     if type.default is not None:
         ret["default"] = type.default
+
+
+def __initArrayConstraints(type, ret, index):
+    if len(type.arrayConstraints) > index:
+        constraints = type.arrayConstraints[index]
+        if constraints.arrayMinItems is not None:
+            ret["minItems"] = constraints.arrayMinItems
+        if constraints.arrayMaxItems is not None:
+            ret["maxItems"] = constraints.arrayMaxItems
+        if constraints.arrayUniqueItems is not None:
+            ret["uniqueItems"] = constraints.arrayUniqueItems
 
 
 def __initNumConstraints(type, ret):
