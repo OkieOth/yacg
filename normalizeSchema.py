@@ -52,11 +52,11 @@ def main():
         printError('\nCould not decide if we have here definitions or components/schema style ... cancel')
         sys.exit(1)
     _replaceRefToLocalVersion(schemaAsDict, refHelperDict, localTypePrefix)
-    _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, extractedTypes)
+    _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict)
     _printOutput(args, schemaAsDict)
 
 
-def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, extractedTypes):
+def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict):
     schemaDefinitions = schemaAsDict.get('definitions', None)
     dictToAppendTypes = None
     if schemaDefinitions is not None:

@@ -748,15 +748,35 @@ def _getTypeType(type):
         return "object"
 
 
-def _initComplexTypeDict(type, ret):
-    pass # TODO
+def __printComplexTypeProperties(type, localTypePrefix):
+    propertiesDict = {}
+    requiredArray = []
+    for p in type.properties:
+        propertiesDict[p.name] = typeToJSONDict(p.type, localTypePrefix)
+        if p.required:
+            requiredArray.append(p.name)
+    return propertiesDict, requiredArray
 
 
-def _initDictionaryTypeDict(type, ret):
-    pass # TODO
+def _initComplexTypeDict(type, ret, localTypePrefix):
+    if type.extendsType is not None:
+        allOfArray = []
+        allOfArray.append({})
+        allOfArray[0]["$ref"] = "{}{}".format(localTypePrefix, type.extendsType.name)
+        allOfArray.append({})
+        allOfArray[1]["properties"], requiredArray = __printComplexTypeProperties(type, localTypePrefix)
+        ret["allOf"] = allOfArray
+    else:
+        ret["properties"], requiredArray = __printComplexTypeProperties(type, localTypePrefix)
+    if len(requiredArray) > 0:
+        ret["required"] = requiredArray
 
 
-def _initArrayTypeDict(type, ret):
+def _initDictionaryTypeDict(type, ret, localTypePrefix):
+    ret["additionalProperties"] = typeToJSONDict(type.valueType, localTypePrefix)
+
+
+def _initArrayTypeDict(type, ret, localTypePrefix):
     __initArrayConstraints(type, ret, 0)
     if (type.arrayDimensions is not None) and (type.arrayDimensions > 1):
         realItemsDict = ret
@@ -766,14 +786,14 @@ def _initArrayTypeDict(type, ret):
             __initArrayConstraints(type, subDict, i + 1)
             realItemsDict["items"] = subDict
             realItemsDict = subDict
-        realItemsDict["items"] = typeToJSONDict(type.itemsType)
+        realItemsDict["items"] = typeToJSONDict(type.itemsType, localTypePrefix)
     else:
-        ret["items"] = typeToJSONDict(type.itemsType)
+        ret["items"] = typeToJSONDict(type.itemsType, localTypePrefix)
 
 
 def _initEnumTypeDict(type, ret):
     __initDefaultValue(type, ret)
-    ret["enum"]: type.values
+    ret["enum"] = type.values
 
 
 def _initIntegerTypeDict(type, ret):
@@ -859,17 +879,17 @@ def __initNumConstraints(type, ret):
         ret["exclusiveMaxinum"] = type.exclusiveMaximum
 
 
-def typeToJSONDict(type):
+def typeToJSONDict(type, localTypePrefix):
     ret = {}
     if hasattr(type, "description") and type.description is not None:
         ret["description"] = type.description
     ret["type"] = _getTypeType(type)
     if isinstance(type, model.ComplexType):
-        _initComplexTypeDict(type, ret)
+        _initComplexTypeDict(type, ret, localTypePrefix)
     elif isinstance(type, model.DictionaryType):
-        _initDictionaryTypeDict(type, ret)
+        _initDictionaryTypeDict(type, ret, localTypePrefix)
     elif isinstance(type, model.ArrayType):
-        _initArrayTypeDict(type, ret)
+        _initArrayTypeDict(type, ret, localTypePrefix)
     elif isinstance(type, model.EnumType):
         _initEnumTypeDict(type, ret)
     elif isinstance(type, model.IntegerType):
