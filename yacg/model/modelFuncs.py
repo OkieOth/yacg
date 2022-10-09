@@ -752,7 +752,11 @@ def __printComplexTypeProperties(type, localTypePrefix):
     propertiesDict = {}
     requiredArray = []
     for p in type.properties:
-        propertiesDict[p.name] = typeToJSONDict(p.type, localTypePrefix)
+        if isinstance(p.type, model.ComplexType):
+            propertiesDict[p.name] = {}
+            propertiesDict[p.name]["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
+        else:
+            propertiesDict[p.name] = typeToJSONDict(p.type, localTypePrefix)
         if p.required:
             requiredArray.append(p.name)
     return propertiesDict, requiredArray
