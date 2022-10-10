@@ -641,7 +641,7 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromYaml(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(11, len(modelTypes))
+        self.assertEqual(12, len(modelTypes))
         arrayType1 = modelTypes[8]
         arrayType2 = modelTypes[9]
         arrayType3 = modelTypes[10]

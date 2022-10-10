@@ -11,7 +11,7 @@ import json
 import yaml
 
 from yacg.model.model import ArrayConstraints, ForeignKey, Property
-from yacg.util.stringUtils import toUpperCamelCase
+from yacg.util.stringUtils import toLowerCamelCase, toName, toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType, ObjectType
 from yacg.model.model import DateType, TimeType, DateTimeType, DurationType, ArrayType
@@ -1049,6 +1049,9 @@ def _extractOpenApiCommandsForPath(pathType, commandsDict, modelTypes, modelFile
         command.description = commandDict.get('description', None)
         command.summary = commandDict.get('summary', None)
         command.operationId = commandDict.get('operationId', None)
+        if command.operationId is None:
+            opId = toName(pathType.pathPattern)
+            command.operationId = toLowerCamelCase(commandKey + " " + opId)
         command.tags = commandDict.get('tags', [])
         __extractOpenApiCommandParameters(command, commandDict.get('parameters', {}), modelTypes, modelFileContainer)
         __extractOpenApiRequestBody(command, commandDict.get('requestBody', None), modelTypes, modelFileContainer)
