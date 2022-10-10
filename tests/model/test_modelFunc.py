@@ -1,8 +1,8 @@
 import unittest
-
-import os.path
+import os
 from yacg.builder.jsonBuilder import getModelFromJson
 import yacg.model.config as config
+import yacg.builder.impl.dictionaryBuilder as builder
 
 from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum, ObjectType
 from yacg.model.model import StringType, UuidType
@@ -13,7 +13,6 @@ import yacg.model.modelFuncs as modelFuncs
 
 def getComplexTypeNoBase():
     modelFile = 'tests/resources/models/json/examples/all_types.json'
-    modelFileExists = os.path.isfile(modelFile)
     model = config.Model()
     model.schema = modelFile
     modelTypes = getModelFromJson(model, [])
@@ -352,3 +351,75 @@ class TestModelFuncs (unittest.TestCase):
 
         self.assertFalse(modelFuncs.isObjectContained([myType]))
         self.assertFalse(modelFuncs.isTypeContained([myType], ObjectType))
+
+    def testGetExternalRefStringsFromModelDict1(self):
+        modelFile = 'resources/models/json/yacg_asyncapi_types.json'
+        schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
+        references = []
+        modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
+        self.assertEqual(len(references), 3)
+        refHelperDict = modelFuncs.initReferenceHelperDict(references, modelFile)
+        self.assertEqual(len(refHelperDict), 3)
+        self.assertEqual(refHelperDict['./shared/info.json'].topLevelType, True)
+        self.assertEqual(refHelperDict['./yacg_model_schema.json#/definitions/ComplexType'].topLevelType, False)
+        self.assertEqual(refHelperDict['./yacg_model_schema.json#/definitions/Type'].topLevelType, False)
+        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], True)
+        extractedTypes[4].name = "InfoSection"
+        extractedTypes[4].topLevelType = True
+        modelFuncs.initTypesInReferenceHelperDict(refHelperDict, extractedTypes)
+        for _, value in refHelperDict.items():
+            self.assertIsNotNone(value.typeName)
+            self.assertIsNotNone(value.type)
+
+    def testGetReferenceStringsFromModelDict2(self):
+        modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
+        schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
+        references = []
+        modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
+        self.assertEqual(len(references), 6)
+        refHelperDict = modelFuncs.initReferenceHelperDict(references, modelFile)
+        self.assertEqual(len(refHelperDict), 6)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/Layer'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/DisplayConfig'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometry'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometryArray'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometryArrayArray'].topLevelType, False)
+        self.assertEqual(refHelperDict['./layer.yaml#/definitions/PointGeometryArrayArrayArray'].topLevelType, False)
+        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], True)
+        modelFuncs.initTypesInReferenceHelperDict(refHelperDict, extractedTypes)
+        for _, value in refHelperDict.items():
+            self.assertIsNotNone(value.typeName)
+            self.assertIsNotNone(value.type)
+
+    def testGetLocalTypePrefix1(self):
+        modelFile = 'resources/models/json/yacg_asyncapi_types.json'
+        schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
+        self.assertEqual(modelFuncs.getLocalTypePrefix(schemaAsDict), "#/definitions/")
+
+    def testGetLocalTypePrefix2(self):
+        modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
+        schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
+        self.assertEqual(modelFuncs.getLocalTypePrefix(schemaAsDict), "#/components/schemas/")
+
+    def testTypeToJSONDict_1(self):
+        modelFile = 'resources/models/json/yacg_asyncapi_types.json'
+        schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
+        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], True)
+        localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
+        enumType1 = extractedTypes[11]
+        self.assertTrue(isinstance(enumType1, EnumType))
+        enumDict1 = modelFuncs.typeToJSONDict(enumType1, localTypePrefix)
+        self.assertEqual(len(enumDict1), 2)
+        self.assertEqual(enumDict1.get("type", None), "string")
+        self.assertEqual(enumDict1.get("enum", None), ["topic", "direct", "fanout", "default", "headers"])
+        dictType1 = extractedTypes[27]
+        dictDict1 = modelFuncs.typeToJSONDict(dictType1, localTypePrefix)
+        self.assertEqual(len(dictDict1), 3)
+        self.assertEqual(dictDict1.get("type", None), "object")
+        additionalPropertiesDict1 = dictDict1.get("additionalProperties", None)
+        self.assertIsNotNone(additionalPropertiesDict1)
+        self.assertEqual(additionalPropertiesDict1.get("type", None), "string")
+        self.assertEqual(len(additionalPropertiesDict1), 1)
+        allOfType = extractedTypes[8]
+        allOfTypeDict = modelFuncs.typeToJSONDict(allOfType, localTypePrefix)
+        pass

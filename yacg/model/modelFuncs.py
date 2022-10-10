@@ -2,6 +2,7 @@
 
 import yacg.model.model as model
 import yacg.model.openapi as openapi
+import os
 
 
 def hasTag(tagName, typeOrPropertyObj):
@@ -629,3 +630,299 @@ def makeTypeNamesUnique(typeList, redundantNamesList):
             counter = counter + 1
             # sure a really simple approach, can later extracted in a more sophisticated working function
             t.name = "{}_{}".format(t.name, counter)
+
+
+def getExternalRefStringsFromDict(schemaDict, foundReferencesList):
+    """Travers a dictionary with a parsed schema and find all values to
+    '$ref' entries. The found values are added to foundReferencesList.
+
+    Keyword arguments:
+    schemaDict -- dictionary parsed directly from JSON or YAML
+    foundReferencesList -- string list with found references"""
+
+    for key, value in schemaDict.items():
+        if isinstance(value, dict):
+            getExternalRefStringsFromDict(value, foundReferencesList)
+        if isinstance(value, list):
+            _getExternalRefStringsFromList(value, foundReferencesList)
+        else:
+            if (key == '$ref') and isinstance(value, str):
+                lowerValue = value.lower()
+                externalRef = (lowerValue.find('.json') != -1) or (lowerValue.find('.yaml') != -1) or (lowerValue.find('.yml') != -1)
+                if externalRef and (value not in foundReferencesList):
+                    foundReferencesList.append(value)
+
+
+def _getExternalRefStringsFromList(schemaListPart, foundReferencesList):
+    for elem in schemaListPart:
+        if isinstance(elem, dict):
+            getExternalRefStringsFromDict(elem, foundReferencesList)
+        if isinstance(elem, list):
+            _getExternalRefStringsFromList(elem, foundReferencesList)
+
+
+def initReferenceHelperDict(foundReferencesList, modelFile):
+    absPath = os.path.abspath(modelFile)
+    lastSlash = absPath.rfind("/")
+    absDirPath = absPath[:lastSlash]
+    ret = {}
+    for f in foundReferencesList:
+        ret[f] = ReferenceHelper()
+        sepIndex = f.find('#')
+        fileName = f if sepIndex == -1 else f[:sepIndex]
+        ret[f].fileName = os.path.abspath(absDirPath + "/" + fileName)
+        ret[f].topLevelType = True if sepIndex == -1 else False
+        if not ret[f].topLevelType:
+            restStr = f[sepIndex:]
+            lastSlash2 = restStr.rfind("/")
+            ret[f].typeName = restStr[lastSlash2 + 1:]
+    return ret
+
+
+def _traversModelTypesForRefAndTypeName(modelTypes, refFile, typeName):
+    for t in modelTypes:
+        if (hasattr(t, "source")) and (t.source == refFile) and (t.name == typeName):
+            return t
+    return None
+
+
+def _traversModelTypesForRefAndTopLevelType(modelTypes, refFile):
+    for t in modelTypes:
+        if (hasattr(t, "source")) and (t.source == refFile) and t.topLevelType:
+            return t
+    return None
+
+
+def initTypesInReferenceHelperDict(refHelperDict, modelTypes):
+    for ref, helperObj in refHelperDict.items():
+        if helperObj.topLevelType:
+            helperObj.type = _traversModelTypesForRefAndTopLevelType(modelTypes, helperObj.fileName)
+            helperObj.typeName = helperObj.type.name if helperObj.type is not None else None
+        else:
+            helperObj.type = _traversModelTypesForRefAndTypeName(modelTypes, helperObj.fileName, helperObj.typeName)
+
+
+def getLocalTypePrefix(schemaAsDict):
+    schemaDefinitions = schemaAsDict.get('definitions', None)
+    if schemaDefinitions is not None:
+        return "#/definitions/"
+    else:
+        componentsDict = schemaAsDict.get('components', None)
+        if componentsDict is not None:
+            return "#/components/schemas/"
+    return None
+
+
+def _getTypeType(type):
+    if isinstance(type, model.ComplexType):
+        return "object"
+    elif isinstance(type, model.DictionaryType):
+        return "object"
+    elif isinstance(type, model.ArrayType):
+        return "array"
+    elif isinstance(type, model.EnumType):
+        return "string"
+    elif isinstance(type, model.IntegerType):
+        return 'integer'
+    elif isinstance(type, model.ObjectType):
+        return 'object'
+    elif isinstance(type, model.NumberType):
+        return 'number'
+    elif isinstance(type, model.BooleanType):
+        return 'boolean'
+    elif isinstance(type, model.StringType):
+        return 'string'
+    elif isinstance(type, model.UuidType):
+        return 'string'
+    elif isinstance(type, model.DateType):
+        return 'string'
+    elif isinstance(type, model.TimeType):
+        return 'string'
+    elif isinstance(type, model.DateTimeType):
+        return 'string'
+    elif isinstance(type, model.BytesType):
+        return 'string'
+    else:
+        return "object"
+
+
+def __printComplexTypeProperties(type, localTypePrefix):
+    propertiesDict = {}
+    requiredArray = []
+    for p in type.properties:
+        if isinstance(p.type, model.ComplexType):
+            propertiesDict[p.name] = {}
+            propertiesDict[p.name]["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
+        elif isinstance(p.type, model.EnumType):
+            propertiesDict[p.name] = {}
+            propertiesDict[p.name]["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
+        else:
+            propertiesDict[p.name] = typeToJSONDict(p.type, localTypePrefix)
+        if p.required:
+            requiredArray.append(p.name)
+    return propertiesDict, requiredArray
+
+
+def _initComplexTypeDict(type, ret, localTypePrefix):
+    if type.extendsType is not None:
+        allOfArray = []
+        allOfArray.append({})
+        allOfArray[0]["$ref"] = "{}{}".format(localTypePrefix, type.extendsType.name)
+        allOfArray.append({})
+        allOfArray[1]["properties"], requiredArray = __printComplexTypeProperties(type, localTypePrefix)
+        ret["allOf"] = allOfArray
+    else:
+        ret["properties"], requiredArray = __printComplexTypeProperties(type, localTypePrefix)
+    if len(requiredArray) > 0:
+        ret["required"] = requiredArray
+
+
+def _initDictionaryTypeDict(type, ret, localTypePrefix):
+    ret["additionalProperties"] = typeToJSONDict(type.valueType, localTypePrefix)
+
+
+def _initArrayTypeDict(type, ret, localTypePrefix):
+    __initArrayConstraints(type, ret, 0)
+    if (type.arrayDimensions is not None) and (type.arrayDimensions > 1):
+        realItemsDict = ret
+        for i in range(type.arrayDimensions - 1):
+            subDict = {}
+            subDict["type"] = "array"
+            __initArrayConstraints(type, subDict, i + 1)
+            realItemsDict["items"] = subDict
+            realItemsDict = subDict
+        realItemsDict["items"] = typeToJSONDict(type.itemsType, localTypePrefix)
+    else:
+        ret["items"] = typeToJSONDict(type.itemsType, localTypePrefix)
+
+
+def _initEnumTypeDict(type, ret):
+    __initDefaultValue(type, ret)
+    ret["enum"] = type.values
+
+
+def _initIntegerTypeDict(type, ret):
+    if type.format is not None:
+        ret["format"] = type.format
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initNumberTypeDict(type, ret):
+    if type.format is not None:
+        ret["format"] = type.format
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initBoolTypeDict(type, ret):
+    __initDefaultValue(type, ret)
+
+
+def _initStringTypeDict(type, ret):
+    __initDefaultValue(type, ret)
+    if type.minLength is not None:
+        ret["minLength"] = type.minLength
+    if type.maxLength is not None:
+        ret["maxLength"] = type.maxLength
+    if type.pattern is not None:
+        ret["pattern"] = type.pattern
+
+
+def _initUuidTypeDict(type, ret):
+    ret["format"] = "uuid"
+    __initDefaultValue(type, ret)
+
+
+def _initDateTypeDict(type, ret):
+    ret["format"] = "date"
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initTimeTypeDict(type, ret):
+    ret["format"] = "time"
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initDateTimeTypeDict(type, ret):
+    ret["format"] = "date-time"
+    __initNumConstraints(type, ret)
+    __initDefaultValue(type, ret)
+
+
+def _initBytesTypeDict(type, ret):
+    ret["format"] = "byte"
+    __initDefaultValue(type, ret)
+
+
+def __initDefaultValue(type, ret):
+    if type.default is not None:
+        ret["default"] = type.default
+
+
+def __initArrayConstraints(type, ret, index):
+    if len(type.arrayConstraints) > index:
+        constraints = type.arrayConstraints[index]
+        if constraints.arrayMinItems is not None:
+            ret["minItems"] = constraints.arrayMinItems
+        if constraints.arrayMaxItems is not None:
+            ret["maxItems"] = constraints.arrayMaxItems
+        if constraints.arrayUniqueItems is not None:
+            ret["uniqueItems"] = constraints.arrayUniqueItems
+
+
+def __initNumConstraints(type, ret):
+    if type.minimum is not None:
+        ret["mininum"] = type.minimum
+    if type.maximum is not None:
+        ret["maxinum"] = type.maximum
+    if type.exclusiveMinimum is not None:
+        ret["exclusiveMininum"] = type.exclusiveMinimum
+    if type.exclusiveMaximum is not None:
+        ret["exclusiveMaxinum"] = type.exclusiveMaximum
+
+
+def typeToJSONDict(type, localTypePrefix):
+    ret = {}
+    if hasattr(type, "description") and type.description is not None:
+        ret["description"] = type.description
+    ret["type"] = _getTypeType(type)
+    if isinstance(type, model.ComplexType):
+        _initComplexTypeDict(type, ret, localTypePrefix)
+    elif isinstance(type, model.DictionaryType):
+        _initDictionaryTypeDict(type, ret, localTypePrefix)
+    elif isinstance(type, model.ArrayType):
+        _initArrayTypeDict(type, ret, localTypePrefix)
+    elif isinstance(type, model.EnumType):
+        _initEnumTypeDict(type, ret)
+    elif isinstance(type, model.IntegerType):
+        _initIntegerTypeDict(type, ret)
+    elif isinstance(type, model.ObjectType):
+        pass # nothing to do
+    elif isinstance(type, model.NumberType):
+        _initNumberTypeDict(type, ret)
+    elif isinstance(type, model.BooleanType):
+        _initBoolTypeDict(type, ret)
+    elif isinstance(type, model.StringType):
+        _initStringTypeDict(type, ret)
+    elif isinstance(type, model.UuidType):
+        _initUuidTypeDict(type, ret)
+    elif isinstance(type, model.DateType):
+        _initDateTypeDict(type, ret)
+    elif isinstance(type, model.TimeType):
+        _initTimeTypeDict(type, ret)
+    elif isinstance(type, model.DateTimeType):
+        _initDateTimeTypeDict(type, ret)
+    elif isinstance(type, model.BytesType):
+        _initBytesTypeDict(type, ret)
+    return ret
+
+
+class ReferenceHelper:
+    def __init__(self):
+        self.fileName = None
+        self.type = None
+        self.typeName = None
+        self.topLevelType = False

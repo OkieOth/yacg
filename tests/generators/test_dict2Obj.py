@@ -62,6 +62,7 @@ class TestDictToObject (unittest.TestCase):
 
         self.assertTrue(modelTypes[0], EnumType)
         self.assertIsNone(modelTypes[0].valuesMap)
+        self.assertTrue(modelTypes[0].topLevelType, True)
 
         templateFile = 'resources/templates/examples/pythonBeans.mako'
         template = Template(filename=templateFile)

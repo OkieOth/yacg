@@ -268,6 +268,8 @@ class EnumType (Type):
 
         self.default = None
 
+        self.topLevelType = False
+
         #: additional flags to mark a type
         self.tags = []
 
@@ -295,6 +297,8 @@ class EnumType (Type):
         self.valuesMap = dictObj.get('valuesMap', None)
 
         self.default = dictObj.get('default', None)
+
+        self.topLevelType = dictObj.get('topLevelType', False)
 
         arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
@@ -499,6 +503,8 @@ class ComplexType (Type):
         #: properties of that type
         self.properties = []
 
+        self.topLevelType = False
+
         #: additional flags to mark a type
         self.tags = []
 
@@ -537,6 +543,8 @@ class ComplexType (Type):
         for elemProperties in arrayProperties:
             self.properties.append(
                 Property(elemProperties))
+
+        self.topLevelType = dictObj.get('topLevelType', False)
 
         arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
@@ -659,6 +667,8 @@ class DictionaryType (Type):
         #: either a basic or a complex type
         self.valueType = None
 
+        self.topLevelType = False
+
         #: additional flags to mark a type
         self.tags = []
 
@@ -687,6 +697,8 @@ class DictionaryType (Type):
         subDictObj = dictObj.get('valueType', None)
         if subDictObj is not None:
             self.valueType = Type(subDictObj)
+
+        self.topLevelType = dictObj.get('topLevelType', False)
 
         arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:
@@ -719,6 +731,8 @@ class ArrayType (Type):
 
         #: either a basic or a complex type
         self.itemsType = None
+
+        self.topLevelType = False
 
         #: additional flags to mark a type
         self.tags = []
@@ -753,6 +767,8 @@ class ArrayType (Type):
         subDictObj = dictObj.get('itemsType', None)
         if subDictObj is not None:
             self.itemsType = Type(subDictObj)
+
+        self.topLevelType = dictObj.get('topLevelType', False)
 
         arrayTags = dictObj.get('tags', [])
         for elemTags in arrayTags:

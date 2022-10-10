@@ -163,6 +163,26 @@ cat resources/models/yaml/yacg_config_schema.yaml | pipenv run python3 modelToJs
     --stdin --dryRun
 ```
 
+# Normalize Models
+The project contains a function to resolve and remove external references from a
+schema
+
+## Usage
+```bash
+# python version
+pipenv run python3 normalizeSchema.py --model
+
+# docker version
+docker run -u $(id -u ${USER}):$(id -g ${USER}) \
+    -v `pwd`:/resources \
+    --rm -t --entrypoint "python3" \
+    ghcr.io/okieoth/yacg:5.6.0 \
+    normalizeSchema.py \
+    --model /resources/my_model.yaml \
+    --outputFile /resources/generated/my_model_without_externals.yaml \
+    --yaml
+```
+
 # Some Last Words
 This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines.
 

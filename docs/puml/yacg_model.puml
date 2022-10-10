@@ -83,6 +83,7 @@ class EnumType {
         StringType[] values
         Map<StringType> valuesMap
         StringType default
+        BooleanType topLevelType
         Tag[] tags
 }
 
@@ -153,6 +154,7 @@ class ComplexType {
         ComplexType[] extendedBy
         ComplexType[] referencedBy
         Property[] properties
+        BooleanType topLevelType
         Tag[] tags
 }
 
@@ -185,6 +187,7 @@ class DictionaryType {
         StringType source
         ComplexType[] referencedBy
         Type valueType
+        BooleanType topLevelType
         Tag[] tags
 }
 
@@ -199,6 +202,7 @@ class ArrayType {
         StringType source
         ComplexType[] referencedBy
         Type itemsType
+        BooleanType topLevelType
         Tag[] tags
         ArrayConstraints[] arrayConstraints
         IntegerType arrayDimensions
@@ -263,6 +267,7 @@ NumberType  *--  NumberTypeFormatEnum
 
 
 
+
 EnumType "0" *-- "n" Tag
             
 
@@ -305,6 +310,7 @@ ComplexType  *--  ComplexType
 ComplexType "0" *-- "n" Property
             
 
+
 ComplexType "0" *-- "n" Tag
             
 
@@ -340,6 +346,7 @@ DictionaryType "0" *-- "n" ComplexType
 DictionaryType  *--  Type
             
 
+
 DictionaryType "0" *-- "n" Tag
             
 
@@ -354,6 +361,7 @@ ArrayType "0" *-- "n" ComplexType
 
 ArrayType  *--  Type
             
+
 
 ArrayType "0" *-- "n" Tag
             
