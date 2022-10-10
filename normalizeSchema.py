@@ -39,7 +39,7 @@ def main():
         # load new model from a yaml file
         schemaAsDict = builder.getParsedSchemaFromYaml(sourceFile)
     # find all external referenced types ...
-    extractedTypes = builder.extractTypes(schemaAsDict, sourceFile, [], True)
+    extractedTypes = builder.extractTypes(schemaAsDict, sourceFile, [], False)
     normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, sourceFile, args.outputFile)
 
 

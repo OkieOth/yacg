@@ -13,7 +13,7 @@ def normalizeSchema(schemaAsDict, extractedTypes, sourceFile, outputFile):
 
     localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
     if localTypePrefix is None:
-        printError('\nCould not decide if we have here definitions or components/schema style ... cancel')
+        printError('\nCould not decide if we have here definitions or components/schemas style ... cancel')
         sys.exit(1)
     _replaceRefToLocalVersion(schemaAsDict, refHelperDict, localTypePrefix)
     _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, localTypePrefix)
@@ -21,14 +21,24 @@ def normalizeSchema(schemaAsDict, extractedTypes, sourceFile, outputFile):
 
 
 def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, localTypePrefix):
-    schemaDefinitions = schemaAsDict.get('definitions', None)
     dictToAppendTypes = None
-    if schemaDefinitions is not None:
-        dictToAppendTypes = schemaDefinitions
-    else:
-        componentsDict = schemaAsDict.get('components', None)
-        if componentsDict is not None:
-            dictToAppendTypes = componentsDict
+    if localTypePrefix == "#/definitions/":
+        definitionsDict = schemaAsDict.get("definitions", None)
+        if definitionsDict is None:
+            definitionsDict = {}
+            schemaAsDict["definitions"] = definitionsDict
+        dictToAppendTypes = definitionsDict
+    elif localTypePrefix == "#/components/schemas/":
+        componentsDict = schemaAsDict.get("components", None)
+        if componentsDict is None:
+            componentsDict = {}
+            schemaAsDict["components"] = componentsDict
+        schemaDict = componentsDict.get("schemas", None)
+        if schemaDict is None:
+            schemaDict = {}
+            componentsDict["schemas"] = schemaDict
+        dictToAppendTypes = schemaDict
+
     for _, refHelper in refHelperDict.items():
         relatedTypesList = modelFuncs.getTypeAndAllChildTypes(refHelper.type)
         for t in relatedTypesList:

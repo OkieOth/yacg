@@ -399,7 +399,7 @@ class TestModelFuncs (unittest.TestCase):
     def testGetLocalTypePrefix2(self):
         modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
         schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
-        self.assertEqual(modelFuncs.getLocalTypePrefix(schemaAsDict), "#/components/schema/")
+        self.assertEqual(modelFuncs.getLocalTypePrefix(schemaAsDict), "#/components/schemas/")
 
     def testTypeToJSONDict_1(self):
         modelFile = 'resources/models/json/yacg_asyncapi_types.json'

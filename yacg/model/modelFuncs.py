@@ -681,14 +681,14 @@ def initReferenceHelperDict(foundReferencesList, modelFile):
 
 def _traversModelTypesForRefAndTypeName(modelTypes, refFile, typeName):
     for t in modelTypes:
-        if (t.source == refFile) and (t.name == typeName):
+        if (hasattr(t, "source")) and (t.source == refFile) and (t.name == typeName):
             return t
     return None
 
 
 def _traversModelTypesForRefAndTopLevelType(modelTypes, refFile):
     for t in modelTypes:
-        if (t.source == refFile) and t.topLevelType:
+        if (hasattr(t, "source")) and (t.source == refFile) and t.topLevelType:
             return t
     return None
 
@@ -709,9 +709,7 @@ def getLocalTypePrefix(schemaAsDict):
     else:
         componentsDict = schemaAsDict.get('components', None)
         if componentsDict is not None:
-            schemas = componentsDict.get('schemas', None)
-            if schemas is not None:
-                return "#/components/schema/"
+            return "#/components/schemas/"
     return None
 
 
@@ -753,6 +751,9 @@ def __printComplexTypeProperties(type, localTypePrefix):
     requiredArray = []
     for p in type.properties:
         if isinstance(p.type, model.ComplexType):
+            propertiesDict[p.name] = {}
+            propertiesDict[p.name]["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
+        elif isinstance(p.type, model.EnumType):
             propertiesDict[p.name] = {}
             propertiesDict[p.name]["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
         else:
