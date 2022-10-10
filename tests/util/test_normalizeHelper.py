@@ -17,13 +17,3 @@ class TestNormalizeHelper (unittest.TestCase):
         extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
         normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/yacg_asyncapi_types.json')
         normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/yacg_asyncapi_types.yaml')
-
-    def testNormalizeSchema2(self):
-        dirpath = Path('tmp', 'normalized')
-        if dirpath.exists() and dirpath.is_dir():
-            shutil.rmtree(dirpath)
-        os.mkdir(dirpath)
-        modelFile = '/home/eikothomas/prog/git.swarco.com/cip/swarco.core.service.device-state-manager/api/asyncapi/dsm.yaml'
-        schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
-        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
-        normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/dsm.yaml')
