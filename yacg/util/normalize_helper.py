@@ -6,6 +6,11 @@ from yacg.util.outputUtils import printError
 
 
 def normalizeSchema(schemaAsDict, extractedTypes, sourceFile, outputFile):
+    _normalizeImpl(schemaAsDict, extractedTypes, sourceFile)
+    _printOutput(outputFile, schemaAsDict)
+
+
+def _normalizeImpl(schemaAsDict, extractedTypes, sourceFile):
     references = []
     modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
     refHelperDict = modelFuncs.initReferenceHelperDict(references, sourceFile)
@@ -17,8 +22,6 @@ def normalizeSchema(schemaAsDict, extractedTypes, sourceFile, outputFile):
         sys.exit(1)
     _replaceRefToLocalVersion(schemaAsDict, refHelperDict, localTypePrefix)
     _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, localTypePrefix)
-    _printOutput(outputFile, schemaAsDict)
-
 
 def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, localTypePrefix):
     dictToAppendTypes = None
@@ -52,8 +55,10 @@ def _replaceRefToLocalVersionFromList(value, refHelperDict, localTypePrefix):
         if isinstance(elem, dict):
             _replaceRefToLocalVersion(elem, refHelperDict, localTypePrefix)
             newList.append(elem)
-        if isinstance(elem, list):
+        elif isinstance(elem, list):
             newList.append(_replaceRefToLocalVersionFromList(value, refHelperDict, localTypePrefix))
+        else:
+            newList.append(elem)
     return newList
 
 

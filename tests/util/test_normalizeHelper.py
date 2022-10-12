@@ -17,3 +17,23 @@ class TestNormalizeHelper (unittest.TestCase):
         extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
         normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/yacg_asyncapi_types.json')
         normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/yacg_asyncapi_types.yaml')
+
+    def testNormalizeOpenApi(self):
+        dirpath = Path('tmp', 'normalized')
+        if dirpath.exists() and dirpath.is_dir():
+            shutil.rmtree(dirpath)
+        os.mkdir(dirpath)
+        modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
+        schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
+        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
+        normalizeHelper._normalizeImpl(schemaAsDict, extractedTypes, modelFile)
+        componentsDict = schemaAsDict.get("components", None)
+        self.assertIsNotNone(componentsDict)
+        schemasDict = componentsDict.get("schemas", None)
+        self.assertIsNotNone(schemasDict)
+        lineStringDict = schemasDict.get("LineString", None)
+        self.assertIsNotNone(lineStringDict)
+        propertiesDict = lineStringDict.get("properties", None)
+        self.assertIsNotNone(propertiesDict)
+        self.assertEqual(len(propertiesDict["type"]["enum"]), 1)
+        self.assertEqual(propertiesDict["type"]["enum"][0], "LineString")
