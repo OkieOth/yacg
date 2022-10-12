@@ -423,3 +423,23 @@ class TestModelFuncs (unittest.TestCase):
         allOfType = extractedTypes[8]
         allOfTypeDict = modelFuncs.typeToJSONDict(allOfType, localTypePrefix)
         pass
+
+    def test_initIntegerTypeDict(self):
+        ret1 = {}
+        t = IntegerType()
+        modelFuncs._initIntegerTypeDict(t, ret1)
+        self.assertIsNone(ret1.get("format", None))
+        t.format = IntegerTypeFormatEnum.INT64
+        ret2 = {}
+        modelFuncs._initIntegerTypeDict(t, ret2)
+        self.assertEqual(ret2.get("format", None), 'int64')
+
+    def test_initNumberTypeDict(self):
+        ret1 = {}
+        t = IntegerType()
+        modelFuncs._initNumberTypeDict(t, ret1)
+        self.assertIsNone(ret1.get("format", None))
+        t.format = NumberTypeFormatEnum.DOUBLE
+        ret2 = {}
+        modelFuncs._initNumberTypeDict(t, ret2)
+        self.assertEqual(ret2.get("format", None), 'double')

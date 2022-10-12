@@ -803,14 +803,14 @@ def _initEnumTypeDict(type, ret):
 
 def _initIntegerTypeDict(type, ret):
     if type.format is not None:
-        ret["format"] = type.format
+        ret["format"] = model.IntegerTypeFormatEnum.valueAsString(type.format)
     __initNumConstraints(type, ret)
     __initDefaultValue(type, ret)
 
 
 def _initNumberTypeDict(type, ret):
     if type.format is not None:
-        ret["format"] = type.format
+        ret["format"] = model.NumberTypeFormatEnum.valueAsString(type.format)
     __initNumConstraints(type, ret)
     __initDefaultValue(type, ret)
 
