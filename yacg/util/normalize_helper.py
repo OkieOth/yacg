@@ -23,6 +23,7 @@ def _normalizeImpl(schemaAsDict, extractedTypes, sourceFile):
     _replaceRefToLocalVersion(schemaAsDict, refHelperDict, localTypePrefix)
     _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, localTypePrefix)
 
+
 def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, localTypePrefix):
     dictToAppendTypes = None
     if localTypePrefix == "#/definitions/":

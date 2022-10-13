@@ -6,7 +6,7 @@ from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType, ArrayType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes, getNotUniqueTypeNames, makeTypeNamesUnique  # noqa: E501
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes, getTypeAndAllRelatedTypes, getNotUniqueTypeNames, makeTypeNamesUnique  # noqa: E501
 
 import yacg.model.config as config
 
@@ -152,6 +152,18 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
         mongoTypes = getTypeAndAllChildTypes(modelTypes[0])
         self.assertEqual(len(mongoTypes), 2)
+
+    def testGetTypeAndAllRelatedTypes(self):
+        modelFile = 'resources/models/json/yacg_openapi_paths.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        t1 = getTypeAndAllRelatedTypes(modelTypes[1])
+        self.assertEqual(len(t1), 2)
+        t3 = getTypeAndAllRelatedTypes(modelTypes[3])
+        self.assertEqual(len(t3), 10)
 
     def testSingleTypeSchema3(self):
         modelFile = 'tests/resources/models/json/examples/model_with_bytes.json'
