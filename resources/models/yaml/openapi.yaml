@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: REST Interface to deliver GIS data
+  version: 0.1.0
+servers:
+  - url: http://testserver1.com
+  - url: http://testserver2.com
+paths:
+  /layer:
+    get:
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: './layer.yaml#/definitions/Layer'
+  /layer/{layerId}:
+    get:
+      parameters:
+        - name: layerId
+          in: path
+          description: ID of the layer to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: bbox
+          in: query
+          schema:
+            type: string
+        - name: filter
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureCollection'
+components:
+  schemas:
+    FeatureCollection:
+      type: object
+      properties:
+        type:
+          enum:
+            - FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+    Feature:
+      type: object
+      properties:
+        type:
+          enum:
+            - Feature
+        properties:
+          type: object
+          properties:
+            data:
+              description: container for additional key/value pairs
+              type: object
+              additionalProperties:
+                type: string
+            display:
+              $ref: './layer.yaml#/definitions/DisplayConfig'
+        geometry:
+          oneOf:
+            - $ref: "#/components/schemas/Point"
+            - $ref: "#/components/schemas/MultiPoint"
+            - $ref: "#/components/schemas/LineString"
+            - $ref: "#/components/schemas/MultiLineString"
+            - $ref: "#/components/schemas/Polygon"
+            - $ref: "#/components/schemas/MultiPolygon"
+    Point:
+      description: a point geometry, lon/lat pair
+      properties:
+        type:
+          enum:
+            - Point
+        coordinates:
+          $ref: './layer.yaml#/definitions/PointGeometry'
+    MultiPoint:
+      description: a geometry consisting of multiple separate points
+      properties:
+        type:
+          enum:
+            - MultiPoint
+        coordinates:
+          $ref: './layer.yaml#/definitions/PointGeometryArray'
+    LineString:
+      description: a geometry consisting of multiple connected line segments
+      properties:
+        type:
+          enum:
+            - LineString
+        coordinates:
+          $ref: './layer.yaml#/definitions/PointGeometryArray'
+    MultiLineString:
+      description: a geometry consisting of multiple multi-lines
+      properties:
+        type:
+          enum:
+            - MultiLineString
+        coordinates:
+          $ref: './layer.yaml#/definitions/PointGeometryArrayArray'
+    Polygon:
+      description: a closed geometry consisting of multiple connected line segments
+      properties:
+        type:
+          enum:
+            - Polygon
+        coordinates:
+          $ref: './layer.yaml#/definitions/PointGeometryArrayArray'
+    MultiPolygon:
+      description: a geometry consisting of multiple separate polygons
+      properties:
+        type:
+          enum:
+            - MultiPolygon
+        coordinates:
+          $ref: './layer.yaml#/definitions/PointGeometryArrayArrayArray'
+

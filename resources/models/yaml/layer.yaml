@@ -34,7 +34,7 @@ definitions:
       projection:
         type: string
       geometry:
-        "$ref": "#/definitions/Geometry"
+        $ref: "#/definitions/Geometry"
       data:
         description: container for additional key/value pairs
         type: object
@@ -99,9 +99,11 @@ definitions:
   PointGeometryArrayArray:
     type: array
     items:
-      type: array
-      items:
-        $ref: "#/definitions/PointGeometry"
+      $ref: "#/definitions/PointGeometryArray"
+  PointGeometryArrayArrayArray:
+    type: array
+    items:
+      $ref: "#/definitions/PointGeometryArrayArray"
   Geometry:
     description: Geometry definition to display the feature
     type: object
@@ -122,6 +124,4 @@ definitions:
         $ref: "#/definitions/PointGeometryArrayArray"
       multiPolygon:
         description: a geometry consisting of multiple separate polygons
-        type: array
-        items:
-          $ref: "#/definitions/PointGeometryArrayArray"
+        $ref: "#/definitions/PointGeometryArrayArrayArray"

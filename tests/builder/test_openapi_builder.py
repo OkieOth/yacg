@@ -89,3 +89,12 @@ class TestOpenApiParsing (unittest.TestCase):
             if not requestBodyMimeTypeCanBeNone:
                 self.assertIsNotNone(cont.mimeType)
             self.assertIsNotNone(cont.type)
+
+    def testLayersOpenApi(self):
+        modelFile = "tests/resources/models/yaml/examples/openapi_layer.yaml"
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        parsedSchema = dictionaryBuilder.getParsedSchemaFromYaml(modelFile)
+        modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(35, len(modelTypes))

@@ -1,3 +1,8 @@
+# 5.6.1
+* bug fixes for parsing openapi files
+* missing operationId doesn't hurt any longer
+* add 'getTypeAndAllRelatedTypes' modelfunc
+
 # 5.6.0
 * tool to create normalized schemas
 
