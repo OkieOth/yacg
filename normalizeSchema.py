@@ -5,6 +5,7 @@ from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError
 import yacg.builder.impl.dictionaryBuilder as builder
 import yacg.util.normalize_helper as normalizeHelper
+import yacg.model.modelFuncs as modelFuncs
 
 
 description = """Reads a JSON schema model in JSON our YAML format and includes all external
@@ -18,6 +19,8 @@ parser.add_argument('--model', help='model schema to normalize')
 parser.add_argument('--outputFile', help='name of the file to create as output')
 parser.add_argument('--json', help='JSON input given', action='store_true')
 parser.add_argument('--yaml', help='YAML input given', action='store_true')
+parser.add_argument('--definitionsStyle', help="local definitions will aprear under '#/definitions' in the schema", action='store_true')
+parser.add_argument('--componentsStyle', help="local definitions will aprear under '#/components/schemas' in the schema", action='store_true')
 
 
 def main():
@@ -40,7 +43,17 @@ def main():
         schemaAsDict = builder.getParsedSchemaFromYaml(sourceFile)
     # find all external referenced types ...
     extractedTypes = builder.extractTypes(schemaAsDict, sourceFile, [], False)
-    normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, sourceFile, args.outputFile)
+    localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
+    if localTypePrefix is None:
+        if args.definitionsStyle:
+            localTypePrefix = "#/definitions/"
+        elif args.componentsStyle:
+            localTypePrefix = "#/components/schemas/"
+        else:
+            printError('\nCould not decide if we have here definitions or components/schemas style ... cancel')
+            sys.exit(1)
+
+    normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, sourceFile, args.outputFile, localTypePrefix)
 
 
 if __name__ == '__main__':

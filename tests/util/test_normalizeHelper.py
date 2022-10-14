@@ -4,6 +4,7 @@ import shutil
 import os
 import yacg.util.normalize_helper as normalizeHelper
 import yacg.builder.impl.dictionaryBuilder as builder
+import yacg.model.modelFuncs as modelFuncs
 
 
 class TestNormalizeHelper (unittest.TestCase):
@@ -15,8 +16,10 @@ class TestNormalizeHelper (unittest.TestCase):
         modelFile = 'resources/models/json/yacg_asyncapi_types.json'
         schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
         extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
-        normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/yacg_asyncapi_types.json')
-        normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/yacg_asyncapi_types.yaml')
+        localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
+
+        normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/yacg_asyncapi_types.json', localTypePrefix)
+        normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/yacg_asyncapi_types.yaml', localTypePrefix)
 
     def testNormalizeOpenApi(self):
         dirpath = Path('tmp', 'normalized')
@@ -26,7 +29,8 @@ class TestNormalizeHelper (unittest.TestCase):
         modelFile = 'tests/resources/models/yaml/examples/openapi_layer.yaml'
         schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
         extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
-        normalizeHelper._normalizeImpl(schemaAsDict, extractedTypes, modelFile)
+        localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
+        normalizeHelper._normalizeImpl(schemaAsDict, extractedTypes, modelFile, localTypePrefix)
         componentsDict = schemaAsDict.get("components", None)
         self.assertIsNotNone(componentsDict)
         schemasDict = componentsDict.get("schemas", None)
@@ -37,3 +41,14 @@ class TestNormalizeHelper (unittest.TestCase):
         self.assertIsNotNone(propertiesDict)
         self.assertEqual(len(propertiesDict["type"]["enum"]), 1)
         self.assertEqual(propertiesDict["type"]["enum"][0], "LineString")
+
+    def testNormalizeOpenApi2(self):
+        dirpath = Path('tmp', 'normalized')
+        if dirpath.exists() and dirpath.is_dir():
+            shutil.rmtree(dirpath)
+        os.mkdir(dirpath)
+        modelFile = '/home/eikothomas/prog/git.swarco.com/cip/swarco.tms.service.generic.tlc-manager/api/obselete-asyncapi_to_inform_about_tlc_changes.json'
+        schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
+        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
+        localTypePrefix = "#/components/schemas/"
+        normalizeHelper._normalizeImpl(schemaAsDict, extractedTypes, modelFile, localTypePrefix)
