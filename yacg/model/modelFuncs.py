@@ -636,6 +636,8 @@ def getNotUniqueTypeNames(typeList):
     typeNamesList = []
     notUniqueNames = []
     for t in typeList:
+        if not hasattr(t, 'name'):
+            continue
         if (t.name in typeNamesList) and (t.name not in notUniqueNames):
             notUniqueNames.append(t.name)
         typeNamesList.append(t.name)

@@ -5,18 +5,17 @@ import yacg.model.modelFuncs as modelFuncs
 from yacg.util.outputUtils import printError
 
 
-def normalizeSchema(schemaAsDict, extractedTypes, sourceFile, outputFile):
-    _normalizeImpl(schemaAsDict, extractedTypes, sourceFile)
+def normalizeSchema(schemaAsDict, extractedTypes, sourceFile, outputFile, localTypePrefix):
+    _normalizeImpl(schemaAsDict, extractedTypes, sourceFile, localTypePrefix)
     _printOutput(outputFile, schemaAsDict)
 
 
-def _normalizeImpl(schemaAsDict, extractedTypes, sourceFile):
+def _normalizeImpl(schemaAsDict, extractedTypes, sourceFile, localTypePrefix):
     references = []
     modelFuncs.getExternalRefStringsFromDict(schemaAsDict, references)
     refHelperDict = modelFuncs.initReferenceHelperDict(references, sourceFile)
     modelFuncs.initTypesInReferenceHelperDict(refHelperDict, extractedTypes)
 
-    localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
     if localTypePrefix is None:
         printError('\nCould not decide if we have here definitions or components/schemas style ... cancel')
         sys.exit(1)
@@ -44,7 +43,7 @@ def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, localTypePre
         dictToAppendTypes = schemaDict
 
     for _, refHelper in refHelperDict.items():
-        relatedTypesList = modelFuncs.getTypeAndAllChildTypes(refHelper.type)
+        relatedTypesList = modelFuncs.getTypeAndAllRelatedTypes(refHelper.type)
         for t in relatedTypesList:
             if t.name not in dictToAppendTypes.keys():
                 dictToAppendTypes[t.name] = modelFuncs.typeToJSONDict(t, localTypePrefix)

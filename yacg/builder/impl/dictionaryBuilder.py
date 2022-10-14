@@ -1355,8 +1355,6 @@ def _parseAsyncApiOperationMessageBinding(messageDict, modelTypes):
 def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, modelFileContainer, messageKey):
     messageDict = operationDict.get(messageKey, None)
     messageObj = None
-    if operationDict["operationId"] == "getFinalStatesCount":
-        pass
     if messageDict is not None:
         messageObj = asyncapi.Message()
         messageObj.amqpBindings = _parseAsyncApiOperationMessageBinding(messageDict, modelTypes)
