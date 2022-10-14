@@ -43,7 +43,7 @@ def _addExternalReferencedTypesAndDeps(schemaAsDict, refHelperDict, localTypePre
         dictToAppendTypes = schemaDict
 
     for _, refHelper in refHelperDict.items():
-        relatedTypesList = modelFuncs.getTypeAndAllChildTypes(refHelper.type)
+        relatedTypesList = modelFuncs.getTypeAndAllRelatedTypes(refHelper.type)
         for t in relatedTypesList:
             if t.name not in dictToAppendTypes.keys():
                 dictToAppendTypes[t.name] = modelFuncs.typeToJSONDict(t, localTypePrefix)

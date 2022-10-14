@@ -1,3 +1,7 @@
+# 5.6.2
+* introduce addtional switches for normalizeSchema
+* fix bug in normalizeSchema
+
 # 5.6.1
 * bug fixes for parsing openapi files
 * missing operationId doesn't hurt any longer
