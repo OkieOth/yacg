@@ -41,14 +41,3 @@ class TestNormalizeHelper (unittest.TestCase):
         self.assertIsNotNone(propertiesDict)
         self.assertEqual(len(propertiesDict["type"]["enum"]), 1)
         self.assertEqual(propertiesDict["type"]["enum"][0], "LineString")
-
-    def testNormalizeOpenApi2(self):
-        dirpath = Path('tmp', 'normalized')
-        if dirpath.exists() and dirpath.is_dir():
-            shutil.rmtree(dirpath)
-        os.mkdir(dirpath)
-        modelFile = '/home/eikothomas/prog/git.swarco.com/cip/swarco.tms.service.generic.tlc-manager/api/obselete-asyncapi_to_inform_about_tlc_changes.json'
-        schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
-        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
-        localTypePrefix = "#/components/schemas/"
-        normalizeHelper._normalizeImpl(schemaAsDict, extractedTypes, modelFile, localTypePrefix)
