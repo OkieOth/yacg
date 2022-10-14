@@ -470,9 +470,43 @@ def __getTypeAndAllChildTypesImpl(type, alreadyFoundTypeNames, alreadyFoundTypes
 
 
 def getTypeAndAllChildTypes(type):
+    """returns the type and all non-base types that are related to direct childs
+    or childs of childs
+
+    Keyword arguments:
+    type -- types to start to find the relations
+    """
+
     alreadyFoundTypeNames = []
     ret = []
     __getTypeAndAllChildTypesImpl(type, alreadyFoundTypeNames, ret)
+    return ret
+
+
+def __getTypeAndAllRelatedTypesImpl(type, alreadyFoundTypeNames, alreadyFoundTypes):
+    if type.name not in alreadyFoundTypeNames:
+        alreadyFoundTypeNames.append(type.name)
+        alreadyFoundTypes.append(type)
+        if hasattr(type, 'extendsType') and type.extendsType is not None:
+            if not isBaseType(type.extendsType):
+                __getTypeAndAllRelatedTypesImpl(type.extendsType, alreadyFoundTypeNames, alreadyFoundTypes)
+        if hasattr(type, 'properties'):
+            for prop in type.properties:
+                if not isBaseType(prop.type):
+                    __getTypeAndAllRelatedTypesImpl(prop.type, alreadyFoundTypeNames, alreadyFoundTypes)
+
+
+def getTypeAndAllRelatedTypes(type):
+    """returns the type and all non-base types that are related to direct childs
+    or childs of childs. Also allOf relations are included in the return list
+
+    Keyword arguments:
+    type -- types to start to find the relations
+    """
+
+    alreadyFoundTypeNames = []
+    ret = []
+    __getTypeAndAllRelatedTypesImpl(type, alreadyFoundTypeNames, ret)
     return ret
 
 
