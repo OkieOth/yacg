@@ -1373,6 +1373,7 @@ def _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFi
     subscribeObj = asyncapi.OperationBase()
     channelType.subscribe = subscribeObj
     __parseAsyncApiOperationBase(modelTypes, subscribeObj, subscribeDict, channelType, modelFileContainer)
+    channelType.subscribe.xResponseMessage = _parseAsyncApiOperationMessage(subscribeDict, modelTypes, subscribeObj, modelFileContainer, "x-responseMessage")  # noqa: E501
 
 
 def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer):
