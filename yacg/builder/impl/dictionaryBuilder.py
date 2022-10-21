@@ -577,7 +577,7 @@ def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileC
         else:
             # there are situations where the attrib has a ref to an array type
             tmpProperty = Property()
-            tmpProperty.name = "dummy"
+            tmpProperty.name = newProperty.name
             retType = _extractAttribType(newTypeName, tmpProperty, itemsDict, modelTypes, modelFileContainer)
             if tmpProperty.isArray:
                 newProperty.arrayDimensions = len(newProperty.arrayConstraints) + tmpProperty.arrayDimensions
