@@ -11,7 +11,7 @@ import json
 import yaml
 
 from yacg.model.model import ArrayConstraints, ForeignKey, Property
-from yacg.util.stringUtils import toLowerCamelCase, toName, toUpperCamelCase
+from yacg.util.stringUtils import toLowerCamelCase, toName, toUpperCamelCase, toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType, ObjectType
 from yacg.model.model import DateType, TimeType, DateTimeType, DurationType, ArrayType
@@ -1355,11 +1355,14 @@ def _parseAsyncApiOperationMessageBinding(messageDict, modelTypes):
 def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, modelFileContainer, messageKey):
     messageDict = operationDict.get(messageKey, None)
     messageObj = None
+    typePrefix = ""
+    if messageKey == "x-responseMessage":
+        typePrefix = "XResponse"
     if messageDict is not None:
         messageObj = asyncapi.Message()
         messageObj.amqpBindings = _parseAsyncApiOperationMessageBinding(messageDict, modelTypes)
-        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "Payload_{}".format(operationType.operationId))  # noqa: E501
-        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "Headers_{}".format(operationType.operationId))  # noqa: E501
+        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "{}Payload_{}".format(typePrefix, operationType.operationId))  # noqa: E501
+        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "{}Headers_{}".format(typePrefix, operationType.operationId))  # noqa: E501
     return messageObj
 
 
@@ -1387,6 +1390,11 @@ def __parseAsyncApiOperationBase(modelTypes, operationObj, operationDict, channe
     operationObj.description = operationDict.get("description", None)
     operationObj.summary = operationDict.get("summary", None)
     operationObj.operationId = operationDict.get("operationId", None)
+    if operationObj.operationId is None:
+        opId = toName(channelType.key)
+        opId = toUpperCamelCase(opId, '_')
+        operationObj.operationId = opId
+
     operationObj.amqpBindings = _parseAsyncApiOperationBinding(operationDict, modelTypes, channelType)
     operationObj.message = _parseAsyncApiOperationMessage(operationDict, modelTypes, operationObj, modelFileContainer, "message")
 
