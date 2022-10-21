@@ -1,0 +1,79 @@
+$schema: http://json-schema.org/draft-04/schema#
+version: 0.1.1
+title: TCon
+type: object
+additionalProperties: false
+properties:
+    cps:
+        type: array
+        items:
+            $ref: '#/definitions/CP'
+    status:
+        type: array
+        items:
+            $ref: '#/definitions/DS'
+    di:
+        type: string
+    dt:
+        type: string
+    guid:
+        type: string
+    hs:
+        $ref: '#/definitions/HS'
+    vis:
+        type: array
+        items:
+            $ref: '#/definitions/GV'
+definitions:
+    CP:
+        type: object
+        additionalProperties: false
+        properties:
+            active:
+                type: string
+            id:
+                type: string
+            uri:
+                type: string
+    DS:
+        type: object
+        additionalProperties: false
+        properties:
+            devicestatustype:
+                type: string
+            id:
+                type: string
+            occ:
+                type: string
+            occd:
+                type: integer
+            received:
+                type: string
+            receivedDate:
+                type: integer
+    HS:
+        type: object
+        additionalProperties: false
+        properties:
+            dst:
+                type: string
+            id:
+                type: string
+            occured:
+                type: string
+            occuredDate:
+                type: integer
+            received:
+                type: string
+            receivedDate:
+                type: integer
+            persistenceOk:
+                type: boolean
+    GV:
+        type: object
+        additionalProperties: false
+        properties:
+            latitude:
+                type: number
+            longitude:
+                type: number

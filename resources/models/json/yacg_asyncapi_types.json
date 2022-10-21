@@ -27,8 +27,12 @@
                 "amqpBindings": {
                     "description": "amqp 0.9.1 related binding parameters",
                     "$ref": "#/definitions/OperationBindingsAmqp"
+                },
+                "xResponseMessage": {
+                    "description": "covers the responded message in RPC style communication, custom extension",
+                    "$ref": "#/definitions/Message"
                 }
-            }
+    }
         },
         "AsyncApiInfo": {
             "description": "Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject",
@@ -77,7 +81,7 @@
                     }
                 },
                 "publish": {
-                    "$ref": "#/definitions/PublishOperation"
+                    "$ref": "#/definitions/OperationBase"
                 },
                 "subscribe": {
                     "$ref": "#/definitions/OperationBase"
@@ -150,23 +154,6 @@
                     "$ref": "#/definitions/ChannelBindingsAmqpExchange"
                 }
             }
-        },
-        "PublishOperation": {
-            "description": "Configuration parameter needed for publishing",
-            "type": "object",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/OperationBase"
-                },
-                {
-                    "properties": {
-                        "xResponseMessage": {
-                            "description": "covers the responded message in RPC style communication, custom extension",
-                            "$ref": "#/definitions/Message"
-                        }
-                    }
-                }
-            ]
         },
         "Message": {
             "description": "Container that describes the messages are sent",

@@ -1,0 +1,30 @@
+$schema: http://json-schema.org/draft-04/schema#
+title: TT2
+version: 0.0.1
+type: object
+additionalProperties: false
+properties:
+    activePs:
+        type: array
+        items:
+            type: string
+        minItems: 0
+    guid:
+        type: string
+        format: uuid
+    shortName:
+        type: string
+    latitude:
+        type: number
+    longitude:
+        type: number
+    type:
+        type: string
+    priority:
+        type: string
+    city:
+        type: string
+    location:
+        type: string
+    nodeState:
+        type: string

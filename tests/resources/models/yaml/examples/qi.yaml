@@ -1,0 +1,64 @@
+$schema: http://json-schema.org/draft-07/schema#
+version: 1.1.1
+definitions:
+    P:
+        type: object
+        properties:
+            offset:
+                type: integer
+            limit:
+                type: integer
+            total:
+                type: integer
+    S:
+        type: object
+        properties:
+            key:
+                type: string
+            direction:
+                $ref: '#/definitions/SortDirection'
+                default: ASC
+        required:
+        - key
+    F:
+        type: object
+        properties:
+            includes:
+                type: array
+                items:
+                    $ref: '#/definitions/IF'
+    SD:
+        type: string
+        enum:
+        - ASC
+        - DSC
+    IF:
+        type: object
+        properties:
+            key:
+                type: string
+            includes:
+                type: array
+                items:
+                    type: string
+            operator:
+                description: A named enum which include the operators.
+                $ref: '#/definitions/FO'
+        required:
+        - key
+    FO:
+        type: string
+        enum:
+        - DEFAULT
+        - EQ
+        - NEQ
+        - GT
+        - LT
+        - GTE
+        - LTE
+        - CTN
+        - SW
+        - EW
+        - IN
+        - NIN
+        - RGX

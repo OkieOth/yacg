@@ -1,3 +1,7 @@
+# 5.6.3
+* removed AsyncApi PublishOperation type
+* fix bugs in normalizeSchema
+
 # 5.6.2
 * introduce addtional switches for normalizeSchema
 * fix bug in normalizeSchema

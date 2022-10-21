@@ -11,7 +11,7 @@ import json
 import yaml
 
 from yacg.model.model import ArrayConstraints, ForeignKey, Property
-from yacg.util.stringUtils import toLowerCamelCase, toName, toUpperCamelCase
+from yacg.util.stringUtils import toLowerCamelCase, toName, toUpperCamelCase, toUpperCamelCase
 from yacg.model.model import IntegerType, NumberType, BooleanType, NumberTypeFormatEnum, IntegerTypeFormatEnum
 from yacg.model.model import StringType, UuidType, BytesType, ObjectType
 from yacg.model.model import DateType, TimeType, DateTimeType, DurationType, ArrayType
@@ -577,7 +577,7 @@ def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileC
         else:
             # there are situations where the attrib has a ref to an array type
             tmpProperty = Property()
-            tmpProperty.name = "dummy"
+            tmpProperty.name = newProperty.name
             retType = _extractAttribType(newTypeName, tmpProperty, itemsDict, modelTypes, modelFileContainer)
             if tmpProperty.isArray:
                 newProperty.arrayDimensions = len(newProperty.arrayConstraints) + tmpProperty.arrayDimensions
@@ -1355,11 +1355,14 @@ def _parseAsyncApiOperationMessageBinding(messageDict, modelTypes):
 def _parseAsyncApiOperationMessage(operationDict, modelTypes, operationType, modelFileContainer, messageKey):
     messageDict = operationDict.get(messageKey, None)
     messageObj = None
+    typePrefix = ""
+    if messageKey == "x-responseMessage":
+        typePrefix = "XResponse"
     if messageDict is not None:
         messageObj = asyncapi.Message()
         messageObj.amqpBindings = _parseAsyncApiOperationMessageBinding(messageDict, modelTypes)
-        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "Payload_{}".format(operationType.operationId))  # noqa: E501
-        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "Headers_{}".format(operationType.operationId))  # noqa: E501
+        messageObj.payload = _initAsyncApiMessagePayload(messageDict, modelTypes, modelFileContainer, "{}Payload_{}".format(typePrefix, operationType.operationId))  # noqa: E501
+        messageObj.headers = _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, "{}Headers_{}".format(typePrefix, operationType.operationId))  # noqa: E501
     return messageObj
 
 
@@ -1370,6 +1373,7 @@ def _parseAsyncApiChannelSubscribe(modelTypes, channelDict, channelType, modelFi
     subscribeObj = asyncapi.OperationBase()
     channelType.subscribe = subscribeObj
     __parseAsyncApiOperationBase(modelTypes, subscribeObj, subscribeDict, channelType, modelFileContainer)
+    channelType.subscribe.xResponseMessage = _parseAsyncApiOperationMessage(subscribeDict, modelTypes, subscribeObj, modelFileContainer, "x-responseMessage")  # noqa: E501
 
 
 def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFileContainer):
@@ -1387,6 +1391,11 @@ def __parseAsyncApiOperationBase(modelTypes, operationObj, operationDict, channe
     operationObj.description = operationDict.get("description", None)
     operationObj.summary = operationDict.get("summary", None)
     operationObj.operationId = operationDict.get("operationId", None)
+    if operationObj.operationId is None:
+        opId = toName(channelType.key)
+        opId = toUpperCamelCase(opId, '_')
+        operationObj.operationId = opId
+
     operationObj.amqpBindings = _parseAsyncApiOperationBinding(operationDict, modelTypes, channelType)
     operationObj.message = _parseAsyncApiOperationMessage(operationDict, modelTypes, operationObj, modelFileContainer, "message")
 
