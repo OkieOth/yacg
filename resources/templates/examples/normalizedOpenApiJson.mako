@@ -156,7 +156,7 @@
                 "description": "${type.description}",
             % endif
                 "type": "object"
-            % if type.extendsType is not None:
+            % if hasattr(type, 'extendsType') and type.extendsType is not None:
                 ,"allOf": [{
                         "$ref": "#/components/schemas/${type.extendsType.name}"
                     }
@@ -224,7 +224,7 @@
                     }
                 % endif
                 ]
-            % else:
+            % elif hasattr(type, "properties"):
                 % if len(type.properties) > 0:
                 ,"properties": {
                     % for property in type.properties:

@@ -384,14 +384,7 @@ def _extractObjectType(
         newType.description = description
 
     if allOfEntries is not None:
-        for allOfEntry in allOfEntries:
-            tmpRefEntry = allOfEntry.get('$ref', None)
-            propertiesEntry = allOfEntry.get('properties', None)
-            if (propertiesEntry is not None):
-                _extractAttributes(newType, propertiesEntry, modelTypes, modelFileContainer)
-                _markRequiredAttributes(type, allOfEntry.get('required', []))
-            elif tmpRefEntry is not None:
-                newType.extendsType = _extractReferenceType(tmpRefEntry, modelTypes, modelFileContainer)
+        __handleAllOf(newType, allOfEntries, modelTypes, modelFileContainer)
     else:
         if refEntry is not None:
             tmpType = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
@@ -908,7 +901,8 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
     modelFileContainer -- file name and path to the model to load
     """
 
-    innerTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name)
+    propName = newProperty.name if newProperty.name is not None else "Inner"
+    innerTypeName = toUpperCamelCase(newTypeName + ' ' + propName)
     properties = propDict.get('properties', None)
     additionalProperties = __getAdditionalPropertiesForDictionaryType(propDict)
     newInnerType = ComplexType() if additionalProperties is None else DictionaryType()
@@ -930,10 +924,25 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
         if additionalProperties is not None:
             _extractDictionaryValueType(newInnerType, additionalProperties, modelTypes, modelFileContainer)
         else:
-            logging.error(
-                "modelFile: %s, type=%s, property=%s: inner complex type without properties"
-                % (modelFileContainer.fileName, newTypeName, newProperty.name))
+            allOfEntries = propDict.get("allOf", None)
+            if allOfEntries is not None:
+                __handleAllOf(newInnerType, allOfEntries, modelTypes, modelFileContainer)
+            else:
+                logging.error(
+                    "modelFile: %s, type=%s, property=%s: inner complex type without properties"
+                    % (modelFileContainer.fileName, newTypeName, newProperty.name))
     return newInnerType
+
+
+def __handleAllOf(newType, allOfEntries, modelTypes, modelFileContainer):
+    for allOfEntry in allOfEntries:
+        tmpRefEntry = allOfEntry.get('$ref', None)
+        propertiesEntry = allOfEntry.get('properties', None)
+        if (propertiesEntry is not None):
+            _extractAttributes(newType, propertiesEntry, modelTypes, modelFileContainer)
+            _markRequiredAttributes(type, allOfEntry.get('required', []))
+        elif tmpRefEntry is not None:
+            newType.extendsType = _extractReferenceType(tmpRefEntry, modelTypes, modelFileContainer)
 
 
 def _markRequiredAttributes(type, requiredArray):

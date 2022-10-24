@@ -257,7 +257,7 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(4, len(modelTypes))
+        self.assertEqual(6, len(modelTypes))
         self._checkUpType(2, 'SimpleAllOfSchema', 1, modelTypes, [])
         self._checkUpType(0, 'Address', 3, modelTypes, [])
         self._checkUpType(1, 'SimpleAllOfSchemaTypeEnum', 0, modelTypes, [])
@@ -275,14 +275,14 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(8, len(modelTypes))
-        type = self._checkUpType(3, 'MoreSophisticatedAllOf', 1, modelTypes, [])
+        self.assertEqual(12, len(modelTypes))
+        type = self._checkUpType(5, 'MoreSophisticatedAllOf', 1, modelTypes, [])
         self.assertIsNotNone(type.extendsType)
         address = self._checkUpType(0, 'Address', 3, modelTypes, [])
         self.assertEqual(type.extendsType, address)
-        self._checkUpType(2, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes, [])
-        self._checkUpType(7, 'MainAddress', 2, modelTypes, [])
-        self._checkUpType(6, 'MainAddressComplex', 3, modelTypes, [])
+        self._checkUpType(4, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes, [])
+        self._checkUpType(11, 'MainAddress', 2, modelTypes, [])
+        self._checkUpType(10, 'MainAddressComplex', 3, modelTypes, [])
         self.assertEqual(len(modelTypes[1].properties), 3)
         self.assertEqual(len(modelTypes[1].properties), len(modelTypes[0].properties))
 

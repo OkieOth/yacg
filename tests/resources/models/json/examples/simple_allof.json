@@ -32,7 +32,7 @@
           "type": "object",
           "allOf": [
             {
-              "$ref": "#/definitions/Addres"
+              "$ref": "#/definitions/Address"
             },
             {
               "properties": {
