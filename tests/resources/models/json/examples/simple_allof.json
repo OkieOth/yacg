@@ -5,6 +5,7 @@
     "type": "object",
     "definitions": {
       "Address": {
+        "description": "this is a test type",
         "type": "object",
         "properties": {
           "street_addr": { 
@@ -21,6 +22,27 @@
           }
         },
         "required": ["street_address", "city", "state"]
+      },
+      "EvilAddress": {
+        "$ref": "#/definitions/Address"
+      },
+      "EvilArray": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Address"
+            },
+            {
+              "properties": {
+                "anotherBool": {
+                  "type": "boolean"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "allOf": [

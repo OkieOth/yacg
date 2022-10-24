@@ -597,7 +597,8 @@ class Property:
         self.format = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:

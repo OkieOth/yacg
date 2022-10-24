@@ -160,9 +160,11 @@ class TestJsonBuilder (unittest.TestCase):
         model = config.Model()
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
-        t1 = getTypeAndAllRelatedTypes(modelTypes[1])
+        # 'OpenApiInfo'
+        t1 = getTypeAndAllRelatedTypes(modelTypes[2])
         self.assertEqual(len(t1), 2)
-        t3 = getTypeAndAllRelatedTypes(modelTypes[3])
+        # 'PathType'
+        t3 = getTypeAndAllRelatedTypes(modelTypes[27])
         self.assertEqual(len(t3), 10)
 
     def testSingleTypeSchema3(self):
@@ -255,12 +257,12 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(3, len(modelTypes))
-        self._checkUpType(0, 'SimpleAllOfSchema', 1, modelTypes, [])
-        self._checkUpType(1, 'Address', 3, modelTypes, [])
-        self._checkUpType(2, 'SimpleAllOfSchemaTypeEnum', 0, modelTypes, [])
+        self.assertEqual(6, len(modelTypes))
+        self._checkUpType(2, 'SimpleAllOfSchema', 1, modelTypes, [])
+        self._checkUpType(0, 'Address', 3, modelTypes, [])
+        self._checkUpType(1, 'SimpleAllOfSchemaTypeEnum', 0, modelTypes, [])
 
-        addressType = modelTypes[1]
+        addressType = modelTypes[0]
         self.assertEqual(4, addressType.properties[0].ordinal)
         self.assertEqual(5, addressType.properties[1].ordinal)
         self.assertEqual(6, addressType.properties[2].ordinal)
@@ -273,14 +275,16 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(7, len(modelTypes))
-        type = self._checkUpType(0, 'MoreSophisticatedAllOf', 1, modelTypes, [])
+        self.assertEqual(12, len(modelTypes))
+        type = self._checkUpType(5, 'MoreSophisticatedAllOf', 1, modelTypes, [])
         self.assertIsNotNone(type.extendsType)
-        address = self._checkUpType(1, 'Address', 3, modelTypes, [])
+        address = self._checkUpType(0, 'Address', 3, modelTypes, [])
         self.assertEqual(type.extendsType, address)
-        self._checkUpType(2, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes, [])
-        self._checkUpType(3, 'MainAddress', 2, modelTypes, [])
-        self._checkUpType(6, 'MainAddressComplex', 3, modelTypes, [])
+        self._checkUpType(4, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes, [])
+        self._checkUpType(11, 'MainAddress', 2, modelTypes, [])
+        self._checkUpType(10, 'MainAddressComplex', 3, modelTypes, [])
+        self.assertEqual(len(modelTypes[1].properties), 3)
+        self.assertEqual(len(modelTypes[1].properties), len(modelTypes[0].properties))
 
     def testTags(self):
         modelFile = 'resources/models/json/yacg_model_schema.json'
@@ -470,20 +474,20 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes)
         self.assertEqual(5, len(modelTypes))
         self.assertTrue(isinstance(modelTypes[0], ComplexType))
-        self.assertTrue(isinstance(modelTypes[1], ComplexType))
-        self.assertTrue(isinstance(modelTypes[2], EnumType))
+        self.assertTrue(isinstance(modelTypes[1], EnumType))
+        self.assertTrue(isinstance(modelTypes[2], ComplexType))
         self.assertTrue(isinstance(modelTypes[3], DictionaryType))
         self.assertTrue(isinstance(modelTypes[4], DictionaryType))
 
         self.assertTrue(isinstance(modelTypes[3].valueType, IntegerType))
         self.assertTrue(isinstance(modelTypes[4].valueType, StringType))
 
-        self.assertTrue(isinstance(modelTypes[1].properties[2].type, StringType))
-        self.assertTrue(isinstance(modelTypes[1].properties[3].type, ObjectType))
-        self.assertTrue(isinstance(modelTypes[1].properties[4].type, DictionaryType))
-        self.assertTrue(isinstance(modelTypes[1].properties[4].type.valueType, IntegerType))
-        self.assertTrue(isinstance(modelTypes[1].properties[5].type, DictionaryType))
-        self.assertTrue(isinstance(modelTypes[1].properties[5].type.valueType, StringType))
+        self.assertTrue(isinstance(modelTypes[0].properties[2].type, StringType))
+        self.assertTrue(isinstance(modelTypes[0].properties[3].type, ObjectType))
+        self.assertTrue(isinstance(modelTypes[0].properties[4].type, DictionaryType))
+        self.assertTrue(isinstance(modelTypes[0].properties[4].type.valueType, IntegerType))
+        self.assertTrue(isinstance(modelTypes[0].properties[5].type, DictionaryType))
+        self.assertTrue(isinstance(modelTypes[0].properties[5].type.valueType, StringType))
 
     def testEndlessRecursion(self):
         modelFile = 'resources/models/json/yacg_asyncapi_types.json'
@@ -506,13 +510,13 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual([], (getNotUniqueTypeNames(modelTypes)))
         modelTypes.append(modelTypes[0])
         self.assertEqual(6, len(modelTypes))
-        self.assertEqual(['SimpleAllOfSchema'], (getNotUniqueTypeNames(modelTypes)))
+        self.assertEqual(['Address'], (getNotUniqueTypeNames(modelTypes)))
         modelTypes.append(modelTypes[0])
         self.assertEqual(7, len(modelTypes))
-        self.assertEqual(['SimpleAllOfSchema'], (getNotUniqueTypeNames(modelTypes)))
-        modelTypes.append(modelTypes[1])
+        self.assertEqual(['Address'], (getNotUniqueTypeNames(modelTypes)))
+        modelTypes.append(modelTypes[2])
         self.assertEqual(8, len(modelTypes))
-        self.assertEqual(['SimpleAllOfSchema', 'Address'], (getNotUniqueTypeNames(modelTypes)))
+        self.assertEqual(['Address', 'SimpleAllOfSchema'], (getNotUniqueTypeNames(modelTypes)))
 
     def testFixDoubleTypeNames(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_external_ref_2.json'

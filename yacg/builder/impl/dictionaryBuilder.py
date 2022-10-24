@@ -89,6 +89,7 @@ def __initEnumValues(mainType, parsedSchema):
 def __extractTopLevelObjectType(parsedSchema, modelTypes, modelFileContainer):
     schemaProperties = parsedSchema.get('properties', None)
     allOfEntry = parsedSchema.get('allOf', None)
+    refEntry = parsedSchema.get('$ref', None)
     additionalProperties = __getAdditionalPropertiesForDictionaryType(parsedSchema)
     if (schemaProperties is not None) or (allOfEntry is not None) or (additionalProperties is not None):
         # extract top level type
@@ -97,9 +98,22 @@ def __extractTopLevelObjectType(parsedSchema, modelTypes, modelFileContainer):
         description = parsedSchema.get('description', None)
         mainType = _extractObjectType(
             typeNameStr, schemaProperties, additionalProperties,
-            allOfEntry, description, modelTypes, modelFileContainer)
+            allOfEntry, refEntry, description, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
         _markRequiredAttributes(mainType, parsedSchema.get('required', []))
+        mainType.topLevelType = True
+        return True
+    return False
+
+
+def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
+    enumEntry = parsedSchema.get('enum', None)
+    if enumEntry is not None:
+        titleStr = parsedSchema.get('title', None)
+        typeNameStr = toUpperCamelCase(titleStr)
+        mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
+        __initTags(mainType, parsedSchema)
+        __initEnumValues(mainType, parsedSchema)
         mainType.topLevelType = True
         return True
     return False
@@ -253,6 +267,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
 
     schemaProperties = modelFileContainer.parsedSchema.get('properties', None)
     allOfEntry = modelFileContainer.parsedSchema.get('allOf', None)
+    refEntry = modelFileContainer.parsedSchema.get('$ref', None)
     additionalProperties = __getAdditionalPropertiesForDictionaryType(modelFileContainer.parsedSchema)
     if (schemaProperties is not None) or (allOfEntry is not None) or (additionalProperties is not None):
         # extract top level type
@@ -267,7 +282,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
             description = modelFileContainer.parsedSchema.get('description', None)
             type = _extractObjectType(
                 typeNameStr, schemaProperties, additionalProperties,
-                allOfEntry, description, modelTypes, modelFileContainer)
+                allOfEntry, refEntry, description, modelTypes, modelFileContainer)
             type.topLevelType = True
             if len(type.tags) == 0:
                 tags = modelFileContainer.parsedSchema.get('x-tags', None)
@@ -323,8 +338,9 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
             if itemsEntry is not None:
                 __extractPureArrayType(key, object, modelTypes, modelFileContainer)
             else:
+                refEntry = object.get('$ref', None)
                 type = _extractObjectType(
-                    key, properties, additionalProperties, allOfEntry,
+                    key, properties, additionalProperties, allOfEntry, refEntry,
                     description, modelTypes, modelFileContainer)
                 if len(type.tags) == 0:
                     tags = object.get('x-tags', None)
@@ -334,7 +350,7 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
 
 
 def _extractObjectType(
-        typeNameStr, properties, additionalProperties, allOfEntries,
+        typeNameStr, properties, additionalProperties, allOfEntries, refEntry,
         description, modelTypes, modelFileContainer):
     """build a type object
 
@@ -343,6 +359,7 @@ def _extractObjectType(
     properties -- dict of a schema properties-block
     additionalProperties -- dict of a schema additionalProperties-block
     allOfEntries -- dict of allOf block
+    refEntryDict -- dict of '$ref' key
     description -- optional description of that type
     modelTypes -- list of already loaded models
     modelFileContainer -- file name and path to the model to load, instance of ModelFileContainer
@@ -365,17 +382,27 @@ def _extractObjectType(
     newType.source = modelFileContainer.fileName
     if description is not None:
         newType.description = description
-    if alreadyCreatedType is None:
-        modelTypes.append(newType)
+
     if allOfEntries is not None:
-        for allOfEntry in allOfEntries:
-            refEntry = allOfEntry.get('$ref', None)
-            propertiesEntry = allOfEntry.get('properties', None)
-            if (propertiesEntry is not None):
-                _extractAttributes(newType, propertiesEntry, modelTypes, modelFileContainer)
-                _markRequiredAttributes(type, allOfEntry.get('required', []))
-            elif refEntry is not None:
-                newType.extendsType = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+        __handleAllOf(newType, allOfEntries, modelTypes, modelFileContainer)
+    else:
+        if refEntry is not None:
+            tmpType = _extractReferenceType(refEntry, modelTypes, modelFileContainer)
+            ret = None
+            if isinstance(tmpType, EnumType):
+                ret = EnumType(tmpType.__dict__)
+            elif isinstance(tmpType, ArrayType):
+                ret = ArrayType(tmpType.__dict__)
+            elif isinstance(tmpType, DictionaryType):
+                ret = DictionaryType(tmpType.__dict__)
+            elif isinstance(tmpType, ComplexType):
+                ret = ComplexType(vars(tmpType))
+            if ret is not None:
+                ret.name = newType.name
+                _appendToAlreadyLoadedTypes(ret, modelTypes)
+                return ret
+
+    _appendToAlreadyLoadedTypes(newType, modelTypes)
     if (hasattr(newType, 'properties')) and (len(newType.properties) == 0):
         _extractAttributes(newType, properties, modelTypes, modelFileContainer)
     elif additionalProperties is not None:
@@ -874,7 +901,8 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
     modelFileContainer -- file name and path to the model to load
     """
 
-    innerTypeName = toUpperCamelCase(newTypeName + ' ' + newProperty.name)
+    propName = newProperty.name if newProperty.name is not None else "Inner"
+    innerTypeName = toUpperCamelCase(newTypeName + ' ' + propName)
     properties = propDict.get('properties', None)
     additionalProperties = __getAdditionalPropertiesForDictionaryType(propDict)
     newInnerType = ComplexType() if additionalProperties is None else DictionaryType()
@@ -896,10 +924,25 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
         if additionalProperties is not None:
             _extractDictionaryValueType(newInnerType, additionalProperties, modelTypes, modelFileContainer)
         else:
-            logging.error(
-                "modelFile: %s, type=%s, property=%s: inner complex type without properties"
-                % (modelFileContainer.fileName, newTypeName, newProperty.name))
+            allOfEntries = propDict.get("allOf", None)
+            if allOfEntries is not None:
+                __handleAllOf(newInnerType, allOfEntries, modelTypes, modelFileContainer)
+            else:
+                logging.error(
+                    "modelFile: %s, type=%s, property=%s: inner complex type without properties"
+                    % (modelFileContainer.fileName, newTypeName, newProperty.name))
     return newInnerType
+
+
+def __handleAllOf(newType, allOfEntries, modelTypes, modelFileContainer):
+    for allOfEntry in allOfEntries:
+        tmpRefEntry = allOfEntry.get('$ref', None)
+        propertiesEntry = allOfEntry.get('properties', None)
+        if (propertiesEntry is not None):
+            _extractAttributes(newType, propertiesEntry, modelTypes, modelFileContainer)
+            _markRequiredAttributes(type, allOfEntry.get('required', []))
+        elif tmpRefEntry is not None:
+            newType.extendsType = _extractReferenceType(tmpRefEntry, modelTypes, modelFileContainer)
 
 
 def _markRequiredAttributes(type, requiredArray):
@@ -1109,7 +1152,7 @@ def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileCon
         propertiesDict = dictToUse.get('properties', None)
         if propertiesDict is not None:
             newInnerTypeName = innerTypeName
-            typeHost.type = _extractObjectType(newInnerTypeName, propertiesDict, None, None, None, modelTypes, modelFileContainer)
+            typeHost.type = _extractObjectType(newInnerTypeName, propertiesDict, None, None, None, None, modelTypes, modelFileContainer)
         else:
             errorMsg = 'Attention, inner type declarations are currently not implemented for some additional model scenarios.'
             logging.error(errorMsg)
@@ -1299,7 +1342,7 @@ def _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, inn
 
     propertiesDict = headersDict.get('properties', None)
     if propertiesDict is not None:
-        return _extractObjectType(innerTypeName, propertiesDict, None, None, None, modelTypes, modelFileContainer)
+        return _extractObjectType(innerTypeName, propertiesDict, None, None, None, None, modelTypes, modelFileContainer)
     else:
         errorMsg = 'Wrong message headers inner type'
         logging.error(errorMsg)

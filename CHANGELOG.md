@@ -1,3 +1,7 @@
+# 5.7.0
+* add types with top-level '$ref' entry
+* allow allOf for inner types
+
 # 5.6.3
 * removed AsyncApi PublishOperation type
 * fix bugs in normalizeSchema
