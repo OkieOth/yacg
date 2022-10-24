@@ -1,0 +1,218 @@
+---
+asyncapi: 2.1.0
+info:
+  version: 1.0.0
+channels:
+  conts.add:
+    subscribe:
+      message:
+        headers:
+          x-parameters:
+            token:
+              type: string
+            serializer:
+              enum: [JSON, BSON]
+        payload:
+          type: object
+      x-responseMessage:
+        payload:
+          $ref: "./t-t1.yaml"
+    bindings:
+      amqp:
+        exchange:
+          name: "{serviceId}"
+          type: topic
+          replyTo: amq.rabbitmq.reply-to
+        queue:
+          durable: false
+          exclusive: false
+  t.{protocol}.delete:
+    parameters:
+      protocol:
+        schema:
+          type: string
+          enum: ["xxxx", "yyyy"]
+    subscribe:
+      message:
+        headers:
+          x-parameters:
+            token:
+              type: string
+            serializer:
+              enum: [JSON, BSON]
+        payload:
+          type: object
+          properties:
+            dev_guids:
+              type: array
+              items:
+                type: string
+                format: uuid
+    bindings:
+      amqp:
+        exchange:
+          name: "asset-remover"
+          type: topic
+        queue:
+          durable: false
+          exclusive: false
+  conts.update:
+    subscribe:
+      message:
+        headers:
+          x-parameters:
+            token:
+              type: string
+            serializer:
+              enum: [JSON, BSON]
+        payload:
+          type: object
+      x-responseMessage:
+        payload:
+          $ref: "./t-t1.yaml"
+    bindings:
+      amqp:
+        exchange:
+          name: "{serviceId}"
+          type: topic
+          replyTo: amq.rabbitmq.reply-to
+        queue:
+          durable: false
+          exclusive: false
+
+  dev.get.all:
+    subscribe:
+      message:
+        headers:
+          x-parameters:
+            token:
+              type: string
+            serializer:
+              enum: [JSON, BSON]
+            properties:
+              type: object
+              properties:
+                pagination:
+                  $ref: "./qi.yaml#/definitions/P"
+                sorting:
+                  $ref: "./qi.yaml#/definitions/S"
+        payload:
+          type: object
+          properties:
+            filtering:
+              $ref: "./qi.yaml#/definitions/F"
+      x-responseMessage:
+        payload:
+          type: array
+          items:
+            $ref: "./t-t1.yaml"
+    bindings:
+      amqp:
+        exchange:
+          name: "{serviceId}"
+          type: topic
+          replyTo: amq.rabbitmq.reply-to
+        queue:
+          durable: false
+          exclusive: false
+  dev.get.byid:
+    subscribe:
+      message:
+        headers:
+          x-parameters:
+            token:
+              type: string
+            serializer:
+              enum: [JSON, BSON]
+            properties:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+      x-responseMessage:
+        payload:
+          $ref: "./t-t1.yaml"
+    bindings:
+      amqp:
+        exchange:
+          name: "{serviceId}"
+          type: topic
+          replyTo: amq.rabbitmq.reply-to
+        queue:
+          durable: false
+          exclusive: false
+
+
+  ti.get.all:
+    subscribe:
+      message:
+        headers:
+          x-parameters:
+            token:
+              type: string
+            serializer:
+              enum: [JSON, BSON]
+            properties:
+              type: object
+              properties:
+                pagination:
+                  $ref: "./qi.yaml#/definitions/P"
+                sorting:
+                  $ref: "./qi.yaml#/definitions/S"
+        payload:
+          type: object
+          properties:
+            filtering:
+              $ref: "./qi.yaml#/definitions/F"
+      x-responseMessage:
+        payload:
+          type: array
+          items:
+            $ref: "./t-t2.yaml"
+    bindings:
+      amqp:
+        exchange:
+          name: "{serviceId}"
+          type: topic
+          replyTo: amq.rabbitmq.reply-to
+        queue:
+          durable: false
+          exclusive: false
+
+
+  ti.get.all.count:
+    subscribe:
+      message:
+        headers:
+          x-parameters:
+            token:
+              type: string
+            serializer:
+              enum: [JSON, BSON]
+            properties:
+              type: object
+              properties:
+                pagination:
+                  $ref: "./qi.yaml#/definitions/P"
+                sorting:
+                  $ref: "./qi.yaml#/definitions/S"
+        payload:
+          type: object
+          properties:
+            filtering:
+              $ref: "./qi.yaml#/definitions/F"
+      x-responseMessage:
+        payload:
+          $ref: "./qi.yaml#/definitions/P"
+    bindings:
+      amqp:
+        exchange:
+          name: "{serviceId}"
+          type: topic
+          replyTo: amq.rabbitmq.reply-to
+        queue:
+          durable: false
+          exclusive: false
+components:
+  messages: {}

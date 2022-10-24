@@ -406,13 +406,13 @@ class TestModelFuncs (unittest.TestCase):
         schemaAsDict = builder.getParsedSchemaFromJson(modelFile)
         extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], True)
         localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
-        enumType1 = extractedTypes[11]
+        enumType1 = extractedTypes[10]
         self.assertTrue(isinstance(enumType1, EnumType))
         enumDict1 = modelFuncs.typeToJSONDict(enumType1, localTypePrefix)
         self.assertEqual(len(enumDict1), 2)
         self.assertEqual(enumDict1.get("type", None), "string")
         self.assertEqual(enumDict1.get("enum", None), ["topic", "direct", "fanout", "default", "headers"])
-        dictType1 = extractedTypes[26]
+        dictType1 = extractedTypes[25]
         dictDict1 = modelFuncs.typeToJSONDict(dictType1, localTypePrefix)
         self.assertEqual(len(dictDict1), 3)
         self.assertEqual(dictDict1.get("type", None), "object")

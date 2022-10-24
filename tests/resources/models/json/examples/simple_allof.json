@@ -25,6 +25,24 @@
       },
       "EvilAddress": {
         "$ref": "#/definitions/Address"
+      },
+      "EvilArray": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Addres"
+            },
+            {
+              "properties": {
+                "anotherBool": {
+                  "type": "boolean"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "allOf": [

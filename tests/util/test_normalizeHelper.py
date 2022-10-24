@@ -41,3 +41,16 @@ class TestNormalizeHelper (unittest.TestCase):
         self.assertIsNotNone(propertiesDict)
         self.assertEqual(len(propertiesDict["type"]["enum"]), 1)
         self.assertEqual(propertiesDict["type"]["enum"][0], "LineString")
+
+    def test_t1(self):
+        dirpath = Path('tmp', 'normalized')
+        if dirpath.exists() and dirpath.is_dir():
+            shutil.rmtree(dirpath)
+        os.mkdir(dirpath)
+        modelFile = 'tests/resources/models/yaml/examples/asyncapi_t.yaml'
+        schemaAsDict = builder.getParsedSchemaFromYaml(modelFile)
+        extractedTypes = builder.extractTypes(schemaAsDict, modelFile, [], False)
+        localTypePrefix = modelFuncs.getLocalTypePrefix(schemaAsDict)
+
+        normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/asyncapi_t.json', localTypePrefix)
+        normalizeHelper.normalizeSchema(schemaAsDict, extractedTypes, modelFile, 'tmp/normalized/asyncapi_t.yaml', localTypePrefix)
