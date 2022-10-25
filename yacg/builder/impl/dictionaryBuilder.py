@@ -145,7 +145,7 @@ def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContaine
         arrayType.arrayConstraints = tmpProperty.arrayConstraints
         arrayType.arrayDimensions = tmpProperty.arrayDimensions
         arrayType.topLevelType = True
-        modelTypes.append(arrayType)
+        _appendToAlreadyLoadedTypes(arrayType, modelTypes)
         __initTags(arrayType, parsedSchema)
         return True
     return False
@@ -398,12 +398,15 @@ def _extractObjectType(
             elif isinstance(tmpType, ComplexType):
                 ret = ComplexType(vars(tmpType))
             if ret is not None:
-                ret.name = newType.name
-                _appendToAlreadyLoadedTypes(ret, modelTypes)
-                return ret
+                if isinstance(ret, ComplexType):
+                    newType.extendsType = tmpType
+                else:
+                    ret.name = newType.name
+                    _appendToAlreadyLoadedTypes(ret, modelTypes)
+                    return ret
 
     _appendToAlreadyLoadedTypes(newType, modelTypes)
-    if (hasattr(newType, 'properties')) and (len(newType.properties) == 0):
+    if (hasattr(newType, 'properties')) and (len(newType.properties) == 0) and (hasattr(newType, 'extendsType')) and (newType.extendsType is None):
         _extractAttributes(newType, properties, modelTypes, modelFileContainer)
     elif additionalProperties is not None:
         _extractDictionaryValueType(newType, additionalProperties, modelTypes, modelFileContainer)
@@ -703,9 +706,6 @@ def _extractExternalReferenceTypeFromJson(refEntry, modelTypes, originModelFileC
         fileName = os.path.abspath(fileName)
 
     desiredTypeName = _extractDesiredTypeNameFromRefEntry(refEntry, refEntryFileName, fileName)
-    alreadyLoadedType = _getTypeIfAlreadyLoaded(desiredTypeName, fileName, modelTypes)
-    if alreadyLoadedType is not None:
-        return alreadyLoadedType
     alreadyLoadedType = _getAlreadyLoadedType(desiredTypeName, fileName, modelTypes)
     if alreadyLoadedType is not None:
         return alreadyLoadedType
@@ -742,7 +742,7 @@ def _extractExternalReferenceTypeFromYaml(refEntry, modelTypes, originModelFileC
 
     desiredTypeName = _extractDesiredTypeNameFromRefEntry(refEntry, refEntryFileName, fileName)
 
-    alreadyLoadedType = _getTypeIfAlreadyLoaded(desiredTypeName, fileName, modelTypes)
+    alreadyLoadedType = _getAlreadyLoadedType(desiredTypeName, fileName, modelTypes)
     if alreadyLoadedType is not None:
         return alreadyLoadedType
     # to handle circular dependencies
@@ -833,35 +833,20 @@ def _appendToAlreadyLoadedTypes(newType, alreadyLoadedModelTypes):
     alreadyLoadedModelTypes -- list with already loaded types
     """
 
+    if not hasattr(newType, "name"):
+        alreadyLoadedModelTypes.append(newType)
+        return True
+
     newTypeName = newType.name
-    newTypeSource = newType.source
     for type in alreadyLoadedModelTypes:
         if not hasattr(type, "name"):
             continue
-        if (newTypeName == type.name) and (newTypeSource == type.source):
+        if (newTypeName == type.name):
+            if hasattr(type, "source") and (newType.source != type.source):
+                continue
             return False
     alreadyLoadedModelTypes.append(newType)
     return True
-
-
-def _getTypeIfAlreadyLoaded(typeName, fileName, modelTypes):
-    """builds or relaod a type reference in the current file
-    and return it.
-
-    If the type isn't loaded an empty dummy is created.
-
-    Keyword arguments:
-    typeName -- name of the type to look for
-    fileName -- file where the type is loaded from
-    modelTypes -- list of already loaded models
-    """
-
-    for type in modelTypes:
-        if not hasattr(type, "name"):
-            continue
-        if (type.name == typeName) and (fileName == type.source):
-            return type
-    return None
 
 
 def _extractInternalReferenceType(refTypeName, modelTypes, modelFileContainer):
@@ -910,7 +895,7 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
     newInnerType.name = innerTypeName
     newInnerType.source = modelFileContainer.fileName
     newInnerType.version = modelFileContainer.version
-    modelTypes.append(newInnerType)
+    _appendToAlreadyLoadedTypes(newInnerType, modelTypes)
     description = propDict.get('description', None)
     if description is not None:
         newInnerType.description = description
@@ -1035,7 +1020,7 @@ def _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileC
     if alreadyCreatedType is not None:
         _replaceAllCurrentAppearencesOfAlreadyCreatedType(alreadyCreatedType, enumType, modelTypes)
     else:
-        modelTypes.append(enumType)
+        _appendToAlreadyLoadedTypes(enumType, modelTypes)
     return enumType
 
 

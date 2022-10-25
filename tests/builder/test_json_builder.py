@@ -275,16 +275,17 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(12, len(modelTypes))
+        self.assertEqual(10, len(modelTypes))
         type = self._checkUpType(5, 'MoreSophisticatedAllOf', 1, modelTypes, [])
         self.assertIsNotNone(type.extendsType)
         address = self._checkUpType(0, 'Address', 3, modelTypes, [])
         self.assertEqual(type.extendsType, address)
         self._checkUpType(4, 'MoreSophisticatedAllOfTypeEnum', 0, modelTypes, [])
-        self._checkUpType(11, 'MainAddress', 2, modelTypes, [])
-        self._checkUpType(10, 'MainAddressComplex', 3, modelTypes, [])
-        self.assertEqual(len(modelTypes[1].properties), 3)
-        self.assertEqual(len(modelTypes[1].properties), len(modelTypes[0].properties))
+        self._checkUpType(9, 'MainAddress', 2, modelTypes, [])
+        self._checkUpType(8, 'MainAddressComplex', 3, modelTypes, [])
+        self.assertEqual(len(modelTypes[1].properties), 0)
+        self.assertEqual(modelTypes[1].extendsType, modelTypes[0])
+        self.assertEqual(len(modelTypes[0].properties), 3)
 
     def testTags(self):
         modelFile = 'resources/models/json/yacg_model_schema.json'
