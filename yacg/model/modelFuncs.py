@@ -786,12 +786,20 @@ def __printComplexTypeProperties(type, localTypePrefix):
     propertiesDict = {}
     requiredArray = []
     for p in type.properties:
+        propertiesDict[p.name] = {}
+        curDict = propertiesDict[p.name]
+        if p.isArray:
+            propertiesDict[p.name] = {}
+            curDict = propertiesDict[p.name]
+            for i in range(p.arrayDimensions):
+                curDict["type"] = "array"
+                curDict["items"] = {}
+                curDict = curDict["items"]
+
         if isinstance(p.type, model.ComplexType):
-            propertiesDict[p.name] = {}
-            propertiesDict[p.name]["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
+            curDict["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
         elif isinstance(p.type, model.EnumType):
-            propertiesDict[p.name] = {}
-            propertiesDict[p.name]["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
+            curDict["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
         else:
             propertiesDict[p.name] = typeToJSONDict(p.type, localTypePrefix)
         if p.required:
