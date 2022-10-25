@@ -1,3 +1,6 @@
+# 5.7.2
+* fix nomalizeSchema bug for missing
+
 # 5.7.1
 * harden 'initFromDict' for non dictionary types
 

@@ -1,0 +1,69 @@
+{
+    "asyncapi": "2.3.0",
+    "info": {
+      "version": "1.0.0"
+    },
+    "channels": {
+      "t.created": {
+        "publish": {
+          "message": {
+            "payload": {
+              "$ref": "./generic-t.json#definitions/TTT"
+            }
+          },
+          "bindings": {
+            "amqp": {
+              "exchange": {
+                "name": "generic-t.changes",
+                "type": "topic",
+                "durable": true,
+                "autoDelete": false
+              }
+            }
+          }
+        }
+      },
+      "t.updated": {
+        "publish": {
+          "message": {
+            "payload": {
+              "$ref": "./generic-t.json#definitions/TTT"
+            }
+          },
+          "bindings": {
+            "amqp": {
+              "exchange": {
+                "name": "generic-t.changes",
+                "type": "topic",
+                "durable": true,
+                "autoDelete": false
+              }
+            }
+          }
+        }
+      },
+      "t.deleted": {
+        "publish": {
+          "message": {
+            "payload": {
+              "$ref": "./generic-t.json#definitions/TTT"
+            }
+          },
+          "bindings": {
+            "amqp": {
+              "exchange": {
+                "name": "generic-t.changes",
+                "type": "topic",
+                "durable": true,
+                "autoDelete": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+      }
+    }
+  }

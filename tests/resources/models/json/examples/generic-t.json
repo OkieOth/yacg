@@ -1,0 +1,66 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "1.1.0",
+    "definitions": {
+      "TTT": {
+        "type": "object",
+        "properties": {
+          "guid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "x-tags": ["filter"]
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/TTTNode"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "TTTNode": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "./id_name_pair.json"
+          },
+          {
+            "properties": {
+              "yyy": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "subNodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/TTTSubNode"
+                },
+                "minItems": 0
+              },
+              "detectors": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/DDD"
+                },
+                "minItems": 0
+              }
+            }
+          }
+        ]
+      },
+      "TTTSubNode": {
+        "description": "representation of an intersection, all things are running in the same program",
+        "$ref": "../shared/id_name_pair.json"
+      },
+      "DDD": {
+        "description": "representation of an intersection, all things are running in the same program",
+        "$ref": "../shared/id_name_pair.json"
+      }
+    },
+    "type": "object"
+  }
+  
