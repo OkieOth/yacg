@@ -54,11 +54,11 @@
       },
       "TTTSubNode": {
         "description": "representation of an intersection, all things are running in the same program",
-        "$ref": "../shared/id_name_pair.json"
+        "$ref": "./id_name_pair.json"
       },
       "DDD": {
         "description": "representation of an intersection, all things are running in the same program",
-        "$ref": "../shared/id_name_pair.json"
+        "$ref": "./id_name_pair.json"
       }
     },
     "type": "object"

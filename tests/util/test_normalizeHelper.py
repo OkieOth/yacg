@@ -89,4 +89,7 @@ class TestNormalizeHelper (unittest.TestCase):
         self.assertIsNotNone(detectorsDict)
         self.assertIsNotNone(detectorsDict.get('items', None))
         self.assertEqual(detectorsDict.get("type", ""), "array")
-        pass
+        dddDict = schemasDict.get("DDD", None)
+        self.assertIsNotNone(dddDict)
+        dddAllOfArray = dddDict.get("allOf", None)
+        self.assertIsNotNone(dddAllOfArray)
