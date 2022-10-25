@@ -16,21 +16,21 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.ObjectType()
         self.assertIsNotNone(x)
 
-    def testIntegerType(self):
-        x = yacg.model.model.IntegerType()
-        self.assertIsNotNone(x)
-
     def testIntegerTypeFormatEnum(self):
         self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT32)
         self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT64)
 
-    def testNumberType(self):
-        x = yacg.model.model.NumberType()
+    def testIntegerType(self):
+        x = yacg.model.model.IntegerType()
         self.assertIsNotNone(x)
 
     def testNumberTypeFormatEnum(self):
         self.assertIsNotNone(yacg.model.model.NumberTypeFormatEnum.FLOAT)
         self.assertIsNotNone(yacg.model.model.NumberTypeFormatEnum.DOUBLE)
+
+    def testNumberType(self):
+        x = yacg.model.model.NumberType()
+        self.assertIsNotNone(x)
 
     def testBooleanType(self):
         x = yacg.model.model.BooleanType()
@@ -44,12 +44,12 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.UuidType()
         self.assertIsNotNone(x)
 
-    def testEnumType(self):
-        x = yacg.model.model.EnumType()
-        self.assertIsNotNone(x)
-
     def testTag(self):
         x = yacg.model.model.Tag()
+        self.assertIsNotNone(x)
+
+    def testEnumType(self):
+        x = yacg.model.model.EnumType()
         self.assertIsNotNone(x)
 
     def testDateType(self):
@@ -84,12 +84,12 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.DictionaryType()
         self.assertIsNotNone(x)
 
-    def testArrayType(self):
-        x = yacg.model.model.ArrayType()
-        self.assertIsNotNone(x)
-
     def testArrayConstraints(self):
         x = yacg.model.model.ArrayConstraints()
+        self.assertIsNotNone(x)
+
+    def testArrayType(self):
+        x = yacg.model.model.ArrayType()
         self.assertIsNotNone(x)
 
     def testForeignKey(self):

@@ -14,6 +14,12 @@ class ObjectType {
 note top: Straight out of hell -\na undefined object type
 
 ObjectType --|> Type
+enum IntegerTypeFormatEnum {
+    INT32
+    INT64
+}
+
+
 class IntegerType {
         IntegerTypeFormatEnum format
         IntegerType default
@@ -26,9 +32,9 @@ class IntegerType {
 note top: integer values
 
 IntegerType --|> Type
-enum IntegerTypeFormatEnum {
-    INT32
-    INT64
+enum NumberTypeFormatEnum {
+    FLOAT
+    DOUBLE
 }
 
 
@@ -44,12 +50,6 @@ class NumberType {
 note top: floating point values
 
 NumberType --|> Type
-enum NumberTypeFormatEnum {
-    FLOAT
-    DOUBLE
-}
-
-
 class BooleanType {
         BooleanType default
 }
@@ -74,6 +74,13 @@ class UuidType {
 note top: UUID values
 
 UuidType --|> Type
+class Tag {
+        StringType name
+        StringType value
+}
+
+note top: a tag type
+
 class EnumType {
         StringType version
         StringType name
@@ -90,13 +97,6 @@ class EnumType {
 note top: type for enum values -\nfixed value types
 
 EnumType --|> Type
-class Tag {
-        StringType name
-        StringType value
-}
-
-note top: a tag type
-
 class DateType {
         DateType default
         DateType minimum
@@ -194,6 +194,13 @@ class DictionaryType {
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
+class ArrayConstraints {
+        IntegerType arrayMinItems
+        IntegerType arrayMaxItems
+        BooleanType arrayUniqueItems
+}
+
+
 class ArrayType {
         StringType version
         StringType name
@@ -211,13 +218,6 @@ class ArrayType {
 note top: Array type
 
 ArrayType --|> Type
-class ArrayConstraints {
-        IntegerType arrayMinItems
-        IntegerType arrayMaxItems
-        BooleanType arrayUniqueItems
-}
-
-
 class ForeignKey {
         Type type
         StringType propertyName
@@ -227,6 +227,7 @@ class ForeignKey {
 note top: Type describes the reference of\na property to another field\nin the model
 
 
+    
     
     
     
@@ -249,7 +250,6 @@ NumberType  *--  NumberTypeFormatEnum
 
 
     
-    
 
     
 
@@ -257,6 +257,9 @@ NumberType  *--  NumberTypeFormatEnum
 
 
     
+
+    
+
 
     
 
@@ -270,9 +273,6 @@ NumberType  *--  NumberTypeFormatEnum
 
 EnumType "0" *-- "n" Tag
             
-
-    
-
 
     
 
@@ -354,6 +354,10 @@ DictionaryType "0" *-- "n" Tag
 
 
 
+    
+
+
+
 
 
 ArrayType "0" *-- "n" ComplexType
@@ -368,10 +372,6 @@ ArrayType "0" *-- "n" Tag
 
 ArrayType "0" *-- "n" ArrayConstraints
             
-
-
-    
-
 
 
     

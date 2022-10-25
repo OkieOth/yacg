@@ -13,7 +13,8 @@ class Type:
         pass
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -29,50 +30,12 @@ class ObjectType (Type):
         pass
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
-
-
-class IntegerType (Type):
-    """integer values
-    """
-
-    def __init__(self, dictObj=None):
-        super(Type, self).__init__()
-
-        self.format = None
-
-        self.default = None
-
-        self.minimum = None
-
-        self.exclusiveMinimum = None
-
-        self.maximum = None
-
-        self.exclusiveMaximum = None
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.format = IntegerTypeFormatEnum.valueForString(dictObj.get('format', None))
-
-        self.default = dictObj.get('default', None)
-
-        self.minimum = dictObj.get('minimum', None)
-
-        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
-
-        self.maximum = dictObj.get('maximum', None)
-
-        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
 class IntegerTypeFormatEnum(Enum):
@@ -104,8 +67,8 @@ class IntegerTypeFormatEnum(Enum):
 
 
 
-class NumberType (Type):
-    """floating point values
+class IntegerType (Type):
+    """integer values
     """
 
     def __init__(self, dictObj=None):
@@ -124,13 +87,14 @@ class NumberType (Type):
         self.exclusiveMaximum = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
 
-        self.format = NumberTypeFormatEnum.valueForString(dictObj.get('format', None))
+        self.format = IntegerTypeFormatEnum.valueForString(dictObj.get('format', None))
 
         self.default = dictObj.get('default', None)
 
@@ -172,6 +136,46 @@ class NumberTypeFormatEnum(Enum):
 
 
 
+class NumberType (Type):
+    """floating point values
+    """
+
+    def __init__(self, dictObj=None):
+        super(Type, self).__init__()
+
+        self.format = None
+
+        self.default = None
+
+        self.minimum = None
+
+        self.exclusiveMinimum = None
+
+        self.maximum = None
+
+        self.exclusiveMaximum = None
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.format = NumberTypeFormatEnum.valueForString(dictObj.get('format', None))
+
+        self.default = dictObj.get('default', None)
+
+        self.minimum = dictObj.get('minimum', None)
+
+        self.exclusiveMinimum = dictObj.get('exclusiveMinimum', None)
+
+        self.maximum = dictObj.get('maximum', None)
+
+        self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
+
+
 class BooleanType (Type):
     """boolean values
     """
@@ -182,7 +186,8 @@ class BooleanType (Type):
         self.default = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -207,7 +212,8 @@ class StringType (Type):
         self.pattern = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -232,13 +238,37 @@ class UuidType (Type):
         self.default = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
 
         self.default = dictObj.get('default', None)
+
+
+class Tag:
+    """a tag type
+    """
+
+    def __init__(self, dictObj=None):
+
+        self.name = None
+
+        self.value = None
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.name = dictObj.get('name', None)
+
+        self.value = dictObj.get('value', None)
 
 
 class EnumType (Type):
@@ -274,7 +304,8 @@ class EnumType (Type):
         self.tags = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -306,28 +337,6 @@ class EnumType (Type):
                 Tag(elemTags))
 
 
-class Tag:
-    """a tag type
-    """
-
-    def __init__(self, dictObj=None):
-
-        self.name = None
-
-        self.value = None
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.name = dictObj.get('name', None)
-
-        self.value = dictObj.get('value', None)
-
-
 class DateType (Type):
     """type for date values
     """
@@ -346,7 +355,8 @@ class DateType (Type):
         self.exclusiveMaximum = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -381,7 +391,8 @@ class TimeType (Type):
         self.exclusiveMaximum = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -416,7 +427,8 @@ class DateTimeType (Type):
         self.exclusiveMaximum = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -443,7 +455,8 @@ class DurationType (Type):
         self.default = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -462,7 +475,8 @@ class BytesType (Type):
         self.default = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -509,7 +523,8 @@ class ComplexType (Type):
         self.tags = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -674,7 +689,8 @@ class DictionaryType (Type):
         self.tags = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -705,6 +721,33 @@ class DictionaryType (Type):
         for elemTags in arrayTags:
             self.tags.append(
                 Tag(elemTags))
+
+
+class ArrayConstraints:
+    def __init__(self, dictObj=None):
+
+        #: defined minimum of elements in the array/list
+        self.arrayMinItems = None
+
+        #: defined maximum of elements in the array/list
+        self.arrayMaxItems = None
+
+        #: the elements in the array/list have to be unique
+        self.arrayUniqueItems = False
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.arrayMinItems = dictObj.get('arrayMinItems', None)
+
+        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
+
+        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', False)
 
 
 class ArrayType (Type):
@@ -744,7 +787,8 @@ class ArrayType (Type):
         self.arrayDimensions = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -784,32 +828,6 @@ class ArrayType (Type):
         self.arrayDimensions = dictObj.get('arrayDimensions', None)
 
 
-class ArrayConstraints:
-    def __init__(self, dictObj=None):
-
-        #: defined minimum of elements in the array/list
-        self.arrayMinItems = None
-
-        #: defined maximum of elements in the array/list
-        self.arrayMaxItems = None
-
-        #: the elements in the array/list have to be unique
-        self.arrayUniqueItems = False
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.arrayMinItems = dictObj.get('arrayMinItems', None)
-
-        self.arrayMaxItems = dictObj.get('arrayMaxItems', None)
-
-        self.arrayUniqueItems = dictObj.get('arrayUniqueItems', False)
-
-
 class ForeignKey:
     """Type describes the reference of a property to another field in the model
     """
@@ -823,7 +841,8 @@ class ForeignKey:
         self.property = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:

@@ -25,8 +25,12 @@ class OperationBase:
         #: amqp 0.9.1 related binding parameters
         self.amqpBindings = None
 
+        #: covers the responded message in RPC style communication, custom extension
+        self.xResponseMessage = None
+
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -45,6 +49,10 @@ class OperationBase:
         subDictObj = dictObj.get('amqpBindings', None)
         if subDictObj is not None:
             self.amqpBindings = OperationBindingsAmqp(subDictObj)
+
+        subDictObj = dictObj.get('xResponseMessage', None)
+        if subDictObj is not None:
+            self.xResponseMessage = Message(subDictObj)
 
 
 class Message:
@@ -71,7 +79,8 @@ class Message:
         self.description = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -112,7 +121,8 @@ class OperationBindingsAmqp:
         self.replyTo = "amq.rabbitmq.reply-to"
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -136,7 +146,8 @@ class AsyncApiInfo (yacg.model.shared.info.InfoSection):
         pass
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -160,7 +171,8 @@ class AsyncApiServer:
         self.protocolVersion = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -196,7 +208,8 @@ class Channel:
         self.amqpBindings = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -213,7 +226,7 @@ class Channel:
 
         subDictObj = dictObj.get('publish', None)
         if subDictObj is not None:
-            self.publish = PublishOperation(subDictObj)
+            self.publish = OperationBase(subDictObj)
 
         subDictObj = dictObj.get('subscribe', None)
         if subDictObj is not None:
@@ -237,7 +250,8 @@ class Parameter:
         self.type = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -248,28 +262,6 @@ class Parameter:
         self.description = dictObj.get('description', None)
 
         self.type = dictObj.get('type', None)
-
-
-class PublishOperation (OperationBase):
-    """Configuration parameter needed for publishing
-    """
-
-    def __init__(self, dictObj=None):
-        super(OperationBase, self).__init__()
-
-        #: covers the responded message in RPC style communication, custom extension
-        self.xResponseMessage = None
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        subDictObj = dictObj.get('xResponseMessage', None)
-        if subDictObj is not None:
-            self.xResponseMessage = Message(subDictObj)
 
 
 class ChannelBindingsAmqp:
@@ -288,7 +280,8 @@ class ChannelBindingsAmqp:
         self.exchange = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -322,7 +315,8 @@ class ChannelBindingsAmqpExchange:
         self.autoDelete = False
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -396,7 +390,8 @@ class ChannelBindingsAmqpQueue:
         self.autoDelete = False
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -449,7 +444,8 @@ class Payload:
         self.isArray = False
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -478,7 +474,8 @@ class MessageBindingsAmqp:
         self.messageType = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -497,7 +494,8 @@ class AsyncApiHeaders (yacg.model.model.ComplexType):
         pass
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:

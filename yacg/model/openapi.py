@@ -15,7 +15,8 @@ class OpenApiServer:
         self.description = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -32,38 +33,12 @@ class OpenApiInfo (yacg.model.shared.info.InfoSection):
         pass
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
-
-
-class PathType (yacg.model.model.Type):
-    """base type that contains all REST path information
-    """
-
-    def __init__(self, dictObj=None):
-        super(yacg.model.model.Type, self).__init__()
-
-        #: REST path with parameter pattern if existing
-        self.pathPattern = None
-
-        self.commands = []
-
-        if dictObj is not None:
-            self.initFromDict(dictObj)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.pathPattern = dictObj.get('pathPattern', None)
-
-        arrayCommands = dictObj.get('commands', [])
-        for elemCommands in arrayCommands:
-            self.commands.append(
-                Command(elemCommands))
 
 
 class Command:
@@ -94,7 +69,8 @@ class Command:
         self.security = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -129,6 +105,34 @@ class Command:
         subDictObj = dictObj.get('security', None)
         if subDictObj is not None:
             self.security = CommandSecurity(subDictObj)
+
+
+class PathType (yacg.model.model.Type):
+    """base type that contains all REST path information
+    """
+
+    def __init__(self, dictObj=None):
+        super(yacg.model.model.Type, self).__init__()
+
+        #: REST path with parameter pattern if existing
+        self.pathPattern = None
+
+        self.commands = []
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.pathPattern = dictObj.get('pathPattern', None)
+
+        arrayCommands = dictObj.get('commands', [])
+        for elemCommands in arrayCommands:
+            self.commands.append(
+                Command(elemCommands))
 
 
 class CommandCommandEnum(Enum):
@@ -204,7 +208,8 @@ class Parameter:
         self.type = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -240,7 +245,8 @@ class RequestBody:
         self.content = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -270,7 +276,8 @@ class Response:
         self.content = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -292,7 +299,8 @@ class CommandSecurity:
         self.scopes = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -315,7 +323,8 @@ class ContentEntry:
         self.isArray = False
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:

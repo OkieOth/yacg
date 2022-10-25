@@ -38,10 +38,6 @@ class TestYacgAsyncapiModel (unittest.TestCase):
         x = yacg.model.asyncapi.Parameter()
         self.assertIsNotNone(x)
 
-    def testPublishOperation(self):
-        x = yacg.model.asyncapi.PublishOperation()
-        self.assertIsNotNone(x)
-
     def testChannelBindingsAmqp(self):
         x = yacg.model.asyncapi.ChannelBindingsAmqp()
         self.assertIsNotNone(x)
