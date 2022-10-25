@@ -24,7 +24,8 @@ class Job:
         self.tasks = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -64,7 +65,8 @@ class Model:
         self.whiteListed = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -113,7 +115,8 @@ class Task:
         self.randomDataTask = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -159,7 +162,8 @@ class BlackWhiteListEntry:
         self.type = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -235,7 +239,8 @@ class SingleFileTask:
         self.templateParams = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -273,7 +278,8 @@ class TemplateParam:
         self.requiredNames = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -333,7 +339,8 @@ class MultiFileTask:
         self.createTmpFileIfAlreadyExist = False
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -429,7 +436,8 @@ class RandomDataTask:
         self.specialMaxDepths = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -521,7 +529,8 @@ class RandomDataTaskSpecialElemCounts:
         self.maxElemCount = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -544,7 +553,8 @@ class RandomDataTaskSpecialKeyPropNames:
         self.keyPropName = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -567,7 +577,8 @@ class RandomDataTaskValuePools:
         self.values = []
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -595,7 +606,8 @@ class RandomDataTaskSpecialArraySizes:
         self.maxSize = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -618,7 +630,8 @@ class RandomDataTaskSpecialMaxDepths:
         self.maxDepth = None
 
         if dictObj is not None:
-            self.initFromDict(dictObj)
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
 
     def initFromDict(self, dictObj):
         if dictObj is None:

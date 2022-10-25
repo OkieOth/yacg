@@ -1423,7 +1423,7 @@ def _parseAsyncApiChannelPublish(modelTypes, channelDict, channelType, modelFile
     publishDict = channelDict.get("publish", None)
     if publishDict is None:
         return
-    publishObj = asyncapi.PublishOperation()
+    publishObj = asyncapi.OperationBase()
     channelType.publish = publishObj
     __parseAsyncApiOperationBase(modelTypes, publishObj, publishDict, channelType, modelFileContainer)
     channelType.publish.xResponseMessage = _parseAsyncApiOperationMessage(publishDict, modelTypes, publishObj, modelFileContainer, "x-responseMessage")  # noqa: E501

@@ -18,12 +18,12 @@ class TestYacgOpenapiModel (unittest.TestCase):
         x = yacg.model.openapi.OpenApiInfo()
         self.assertIsNotNone(x)
 
-    def testPathType(self):
-        x = yacg.model.openapi.PathType()
-        self.assertIsNotNone(x)
-
     def testCommand(self):
         x = yacg.model.openapi.Command()
+        self.assertIsNotNone(x)
+
+    def testPathType(self):
+        x = yacg.model.openapi.PathType()
         self.assertIsNotNone(x)
 
     def testCommandCommandEnum(self):

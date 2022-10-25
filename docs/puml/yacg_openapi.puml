@@ -14,14 +14,6 @@ class OpenApiInfo {
 
 
 OpenApiInfo --|> InfoSection
-class PathType {
-        StringType pathPattern
-        Command[] commands
-}
-
-note top: base type that contains all\nREST path information
-
-PathType --|> Type
 class Command {
         CommandCommandEnum command
         StringType[] tags
@@ -36,6 +28,14 @@ class Command {
 
 note top: information to a specific HTTP\ncommand
 
+class PathType {
+        StringType pathPattern
+        Command[] commands
+}
+
+note top: base type that contains all\nREST path information
+
+PathType --|> Type
 enum CommandCommandEnum {
     GET
     PUT
@@ -99,11 +99,6 @@ enum ParameterInTypeEnum {
 
     
     
-
-PathType "0" *-- "n" Command
-            
-
-    
 Command  *--  CommandCommandEnum
             
 
@@ -121,6 +116,11 @@ Command "0" *-- "n" Response
             
 
 Command  *--  CommandSecurity
+            
+
+    
+
+PathType "0" *-- "n" Command
             
 
     

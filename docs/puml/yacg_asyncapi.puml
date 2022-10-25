@@ -9,6 +9,7 @@ class OperationBase {
         StringType description
         Message message
         OperationBindingsAmqp amqpBindings
+        Message xResponseMessage
 }
 
 
@@ -52,7 +53,7 @@ class Channel {
         StringType key
         StringType description
         Parameter[] parameters
-        PublishOperation publish
+        OperationBase publish
         OperationBase subscribe
         ChannelBindingsAmqp amqpBindings
 }
@@ -67,13 +68,6 @@ class Parameter {
 
 note top: Parameters contained in the channel\nkey
 
-class PublishOperation {
-        Message xResponseMessage
-}
-
-note top: Configuration parameter needed for publishing
-
-PublishOperation --|> OperationBase
 class ChannelBindingsAmqp {
         StringType name
         ChannelBindingsAmqpIsTypeEnum isType
@@ -146,6 +140,7 @@ OperationBase  *--  Message
 OperationBase  *--  OperationBindingsAmqp
             
 
+
     
 
 Message  *--  Payload
@@ -177,11 +172,9 @@ Message  *--  AsyncApiHeaders
 Channel "0" *-- "n" Parameter
             
 
-Channel  *--  PublishOperation
-            
-
 Channel  *--  OperationBase
             
+
 
 Channel  *--  ChannelBindingsAmqp
             
@@ -189,10 +182,6 @@ Channel  *--  ChannelBindingsAmqp
     
 
 
-
-    
-PublishOperation  *--  Message
-            
 
     
 

@@ -1,3 +1,6 @@
+# 5.7.1
+* harden 'initFromDict' for non dictionary types
+
 # 5.7.0
 * add types with top-level '$ref' entry
 * allow allOf for inner types
