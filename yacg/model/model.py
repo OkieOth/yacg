@@ -291,6 +291,11 @@ class EnumType (Type):
 
         self.description = None
 
+        #: either a basic or a complex type
+        self.type = None
+
+        self.numValues = []
+
         self.values = []
 
         #: additional enum values
@@ -320,6 +325,14 @@ class EnumType (Type):
         self.source = dictObj.get('source', None)
 
         self.description = dictObj.get('description', None)
+
+        subDictObj = dictObj.get('type', None)
+        if subDictObj is not None:
+            self.type = Type(subDictObj)
+
+        arrayNumValues = dictObj.get('numValues', [])
+        for elemNumValues in arrayNumValues:
+            self.numValues.append(elemNumValues)
 
         arrayValues = dictObj.get('values', [])
         for elemValues in arrayValues:
