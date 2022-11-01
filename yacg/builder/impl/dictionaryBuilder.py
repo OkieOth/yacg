@@ -6,6 +6,7 @@ of JSON and YAML sources.
 
 import logging
 import os.path
+import string
 import urllib.request
 import json
 import yaml
@@ -111,7 +112,9 @@ def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
     if enumEntry is not None:
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
-        mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
+        typeStr = parsedSchema.get('type', None)
+        formatStr = parsedSchema.get('format', None)
+        mainType = _extractEnumType(typeNameStr, None, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
         __initEnumValues(mainType, parsedSchema)
         mainType.topLevelType = True
@@ -124,7 +127,9 @@ def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
     if enumEntry is not None:
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
-        mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
+        typeStr = parsedSchema.get('type', None)
+        formatStr = parsedSchema.get('format', None)
+        mainType = _extractEnumType(typeNameStr, None, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
         __initTags(mainType, parsedSchema)
         __initEnumValues(mainType, parsedSchema)
         mainType.topLevelType = True
@@ -294,7 +299,9 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
     if enumEntry is not None:
         titleStr = modelFileContainer.parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr)
-        mainType = _extractEnumType(typeNameStr, None, enumEntry, modelTypes, modelFileContainer)
+        typeStr = modelFileContainer.parsedSchema.get('type', None)
+        formatStr = modelFileContainer.parsedSchema.get('format', None)
+        mainType = _extractEnumType(typeNameStr, None, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
         __initTags(mainType, modelFileContainer.parsedSchema)
         __initEnumValues(mainType, modelFileContainer.parsedSchema)
 
@@ -330,7 +337,9 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
 
         enumEntry = object.get('enum', None)
         if enumEntry is not None:
-            mainType = _extractEnumType(key, None, enumEntry, modelTypes, modelFileContainer)
+            typeStr = object.get('type', None)
+            formatStr = object.get('format', None)
+            mainType = _extractEnumType(key, None, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
             __initTags(mainType, object)
             __initEnumValues(mainType, object)
         else:
@@ -550,7 +559,9 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
         refEntry = propDict.get('$ref', None)
         enumEntry = propDict.get('enum', None)
         if enumEntry is not None:
-            enumType = _extractEnumType(newTypeName, newProperty, enumEntry, modelTypes, modelFileContainer)
+            typeStr = propDict.get('type', None)
+            formatStr = propDict.get('format', None)
+            enumType = _extractEnumType(newTypeName, newProperty, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
             __initTags(enumType, propDict)
             __initEnumValues(enumType, propDict)
             return enumType
@@ -963,7 +974,9 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
     if (formatValue is None) and (enumValue is None):
         return StringType()
     elif enumValue is not None:
-        enumType = _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileContainer)
+        typeStr = propDict.get('type', None)
+        formatStr = propDict.get('format', None)
+        enumType = _extractEnumType(newTypeName, newProperty, enumValue, typeStr, formatStr, modelTypes, modelFileContainer)
         __initTags(enumType, propDict)
         __initEnumValues(enumType, propDict)
         return enumType
@@ -986,7 +999,7 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
         return StringType()
 
 
-def _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileContainer):
+def _extractEnumType(newTypeName, newProperty, enumValue, typeStr, formatStr, modelTypes, modelFileContainer):
     """extract the specific string type depending on the given format
     and return the specific type
 
@@ -1014,7 +1027,41 @@ def _extractEnumType(newTypeName, newProperty, enumValue, modelTypes, modelFileC
     enumType = EnumType()
     enumType.domain = modelFileContainer.domain
     enumType.name = enumTypeName
-    enumType.values = enumValue
+    if len(enumValue) > 0: 
+        if isinstance(enumValue[0], str):
+            enumType.values = enumValue
+        elif isinstance(enumValue[0], int):
+            enumType.numValues = enumValue
+            enumType.type = IntegerType()
+        elif isinstance(enumValue[0], float):
+            enumType.numValues = enumValue
+            enumType.type = NumberType()
+        else:
+            enumType.values = enumValue
+
+    if typeStr == 'integer':
+        enumType.type = IntegerType()
+        enumType.type.format = IntegerTypeFormatEnum.valueForString(formatStr)
+    elif typeStr == 'number':
+        enumType.type = NumberType()
+        enumType.type.format = NumberTypeFormatEnum.valueForString(formatStr)
+    elif typeStr == 'string':
+        # DateType, TimeType, DateTimeType, StringType, EnumType, DurationType
+        if formatStr == 'date':
+            enumType.type = DateType()
+        elif formatStr == 'time':
+            enumType.type = TimeType()
+        elif formatStr == 'date-time':
+            enumType.type = DateTimeType()
+        elif formatStr == 'duration':
+            enumType.type = DurationType()
+        elif formatStr == 'uuid':
+            enumType.type = UuidType()
+        elif formatStr == 'byte':
+            enumType.type = BytesType()
+        else:
+            enumType.type = StringType()
+
     enumType.source = modelFileContainer.fileName
     enumType.version = modelFileContainer.version
     if alreadyCreatedType is not None:

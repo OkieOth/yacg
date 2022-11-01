@@ -1,0 +1,24 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Float Demo",
+	"enum": [
+		0.4, 2.3, 3.5, 4.2
+	],
+	"definitions": {
+		"DateTimeEnum": {
+			"type": "string",
+			"format": "date-time",
+			"enum": ["2020-01-02 00:00:00", "2020-01-03 00:00:01"]
+		},
+		"DateEnum": {
+			"type": "string",
+			"format": "date",
+			"enum": ["2020-02-02", "2020-02-03", "2020-02-04"]
+		},
+		"TimeEnum": {
+			"type": "string",
+			"format": "time",
+			"enum": ["00:10:00", "00:20:00", "00:30:00", "00:40:00"]
+		}
+	}
+}

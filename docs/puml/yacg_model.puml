@@ -87,6 +87,8 @@ class EnumType {
         StringType domain
         StringType source
         StringType description
+        Type type
+        NumberType[] numValues
         StringType[] values
         Map<StringType> valuesMap
         StringType default
@@ -265,6 +267,10 @@ NumberType  *--  NumberTypeFormatEnum
 
 
 
+
+
+EnumType  *--  Type
+            
 
 
 
