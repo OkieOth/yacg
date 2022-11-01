@@ -195,6 +195,19 @@
                         "description": {
                             "type": "string"
                         },
+                        "type": {
+                            "description": "either a basic or a complex type",
+                            "$ref": "#/definitions/Type",
+                            "x-tags": [
+                                "constructorValue"
+                            ]
+                        },
+                        "numValues": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        },
                         "values": {
                             "type": "array",
                             "items": {
