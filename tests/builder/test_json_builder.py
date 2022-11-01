@@ -2,7 +2,7 @@ import unittest
 import os.path
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
-from yacg.model.model import DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum, ObjectType
+from yacg.model.model import DateType, DictionaryType, IntegerType, NumberType, NumberTypeFormatEnum, ObjectType, TimeType
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType, ArrayType
@@ -447,6 +447,46 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(modelTypes[0], EnumType)
         self.assertIsNotNone(modelTypes[0].valuesMap)
         self.assertEqual('true', modelTypes[0].valuesMap['1'])
+
+    def testEvilIntEnum(self):
+        modelFile = 'tests/resources/models/json/examples/evil_int_enum.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNotNone(modelTypes[0].type)
+        self.assertTrue(isinstance(modelTypes[0].type, IntegerType))
+        self.assertEqual(len(modelTypes[0].numValues), 3)
+        self.assertEqual(modelTypes[0].numValues[0], 1)
+        self.assertEqual(modelTypes[0].numValues[1], 2)
+        self.assertEqual(modelTypes[0].numValues[2], 3)
+
+    def testEvilFloatEnum(self):
+        modelFile = 'tests/resources/models/json/examples/evil_float_enum.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertEqual(len(modelTypes), 4)
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNotNone(modelTypes[0].type)
+        self.assertTrue(isinstance(modelTypes[0].type, NumberType))
+        self.assertEqual(len(modelTypes[0].numValues), 4)
+        self.assertEqual(modelTypes[0].numValues[0], 0.4)
+        self.assertEqual(modelTypes[0].numValues[1], 2.3)
+        self.assertEqual(modelTypes[0].numValues[2], 3.5)
+        self.assertEqual(modelTypes[0].numValues[3], 4.2)
+
+        self.assertTrue(isinstance(modelTypes[1].type, DateTimeType))
+        self.assertEqual(len(modelTypes[1].values), 2)
+        self.assertTrue(isinstance(modelTypes[2].type, DateType))
+        self.assertEqual(len(modelTypes[2].values), 3)
+        self.assertTrue(isinstance(modelTypes[3].type, TimeType))
+        self.assertEqual(len(modelTypes[3].values), 4)
+
 
     def testEvilArray(self):
         modelFile = 'tests/resources/models/json/examples/evil_array.json'

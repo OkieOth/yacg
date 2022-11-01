@@ -1,3 +1,6 @@
+# 5.8.0
+* enable additional enum types: numeric, date, date-time, uuid, time
+
 # 5.7.2
 * fix nomalizeSchema bug for missing
 

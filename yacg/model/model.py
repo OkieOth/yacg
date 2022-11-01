@@ -291,7 +291,7 @@ class EnumType (Type):
 
         self.description = None
 
-        #: either a basic or a complex type
+        #: only a string or numeric type make sense
         self.type = None
 
         self.numValues = []
