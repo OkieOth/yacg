@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg inner type model",
     "description": "model types used internally to provide loaded models for the code generators",
-    "version": "5.6.0",
+    "version": "5.6.1",
     "x-domain": "yacg.model.model",
     "definitions": {
         "Type": {
@@ -196,7 +196,7 @@
                             "type": "string"
                         },
                         "type": {
-                            "description": "either a basic or a complex type",
+                            "description": "only a string or numeric type make sense",
                             "$ref": "#/definitions/Type",
                             "x-tags": [
                                 "constructorValue"
