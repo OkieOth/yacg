@@ -621,7 +621,8 @@ def _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileC
             tmpProperty.name = newProperty.name
             retType = _extractAttribType(newTypeName, tmpProperty, itemsDict, modelTypes, modelFileContainer)
             if tmpProperty.isArray:
-                newProperty.arrayDimensions = len(newProperty.arrayConstraints) + tmpProperty.arrayDimensions
+                newProperty.arrayConstraints.extend(tmpProperty.arrayConstraints)
+                newProperty.arrayDimensions = len(newProperty.arrayConstraints)
             return retType
 
 
