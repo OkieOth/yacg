@@ -861,6 +861,37 @@ def _appendToAlreadyLoadedTypes(newType, alreadyLoadedModelTypes):
     return True
 
 
+def _createDummyReference(definitions, refTypeName, parsedSchema, modelTypes, modelFileContainer):
+    if definitions is None:
+        return ComplexType()
+    for key in definitions.keys():
+        if key != refTypeName:
+            continue
+        ret = None
+        object = definitions[key]
+        if object.get('properties', None) is not None:
+            ret = ComplexType()
+        if object.get('allOf', None) is not None:
+            return ComplexType()
+        if __getAdditionalPropertiesForDictionaryType(object) is not None:
+            ret = DictionaryType()
+        if object.get('enum', None) is not None:
+            ret = EnumType()
+        if ret is not None:
+            #modelTypes.append(ret)
+            return ret
+        if object.get('items', None) is not None:
+            # eiko
+            tmpModelTypes = []
+            if __extractPureArrayType(refTypeName, object, tmpModelTypes, modelFileContainer):
+                for t in tmpModelTypes:
+                    if t.name == refTypeName:
+                        #modelTypes.append(t)
+                        return t
+            return ArrayType()
+    return ComplexType()
+
+
 def _extractInternalReferenceType(refTypeName, modelTypes, modelFileContainer):
     """builds or relaod a type reference in the current file
     and return it.
@@ -877,7 +908,21 @@ def _extractInternalReferenceType(refTypeName, modelTypes, modelFileContainer):
     alreadyCreatedType = _getAlreadyCreatedTypesWithThatName(refTypeName, modelTypes, modelFileContainer)
     if alreadyCreatedType is not None:
         return alreadyCreatedType
-    dummyReference = ComplexType()
+
+    schemaDefinitions = modelFileContainer.parsedSchema.get('definitions', None)
+    if schemaDefinitions is not None:
+        # extract types from extra definitions section
+        dummyReference = _createDummyReference(schemaDefinitions, refTypeName, modelFileContainer.parsedSchema, modelTypes, modelFileContainer)
+    else:
+        componentsDict = modelFileContainer.parsedSchema.get('components', None)
+        if componentsDict is not None:
+            schemas = componentsDict.get('schemas', None)
+            if schemas is not None:
+                # extract types from extra components section (OpenApi v3)
+                dummyReference = _createDummyReference(schemaDefinitions, refTypeName, modelFileContainer.parsedSchema, modelTypes, modelFileContainer)
+
+    ## THIS doesn't work for ArrayTypes :-/
+    # dummyReference = ComplexType()
     dummyReference.domain = modelFileContainer.domain
     dummyReference.name = refTypeName
     dummyReference.source = modelFileContainer.fileName
