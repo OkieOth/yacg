@@ -690,6 +690,88 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(refType.properties[2].type.name, 'InnerDictionaryType')
         self.assertTrue(isinstance(refType.properties[2].type, DictionaryType))
 
+    def testMultiDimensionalArraysConstraints(self):
+        modelFile = 'tests/resources/models/yaml/examples/layer_small.yaml'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(len(modelTypes), 4)
+        self.assertEqual(modelTypes[0].arrayDimensions, 1)
+        self.assertEqual(len(modelTypes[0].arrayConstraints), 1)
+        self.assertEqual(modelTypes[0].arrayConstraints[0].arrayMinItems, 2)
+        self.assertEqual(modelTypes[0].arrayConstraints[0].arrayMaxItems, 2)
+
+        self.assertEqual(modelTypes[1].arrayDimensions, 2)
+        self.assertEqual(len(modelTypes[1].arrayConstraints), 2)
+        self.assertIsNone(modelTypes[1].arrayConstraints[0].arrayMinItems)
+        self.assertIsNone(modelTypes[1].arrayConstraints[0].arrayMaxItems)
+        self.assertEqual(modelTypes[1].arrayConstraints[1].arrayMinItems, 2)
+        self.assertEqual(modelTypes[1].arrayConstraints[1].arrayMaxItems, 2)
+
+        self.assertEqual(modelTypes[2].arrayDimensions, 3)
+        self.assertEqual(len(modelTypes[2].arrayConstraints), 3)
+        self.assertIsNone(modelTypes[2].arrayConstraints[0].arrayMinItems)
+        self.assertIsNone(modelTypes[2].arrayConstraints[0].arrayMaxItems)
+        self.assertIsNone(modelTypes[2].arrayConstraints[1].arrayMinItems)
+        self.assertIsNone(modelTypes[2].arrayConstraints[1].arrayMaxItems)
+        self.assertEqual(modelTypes[2].arrayConstraints[2].arrayMinItems, 2)
+        self.assertEqual(modelTypes[2].arrayConstraints[2].arrayMaxItems, 2)
+
+        self.assertEqual(modelTypes[3].arrayDimensions, 4)
+        self.assertEqual(len(modelTypes[3].arrayConstraints), 4)
+        self.assertIsNone(modelTypes[3].arrayConstraints[0].arrayMinItems)
+        self.assertIsNone(modelTypes[3].arrayConstraints[0].arrayMaxItems)
+        self.assertIsNone(modelTypes[3].arrayConstraints[1].arrayMinItems)
+        self.assertIsNone(modelTypes[3].arrayConstraints[1].arrayMaxItems)
+        self.assertIsNone(modelTypes[3].arrayConstraints[2].arrayMinItems)
+        self.assertIsNone(modelTypes[3].arrayConstraints[2].arrayMaxItems)
+        self.assertEqual(modelTypes[3].arrayConstraints[3].arrayMinItems, 2)
+        self.assertEqual(modelTypes[3].arrayConstraints[3].arrayMaxItems, 2)
+
+    def testMultiDimensionalArraysConstraintsMixed(self):
+        modelFile = 'tests/resources/models/yaml/examples/layer_small2.yaml'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(len(modelTypes), 4)
+        self.assertEqual(modelTypes[0].arrayDimensions, 3)
+        self.assertEqual(len(modelTypes[0].arrayConstraints), 3)
+        self.assertIsNone(modelTypes[0].arrayConstraints[0].arrayMinItems)
+        self.assertIsNone(modelTypes[0].arrayConstraints[0].arrayMaxItems)
+        self.assertIsNone(modelTypes[0].arrayConstraints[1].arrayMinItems)
+        self.assertIsNone(modelTypes[0].arrayConstraints[1].arrayMaxItems)
+        self.assertEqual(modelTypes[0].arrayConstraints[2].arrayMinItems, 2)
+        self.assertEqual(modelTypes[0].arrayConstraints[2].arrayMaxItems, 2)
+
+        self.assertEqual(modelTypes[1].arrayDimensions, 4)
+        self.assertEqual(len(modelTypes[1].arrayConstraints), 4)
+        self.assertIsNone(modelTypes[1].arrayConstraints[0].arrayMinItems)
+        self.assertIsNone(modelTypes[1].arrayConstraints[0].arrayMaxItems)
+        self.assertIsNone(modelTypes[1].arrayConstraints[1].arrayMinItems)
+        self.assertIsNone(modelTypes[1].arrayConstraints[1].arrayMaxItems)
+        self.assertIsNone(modelTypes[1].arrayConstraints[2].arrayMinItems)
+        self.assertIsNone(modelTypes[1].arrayConstraints[2].arrayMaxItems)
+        self.assertEqual(modelTypes[1].arrayConstraints[3].arrayMinItems, 2)
+        self.assertEqual(modelTypes[1].arrayConstraints[3].arrayMaxItems, 2)
+
+        self.assertEqual(modelTypes[2].arrayDimensions, 1)
+        self.assertEqual(len(modelTypes[2].arrayConstraints), 1)
+        self.assertEqual(modelTypes[2].arrayConstraints[0].arrayMinItems, 2)
+        self.assertEqual(modelTypes[2].arrayConstraints[0].arrayMaxItems, 2)
+
+        self.assertEqual(modelTypes[3].arrayDimensions, 2)
+        self.assertEqual(len(modelTypes[3].arrayConstraints), 2)
+        self.assertIsNone(modelTypes[3].arrayConstraints[0].arrayMinItems)
+        self.assertIsNone(modelTypes[3].arrayConstraints[0].arrayMaxItems)
+        self.assertEqual(modelTypes[3].arrayConstraints[1].arrayMinItems, 2)
+        self.assertEqual(modelTypes[3].arrayConstraints[1].arrayMaxItems, 2)
+
     def testMultiDimensionalArrays(self):
         modelFile = 'resources/models/yaml/layer.yaml'
         modelFileExists = os.path.isfile(modelFile)

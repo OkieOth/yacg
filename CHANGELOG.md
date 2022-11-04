@@ -1,3 +1,6 @@
+# 5.8.1
+* fix bug with array constraints for nested arrays
+
 # 5.8.0
 * enable additional enum types: numeric, date, date-time, uuid, time
 
