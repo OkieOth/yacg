@@ -6,7 +6,7 @@
     import yacg.util.stringUtils as stringUtils
 
     templateFile = 'golang.mako'
-    templateVersion = '1.0.0'
+    templateVersion = '1.0.1'
 
     packageName = templateParameters.get('modelPackage','<<PLEASE SET modelPackage TEMPLATE PARAM>>')
 
@@ -64,7 +64,7 @@
 
     def secureEnumValues(value):
         pattern = re.compile("^[0-9]")
-        return '_' + value if pattern.match(value) else ret
+        return '_' + value if pattern.match(value) else value
 
     def isEnumDefaultValue(value, type):
         return getEnumDefaultValue(type) == secureEnumValues(value)
