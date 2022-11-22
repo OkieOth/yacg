@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "yacg file configuration",
   "description": "description of the file configuration for yacg",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "x-domain": "yacg.model.config",
   "definitions": {
     "Job": {

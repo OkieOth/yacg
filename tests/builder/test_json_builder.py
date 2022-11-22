@@ -74,7 +74,7 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(16, len(modelTypes))
+        self.assertEqual(10, len(modelTypes))
 
         self._checkUpType(0, 'Job', 4, modelTypes, ['models', 'tasks'])
         self._checkUpType(1, 'Model', 4, modelTypes, [])
@@ -85,7 +85,6 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(6, 'TemplateParam', 5, modelTypes, ['name', 'value'])
         self._checkUpType(7, 'MultiFileTask', 10, modelTypes, [])
         self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes, [])
-        self._checkUpType(9, 'RandomDataTask', 13, modelTypes, [], ('keyProperties', 'valuePools', 'arrays'))
 
     def testDoesTypeOrAttribContainsType(self):
         modelFile = 'resources/models/json/yacg_config_schema.json'
