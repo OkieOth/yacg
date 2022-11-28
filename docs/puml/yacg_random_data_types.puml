@@ -1,0 +1,155 @@
+
+@startuml
+hide empty methods
+hide empty fields
+
+class RandomDataTypeConf {
+        IntegerType randMinElemCount
+        IntegerType randMaxElemCount
+        IntegerType randElemCount
+        IntegerType typeDepth
+}
+
+note top: can put on schema types\nto include them in the\nrandom data generation
+
+class RandomDataPropertyConf {
+        BooleanType ingnore
+        RandomArrayConf arrayConf
+        ObjectType valuePool
+        RandomPropertyTypeConf typeConf
+}
+
+note top: can put on schema properties\nto taylormade the random data\ngeneration
+
+class RandomArrayConf {
+        IntegerType randMinElemCount
+        IntegerType randMaxElemCount
+        IntegerType randElemCount
+}
+
+note top: Processing information to create random\narrays
+
+class RandomPropertyTypeConf {
+        RandomComplexTypeConf complexTypeConf
+        RandomStringTypeConf stringTypeConf
+        RandomNumTypeConf numTypeConf
+        RandomDateTypeConf dateTypeConf
+        RandomTimeTypeConf timeTypeConf
+        RandomDurationTypeConf durationTypeConf
+}
+
+
+class RandomComplexTypeConf {
+        IntegerType typeDepth
+}
+
+note top: Constraints to generate random values\nof a complex type
+
+class RandomStringTypeConf {
+        RandomStringTypeConfStrTypeEnum strType
+        IntegerType maxLength
+}
+
+note top: Constraints to generate random string\nvalues
+
+class RandomNumTypeConf {
+        IntegerType minValue
+        IntegerType maxValue
+}
+
+note top: Constraints to generate random numeric\nvalues
+
+class RandomDateTypeConf {
+        DateTimeType minValue
+        DateTimeType maxValue
+}
+
+note top: Constraints to generate random date\nvalues, used for dates and\ndate-times
+
+class RandomTimeTypeConf {
+        TimeType minValue
+        TimeType maxValue
+}
+
+note top: Constraints to generate random time\nvalues
+
+class RandomDurationTypeConf {
+        DurationType minValue
+        DurationType maxValue
+}
+
+note top: Constraints to generate random duration\nvalues
+
+enum RandomStringTypeConfStrTypeEnum {
+    NAME
+    ADDRESS
+    EMAIL
+    URL
+    PHONE
+    COUNTRY
+    TEXT
+    SENTENCE
+}
+
+
+
+    
+
+
+
+
+    
+
+RandomDataPropertyConf  *--  RandomArrayConf
+            
+
+
+RandomDataPropertyConf  *--  RandomPropertyTypeConf
+            
+
+    
+
+
+
+    
+RandomPropertyTypeConf  *--  RandomComplexTypeConf
+            
+
+RandomPropertyTypeConf  *--  RandomStringTypeConf
+            
+
+RandomPropertyTypeConf  *--  RandomNumTypeConf
+            
+
+RandomPropertyTypeConf  *--  RandomDateTypeConf
+            
+
+RandomPropertyTypeConf  *--  RandomTimeTypeConf
+            
+
+RandomPropertyTypeConf  *--  RandomDurationTypeConf
+            
+
+    
+
+    
+RandomStringTypeConf  *--  RandomStringTypeConfStrTypeEnum
+            
+
+
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+    
+
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
+@enduml

@@ -46,7 +46,7 @@ if ! pipenv run python3 yacg.py --models \
                 plantUml=${scriptPos}/../docs/puml/yacg_random_data_types.puml \
     --protocolFile logs/gen_random_config.log \
     --skipCodeGenIfVersionUnchanged $*\
-    --templateParameters baseModelDomain=yacg.model.randomConfig \
+    --templateParameters baseModelDomain=yacg.model.random_config \
                          title="yacg configuration for random data generation"; then
     echo "    ERROR while create random config model classes"
     exit 1

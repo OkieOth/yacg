@@ -3,7 +3,7 @@
     "title": "yacg random data configuration",
     "description": "yacg can parse x-tags extensions to take that as configuration input for random data creation",
     "version": "0.1.1",
-    "x-domain": "yacg.model.randomConfig",
+    "x-domain": "yacg.model.random_config",
     "definitions": {
         "RandomDataTypeConf": {
             "description": "can put on schema types to include them in the random data generation",

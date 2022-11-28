@@ -8,7 +8,6 @@ from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 from yacg.generators.multiFileGenerator import renderMultiFileTemplate
-from yacg.generators.randomDataGenerator import renderRandomData
 from yacg.model.model import DictionaryType, EnumType, ComplexType
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
