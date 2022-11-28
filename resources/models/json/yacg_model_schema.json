@@ -8,6 +8,12 @@
         "Type": {
             "type": "object",
             "description": "Dummy base class to implement strong typed references",
+            "properties": {
+                "_processing": {
+                    "description": "anchor to store codegen runtime data, for instance for the random data creation",
+                    "type": "object"
+                }
+            },
             "x-tags": [
                 "metaModelType"
             ]
@@ -671,6 +677,10 @@
                 "format": {
                     "description": "holds the original 'format' value from the schema",
                     "type": "string"
+                },
+                "_processing": {
+                    "description": "anchor to store codegen runtime data, for instance for the random data creation",
+                    "type": "object"
                 }
             }
         },

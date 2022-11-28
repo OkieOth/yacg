@@ -1,0 +1,170 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "yacg random data configuration",
+    "description": "yacg can parse x-tags extensions to take that as configuration input for random data creation",
+    "version": "0.1.1",
+    "x-domain": "yacg.model.randomConfig",
+    "definitions": {
+        "RandomDataTypeConf": {
+            "description": "can put on schema types to include them in the random data generation",
+            "type": "object",
+            "properties": {
+                "randMinElemCount": {
+                    "description": "how many elements of that type should be at minimum generated",
+                    "type": "integer"
+                },
+                "randMaxElemCount": {
+                    "description": "how many elements of that type should be at maximum generated",
+                    "type": "integer"
+                },
+                "randElemCount": {
+                    "description": "number of elements of that type should be at minimum generated",
+                    "type": "integer"
+                },
+                "typeDepth": {
+                    "type": "integer"
+                }
+            }
+        },
+        "RandomDataPropertyConf": {
+            "description": "can put on schema properties to taylormade the random data generation",
+            "type": "object",
+            "properties": {
+                "ingnore": {
+                    "description": "set this on a property to 'true' and no random data are generated for it",
+                    "type": "boolean"
+                },
+                "arrayConf": {
+                    "description": "in case the property contains an array, this specifies the random data handling of the array",
+                    "$ref": "#/definitions/RandomArrayConf"
+                },
+                "valuePool": {
+                    "description": "values used to put randomly on the attrib, type is not close checked",
+                    "type": "object"
+                },
+                "typeConf": {
+                    "description": "taylormade configuration for the property type",
+                    "$ref": "#/definitions/RandomPropertyTypeConf"
+                }
+            }
+        },
+        "RandomPropertyTypeConf": {
+            "type": "object",
+            "properties": {
+                "complexTypeConf": {
+                    "$ref": "#/definitions/RandomComplexTypeConf"
+                },
+                "stringTypeConf": {
+                    "$ref": "#/definitions/RandomStringTypeConf"
+                },
+                "numTypeConf": {
+                    "$ref": "#/definitions/RandomNumTypeConf"
+                },
+                "dateTypeConf": {
+                    "$ref": "#/definitions/RandomDateTypeConf"
+                },
+                "timeTypeConf": {
+                    "$ref": "#/definitions/RandomTimeTypeConf"
+                },
+                "durationTypeConf": {
+                    "$ref": "#/definitions/RandomDurationTypeConf"
+                }
+            }
+        },
+        "RandomComplexTypeConf": {
+            "description": "Constraints to generate random values of a complex type",
+            "type": "object",
+            "properties": {
+                "typeDepth": {
+                    "description": "defines for complex types how many levels of childs should be followed",
+                    "type": "integer"
+                }
+            }
+        },
+        "RandomStringTypeConf": {
+            "description": "Constraints to generate random string values",
+            "type": "object",
+            "properties": {
+                "strType": {
+                    "type": "string",
+                    "enum": ["NAME", "ADDRESS", "EMAIL", "URL", "PHONE", "COUNTRY", "TEXT", "SENTENCE"]
+                },
+                "maxLength": {
+                    "type": "integer"
+                }
+            }
+        },
+        "RandomNumTypeConf": {
+            "description": "Constraints to generate random numeric values",
+            "type": "object",
+            "properties": {
+                "minValue": {
+                    "type": "integer"
+                },
+                "maxValue": {
+                    "type": "integer"
+                }
+            }
+        },
+        "RandomDateTypeConf": {
+            "description": "Constraints to generate random date values, used for dates and date-times",
+            "type": "object",
+            "properties": {
+                "minValue": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "maxValue": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "RandomTimeTypeConf": {
+            "description": "Constraints to generate random time values",
+            "type": "object",
+            "properties": {
+                "minValue": {
+                    "type": "string",
+                    "format": "time"
+                },
+                "maxValue": {
+                    "type": "string",
+                    "format": "time"
+                }
+            }
+        },
+        "RandomDurationTypeConf": {
+            "description": "Constraints to generate random duration values",
+            "type": "object",
+            "properties": {
+                "minValue": {
+                    "type": "string",
+                    "format": "duration"
+                },
+                "maxValue": {
+                    "type": "string",
+                    "format": "duration"
+                }
+            }
+        },
+        "RandomArrayConf": {
+            "description": "Processing information to create random arrays",
+            "type": "object",
+            "properties": {
+                "randMinElemCount": {
+                    "description": "how many elements of that type should be at minimum generated",
+                    "type": "integer"
+                },
+                "randMaxElemCount": {
+                    "description": "how many elements of that type should be at maximum generated",
+                    "type": "integer"
+                },
+                "randElemCount": {
+                    "description": "number of elements of that type should be at minimum generated",
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

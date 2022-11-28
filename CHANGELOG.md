@@ -1,3 +1,7 @@
+# 6.0.0
+* fix bug in golang template
+* remove RandomDataGenerator from config and implementation
+
 # 5.8.1
 * fix bug with array constraints for nested arrays
 
