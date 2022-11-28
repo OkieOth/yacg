@@ -7,16 +7,16 @@ class RandomDataTypeConf {
         IntegerType randMinElemCount
         IntegerType randMaxElemCount
         IntegerType randElemCount
-        IntegerType typeDepth
+        IntegerType randTypeDepth
 }
 
 note top: can put on schema types\nto include them in the\nrandom data generation
 
 class RandomDataPropertyConf {
-        BooleanType ingnore
-        RandomArrayConf arrayConf
-        ObjectType valuePool
-        RandomPropertyTypeConf typeConf
+        BooleanType randIngnore
+        RandomArrayConf randArrayConf
+        ObjectType randValuePool
+        RandomPropertyTypeConf randValueConf
 }
 
 note top: can put on schema properties\nto taylormade the random data\ngeneration

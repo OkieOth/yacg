@@ -20,7 +20,7 @@ class RandomDataTypeConf:
         #: number of elements of that type should be at minimum generated
         self.randElemCount = None
 
-        self.typeDepth = None
+        self.randTypeDepth = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -36,7 +36,7 @@ class RandomDataTypeConf:
 
         self.randElemCount = dictObj.get('randElemCount', None)
 
-        self.typeDepth = dictObj.get('typeDepth', None)
+        self.randTypeDepth = dictObj.get('randTypeDepth', None)
 
 
 class RandomDataPropertyConf:
@@ -46,16 +46,16 @@ class RandomDataPropertyConf:
     def __init__(self, dictObj=None):
 
         #: set this on a property to 'true' and no random data are generated for it
-        self.ingnore = None
+        self.randIngnore = None
 
         #: in case the property contains an array, this specifies the random data handling of the array
-        self.arrayConf = None
+        self.randArrayConf = None
 
         #: values used to put randomly on the attrib, type is not close checked
-        self.valuePool = None
+        self.randValuePool = None
 
         #: taylormade configuration for the property type
-        self.typeConf = None
+        self.randValueConf = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -65,17 +65,17 @@ class RandomDataPropertyConf:
         if dictObj is None:
             return
 
-        self.ingnore = dictObj.get('ingnore', None)
+        self.randIngnore = dictObj.get('randIngnore', None)
 
-        subDictObj = dictObj.get('arrayConf', None)
+        subDictObj = dictObj.get('randArrayConf', None)
         if subDictObj is not None:
-            self.arrayConf = RandomArrayConf(subDictObj)
+            self.randArrayConf = RandomArrayConf(subDictObj)
 
-        self.valuePool = dictObj.get('valuePool', None)
+        self.randValuePool = dictObj.get('randValuePool', None)
 
-        subDictObj = dictObj.get('typeConf', None)
+        subDictObj = dictObj.get('randValueConf', None)
         if subDictObj is not None:
-            self.typeConf = RandomPropertyTypeConf(subDictObj)
+            self.randValueConf = RandomPropertyTypeConf(subDictObj)
 
 
 class RandomArrayConf:
