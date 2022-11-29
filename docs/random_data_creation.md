@@ -52,3 +52,82 @@ attribute `x-processing`
 
 # Examples to use the jq command to annotate JSON schemas
 ## Include specific types in the random data generation
+```bash
+cat resources/models/json/shared/info.json | jq \
+     '. + {
+            "x-processing": {
+                comment: "includes this element in the random data creation", 
+                randElemCount: 1
+            }
+        }'
+```
+## Include random data gen config to a specific attribute
+```bash
+cat resources/models/json/shared/info.json | jq \
+     '.properties.description += {
+            "x-processing": {
+                "randValueConf": {
+                    "stringTypeConf": {
+                        "strType": "TEXT",
+                        "maxLength": 200
+                    }
+                }
+            }
+        } | .properties.license += {
+            "x-processing": {
+                "randIgnore": true
+            }
+        }'
+```
+
+## Include all random data gen configs to a schema
+```bash
+# example with a monster configuration ...
+cat resources/models/json/shared/info.json | jq \
+     '.properties.description += {
+            "x-processing": {
+                "randValueConf": {
+                    "stringTypeConf": {
+                        "strType": "TEXT",
+                        "maxLength": 200
+                    }
+                }
+            }
+        } | .properties.license += {
+            "x-processing": {
+                "randIgnore": true
+            }
+        } | . += {
+            "x-processing": {
+                comment: "includes this element in the random data creation", 
+                randElemCount: 1
+            }
+        }'
+
+# example splitted the monster configuration into multiple pipeline steps
+cat resources/models/json/shared/info.json | \
+    # includes the configuration for the description property \
+    jq '.properties.description += {
+            "x-processing": {
+                "randValueConf": {
+                    "stringTypeConf": {
+                        "strType": "TEXT",
+                        "maxLength": 200
+                    }
+                }
+            }
+        }' | \
+    # includes the configuration for the license property \
+    jq '.properties.license += {
+            "x-processing": {
+                "randIgnore": true
+            }
+        }' | \
+    # enables the main type for the random data generation \
+    jq '. += {
+            "x-processing": {
+                comment: "includes this element in the random data creation", 
+                randElemCount: 1
+            }
+        }'
+```
