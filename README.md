@@ -192,9 +192,20 @@ from the schema input and tries the validation without it.
 
 ## Usage
 ```bash
+# bash version
 pipenv run python3 validate.py --schema resources/models/json/yacg_config_schema.json \
   --inputFile resources/configurations/conf_with_vars.json \
   --draft07hack # used because json-spec has currently not draft07 support
+
+# docker version
+docker run -u $(id -u ${USER}):$(id -g ${USER}) \
+    -v `pwd`:/resources \
+    --rm -t --entrypoint "python3" \
+    ghcr.io/okieoth/yacg:5.9.0 \
+    validate.py \
+    --schema /resources/resources/models/json/yacg_config_schema.json \
+    --inputFile /resources/resources/configurations/conf_with_vars.json \
+    --draft07hack
 ```
 
 # Some Last Words
