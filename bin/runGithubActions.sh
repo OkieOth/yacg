@@ -7,14 +7,14 @@ pushd $scriptPos/.. > /dev/null
 rm -rf tmp/*
 
 # stop the build if there are Python syntax errors or undefined names
-if ! flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics; then
+if ! pipenv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics; then
     echo "There are flake8 problems [1]"
     popd > /dev/null
     exit 1
 fi
 
 # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-if ! flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --per-file-ignores='yacg/model/*.py:E501 E303 W391'; then
+if ! pipenv run flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --per-file-ignores='yacg/model/*.py:E501 E303 W391'; then
     echo "There are flake8 problems [2]"
     popd > /dev/null
     exit 1
@@ -29,7 +29,7 @@ fi
 if ! pipenv run python3 yacg.py \
     --models resources/models/json/yacg_config_schema.json \
             resources/models/json/yacg_model_schema.json \
-    --singleFileTemplates plantUml=stdout; then
+    --singleFileTemplates plantUml=stdout > /dev/null; then
     echo "problems while running a single file job from command line"
     popd > /dev/null
     exit 1
@@ -38,35 +38,51 @@ fi
 if ! pipenv run python3 yacg.py \
     --models resources/models/json/yacg_config_schema.json \
              resources/models/json/yacg_model_schema.json \
-    --usedFilesOnly; then
+    --usedFilesOnly > /dev/null; then
     echo "problems while run with usesFilesOnly"
     popd > /dev/null
     exit 1
 fi
 
 
-if ! bin/demoMultiFileGenerator.sh; then
+if ! bin/demoMultiFileGenerator.sh > /dev/null; then
     echo "problems while running multifile job from command line"
     popd > /dev/null
     exit 1
 fi
 
-if ! bin/generateRandomData_example.sh; then
+if ! bin/generateRandomData_example.sh &> /dev/null; then
     echo "problems while generate random data job from command line"
     popd > /dev/null
     exit 1
 fi
 
 if ! pipenv run python3 \
-    modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun; then
+    modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun &> /dev/null; then
     echo "problems while run modelToYaml.py"
     popd > /dev/null
     exit 1
 fi
 
 if ! pipenv run python3 \
-    modelToJson.py --model resources/models/yaml/yacg_config_schema.yaml --dryRun; then
+    modelToJson.py --model resources/models/yaml/yacg_config_schema.yaml --dryRun &> /dev/null; then
     echo "problems while run modelToJson.py"
+    popd > /dev/null
+    exit 1
+fi
+
+if ! pipenv run python3 \
+    validate.py --schema resources/models/json/yacg_config_schema.json \
+    --inputFile resources/configurations/conf_with_vars.json --draft07hack &> /dev/null; then
+    echo "can't validate schema"
+    popd > /dev/null
+    exit 1
+fi
+
+if pipenv run python3 \
+    validate.py --schema resources/models/json/yacg_config_schema.json \
+    --inputFile resources/configurations/conf_with_vars.json &> /dev/null; then
+    echo "wrong validation of schema"
     popd > /dev/null
     exit 1
 fi

@@ -1,3 +1,6 @@
+# 5.9.0
+* add file validation against a schema function to the package
+
 # 5.8.1
 * fix bug with array constraints for nested arrays
 

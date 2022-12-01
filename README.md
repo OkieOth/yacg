@@ -183,6 +183,20 @@ docker run -u $(id -u ${USER}):$(id -g ${USER}) \
     --yaml
 ```
 
+# Validate JSON files against schemas
+For the validation of schemas is `https://github.com/johnnoone/json-spec` used.
+
+Attention, the current version of json-spec doesn't support JSON schema draft-07.
+If the right parameter set, then the validation wrapper removes the `$schema` tag
+from the schema input and tries the validation without it.
+
+## Usage
+```bash
+pipenv run python3 validate.py --schema resources/models/json/yacg_config_schema.json \
+  --inputFile resources/configurations/conf_with_vars.json \
+  --draft07hack # used because json-spec has currently not draft07 support
+```
+
 # Some Last Words
 This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines.
 
