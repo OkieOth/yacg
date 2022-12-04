@@ -1,3 +1,6 @@
+# 5.8.2 - 5.8.4
+* CI fixes
+
 # 5.8.1
 * fix bug with array constraints for nested arrays
 
