@@ -1,6 +1,11 @@
 # 6.0.0
 * fix bug in golang template
 * remove RandomDataGenerator from config and implementation
+# 5.9.0
+* add file validation against a schema function to the package
+
+# 5.8.2 - 5.8.4
+* CI fixes
 
 # 5.8.1
 * fix bug with array constraints for nested arrays

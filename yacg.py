@@ -13,7 +13,7 @@ import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 import yacg.model.modelFuncs as modelFuncs
 import yacg.util.protocol_funcs as protocolFuncs
-
+from yacg.util.fileUtils import getFileExt
 
 description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
@@ -47,13 +47,6 @@ parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5
 parser.add_argument('--skipCodeGenDryRun', help='prints only the log messages if codegen should be skipped', action='store_true')
 parser.add_argument('--failIfTypeNamesNotUnique', help='the code execution fails if there are not unique type names in the loaded type tree', action='store_true')  # noqa: E501
 parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type names multiple times in the list of loaded times, they are changed to be unique', action='store_true')  # noqa: E501
-
-
-def getFileExt(fileName):
-    """returns the fileextension of a given file name"""
-
-    lastDot = fileName.rindex('.')
-    return fileName[lastDot:]
 
 
 def readModels(configJob, flattenInheritance):

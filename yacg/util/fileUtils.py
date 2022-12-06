@@ -20,3 +20,10 @@ def getDirName(fileName):
             return fileName[:lastSlash]
     except ValueError:
         return ""
+
+
+def getFileExt(fileName):
+    """returns the fileextension of a given file name"""
+
+    lastDot = fileName.rindex('.')
+    return fileName[lastDot:]

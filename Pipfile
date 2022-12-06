@@ -16,6 +16,7 @@ ptvsd = "*"
 pudb = "*"
 semver = "*"
 shell = "*"
+json-spec = "*"
 
 [requires]
 python_version = "3.10"

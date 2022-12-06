@@ -48,7 +48,7 @@ ln -s /bin/pip
 sudo apt-get install python3-venv
 pip install --user pipenv
 
-pipenv --python 3.10
+pipenv --python 3.11
 pipenv install
 pipenv shell
 
@@ -181,6 +181,31 @@ docker run -u $(id -u ${USER}):$(id -g ${USER}) \
     --model /resources/my_model.yaml \
     --outputFile /resources/generated/my_model_without_externals.yaml \
     --yaml
+```
+
+# Validate JSON files against schemas
+For the validation of schemas is `https://github.com/johnnoone/json-spec` used.
+
+Attention, the current version of json-spec doesn't support JSON schema draft-07.
+If the right parameter set, then the validation wrapper removes the `$schema` tag
+from the schema input and tries the validation without it.
+
+## Usage
+```bash
+# bash version
+pipenv run python3 validate.py --schema resources/models/json/yacg_config_schema.json \
+  --inputFile resources/configurations/conf_with_vars.json \
+  --draft07hack # used because json-spec has currently not draft07 support
+
+# docker version
+docker run -u $(id -u ${USER}):$(id -g ${USER}) \
+    -v `pwd`:/resources \
+    --rm -t --entrypoint "python3" \
+    ghcr.io/okieoth/yacg:5.9.0 \
+    validate.py \
+    --schema /resources/resources/models/json/yacg_config_schema.json \
+    --inputFile /resources/resources/configurations/conf_with_vars.json \
+    --draft07hack
 ```
 
 # Some Last Words

@@ -75,6 +75,12 @@ def __isHttpLoadableModel(model):
     return model.startswith("https://") or model.startswith("http://")
 
 
+def __initProcessing(mainType, parsedSchema):
+    processing = parsedSchema.get('x-processing', None)
+    if processing is not None:
+        mainType._processing = processing
+
+
 def __initTags(mainType, parsedSchema):
     if len(mainType.tags) == 0:
         tags = parsedSchema.get('x-tags', None)
@@ -100,6 +106,7 @@ def __extractTopLevelObjectType(parsedSchema, modelTypes, modelFileContainer):
         mainType = _extractObjectType(
             typeNameStr, schemaProperties, additionalProperties,
             allOfEntry, refEntry, description, modelTypes, modelFileContainer)
+        __initProcessing(mainType, parsedSchema)
         __initTags(mainType, parsedSchema)
         _markRequiredAttributes(mainType, parsedSchema.get('required', []))
         mainType.topLevelType = True
@@ -115,6 +122,7 @@ def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
         typeStr = parsedSchema.get('type', None)
         formatStr = parsedSchema.get('format', None)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
+        __initProcessing(mainType, parsedSchema)
         __initTags(mainType, parsedSchema)
         __initEnumValues(mainType, parsedSchema)
         mainType.topLevelType = True
@@ -130,6 +138,7 @@ def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
         typeStr = parsedSchema.get('type', None)
         formatStr = parsedSchema.get('format', None)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
+        __initProcessing(mainType, parsedSchema)
         __initTags(mainType, parsedSchema)
         __initEnumValues(mainType, parsedSchema)
         mainType.topLevelType = True
@@ -151,6 +160,7 @@ def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContaine
         arrayType.arrayDimensions = tmpProperty.arrayDimensions
         arrayType.topLevelType = True
         _appendToAlreadyLoadedTypes(arrayType, modelTypes)
+        __initProcessing(arrayType, parsedSchema)
         __initTags(arrayType, parsedSchema)
         return True
     return False
@@ -302,6 +312,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
         typeStr = modelFileContainer.parsedSchema.get('type', None)
         formatStr = modelFileContainer.parsedSchema.get('format', None)
         mainType = _extractEnumType(typeNameStr, None, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
+        __initProcessing(mainType, modelFileContainer.parsedSchema)
         __initTags(mainType, modelFileContainer.parsedSchema)
         __initEnumValues(mainType, modelFileContainer.parsedSchema)
 
@@ -340,6 +351,7 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
             typeStr = object.get('type', None)
             formatStr = object.get('format', None)
             mainType = _extractEnumType(key, None, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
+            __initProcessing(mainType, object)
             __initTags(mainType, object)
             __initEnumValues(mainType, object)
         else:
@@ -562,6 +574,7 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
             typeStr = propDict.get('type', None)
             formatStr = propDict.get('format', None)
             enumType = _extractEnumType(newTypeName, newProperty, enumEntry, typeStr, formatStr, modelTypes, modelFileContainer)
+            __initProcessing(enumType, propDict)
             __initTags(enumType, propDict)
             __initEnumValues(enumType, propDict)
             return enumType
@@ -1023,6 +1036,7 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
         typeStr = propDict.get('type', None)
         formatStr = propDict.get('format', None)
         enumType = _extractEnumType(newTypeName, newProperty, enumValue, typeStr, formatStr, modelTypes, modelFileContainer)
+        __initProcessing(enumType, propDict)
         __initTags(enumType, propDict)
         __initEnumValues(enumType, propDict)
         return enumType
