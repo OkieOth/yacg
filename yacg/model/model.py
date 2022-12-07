@@ -10,7 +10,9 @@ class Type:
     """
 
     def __init__(self, dictObj=None):
-        pass
+
+        #: anchor to store codegen runtime data, for instance for the random data creation
+        self.xProcessing = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -19,6 +21,8 @@ class Type:
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
+        self.xProcessing = dictObj.get('xProcessing', None)
 
 
 class ObjectType (Type):
@@ -624,6 +628,9 @@ class Property:
         #: holds the original 'format' value from the schema
         self.format = None
 
+        #: anchor to store codegen runtime data, for instance for the random data creation
+        self.xProcessing = None
+
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
@@ -667,6 +674,8 @@ class Property:
             self.foreignKey = Type(subDictObj)
 
         self.format = dictObj.get('format', None)
+
+        self.xProcessing = dictObj.get('xProcessing', None)
 
 
 class DictionaryType (Type):
