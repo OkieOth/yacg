@@ -40,6 +40,26 @@ class TestYamlBuilder (unittest.TestCase):
             else:
                 self.assertFalse(prop.isArray, "property should be no array: %s.%s" % (typeName, prop.name))
 
+    def testXProcessing(self):
+        modelFile = 'tests/resources/models/yaml/examples/layer_annotated.yaml'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(12, len(modelTypes))
+        found = 0
+        for m in modelTypes:
+            if m.name == "Layer":
+                found = found + 1
+                self.assertIsNotNone(m._processing)
+            elif m.name == "Geometry":
+                found = found + 1
+                self.assertIsNotNone(m._processing)
+            elif m._processing is not None:
+                found = found + 1
+        self.assertEqual(found, 2)
 
 if __name__ == '__main__':
     unittest.main()
