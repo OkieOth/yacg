@@ -1,0 +1,201 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Query parameters",
+  "description": "Query parameters provide definition for filtering, sorting and paging objects",
+  "version": "1.2.11",
+  "definitions": {
+    "QueryInfo": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/Pagination"
+        },
+        "sorting": {
+          "$ref": "#/definitions/Sorting"
+        },
+        "filtering": {
+          "$ref": "#/definitions/Filtering"
+        },
+        "nearFilter": {
+          "$ref": "#/definitions/GeoNear"
+        },
+        "withinBoxFilter": {
+          "$ref": "#/definitions/GeoWithinBox"
+        }
+      }
+    },
+    "Pagination": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer"
+        },
+        "limit": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      }
+    },
+    "Sorting": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/definitions/SortDirection",
+          "default": "ASC"
+        }
+      },
+      "required": ["key"]
+    },
+    "Filtering": {
+      "type": "object",
+      "properties": {
+        "range": {
+          "$ref": "#/definitions/RangeFilter"
+        },
+        "includes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IncludeFilter"
+          }
+        }
+      }
+    },
+    "SortDirection": {
+      "type": "string",
+      "enum": ["ASC", "DSC"]
+    },
+    "IncludeFilter": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "includes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "operator":{
+          "description": "A named enum which include the operators.",
+          "$ref": "#/definitions/FilterOperator"
+        }
+      },
+      "required": ["key"]
+    },
+    "RangeFilter": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "range": {
+          "$ref": "#/definitions/TimeRange"
+        }
+      },
+      "required": ["key"]
+    },
+    "TimeRange": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "to": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "FilterOperator":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "EQ",
+        "NEQ",
+        "GT",
+        "LT",
+        "GTE",
+        "LTE",
+        "CTN",
+        "SW",
+        "EW",
+        "IN",
+        "NIN",
+        "RGX"]
+    },
+    "Projection":{
+      "description":"A Projection is used to apply a transformation on a data model to retrieve a subset of the data model fields",
+      "type":"object",
+      "properties": {
+        "fields":{
+          "type": "array",
+          "items":{
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GeoNear":{
+      "$comment":"proximity to a point with min and max distance",
+      "type": "object",
+      "properties": {
+        "center": {
+          "$comment": "point co-ordinates as (lon,lat)",
+          "type": "array",
+          "items":{
+            "type":"number",
+            "format": "double"
+          },
+          "maxItems": 2,
+          "minItems": 2
+        },
+        "maxDistance": {
+          "$comment": "max distance in meters",
+          "type":"number",
+          "format": "double",
+          "minimum": 0
+        },
+        "minDistance": {
+          "$comment": "min distance in meters",
+          "type":"number",
+          "format":"double",
+          "minimum": 0
+        }
+      }
+    },
+    "GeoWithinBox":{
+      "type":"object",
+      "properties": {
+        "bottomLeft":{
+          "$comment": "bounding box bottomLeft point",
+          "type":"array",
+          "items":{
+            "$comment": "point co-ordinates as (lon,lat)",
+            "type":"number",
+            "format": "double"
+          },
+          "maxItems": 2,
+          "minItems": 2
+        },
+        "upperRight":{
+          "$comment": "bounding box upperRight point",
+          "type":"array",
+          "items":{
+            "$comment": "point co-ordinates as (lon,lat)",
+            "type":"number",
+            "format": "double"
+          },
+          "maxItems": 2,
+          "minItems": 2
+        }
+      }
+    }
+  }
+}
