@@ -3,5 +3,8 @@
 	"title": "Demo",
 	"enum": [
 	"1"
-	]
+	],
+	"x-processing": {
+		"randElemCount": 10
+	}
 }

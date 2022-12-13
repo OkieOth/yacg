@@ -12,7 +12,7 @@ class Type:
     def __init__(self, dictObj=None):
 
         #: anchor to store codegen runtime data, for instance for the random data creation
-        self.xProcessing = None
+        self._processing = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -22,7 +22,7 @@ class Type:
         if dictObj is None:
             return
 
-        self.xProcessing = dictObj.get('xProcessing', None)
+        self._processing = dictObj.get('_processing', None)
 
 
 class ObjectType (Type):
@@ -30,7 +30,7 @@ class ObjectType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
         pass
 
         if dictObj is not None:
@@ -76,7 +76,7 @@ class IntegerType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.format = None
 
@@ -145,7 +145,7 @@ class NumberType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.format = None
 
@@ -185,7 +185,7 @@ class BooleanType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -205,7 +205,7 @@ class StringType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -237,7 +237,7 @@ class UuidType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -280,7 +280,7 @@ class EnumType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         #: is taken from the version entry of the file, optional
         self.version = None
@@ -359,7 +359,7 @@ class DateType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -395,7 +395,7 @@ class TimeType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -431,7 +431,7 @@ class DateTimeType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -467,7 +467,7 @@ class DurationType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -487,7 +487,7 @@ class BytesType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -507,7 +507,7 @@ class ComplexType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         #: is taken from the version entry of the file, optional
         self.version = None
@@ -684,7 +684,7 @@ class DictionaryType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         #: is taken from the version entry of the file, optional
         self.version = None
@@ -777,7 +777,7 @@ class ArrayType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         #: is taken from the version entry of the file, optional
         self.version = None

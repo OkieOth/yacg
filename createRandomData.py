@@ -50,6 +50,7 @@ def main():
         loadedTypes = getModelFromYaml(args.model, loadedTypes)
     else:
         loadedTypes = getModelFromJson(args.model, loadedTypes)
+    _extendMetaModelWithRandomConfigTypes(args, loadedTypes)
     _searchForTypesToGenerateAndProcessThem(args, loadedTypes)
 
 

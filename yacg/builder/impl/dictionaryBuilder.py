@@ -363,6 +363,7 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
                 type = _extractObjectType(
                     key, properties, additionalProperties, allOfEntry, refEntry,
                     description, modelTypes, modelFileContainer)
+                __initProcessing(type, object)
                 if len(type.tags) == 0:
                     tags = object.get('x-tags', None)
                     if tags is not None:

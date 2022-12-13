@@ -85,8 +85,8 @@ definitions:
         properties:
           color:
             "$ref": "#/definitions/Color"
-          x-processing:
-            randIgnore: true
+            x-processing:
+              randIgnore: true
       icon:
         type: string
         x-processing:
@@ -132,6 +132,6 @@ definitions:
         $ref: "#/definitions/PointGeometryArrayArray"
       multiPolygon:
         description: a geometry consisting of multiple separate polygons
-        ref: "#/definitions/PointGeometryArrayArrayArray"
+        $ref: "#/definitions/PointGeometryArrayArrayArray"
     x-processing:
       randElemCount: 1

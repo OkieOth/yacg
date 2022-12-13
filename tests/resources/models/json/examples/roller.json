@@ -1,0 +1,185 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Example Type",
+    "description": "Example for some classes",
+    "version": "0.0.1",
+    "definitions": {
+      "Manager": {
+        "description": "The main structure for the car sharing platform",
+        "type": "object",
+        "properties": {
+          "providers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Provider"
+            }
+          },
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Vehicle"
+            }
+          },
+          "user": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+
+      },
+      "Provider": {
+        "description": "Provider of Vehicles in the sharing platform",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "minBatteryLevelByType": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "pricesByType": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "User": {
+        "description": "User of the sharing platform, that rents vehicles",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "tariff": {
+            "type": "string",
+            "enum": ["PREPAID", "STANDARD"]
+          },
+          "licences": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["CAR", "MOPED", "BIKE", "LORRY"]
+            }
+          },
+          "budget": {
+            "type": "number"
+          },
+          "rentalReservation": {
+            "$comment": "TODO",
+            "type": "string"
+          },
+          "rentalCurrent": {
+            "$comment": "TODO",
+            "type": "string"
+          }
+        }
+      },
+      "Vehicle": {
+        "description": "Common part of rentable vehicles",
+        "type": "object",
+        "properties": {
+          "provider": {
+            "$ref": "#/definitions/Provider"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "licencePlateNr": {
+            "type": "string"
+          },
+          "batteryLoadLevel": {
+            "type": "number"
+          },
+          "licenceFree": {
+            "description": "indicates if this vehicle can be rented w/o driving licence",
+            "type": "boolean"
+          },
+          "batteryConsumptionPerSecond": {
+            "type": "integer"
+          }
+        }
+      },
+      "Bike": {
+        "description": "A bicycle",
+        "type": "object",
+        "allOf": [{
+          "$ref": "#/definitions/Vehicle"
+        }, {
+          "properties": {
+            "looked": {
+              "description": "represents the lock state of the bike mounted lock",
+              "type": "boolean"
+            }
+          }
+        }
+        ]
+      },
+      "Scooter": {
+        "description": "E-Scooter that has to use the street lanes",
+        "type": "object",
+        "allOf": [{
+          "$ref": "#/definitions/Vehicle"
+        }, {
+          "properties": {
+            "light": {
+              "description": "Light of the scooter, either on or off",
+              "type": "boolean"
+            },
+            "parkingLight": {
+              "description": "Parking-Light of the scooter, either on or off",
+              "type": "boolean"
+            }
+          }
+        }
+        ]
+      },
+      "ScooterSmall": {
+        "description": "Small Scooter like Lime",
+        "type": "object",
+        "allOf": [{
+          "$ref": "#/definitions/Vehicle"
+        }, {
+          "properties": {
+            "availableForUse": {
+              "description": "Is used in a small LED to indicate the user, that this device can be rented",
+              "type": "boolean"
+            }
+          }
+        }
+        ]
+      },
+      "Car": {
+        "description": "Tesla and stuff",
+        "type": "object",
+        "allOf": [{
+          "$ref": "#/definitions/Vehicle"
+        }, {
+          "properties": {
+            "parkingLight": {
+              "description": "Parking-Light of the scooter, either on or off",
+              "type": "boolean"
+            },
+            "looked": {
+              "description": "represents the lock state of the bike mounted lock",
+              "type": "boolean"
+            }
+          }
+        }
+        ]
+      }
+    }
+  }
+  

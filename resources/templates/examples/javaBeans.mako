@@ -10,15 +10,18 @@
     templateVersion = '1.0.0'
 
     packageName = templateParameters.get('modelPackage','<<PLEASE SET modelPackage TEMPLATE PARAM>>')
+    noInfo = templateParameters.get('noInfo','')
 
     # temporarely replace problematic property names with unproblematic alternatives:
     propIdx2originalName = javaFuncs.sanitizePropertyNames(currentType)
 
 
-%>// Attention, this file is generated. Manual changes get lost with the next
+%>
+% if noInfo == '':
+// Attention, this file is generated. Manual changes get lost with the next
 // run of the code generation.
 // created by yacg (template: ${templateFile} v${templateVersion})
-
+% endif
 package ${packageName};
 
 % if isinstance(currentType, model.EnumType):
@@ -82,7 +85,7 @@ class ${currentType.name} ${javaFuncs.printExtendsType(currentType)}{
 
     % if modelFuncs.hasTypeProperties(currentType):
         % for property in currentType.properties:
-        ${javaFuncs.getJavaType(property.type, property.isArray)} _${property.name} = _typeInst.getget${stringUtils.toUpperCamelCase(property.name)}();
+        ${javaFuncs.getJavaType(property.type, property.isArray)} _${property.name} = _typeInst.get${stringUtils.toUpperCamelCase(property.name)}();
         if (this.${property.name} == null && _${property.name} != null) return false;
         if (this.${property.name} != null) {
             if (!this.${property.name}.equals(_${property.name})) return false;

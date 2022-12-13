@@ -1,0 +1,50 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Demo Array",
+	"type": "object",
+	"x-processing": {
+		"randElemCount": 10
+	},
+	"properties": {
+		"prop1": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"int_value": {
+						"type": "integer"
+					}
+				}
+			}
+		},
+		"prop2": {
+			"type": "array",
+			"items": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"int_value": {
+							"type": "integer"
+						}
+					}
+				}
+			},
+            "x-processing": {
+				"randIgnore": true
+			}
+		},
+		"prop3": {
+			"type": "array",
+			"items": {
+				"type": "array",
+				"items": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}
