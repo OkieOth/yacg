@@ -54,9 +54,14 @@ class TestYamlBuilder (unittest.TestCase):
             if m.name == "Layer":
                 found = found + 1
                 self.assertIsNotNone(m._processing)
+                for p in m.properties:
+                    self.assertIsNone(p._processing)
             elif m.name == "Geometry":
                 found = found + 1
                 self.assertIsNotNone(m._processing)
+            elif m.name == "DisplayConfigFill":
+                self.assertIsNotNone(m.properties[0]._processing)
+                self.assertEqual(len(m.properties), 1)
             elif m._processing is not None:
                 found = found + 1
         self.assertEqual(found, 2)

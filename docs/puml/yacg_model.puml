@@ -178,7 +178,7 @@ class Property {
         BooleanType isVisualKey
         Type foreignKey
         StringType format
-        ObjectType xProcessing
+        ObjectType _processing
 }
 
 note top: a property of a type

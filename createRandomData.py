@@ -39,9 +39,14 @@ def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
 def _extendMetaModelWithRandomConfigTypes(args, loadedTypes):
     for t in loadedTypes:
         if t._processing is not None:
-            randomTypeConf = randomConfig.RandomDataTypeConf.initFromDict(t.processing)
-            t.processing = randomTypeConf
-        # TODO
+            randomTypeConf = randomConfig.RandomDataTypeConf.initFromDict(t._processing)
+            t._processing = randomTypeConf
+        if not hasattr(t, "properties"):
+            continue
+        for p in t.properties:
+            if p._processing is not None:
+                randomPropConf = randomConfig.RandomDataPropertyConf.initFromDict(p._processing)
+                p._processing = randomPropConf
     pass
 
 

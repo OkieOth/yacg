@@ -629,7 +629,7 @@ class Property:
         self.format = None
 
         #: anchor to store codegen runtime data, for instance for the random data creation
-        self.xProcessing = None
+        self._processing = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -675,7 +675,7 @@ class Property:
 
         self.format = dictObj.get('format', None)
 
-        self.xProcessing = dictObj.get('xProcessing', None)
+        self._processing = dictObj.get('_processing', None)
 
 
 class DictionaryType (Type):

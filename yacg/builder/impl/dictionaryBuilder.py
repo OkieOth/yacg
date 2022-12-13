@@ -76,9 +76,7 @@ def __isHttpLoadableModel(model):
 
 
 def __initProcessing(mainType, parsedSchema):
-    processing = parsedSchema.get('x-processing', None)
-    if processing is not None:
-        mainType._processing = processing
+    mainType._processing = parsedSchema.get('x-processing', None)
 
 
 def __initTags(mainType, parsedSchema):
@@ -529,7 +527,7 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer):
         if tags is not None:
             newProperty.tags = _extractTags(tags)
         newProperty.ordinal = propDict.get('x-ordinal', None)
-
+        newProperty._processing = propDict.get('x-processing', None)
         type.properties.append(newProperty)
 
 
