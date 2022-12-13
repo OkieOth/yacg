@@ -7,6 +7,7 @@ from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 import yacg.util.normalize_helper as normalizeHelper
 import yacg.model.modelFuncs as modelFuncs
+import yacg.model.random_config as randomConfig
 from yacg.util.fileUtils import getFileExt
 
 
@@ -32,6 +33,15 @@ def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
     """takes the meta model ..."""
 
     # TODO
+    pass
+
+
+def _extendMetaModelWithRandomConfigTypes(args, loadedTypes):
+    for t in loadedTypes:
+        if t._processing is not None:
+            randomTypeConf = randomConfig.RandomDataTypeConf.initFromDict(t.processing)
+            t.processing = randomTypeConf
+        # TODO
     pass
 
 
