@@ -46,7 +46,7 @@ class RandomDataPropertyConf:
     def __init__(self, dictObj=None):
 
         #: set this on a property to 'true' and no random data are generated for it
-        self.randIngnore = None
+        self.randIgnore = None
 
         #: in case the property contains an array, this specifies the random data handling of the array
         self.randArrayConf = None
@@ -65,7 +65,7 @@ class RandomDataPropertyConf:
         if dictObj is None:
             return
 
-        self.randIngnore = dictObj.get('randIngnore', None)
+        self.randIgnore = dictObj.get('randIgnore', None)
 
         subDictObj = dictObj.get('randArrayConf', None)
         if subDictObj is not None:

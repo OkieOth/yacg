@@ -117,7 +117,9 @@ definitions:
       point:
         $ref: "#/definitions/PointGeometry"
         x-processing:
-          typeDepth: 2
+          randValueConf:
+            complexTypeConf:
+              typeDepth: 2
       multiPoint:
         description: a geometry consisting of multiple separate points
         $ref: "#/definitions/PointGeometryArray"

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg random data configuration",
     "description": "yacg can parse x-tags extensions to take that as configuration input for random data creation",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "x-domain": "yacg.model.random_config",
     "definitions": {
         "RandomDataTypeConf": {
@@ -30,7 +30,7 @@
             "description": "can put on schema properties to taylormade the random data generation",
             "type": "object",
             "properties": {
-                "randIngnore": {
+                "randIgnore": {
                     "description": "set this on a property to 'true' and no random data are generated for it",
                     "type": "boolean"
                 },

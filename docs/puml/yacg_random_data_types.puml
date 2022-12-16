@@ -13,7 +13,7 @@ class RandomDataTypeConf {
 note top: can put on schema types\nto include them in the\nrandom data generation
 
 class RandomDataPropertyConf {
-        BooleanType randIngnore
+        BooleanType randIgnore
         RandomArrayConf randArrayConf
         ObjectType randValuePool
         RandomPropertyTypeConf randValueConf

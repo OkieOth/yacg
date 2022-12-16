@@ -76,8 +76,27 @@ class TestYamlBuilder (unittest.TestCase):
             elif m.name == "Geometry":
                 found = found + 1
                 self.assertIsNotNone(m.processing)
+                self.assertIsNotNone(m.properties[0].processing)
+                self.assertTrue(hasattr(m.properties[0].processing, "randIgnore"))
+                self.assertIsNone(m.properties[0].processing.randIgnore)
+                self.assertTrue(hasattr(m.properties[0].processing, "randArrayConf"))
+                self.assertIsNone(m.properties[0].processing.randArrayConf)
+                self.assertTrue(hasattr(m.properties[0].processing, "randValuePool"))
+                self.assertIsNone(m.properties[0].processing.randValuePool)
+                self.assertTrue(hasattr(m.properties[0].processing, "randValueConf"))
+                self.assertIsNotNone(m.properties[0].processing.randValueConf)
+                self.assertEqual(m.properties[0].processing.randValueConf.complexTypeConf.typeDepth, 2)
+                self.assertEqual(len(m.properties), 6)
             elif m.name == "DisplayConfigFill":
                 self.assertIsNotNone(m.properties[0].processing)
+                self.assertTrue(hasattr(m.properties[0].processing, "randIgnore"))
+                self.assertTrue(m.properties[0].processing.randIgnore)
+                self.assertTrue(hasattr(m.properties[0].processing, "randArrayConf"))
+                self.assertIsNone(m.properties[0].processing.randArrayConf)
+                self.assertTrue(hasattr(m.properties[0].processing, "randValuePool"))
+                self.assertIsNone(m.properties[0].processing.randValuePool)
+                self.assertTrue(hasattr(m.properties[0].processing, "randValueConf"))
+                self.assertIsNone(m.properties[0].processing.randValueConf)
                 self.assertEqual(len(m.properties), 1)
             elif m.processing is not None:
                 found = found + 1
