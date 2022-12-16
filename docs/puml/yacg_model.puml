@@ -4,7 +4,7 @@ hide empty methods
 hide empty fields
 
 class Type {
-        ObjectType _processing
+        ObjectType processing
 }
 
 note top: Dummy base class to implement\nstrong typed references
@@ -178,7 +178,7 @@ class Property {
         BooleanType isVisualKey
         Type foreignKey
         StringType format
-        ObjectType _processing
+        ObjectType processing
 }
 
 note top: a property of a type

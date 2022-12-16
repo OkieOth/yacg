@@ -12,7 +12,7 @@ class Type:
     def __init__(self, dictObj=None):
 
         #: anchor to store codegen runtime data, for instance for the random data creation
-        self._processing = None
+        self.processing = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -22,7 +22,7 @@ class Type:
         if dictObj is None:
             return
 
-        self._processing = dictObj.get('_processing', None)
+        self.processing = dictObj.get('processing', None)
 
 
 class ObjectType (Type):
@@ -629,7 +629,7 @@ class Property:
         self.format = None
 
         #: anchor to store codegen runtime data, for instance for the random data creation
-        self._processing = None
+        self.processing = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -675,7 +675,7 @@ class Property:
 
         self.format = dictObj.get('format', None)
 
-        self._processing = dictObj.get('_processing', None)
+        self.processing = dictObj.get('processing', None)
 
 
 class DictionaryType (Type):

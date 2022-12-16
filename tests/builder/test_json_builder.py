@@ -456,7 +456,7 @@ class TestJsonBuilder (unittest.TestCase):
         modelTypes = getModelFromJson(model, [])
 
         self.assertTrue(modelTypes[0], EnumType)
-        self.assertIsNotNone(modelTypes[0]._processing)
+        self.assertIsNotNone(modelTypes[0].processing)
 
     def testEvilIntEnum(self):
         modelFile = 'tests/resources/models/json/examples/evil_int_enum.json'
@@ -531,7 +531,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[0].properties[1].type)
         self.assertEqual(modelTypes[0].properties[2].arrayDimensions, 3)
         self.assertIsNotNone(modelTypes[0].properties[2].type)
-        self.assertIsNotNone(modelTypes[0]._processing)
+        self.assertIsNotNone(modelTypes[0].processing)
 
 
     def testDictionary4(self):

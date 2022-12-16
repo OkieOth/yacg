@@ -53,16 +53,16 @@ class TestYamlBuilder (unittest.TestCase):
         for m in modelTypes:
             if m.name == "Layer":
                 found = found + 1
-                self.assertIsNotNone(m._processing)
+                self.assertIsNotNone(m.processing)
                 for p in m.properties:
-                    self.assertIsNone(p._processing)
+                    self.assertIsNone(p.processing)
             elif m.name == "Geometry":
                 found = found + 1
-                self.assertIsNotNone(m._processing)
+                self.assertIsNotNone(m.processing)
             elif m.name == "DisplayConfigFill":
-                self.assertIsNotNone(m.properties[0]._processing)
+                self.assertIsNotNone(m.properties[0].processing)
                 self.assertEqual(len(m.properties), 1)
-            elif m._processing is not None:
+            elif m.processing is not None:
                 found = found + 1
         self.assertEqual(found, 2)
         randomFuncs.extendMetaModelWithRandomConfigTypes(modelTypes)
@@ -70,16 +70,16 @@ class TestYamlBuilder (unittest.TestCase):
         for m in modelTypes:
             if m.name == "Layer":
                 found = found + 1
-                self.assertIsNotNone(m._processing)
+                self.assertIsNotNone(m.processing)
                 for p in m.properties:
-                    self.assertIsNone(p._processing)
+                    self.assertIsNone(p.processing)
             elif m.name == "Geometry":
                 found = found + 1
-                self.assertIsNotNone(m._processing)
+                self.assertIsNotNone(m.processing)
             elif m.name == "DisplayConfigFill":
-                self.assertIsNotNone(m.properties[0]._processing)
+                self.assertIsNotNone(m.properties[0].processing)
                 self.assertEqual(len(m.properties), 1)
-            elif m._processing is not None:
+            elif m.processing is not None:
                 found = found + 1
         self.assertEqual(found, 2)
 
