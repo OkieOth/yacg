@@ -836,6 +836,21 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(geometry.properties[5].name, 'multiPolygon')
         self.assertEqual(geometry.properties[5].arrayDimensions, 4)
 
+    def testEnumValues(self):
+        modelFile = 'tests/resources/models/json/examples/query-info.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        foundEnumTypes = 0
+        for t in modelTypes:
+            if isinstance(t, EnumType):
+                foundEnumTypes = foundEnumTypes + 1
+                self.assertTrue(len(t.values) > 0)
+        self.assertEqual(foundEnumTypes, 2)
+
 
 if __name__ == '__main__':
     unittest.main()

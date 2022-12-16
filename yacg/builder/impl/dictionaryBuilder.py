@@ -1058,6 +1058,20 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
         return StringType()
 
 
+def __initEnumValuesFromContent(enumType, enumValuesArray):
+    if len(enumValuesArray) > 0:
+        if isinstance(enumValuesArray[0], str):
+            enumType.values = enumValuesArray
+        elif isinstance(enumValuesArray[0], int):
+            enumType.numValues = enumValuesArray
+            enumType.type = IntegerType()
+        elif isinstance(enumValuesArray[0], float):
+            enumType.numValues = enumValuesArray
+            enumType.type = NumberType()
+        else:
+            enumType.values = enumValuesArray
+
+
 def _extractEnumType(newTypeName, newProperty, enumValue, typeStr, formatStr, modelTypes, modelFileContainer):
     """extract the specific string type depending on the given format
     and return the specific type
@@ -1079,31 +1093,28 @@ def _extractEnumType(newTypeName, newProperty, enumValue, typeStr, formatStr, mo
     if alreadyCreatedType is not None:
         if isinstance(alreadyCreatedType, EnumType):
             # the enum type is already created
-            return alreadyCreatedType
+            if (len(alreadyCreatedType.values) != 0) or (len(alreadyCreatedType.values) != 0):
+                return alreadyCreatedType
+            else:
+                enumType = alreadyCreatedType
         else:
             # a dummy type was pre-created. now it has been filled with the real values
-            pass
-    enumType = EnumType()
-    enumType.domain = modelFileContainer.domain
-    enumType.name = enumTypeName
-    if len(enumValue) > 0: 
-        if isinstance(enumValue[0], str):
-            enumType.values = enumValue
-        elif isinstance(enumValue[0], int):
-            enumType.numValues = enumValue
-            enumType.type = IntegerType()
-        elif isinstance(enumValue[0], float):
-            enumType.numValues = enumValue
-            enumType.type = NumberType()
-        else:
-            enumType.values = enumValue
+            enumType = EnumType()
+            enumType.domain = modelFileContainer.domain
+            enumType.name = enumTypeName
+    else:
+        enumType = EnumType()
+        enumType.domain = modelFileContainer.domain
+        enumType.name = enumTypeName
 
     if typeStr == 'integer':
         enumType.type = IntegerType()
         enumType.type.format = IntegerTypeFormatEnum.valueForString(formatStr)
+        enumType.numValues = enumValue
     elif typeStr == 'number':
         enumType.type = NumberType()
         enumType.type.format = NumberTypeFormatEnum.valueForString(formatStr)
+        enumType.numValues = enumValue
     elif typeStr == 'string':
         # DateType, TimeType, DateTimeType, StringType, EnumType, DurationType
         if formatStr == 'date':
@@ -1120,6 +1131,10 @@ def _extractEnumType(newTypeName, newProperty, enumValue, typeStr, formatStr, mo
             enumType.type = BytesType()
         else:
             enumType.type = StringType()
+        enumType.values = enumValue
+    else:
+        enumType.type = StringType()
+        __initEnumValuesFromContent(enumType, enumValue)
 
     enumType.source = modelFileContainer.fileName
     enumType.version = modelFileContainer.version
