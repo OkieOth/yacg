@@ -2,7 +2,7 @@ import unittest
 import os.path
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.model.model import EnumType, Type
-
+import yacg.model.randomFuncs as randomFuncs
 import yacg.model.config as config
 
 
@@ -49,6 +49,23 @@ class TestYamlBuilder (unittest.TestCase):
         modelTypes = getModelFromYaml(model, [])
         self.assertIsNotNone(modelTypes)
         self.assertEqual(12, len(modelTypes))
+        found = 0
+        for m in modelTypes:
+            if m.name == "Layer":
+                found = found + 1
+                self.assertIsNotNone(m._processing)
+                for p in m.properties:
+                    self.assertIsNone(p._processing)
+            elif m.name == "Geometry":
+                found = found + 1
+                self.assertIsNotNone(m._processing)
+            elif m.name == "DisplayConfigFill":
+                self.assertIsNotNone(m.properties[0]._processing)
+                self.assertEqual(len(m.properties), 1)
+            elif m._processing is not None:
+                found = found + 1
+        self.assertEqual(found, 2)
+        randomFuncs.extendMetaModelWithRandomConfigTypes(modelTypes)
         found = 0
         for m in modelTypes:
             if m.name == "Layer":

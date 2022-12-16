@@ -9,7 +9,7 @@
             "type": "object",
             "description": "Dummy base class to implement strong typed references",
             "properties": {
-                "_processing": {
+                "processing": {
                     "description": "anchor to store codegen runtime data, for instance for the random data creation",
                     "type": "object"
                 }
@@ -678,7 +678,7 @@
                     "description": "holds the original 'format' value from the schema",
                     "type": "string"
                 },
-                "_processing": {
+                "processing": {
                     "description": "anchor to store codegen runtime data, for instance for the random data creation",
                     "type": "object"
                 }
