@@ -822,6 +822,16 @@ class TestJsonBuilder (unittest.TestCase):
                 self.assertTrue(len(t.values) > 0)
         self.assertEqual(foundEnumTypes, 2)
 
+    def testStackedDicts(self):
+        modelFile = 'tests/resources/models/json/examples/stacked_dicts.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(2, len(modelTypes))
+
 
 if __name__ == '__main__':
     unittest.main()

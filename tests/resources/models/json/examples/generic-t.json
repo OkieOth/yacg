@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "version": "1.1.0",
     "definitions": {
       "TTT": {
@@ -39,6 +39,14 @@
                 "items": {
                   "$ref": "#/definitions/TTTSubNode"
                 },
+                "examples": [
+                  {
+                    "xxx": 1,
+                    "y": true
+                  },
+                  123,
+                  "bla"
+                ],
                 "minItems": 0
               },
               "detectors": {
