@@ -5,6 +5,46 @@
 from enum import Enum
 
 
+class RamdonDefaultConfig:
+    def __init__(self, dictObj=None):
+
+        self.outputDir = None
+
+        self.defaultElemCount = None
+
+        self.defaultTypeDepth = None
+
+        self.defaultMinArrayElemCount = None
+
+        self.defaultMaxArrayElemCount = None
+
+        self.defaultMinDate = None
+
+        self.defaultMaxDate = None
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.outputDir = dictObj.get('outputDir', None)
+
+        self.defaultElemCount = dictObj.get('defaultElemCount', None)
+
+        self.defaultTypeDepth = dictObj.get('defaultTypeDepth', None)
+
+        self.defaultMinArrayElemCount = dictObj.get('defaultMinArrayElemCount', None)
+
+        self.defaultMaxArrayElemCount = dictObj.get('defaultMaxArrayElemCount', None)
+
+        self.defaultMinDate = dictObj.get('defaultMinDate', None)
+
+        self.defaultMaxDate = dictObj.get('defaultMaxDate', None)
+
+
 class RandomDataTypeConf:
     """can put on schema types to include them in the random data generation
     """

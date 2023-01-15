@@ -8,6 +8,10 @@ import yacg.model.random_config
 
 
 class TestYacgConfigurationForRandomDataGeneration (unittest.TestCase):
+    def testRamdonDefaultConfig(self):
+        x = yacg.model.random_config.RamdonDefaultConfig()
+        self.assertIsNotNone(x)
+
     def testRandomDataTypeConf(self):
         x = yacg.model.random_config.RandomDataTypeConf()
         self.assertIsNotNone(x)

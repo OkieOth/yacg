@@ -3,6 +3,17 @@
 hide empty methods
 hide empty fields
 
+class RamdonDefaultConfig {
+        StringType outputDir
+        IntegerType defaultElemCount
+        IntegerType defaultTypeDepth
+        IntegerType defaultMinArrayElemCount
+        IntegerType defaultMaxArrayElemCount
+        DateTimeType defaultMinDate
+        DateTimeType defaultMaxDate
+}
+
+
 class RandomDataTypeConf {
         IntegerType randMinElemCount
         IntegerType randMaxElemCount
@@ -90,6 +101,14 @@ enum RandomStringTypeConfStrTypeEnum {
     TEXT
     SENTENCE
 }
+
+
+
+    
+
+
+
+
 
 
 
