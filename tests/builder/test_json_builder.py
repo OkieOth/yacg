@@ -830,7 +830,56 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(2, len(modelTypes))
+        self.assertEqual(9, len(modelTypes))
+        found = 0
+        for t in modelTypes:
+            if t.name == 'StackedDict':
+                found = found + 1
+                self.assertTrue(isinstance(t, ComplexType))
+                self.assertEqual(2, len(t.properties))
+                self.assertEqual("StackedDictEvil", t.properties[1].name)
+                pass
+            if t.name == 'StackedDictEvil':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+                pass
+            if t.name == 'DictWithArrayValue':
+                self.assertTrue(isinstance(t, ComplexType))
+                self.assertEqual(2, len(t.properties))
+                found = found + 1
+                pass
+            if t.name == 'DictWithArrayValueEvil':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+                pass
+            if t.name == 'DictWithArrayValueRealEvil':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+                pass
+            if t.name == 'Dict1':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+                pass
+            if t.name == 'Dict2':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+                pass
+            if t.name == 'Dict3':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+                pass
+            if t.name == 'StackedDict2':
+                self.assertTrue(isinstance(t, ComplexType))
+                self.assertEqual(2, len(t.properties))
+                found = found + 1
+                pass
+        self.assertEqual(8, found)
 
 
 if __name__ == '__main__':

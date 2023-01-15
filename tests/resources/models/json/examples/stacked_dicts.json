@@ -43,6 +43,45 @@
                             "type": "string"
                         }
                     }
+                },
+                "realEvil": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "Dict1": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/Dict2"
+            }
+        },
+        "Dict2": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/Dict3"
+            }
+        },
+        "Dict3": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "StackedDict2": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "evil": {
+                    "$ref": "#/definitions/Dict1"
                 }
             }
         }

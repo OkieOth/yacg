@@ -384,7 +384,7 @@ def _extractObjectType(
         newType.name = typeNameStr
         newType.version = modelFileContainer.version
     else:
-        if len(alreadyCreatedType.properties) > 0:
+        if (isinstance(alreadyCreatedType, DictionaryType) and alreadyCreatedType.valueType is not None) or (hasattr(alreadyCreatedType, "properties") and len(alreadyCreatedType.properties) > 0):
             return alreadyCreatedType
         else:
             newType = alreadyCreatedType
@@ -945,10 +945,12 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
 
     propName = newProperty.name if newProperty.name is not None else "Inner"
     innerTypeName = toUpperCamelCase(newTypeName + ' ' + propName)
+
     properties = propDict.get('properties', None)
     additionalProperties = __getAdditionalPropertiesForDictionaryType(propDict)
     newInnerType = ComplexType() if additionalProperties is None else DictionaryType()
     newInnerType.domain = modelFileContainer.domain
+
     newInnerType.name = innerTypeName
     newInnerType.source = modelFileContainer.fileName
     newInnerType.version = modelFileContainer.version
