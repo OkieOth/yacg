@@ -455,6 +455,19 @@ def _extractDictionaryValueType(type, additionalProperties, modelTypes, modelFil
     property = Property()
     property.name = ''
     type.valueType = _extractAttribType(type.name, property, additionalProperties, modelTypes, modelFileContainer)
+    if property.isArray:
+        tmpArrayType = ArrayType()
+        tmpArrayType.name = type.name + "InnerArray"
+        tmpArrayType.description = additionalProperties.get('description', None)
+        tmpArrayType.itemsType = type.valueType
+        tmpArrayType.source = modelFileContainer.fileName
+        tmpArrayType.domain = modelFileContainer.domain
+        tmpArrayType.arrayConstraints = property.arrayConstraints
+        tmpArrayType.arrayDimensions = property.arrayDimensions
+        _appendToAlreadyLoadedTypes(tmpArrayType, modelTypes)
+        __initTags(tmpArrayType, additionalProperties)
+        type.valueType = tmpArrayType
+    pass
 
 
 def _extractAttributes(type, properties, modelTypes, modelFileContainer):
