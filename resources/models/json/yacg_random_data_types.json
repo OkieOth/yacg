@@ -5,6 +5,34 @@
     "version": "0.1.4",
     "x-domain": "yacg.model.random_config",
     "definitions": {
+        "RamdonDefaultConfig": {
+            "type": "object",
+            "properties": {
+                "outputDir": {
+                    "type": "string"
+                },
+                "defaultElemCount": {
+                    "type": "integer"
+                },
+                "defaultTypeDepth": {
+                    "type": "integer"
+                },
+                "defaultMinArrayElemCount": {
+                    "type": "integer"
+                },
+                "defaultMaxArrayElemCount": {
+                    "type": "integer"
+                },
+                "defaultMinDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "defaultMaxDate": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
         "RandomDataTypeConf": {
             "description": "can put on schema types to include them in the random data generation",
             "type": "object",
