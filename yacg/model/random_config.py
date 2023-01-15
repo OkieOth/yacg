@@ -8,8 +8,6 @@ from enum import Enum
 class RamdonDefaultConfig:
     def __init__(self, dictObj=None):
 
-        self.outputDir = None
-
         self.defaultElemCount = None
 
         self.defaultTypeDepth = None
@@ -29,8 +27,6 @@ class RamdonDefaultConfig:
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
-
-        self.outputDir = dictObj.get('outputDir', None)
 
         self.defaultElemCount = dictObj.get('defaultElemCount', None)
 

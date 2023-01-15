@@ -6,6 +6,7 @@ from yacg.util.outputUtils import printError
 from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 import yacg.model.randomFuncs as randomFuncs
+import yacg.model.random_config as randomConfig
 from yacg.util.fileUtils import getFileExt
 
 
@@ -27,13 +28,26 @@ parser.add_argument('--defaultMinDate', help='default minimal date for date and 
 parser.add_argument('--defaultMaxDate', help='default maximal date for date and timestamp fields')
 
 
+def __createDefaultConfig(args):
+    defaultConfig = randomConfig.RamdonDefaultConfig()
+    defaultConfig.defaultElemCount = args.defaultElemCount
+    defaultConfig.defaultTypeDepth = args.defaultTypeDepth
+    defaultConfig.defaultMinArrayElemCount = args.defaultMinArrayElemCount
+    defaultConfig.defaultMaxArrayElemCount = args.defaultMaxArrayElemCount
+    defaultConfig.defaultMinDate = args.defaultMinDate
+    defaultConfig.defaultMaxDate = args.defaultMaxDate
+    return defaultConfig
+
+
 def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
-    """takes the meta model ..."""
-
-    # TODO
+    """takes the prepared meta model ..."""
+    defaultConfig = __createDefaultConfig(args)
+    for t in loadedTypes:
+        if t.processing is None and t.procession.randElemCount > 0:
+            # TODO renerate random data
+            # TODO write generated data
+            pass
     pass
-
-
 
 
 def main():

@@ -4,7 +4,6 @@ hide empty methods
 hide empty fields
 
 class RamdonDefaultConfig {
-        StringType outputDir
         IntegerType defaultElemCount
         IntegerType defaultTypeDepth
         IntegerType defaultMinArrayElemCount
@@ -105,7 +104,6 @@ enum RandomStringTypeConfStrTypeEnum {
 
 
     
-
 
 
 
