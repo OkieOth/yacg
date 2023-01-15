@@ -9,4 +9,4 @@ on:
 
 jobs:
   call-workflow-test:
-    uses: OkieOth/yacg/.github/workflows/__tests.yml@5.8.3
+    uses: OkieOth/yacg/.github/workflows/__tests.yml@5.9.2
