@@ -1,6 +1,13 @@
+# 5.9.4
+* fix bug for dictionaries in models that contains arrays as value
+
+# 5.9.2 - 5.9.3
+* CI fixes
+
+
 # 5.9.1
 * fix bug with not detected enum values, caused by a specific order of type declaration
-  
+
 # 5.9.0
 * add file validation against a schema function to the package
 

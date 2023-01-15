@@ -384,7 +384,7 @@ def _extractObjectType(
         newType.name = typeNameStr
         newType.version = modelFileContainer.version
     else:
-        if len(alreadyCreatedType.properties) > 0:
+        if (isinstance(alreadyCreatedType, DictionaryType) and alreadyCreatedType.valueType is not None) or (hasattr(alreadyCreatedType, "properties") and len(alreadyCreatedType.properties) > 0):
             return alreadyCreatedType
         else:
             newType = alreadyCreatedType
@@ -455,6 +455,19 @@ def _extractDictionaryValueType(type, additionalProperties, modelTypes, modelFil
     property = Property()
     property.name = ''
     type.valueType = _extractAttribType(type.name, property, additionalProperties, modelTypes, modelFileContainer)
+    if property.isArray:
+        tmpArrayType = ArrayType()
+        tmpArrayType.name = type.name + "InnerArray"
+        tmpArrayType.description = additionalProperties.get('description', None)
+        tmpArrayType.itemsType = type.valueType
+        tmpArrayType.source = modelFileContainer.fileName
+        tmpArrayType.domain = modelFileContainer.domain
+        tmpArrayType.arrayConstraints = property.arrayConstraints
+        tmpArrayType.arrayDimensions = property.arrayDimensions
+        _appendToAlreadyLoadedTypes(tmpArrayType, modelTypes)
+        __initTags(tmpArrayType, additionalProperties)
+        type.valueType = tmpArrayType
+    pass
 
 
 def _extractAttributes(type, properties, modelTypes, modelFileContainer):
@@ -945,10 +958,12 @@ def _extractComplexType(newTypeName, newProperty, propDict, modelTypes, modelFil
 
     propName = newProperty.name if newProperty.name is not None else "Inner"
     innerTypeName = toUpperCamelCase(newTypeName + ' ' + propName)
+
     properties = propDict.get('properties', None)
     additionalProperties = __getAdditionalPropertiesForDictionaryType(propDict)
     newInnerType = ComplexType() if additionalProperties is None else DictionaryType()
     newInnerType.domain = modelFileContainer.domain
+
     newInnerType.name = innerTypeName
     newInnerType.source = modelFileContainer.fileName
     newInnerType.version = modelFileContainer.version

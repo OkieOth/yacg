@@ -822,6 +822,78 @@ class TestJsonBuilder (unittest.TestCase):
                 self.assertTrue(len(t.values) > 0)
         self.assertEqual(foundEnumTypes, 2)
 
+    def testStackedDicts(self):
+        modelFile = 'tests/resources/models/json/examples/stacked_dicts.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(11, len(modelTypes))
+        found = 0
+        for t in modelTypes:
+            if t.name == 'StackedDict':
+                found = found + 1
+                self.assertTrue(isinstance(t, ComplexType))
+                self.assertEqual(2, len(t.properties))
+                self.assertEqual("evil", t.properties[1].name)
+                self.assertEqual("StackedDictEvil", t.properties[1].type.name)
+            if t.name == 'StackedDictEvil':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+            if t.name == 'DictWithArrayValue':
+                self.assertTrue(isinstance(t, ComplexType))
+                self.assertEqual(3, len(t.properties))
+                found = found + 1
+            if t.name == 'DictWithArrayValueEvil':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                self.assertTrue(isinstance(t.valueType, ArrayType))
+                self.assertEqual(t.valueType.name, "DictWithArrayValueEvilInnerArray")
+                found = found + 1
+            if t.name == 'DictWithArrayValueEvilInnerArray':
+                self.assertTrue(isinstance(t, ArrayType))
+                self.assertIsNotNone(t.itemsType)
+                self.assertTrue(isinstance(t.itemsType, StringType))
+                found = found + 1
+            if t.name == 'DictWithArrayValueRealEvil':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                self.assertTrue(isinstance(t.valueType, ArrayType))
+                self.assertEqual(t.valueType.name, "DictWithArrayValueRealEvilInnerArray")
+                found = found + 1
+            if t.name == 'DictWithArrayValueRealEvilInnerArray':
+                self.assertTrue(isinstance(t, ArrayType))
+                self.assertIsNotNone(t.itemsType)
+                self.assertTrue(isinstance(t.itemsType, StringType))
+                found = found + 1
+            if t.name == 'Dict1':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                self.assertTrue(isinstance(t.valueType, DictionaryType))
+                self.assertEqual(t.valueType.name, "Dict2")
+                found = found + 1
+            if t.name == 'Dict2':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                self.assertTrue(isinstance(t.valueType, DictionaryType))
+                self.assertEqual(t.valueType.name, "Dict3")
+                found = found + 1
+            if t.name == 'Dict3':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                self.assertTrue(isinstance(t.valueType, StringType))
+                found = found + 1
+            if t.name == 'StackedDict2':
+                self.assertTrue(isinstance(t, ComplexType))
+                self.assertEqual(2, len(t.properties))
+                self.assertEqual("evil", t.properties[1].name)
+                self.assertEqual("Dict1", t.properties[1].type.name)
+                found = found + 1
+        self.assertEqual(11, found)
+
 
 if __name__ == '__main__':
     unittest.main()
