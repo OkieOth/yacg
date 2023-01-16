@@ -378,12 +378,6 @@ def __doCodeGen(codeGenerationJobs, args):
                     task.blackListed,
                     task.whiteListed,
                     task.multiFileTask)
-            elif task.randomDataTask is not None:
-                renderRandomData(
-                    loadedTypes,
-                    task.blackListed,
-                    task.whiteListed,
-                    task.randomDataTask)
     if (not allSkipped) and (args.skipCodeGenDryRun is not True):
         protocolFuncs.writeProtocolFile(args.protocolFile, codeGenMetaData)
 

@@ -44,7 +44,7 @@ def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
     defaultConfig = __createDefaultConfig(args)
     for t in loadedTypes:
         if t.processing is None and t.procession.randElemCount > 0:
-            # TODO renerate random data
+            randomData = randomFuncs.generateRandomData(t, defaultConfig)
             # TODO write generated data
             pass
     pass
