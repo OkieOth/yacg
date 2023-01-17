@@ -1,6 +1,7 @@
 ## Template to create PlantUml class diagrams from the model types
 <%
     import yacg.model.modelFuncs as modelFuncs
+    import yacg.model.model as model
     import yacg.util.stringUtils as stringUtils
 
     templateFile = 'plantUml.mako'
@@ -64,11 +65,49 @@
             tagCount = tagCount + 1
         return ret
 
-    def printPropType(prop):
-        if modelFuncs.isDictionaryType(prop.type):
-            return "Map<{}>".format(modelFuncs.getTypeName(prop.type.valueType))
+    def printTypeName(type):
+        if modelFuncs.isDictionaryType(type):
+            if type.topLevelType:
+                return modelFuncs.getTypeName(type)
+            else:
+                return "Map<{}>".format(printTypeName(type.valueType))
+        elif isinstance(type, model.ArrayType):
+            if type.topLevelType:
+                modelFuncs.getTypeName(type)
+            else:
+                return "{}[]".format(printTypeName(type.itemsType))
         else:
-            return modelFuncs.getTypeName(prop.type)
+            return modelFuncs.getTypeName(type)
+
+    def printPropType(prop):
+        return printTypeName(prop.type)
+
+    def printBeautifiedTypeName(type):
+        if hasattr(type, "topLevelType") and type.topLevelType:
+            return '"**{}**"'.format(modelFuncs.getTypeName(type))
+        else:
+            return modelFuncs.getTypeName(type)
+
+    def checkIfPrintPropTypeReference(prop, alreadyLinkedTypes):
+        # (not modelFuncs.isBaseType(prop.type)) and (prop.type.topLevelType or isinstance(prop.type, model.ComplexType) or isinstance(prop.type, model.EnumType))
+        if isinstance(prop.type, model.ComplexType):
+            if prop.type.name in alreadyLinkedTypes:
+                return False
+            pass
+        elif isinstance(prop.type, model.ArrayType):
+            if modelFuncs.isBaseType(prop.type.itemsType):
+                return False
+            if prop.type.itemsType.name in alreadyLinkedTypes:
+                return False
+            pass
+        elif isinstance(prop.type, model.DictionaryType):
+            if modelFuncs.isBaseType(prop.type.valueType):
+                return False
+            if prop.type.valueType.name in alreadyLinkedTypes:
+                return False
+            pass
+        else:
+            return False
 
     shouldTypeTagsBePrinted = templateParameters.get('printTypeTags',False)
     shouldPropertyTagsBePrinted = templateParameters.get('printPropertyTags',False)
@@ -80,13 +119,13 @@ hide empty fields
 
 % for type in modelTypes:
     % if modelFuncs.isEnumType(type):
-enum ${modelFuncs.getTypeName(type)} {
+enum ${printBeautifiedTypeName(type)} as ${modelFuncs.getTypeName(type)} {
         % for value in type.values:
     ${stringUtils.toUpperCaseName(value)}
         % endfor
 }
     % elif modelFuncs.isComplexType(type):
-class ${modelFuncs.getTypeName(type)} {
+class ${printBeautifiedTypeName(type)} as ${modelFuncs.getTypeName(type)} {
         % if hasattr(type,'properties'):
             % for prop in type.properties:
         ${printPropType(prop)}${printArrayDimensions(prop)} ${prop.name}${printForeignKeyComment(prop)}
@@ -109,15 +148,22 @@ class ${modelFuncs.getTypeName(type)} {
             % endfor
         % endif
 }
-    % endif
-
-    % if hasattr(type,'description') and (type.description != None):
+        % if hasattr(type,'description') and (type.description != None):
 note top: ${addLineBreakToDescription(type.description)}
+        % endif
+
+        % if hasattr(type,'extendsType') and (type.extendsType != None):
+${modelFuncs.getTypeName(type)} --|> ${modelFuncs.getTypeName(type.extendsType)}
+        % endif
+ 
+    % elif isinstance(type, model.DictionaryType) and type.topLevelType:
+class ${printBeautifiedTypeName(type)} as ${modelFuncs.getTypeName(type)} <Map<${printTypeName(type.valueType)}>> {
+}
+    % elif isinstance(type, model.ArrayType) and type.topLevelType:
+class ${printBeautifiedTypeName(type)} as ${modelFuncs.getTypeName(type)} extends List {
+}
     % endif
 
-    % if hasattr(type,'extendsType') and (type.extendsType != None):
-${modelFuncs.getTypeName(type)} --|> ${modelFuncs.getTypeName(type.extendsType)}
-    % endif
 % endfor
 
 % for type in modelTypes:
@@ -128,14 +174,12 @@ ${modelFuncs.getTypeName(type)} --|> ${modelFuncs.getTypeName(type.extendsType)}
     %>
     % if hasattr(type,'properties'):
         % for prop in type.properties:
-            % if (not modelFuncs.isBaseType(prop.type)) and (not modelFuncs.isDictionaryType(prop.type)):
-                % if prop.type.name not in alreadyLinkedTypes:
+            % if checkIfPrintPropTypeReference(prop, alreadyLinkedTypes) :
 ${modelFuncs.getTypeName(type)} ${ '"0"' if prop.isArray else '' } *-- ${'"n"' if prop.isArray else ''} ${modelFuncs.getTypeName(prop.type)}
             <%
                 ## add the current type name to the already linked types
                 alreadyLinkedTypes.append(modelFuncs.getTypeName(prop.type))
             %>
-                % endif
             % endif
 
             % if (prop.foreignKey is not None) and (prop.foreignKey.type.name not in alreadyLinkedTypes2):
@@ -146,6 +190,16 @@ ${modelFuncs.getTypeName(type)} .. ${modelFuncs.getTypeName(prop.foreignKey.type
             %>
             % endif
         % endfor
+    % elif isinstance(type, model.DictionaryType) and type.topLevelType and (not modelFuncs.isBaseType(type.valueType)) and (type.valueType.topLevelType or isinstance(type.valueType, model.ComplexType)):
+${modelFuncs.getTypeName(type)} -- ${type.valueType.name}
+    % elif isinstance(prop.type, model.ArrayType) and type.topLevelType and (not modelFuncs.isBaseType(type.itemsType)) and (type.itemsType.topLevelType or isinstance(type.itemsType, model.ComplexType)):
+        % if prop.type.itemsType.name not in alreadyLinkedTypes:
+${modelFuncs.getTypeName(type)} -- ${type.itemsType.name}
+    <%
+        ## add the current type name to the already linked types
+        alreadyLinkedTypes.append(prop.type.itemsType.name)
+    %>
+        % endif
     % endif
 % endfor
 
