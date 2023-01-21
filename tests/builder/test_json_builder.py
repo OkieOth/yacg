@@ -867,7 +867,7 @@ class TestJsonBuilder (unittest.TestCase):
             if t.name == 'DictWithArrayValueRealEvilInnerArray':
                 self.assertTrue(isinstance(t, ArrayType))
                 self.assertIsNotNone(t.itemsType)
-                self.assertTrue(isinstance(t.itemsType, StringType))
+                self.assertTrue(isinstance(t.itemsType, DictionaryType))
                 found = found + 1
             if t.name == 'Dict1':
                 self.assertTrue(isinstance(t, DictionaryType))

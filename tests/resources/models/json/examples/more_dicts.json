@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MoreDicts",
+  "version": "0.1.6",
+  "definitions": {
+    "Command": {
+      "type": "object",
+      "properties": {
+        "guid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "cC": {
+          "$ref": "#/definitions/PD"
+        }
+      },
+      "required": ["name"]
+    },
+    "PD": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/PAD"
+      }
+    },
+    "PAD": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/PAVD"
+      }
+    },
+    "PAVD": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}
