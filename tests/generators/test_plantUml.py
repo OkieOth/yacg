@@ -2,6 +2,7 @@ import unittest
 import os.path
 from mako.template import Template
 from yacg.builder.jsonBuilder import getModelFromJson
+import yacg.util.yacg_utils as yacg_utils
 from yacg.model.config import SingleFileTask
 
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate

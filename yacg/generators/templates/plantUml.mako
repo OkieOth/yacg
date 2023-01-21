@@ -86,28 +86,78 @@
         if hasattr(type, "topLevelType") and type.topLevelType:
             return '"**{}**"'.format(modelFuncs.getTypeName(type))
         else:
-            return modelFuncs.getTypeName(type)
+            return '"{}"'.format(modelFuncs.getTypeName(type))
 
-    def checkIfPrintPropTypeReference(prop, alreadyLinkedTypes):
-        # (not modelFuncs.isBaseType(prop.type)) and (prop.type.topLevelType or isinstance(prop.type, model.ComplexType) or isinstance(prop.type, model.EnumType))
-        if isinstance(prop.type, model.ComplexType):
-            if prop.type.name in alreadyLinkedTypes:
+    def checkIfPrintPropTypeReference(propType, alreadyLinkedTypes):
+        if modelFuncs.isBaseType(propType):
+            return False
+        if hasattr(propType, "topLevelType") and propType.topLevelType:
+            return True
+        if isinstance(propType, model.ComplexType):
+            if propType.name in alreadyLinkedTypes:
                 return False
-            pass
-        elif isinstance(prop.type, model.ArrayType):
-            if modelFuncs.isBaseType(prop.type.itemsType):
+            else:
+                return True
+        elif isinstance(propType, model.ArrayType):
+            if modelFuncs.isBaseType(propType.itemsType):
                 return False
-            if prop.type.itemsType.name in alreadyLinkedTypes:
+            if propType.itemsType.name in alreadyLinkedTypes:
                 return False
-            pass
-        elif isinstance(prop.type, model.DictionaryType):
-            if modelFuncs.isBaseType(prop.type.valueType):
+            if hasattr(propType.itemsType, "topLevelType") and propType.itemsType.topLevelType:
+                return True
+            else:
+                return checkIfPrintPropTypeReference(propType.itemsType, alreadyLinkedTypes)
+        elif isinstance(propType, model.DictionaryType):
+            if modelFuncs.isBaseType(propType.valueType):
                 return False
-            if prop.type.valueType.name in alreadyLinkedTypes:
+            if propType.valueType.name in alreadyLinkedTypes:
                 return False
-            pass
+            if hasattr(propType.valueType, "topLevelType") and propType.valueType.topLevelType:
+                return True
+            else:
+                return checkIfPrintPropTypeReference(propType.valueType, alreadyLinkedTypes)
         else:
             return False
+
+
+    def getPropTypeReferenceToPrint(propType, alreadyLinkedTypes):
+        if modelFuncs.isBaseType(propType):
+            return "???"
+        if hasattr(propType, "topLevelType") and propType.topLevelType:
+            ret = propType.name
+            alreadyLinkedTypes.append(ret)
+            return ret
+        if isinstance(propType, model.ComplexType):
+            if propType.name in alreadyLinkedTypes:
+                return "???"
+            else:
+                ret = propType.name
+                alreadyLinkedTypes.append(ret)
+                return ret
+        elif isinstance(propType, model.ArrayType):
+            if modelFuncs.isBaseType(propType.itemsType):
+                return "???"
+            if propType.itemsType.name in alreadyLinkedTypes:
+                return "???"
+            if hasattr(propType.itemsType, "topLevelType") and propType.itemsType.topLevelType:
+                ret = propType.itemsType.name
+                alreadyLinkedTypes.append(ret)
+                return ret
+            else:
+                return getPropTypeReferenceToPrint(propType.itemsType, alreadyLinkedTypes)
+        elif isinstance(propType, model.DictionaryType):
+            if modelFuncs.isBaseType(propType.valueType):
+                return "???"
+            if propType.valueType.name in alreadyLinkedTypes:
+                return "???"
+            if hasattr(propType.valueType, "topLevelType") and propType.valueType.topLevelType:
+                ret = propType.valueType.name
+                alreadyLinkedTypes.append(ret)
+                return ret
+            else:
+                return getPropTypeReferenceToPrint(propType.valueType, alreadyLinkedTypes)
+        else:
+            return "???"
 
     shouldTypeTagsBePrinted = templateParameters.get('printTypeTags',False)
     shouldPropertyTagsBePrinted = templateParameters.get('printPropertyTags',False)
@@ -116,6 +166,9 @@
 @startuml
 hide empty methods
 hide empty fields
+
+modelTypes.size = ${len(modelTypes)}
+
 
 % for type in modelTypes:
     % if modelFuncs.isEnumType(type):
@@ -174,12 +227,8 @@ class ${printBeautifiedTypeName(type)} as ${modelFuncs.getTypeName(type)} extend
     %>
     % if hasattr(type,'properties'):
         % for prop in type.properties:
-            % if checkIfPrintPropTypeReference(prop, alreadyLinkedTypes) :
-${modelFuncs.getTypeName(type)} ${ '"0"' if prop.isArray else '' } *-- ${'"n"' if prop.isArray else ''} ${modelFuncs.getTypeName(prop.type)}
-            <%
-                ## add the current type name to the already linked types
-                alreadyLinkedTypes.append(modelFuncs.getTypeName(prop.type))
-            %>
+            % if checkIfPrintPropTypeReference(prop.type, alreadyLinkedTypes) :
+${modelFuncs.getTypeName(type)} ${ '"0"' if prop.isArray else '' } *-- ${'"n"' if prop.isArray else ''} ${getPropTypeReferenceToPrint(prop.type, alreadyLinkedTypes)}
             % endif
 
             % if (prop.foreignKey is not None) and (prop.foreignKey.type.name not in alreadyLinkedTypes2):
@@ -195,10 +244,6 @@ ${modelFuncs.getTypeName(type)} -- ${type.valueType.name}
     % elif isinstance(prop.type, model.ArrayType) and type.topLevelType and (not modelFuncs.isBaseType(type.itemsType)) and (type.itemsType.topLevelType or isinstance(type.itemsType, model.ComplexType)):
         % if prop.type.itemsType.name not in alreadyLinkedTypes:
 ${modelFuncs.getTypeName(type)} -- ${type.itemsType.name}
-    <%
-        ## add the current type name to the already linked types
-        alreadyLinkedTypes.append(prop.type.itemsType.name)
-    %>
         % endif
     % endif
 % endfor

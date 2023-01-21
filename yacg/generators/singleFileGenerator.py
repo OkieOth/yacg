@@ -25,6 +25,7 @@ def renderSingleFileTemplate(modelTypes, blackList, whiteList, singleFileTask):
     if not os.path.exists(templateDir):
         pathlib.Path(templateDir).mkdir(parents=True, exist_ok=True)
     template = Template(filename=singleFileTask.template)
+
     modelTypesToUse = generatorHelper.trimModelTypes(modelTypes, blackList, whiteList)
     templateParameterDict = {}
     for templateParam in singleFileTask.templateParams:
