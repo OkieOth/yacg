@@ -2,6 +2,11 @@
 * fix bug in golang template
 * remove RandomDataGenerator from config and implementation
 
+# 5.9.5
+* add command line switches for better handling of Dictionary- and ArrayTypes
+* improve plantuml template
+* improve top level type detection - even in an unperformant way xD
+
 # 5.9.4
 * fix bug for dictionaries in models that contains arrays as value
 

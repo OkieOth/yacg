@@ -103,7 +103,7 @@ def __extractTopLevelObjectType(parsedSchema, modelTypes, modelFileContainer):
         description = parsedSchema.get('description', None)
         mainType = _extractObjectType(
             typeNameStr, schemaProperties, additionalProperties,
-            allOfEntry, refEntry, description, modelTypes, modelFileContainer)
+            allOfEntry, refEntry, description, modelTypes, modelFileContainer, True)
         __initProcessing(mainType, parsedSchema)
         __initTags(mainType, parsedSchema)
         _markRequiredAttributes(mainType, parsedSchema.get('required', []))
@@ -144,7 +144,7 @@ def __extractTopLevelEnumType(parsedSchema, modelTypes, modelFileContainer):
     return False
 
 
-def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContainer):
+def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContainer, isTopLevelType):
     if parsedSchema.get('items', None) is not None:
         typeNameStr = typeName
         tmpProperty = Property()
@@ -156,7 +156,7 @@ def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContaine
         arrayType.domain = modelFileContainer.domain
         arrayType.arrayConstraints = tmpProperty.arrayConstraints
         arrayType.arrayDimensions = tmpProperty.arrayDimensions
-        arrayType.topLevelType = True
+        arrayType.topLevelType = isTopLevelType
         _appendToAlreadyLoadedTypes(arrayType, modelTypes)
         __initProcessing(arrayType, parsedSchema)
         __initTags(arrayType, parsedSchema)
@@ -181,7 +181,7 @@ def extractTypes(parsedSchema, modelFile, modelTypes, skipAdditionalSpecTypes=Fa
     if not handled:
         titleStr = parsedSchema.get('title', None)
         typeNameStr = toUpperCamelCase(titleStr) if titleStr is not None else None
-        handled = __extractPureArrayType(typeNameStr, parsedSchema, modelTypes, modelFileContainer)
+        handled = __extractPureArrayType(typeNameStr, parsedSchema, modelTypes, modelFileContainer, False)
 
     schemaDefinitions = parsedSchema.get('definitions', None)
     if schemaDefinitions is not None:
@@ -295,7 +295,7 @@ def _extractTypeAndRelatedTypes(modelFileContainer, desiredTypeName, modelTypes)
             description = modelFileContainer.parsedSchema.get('description', None)
             type = _extractObjectType(
                 typeNameStr, schemaProperties, additionalProperties,
-                allOfEntry, refEntry, description, modelTypes, modelFileContainer)
+                allOfEntry, refEntry, description, modelTypes, modelFileContainer, True)
             type.topLevelType = True
             if len(type.tags) == 0:
                 tags = modelFileContainer.parsedSchema.get('x-tags', None)
@@ -355,12 +355,12 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
         else:
             itemsEntry = object.get('items', None)
             if itemsEntry is not None:
-                __extractPureArrayType(key, object, modelTypes, modelFileContainer)
+                __extractPureArrayType(key, object, modelTypes, modelFileContainer, True)
             else:
                 refEntry = object.get('$ref', None)
                 type = _extractObjectType(
                     key, properties, additionalProperties, allOfEntry, refEntry,
-                    description, modelTypes, modelFileContainer)
+                    description, modelTypes, modelFileContainer, True)
                 __initProcessing(type, object)
                 if len(type.tags) == 0:
                     tags = object.get('x-tags', None)
@@ -368,10 +368,16 @@ def _extractDefinitionsTypes(definitions, modelTypes, modelFileContainer, desire
                         type.tags = _extractTags(tags)
                 _markRequiredAttributes(type, object.get('required', []))
 
+    # search for additional top-level types, because some are not detected at first parse time
+    for key in definitions.keys():
+        t = _getAlreadyCreatedTypesWithThatName(key, modelTypes, modelFileContainer)
+        if hasattr(t, "topLevelType"):
+            t.topLevelType = True
+
 
 def _extractObjectType(
         typeNameStr, properties, additionalProperties, allOfEntries, refEntry,
-        description, modelTypes, modelFileContainer):
+        description, modelTypes, modelFileContainer, isTopLevelType):
     """build a type object
 
     Keyword arguments:
@@ -383,6 +389,7 @@ def _extractObjectType(
     description -- optional description of that type
     modelTypes -- list of already loaded models
     modelFileContainer -- file name and path to the model to load, instance of ModelFileContainer
+    isTopLevelType -- is no inner type
     """
 
     # check up that no dummy for this type is already created.
@@ -430,6 +437,7 @@ def _extractObjectType(
         _extractAttributes(newType, properties, modelTypes, modelFileContainer)
     elif additionalProperties is not None:
         _extractDictionaryValueType(newType, additionalProperties, modelTypes, modelFileContainer)
+    newType.topLevelType = isTopLevelType
     return newType
 
 
@@ -906,9 +914,8 @@ def _createDummyReference(definitions, refTypeName, parsedSchema, modelTypes, mo
             #modelTypes.append(ret)
             return ret
         if object.get('items', None) is not None:
-            # eiko
             tmpModelTypes = []
-            if __extractPureArrayType(refTypeName, object, tmpModelTypes, modelFileContainer):
+            if __extractPureArrayType(refTypeName, object, tmpModelTypes, modelFileContainer, False):
                 for t in tmpModelTypes:
                     if t.name == refTypeName:
                         #modelTypes.append(t)
@@ -1273,7 +1280,7 @@ def __getTypeFromSchemaDictAndAsignId(schema, typeHost, modelTypes, modelFileCon
         propertiesDict = dictToUse.get('properties', None)
         if propertiesDict is not None:
             newInnerTypeName = innerTypeName
-            typeHost.type = _extractObjectType(newInnerTypeName, propertiesDict, None, None, None, None, modelTypes, modelFileContainer)
+            typeHost.type = _extractObjectType(newInnerTypeName, propertiesDict, None, None, None, None, modelTypes, modelFileContainer, False)
         else:
             errorMsg = 'Attention, inner type declarations are currently not implemented for some additional model scenarios.'
             logging.error(errorMsg)
@@ -1463,7 +1470,7 @@ def _initAsyncApiMessageHeaders(messageDict, modelTypes, modelFileContainer, inn
 
     propertiesDict = headersDict.get('properties', None)
     if propertiesDict is not None:
-        return _extractObjectType(innerTypeName, propertiesDict, None, None, None, None, modelTypes, modelFileContainer)
+        return _extractObjectType(innerTypeName, propertiesDict, None, None, None, None, modelTypes, modelFileContainer, False)
     else:
         errorMsg = 'Wrong message headers inner type'
         logging.error(errorMsg)

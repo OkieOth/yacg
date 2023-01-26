@@ -8,7 +8,7 @@ from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 from yacg.generators.multiFileGenerator import renderMultiFileTemplate
-from yacg.model.model import DictionaryType, EnumType, ComplexType
+from yacg.model.model import DictionaryType, EnumType, ComplexType, ArrayType
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 import yacg.model.modelFuncs as modelFuncs
@@ -47,6 +47,9 @@ parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5
 parser.add_argument('--skipCodeGenDryRun', help='prints only the log messages if codegen should be skipped', action='store_true')
 parser.add_argument('--failIfTypeNamesNotUnique', help='the code execution fails if there are not unique type names in the loaded type tree', action='store_true')  # noqa: E501
 parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type names multiple times in the list of loaded times, they are changed to be unique', action='store_true')  # noqa: E501
+parser.add_argument('--removeDicitonaryTypesFromTopLevel', help='Dictionary types are removed from the loaded types list', action='store_true')  # noqa: E501
+parser.add_argument('--removeArrayTypesFromTopLevel', help='Array types are removed from the loaded types list', action='store_true')  # noqa: E501
+parser.add_argument('--goOnlyWithTopLevelTypes', help='Only top-level-types from the schema remains in the loaded types list', action='store_true')  # noqa: E501
 
 
 def readModels(configJob, flattenInheritance):
@@ -321,6 +324,37 @@ def __handleNotUniqueTypeNames(loadedTypes, failIfTypeNamesNotUnique, makeMultip
     return (len(notUniqueNames) > 0) and failIfTypeNamesNotUnique
 
 
+def __handleOnlyWithTopLevelTypes(allLoadedTypes, args):
+    if args.goOnlyWithTopLevelTypes:
+        tmpTypes = []
+        for t in allLoadedTypes:
+            if hasattr(t, "topLevelType") and t.topLevelType:
+                tmpTypes.append(t)
+        return tmpTypes
+    return allLoadedTypes
+
+
+def __handleRemoveArrayTypesFromTopLevel(allLoadedTypes, args):
+    if args.removeArrayTypesFromTopLevel:
+        tmpTypes = []
+        for t in allLoadedTypes:
+            if not isinstance(t, ArrayType):
+                tmpTypes.append(t)
+        return tmpTypes
+    return allLoadedTypes
+
+
+def __handleRemoveDictionaryTypesFromTopLevel(allLoadedTypes, args):
+    if args.removeDicitonaryTypesFromTopLevel:
+        tmpTypes = []
+        for t in allLoadedTypes:
+            if not isinstance(t, DictionaryType):
+                tmpTypes.append(t)
+        return tmpTypes
+    return allLoadedTypes
+
+
+
 def __doCodeGen(codeGenerationJobs, args):
     """process the jobs to do the actual code generation
     """
@@ -358,13 +392,12 @@ def __doCodeGen(codeGenerationJobs, args):
                 logging.info(" 'skipCodeGenDryRun' is set, so no codeGen is executed': {}".format(jobName))
             continue
 
-        # dictionary types are not really useful as toplevel types ... so it's
-        # better to remove them - TODO add a commandline switch for that
         allSkipped = False
         loadedTypes = []
-        for t in allLoadedTypes:
-            if not isinstance(t, DictionaryType):
-                loadedTypes.append(t)
+        loadedTypes = __handleOnlyWithTopLevelTypes(allLoadedTypes, args)
+        loadedTypes = __handleRemoveArrayTypesFromTopLevel(loadedTypes, args)
+        loadedTypes = __handleRemoveDictionaryTypesFromTopLevel(loadedTypes, args)
+
         for task in job.tasks:
             if task.singleFileTask is not None:
                 renderSingleFileTemplate(

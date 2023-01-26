@@ -49,7 +49,7 @@
                     "additionalProperties": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/definitions/Dict1"
                         }
                     }
                 }

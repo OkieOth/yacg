@@ -114,7 +114,7 @@ func (s ${type.name}) String() string {
 % endfor
 
 % for type in modelTypes:
-    % if (not modelFuncs.isEnumType(type)) and (not modelFuncs.isBaseType(type)):
+    % if hasattr(type, "properties"):
         % if type.description != None:
 /* ${templateHelper.addLineBreakToDescription(type.description,4)}
 */

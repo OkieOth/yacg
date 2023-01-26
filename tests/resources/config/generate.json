@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Create Documentation",
+    "models": [
+      {
+        "schema": "tests/resources/models/json/examples/more_dicts.json"
+      }
+    ],
+    "tasks": [
+      {
+        "name": "Plantuml",
+        "singleFileTask": {
+          "template": "yacg/generators/templates/plantUml.mako",
+          "destFile": "tmp/more_dicts.puml",
+          "templateParams": [
+            {
+              "name": "printTypeTags",
+              "value": "true"
+            },
+            {
+              "name": "printPropertyTags",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

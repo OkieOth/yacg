@@ -265,6 +265,10 @@ def isBaseType(type):
         return False
     elif isinstance(type, model.ComplexType):
         return False
+    elif isinstance(type, model.ArrayType):
+        return False
+    elif isinstance(type, model.DictionaryType):
+        return False
     else:
         return True
 

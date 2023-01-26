@@ -2,7 +2,10 @@ import unittest
 import os.path
 from mako.template import Template
 from yacg.builder.jsonBuilder import getModelFromJson
+import yacg.util.yacg_utils as yacg_utils
+from yacg.model.config import SingleFileTask
 
+from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 import yacg.model.config as config
 
 
@@ -84,8 +87,7 @@ class TestPlantUml (unittest.TestCase):
         f.write(renderResult)
         f.close()
 
-    def testCircularTypeDeps(self):
-        modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
+    def _renderPuml(self, modelFile, testOutputFile):
         modelFileExists = os.path.isfile(modelFile)
         self.assertTrue('model file exists: ' + modelFile, modelFileExists)
         model = config.Model()
@@ -98,7 +100,30 @@ class TestPlantUml (unittest.TestCase):
         renderResult = template.render(modelTypes=modelTypes, templateParameters={})
         self.assertIsNotNone(renderResult)
 
-        testOutputFile = "tmp/schema_with_circular_deps.puml"
         f = open(testOutputFile, "w+")
         f.write(renderResult)
         f.close()
+
+    def testCircularTypeDeps(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_circular_deps.json'
+        testOutputFile = "tmp/schema_with_circular_deps.puml"
+        self._renderPuml(modelFile, testOutputFile)
+
+    def testStackedDicts(self):
+        modelFile = 'tests/resources/models/json/examples/stacked_dicts.json'
+        #self._renderPuml(modelFile, testOutputFile)
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        templateFile = 'yacg/generators/templates/plantUml.mako'
+        singleFileTask = SingleFileTask()
+        singleFileTask.template = templateFile
+        singleFileTask.destFile = 'tmp/stacked_dicts_v2.puml'
+
+        renderSingleFileTemplate(
+            modelTypes,
+            (),
+            (),
+            singleFileTask)
