@@ -20,6 +20,9 @@ class RamdonDefaultConfig:
 
         self.defaultMaxDate = None
 
+        #: 0 - always a value, 1 - 50 % empty, 2 - 75 % empty, 3 - 88% empty
+        self.defaultProbabilityToBeEmpty = 1
+
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
@@ -39,6 +42,8 @@ class RamdonDefaultConfig:
         self.defaultMinDate = dictObj.get('defaultMinDate', None)
 
         self.defaultMaxDate = dictObj.get('defaultMaxDate', None)
+
+        self.defaultProbabilityToBeEmpty = dictObj.get('defaultProbabilityToBeEmpty', 1)
 
 
 class RandomDataTypeConf:
@@ -90,6 +95,9 @@ class RandomDataPropertyConf:
         #: values used to put randomly on the attrib, type is not close checked
         self.randValuePool = []
 
+        #: 0 - always a value, 1 - 50 % empty, 2 - 75 % empty, 3 - 88% empty
+        self.randProbabilityToBeEmpty = None
+
         #: taylormade configuration for the property type
         self.randValueConf = None
 
@@ -110,6 +118,8 @@ class RandomDataPropertyConf:
         arrayRandValuePool = dictObj.get('randValuePool', [])
         for elemRandValuePool in arrayRandValuePool:
             self.randValuePool.append(elemRandValuePool)
+
+        self.randProbabilityToBeEmpty = dictObj.get('randProbabilityToBeEmpty', None)
 
         subDictObj = dictObj.get('randValueConf', None)
         if subDictObj is not None:

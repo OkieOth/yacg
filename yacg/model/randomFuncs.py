@@ -48,6 +48,18 @@ def generateRandomData(type, defaultConfig):
     return ret
 
 
+def _randIngnore(property, defaultConfig):
+    if property.required:
+        return False
+    probabilityToBeEmpty = defaultConfig.defaultProbabilityToBeEmpty
+    if (property.processing is not None) and (property.processing.randProbabilityToBeEmpty is not None):
+        probabilityToBeEmpty = property.processing.randProbabilityToBeEmpty
+    while probabilityToBeEmpty > 0:
+        if bool(random.getrandbits(1)):
+            return True
+    return False
+
+
 def _generateRandomComplexType(type, defaultConfig):
     '''Generates random object for given complex type.
 
@@ -62,7 +74,8 @@ def _generateRandomComplexType(type, defaultConfig):
     for property in type.properties:
         if (property.processing is not None) and (property.processing.randIgnore):
             continue
-        # TODO continue here to check if a property is needed
+        if _randIngnore(property, defaultConfig):
+            continue
         if (property.processing is not None) and (len(property.processing.randValuePool) > 0):
             randomValue = random.choice(property.type.values)
         elif property.isArray:

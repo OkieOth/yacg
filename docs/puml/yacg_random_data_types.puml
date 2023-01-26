@@ -13,6 +13,7 @@ class "**RamdonDefaultConfig**" as RamdonDefaultConfig {
         IntegerType defaultMaxArrayElemCount
         DateTimeType defaultMinDate
         DateTimeType defaultMaxDate
+        IntegerType defaultProbabilityToBeEmpty
 }
 
  
@@ -31,6 +32,7 @@ class "**RandomDataPropertyConf**" as RandomDataPropertyConf {
         BooleanType randIgnore
         RandomArrayConf randArrayConf
         ObjectType[] randValuePool
+        IntegerType randProbabilityToBeEmpty
         RandomPropertyTypeConf randValueConf
 }
 note top: can put on schema properties\nto taylormade the random data\ngeneration
@@ -123,6 +125,7 @@ enum "RandomStringTypeConfStrTypeEnum" as RandomStringTypeConfStrTypeEnum {
 
 
 
+
     
 
 
@@ -131,6 +134,7 @@ enum "RandomStringTypeConfStrTypeEnum" as RandomStringTypeConfStrTypeEnum {
     
 
 RandomDataPropertyConf  *--  RandomArrayConf
+
 
 
 RandomDataPropertyConf  *--  RandomPropertyTypeConf
