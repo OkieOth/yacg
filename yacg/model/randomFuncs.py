@@ -1,4 +1,6 @@
 '''Functions needed by the createRandomData script'''
+import random
+
 import yacg.model.random_config as randomConfig
 import yacg.model.model as model
 
@@ -58,7 +60,12 @@ def _generateRandomComplexType(type, defaultConfig):
 
     typeDict = {}
     for property in type.properties:
-        if property.isArray:
+        if (property.processing is not None) and (property.processing.randIgnore):
+            continue
+        # TODO continue here to check if a property is needed
+        if (property.processing is not None) and (len(property.processing.randValuePool) > 0):
+            randomValue = random.choice(property.type.values)
+        elif property.isArray:
             dummyArray = model.ArrayType()
             dummyArray.itemsType = property.type
             dummyArray.arrayDimensions = property.arrayDimensions
@@ -113,6 +120,32 @@ def _getRandomValueForProperty(property, defaultConfig):
     property -- yacg property object
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
     '''
+
+    if property.type is None:
+        return None
+    elif isinstance(property.type, model.IntegerType):
+        return __getRandomIntValue(property, randomDataTask)
+    elif isinstance(property.type, model.NumberType):
+        return __getRandomNumberValue(property, randomDataTask)
+    elif isinstance(property.type, model.BooleanType):
+        return __getRandomBooleanValue(property, randomDataTask)
+    elif isinstance(property.type, model.StringType):
+        return __getRandomStringValue(property, randomDataTask)
+    elif isinstance(property.type, model.UuidType):
+        return uuid.uuid4()
+    elif isinstance(property.type, model.EnumType):
+        return __getRandomEnumValue(property, randomDataTask)
+    elif isinstance(property.type, model.DateType):
+        return __getRandomDateValue(property, randomDataTask)
+    elif isinstance(property.type, model.TimeType):
+        return __getRandomTimeValue(property, randomDataTask)
+    elif isinstance(property.type, model.DateTimeType):
+        return __getRandomDateTimeValue(property, randomDataTask)
+    elif isinstance(property.type, model.ComplexType):
+        return __getRandomComplexValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+    else:
+        return None
+
 
     # TODO
     return None

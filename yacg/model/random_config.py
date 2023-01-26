@@ -88,7 +88,7 @@ class RandomDataPropertyConf:
         self.randArrayConf = None
 
         #: values used to put randomly on the attrib, type is not close checked
-        self.randValuePool = None
+        self.randValuePool = []
 
         #: taylormade configuration for the property type
         self.randValueConf = None
@@ -107,7 +107,9 @@ class RandomDataPropertyConf:
         if subDictObj is not None:
             self.randArrayConf = RandomArrayConf(subDictObj)
 
-        self.randValuePool = dictObj.get('randValuePool', None)
+        arrayRandValuePool = dictObj.get('randValuePool', [])
+        for elemRandValuePool in arrayRandValuePool:
+            self.randValuePool.append(elemRandValuePool)
 
         subDictObj = dictObj.get('randValueConf', None)
         if subDictObj is not None:

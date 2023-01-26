@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg random data configuration",
     "description": "yacg can parse x-tags extensions to take that as configuration input for random data creation",
-    "version": "0.1.6",
+    "version": "0.1.8",
     "x-domain": "yacg.model.random_config",
     "definitions": {
         "RamdonDefaultConfig": {
@@ -27,6 +27,11 @@
                 "defaultMaxDate": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "defaultProbabilityToBeEmpty": {
+                    "description": "0 - always a value, 1 - 50 % empty, 2 - 75 % empty, 3 - 88% empty",
+                    "type": "integer",
+                    "default": 1
                 }
             }
         },
@@ -65,7 +70,14 @@
                 },
                 "randValuePool": {
                     "description": "values used to put randomly on the attrib, type is not close checked",
-                    "type": "object"
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "randProbabilityToBeEmpty": {
+                    "description": "0 - always a value, 1 - 50 % empty, 2 - 75 % empty, 3 - 88% empty",
+                    "type": "integer"
                 },
                 "randValueConf": {
                     "description": "taylormade configuration for the property type",
