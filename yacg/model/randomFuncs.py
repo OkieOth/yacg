@@ -1,5 +1,7 @@
 '''Functions needed by the createRandomData script'''
 import random
+import uuid
+import datetime
 
 import yacg.model.random_config as randomConfig
 import yacg.model.model as model
@@ -49,6 +51,9 @@ def generateRandomData(type, defaultConfig):
 
 
 def _randIngnore(property, defaultConfig):
+    '''Process the configuration how likely a value should be generated
+    Returns True when a value for the property should be created
+    '''
     if property.required:
         return False
     probabilityToBeEmpty = defaultConfig.defaultProbabilityToBeEmpty
@@ -137,28 +142,139 @@ def _getRandomValueForProperty(property, defaultConfig):
     if property.type is None:
         return None
     elif isinstance(property.type, model.IntegerType):
-        return __getRandomIntValue(property, randomDataTask)
+        return __getRandomIntValue(property, defaultConfig)
     elif isinstance(property.type, model.NumberType):
-        return __getRandomNumberValue(property, randomDataTask)
+        return __getRandomNumberValue(property, defaultConfig)
     elif isinstance(property.type, model.BooleanType):
-        return __getRandomBooleanValue(property, randomDataTask)
+        return __getRandomBooleanValue(property, defaultConfig)
     elif isinstance(property.type, model.StringType):
-        return __getRandomStringValue(property, randomDataTask)
+        return __getRandomStringValue(property, defaultConfig)
     elif isinstance(property.type, model.UuidType):
         return uuid.uuid4()
     elif isinstance(property.type, model.EnumType):
-        return __getRandomEnumValue(property, randomDataTask)
+        return __getRandomEnumValue(property, defaultConfig)
     elif isinstance(property.type, model.DateType):
-        return __getRandomDateValue(property, randomDataTask)
+        return __getRandomDateValue(property, defaultConfig)
     elif isinstance(property.type, model.TimeType):
-        return __getRandomTimeValue(property, randomDataTask)
+        return __getRandomTimeValue(property, defaultConfig)
     elif isinstance(property.type, model.DateTimeType):
-        return __getRandomDateTimeValue(property, randomDataTask)
+        return __getRandomDateTimeValue(property, defaultConfig)
     elif isinstance(property.type, model.ComplexType):
-        return __getRandomComplexValue(typeObj, property, randomDataTask, randomDataDict, keyValueDict, currentDepth)
+        return _generateRandomComplexType(property.type, defaultConfig)
     else:
         return None
 
 
-    # TODO
-    return None
+def getValueFromPoolIfConfigured(property):
+    if (property.processing is not None):
+        poolLength = len(property.processing.randValuePool)
+        if poolLength == 0:
+            return False, None
+        index = random.randint(0, len(poolLength) - 1)
+        return True, property.processing.randValuePool[index]
+    return False, None
+
+
+def __getRandomIntValue(property, defaultConfig):
+    handled, value = getValueFromPoolIfConfigured(property)
+    if handled:
+        return value
+    minValue = -10000
+    maxValue = 10000
+    if property.processing.randValueConf is not None:
+        if property.processing.randValueConf.numTypeConf is not None:
+            if property.processing.randValueConf.numTypeConf.minValue is not None:
+                minValue = property.processing.randValueConf.numTypeConf.minValue
+            if property.processing.randValueConf.numTypeConf.maxValue is not None:
+                maxValue = property.processing.randValueConf.numTypeConf.maxValue
+    return random.randint(minValue, maxValue)
+
+
+def __getRandomNumberValue(property, defaultConfig):
+    handled, value = getValueFromPoolIfConfigured(property)
+    if handled:
+        return value
+    minValue = -10000
+    maxValue = 10000
+    if property.processing.randValueConf is not None:
+        if property.processing.randValueConf.numTypeConf is not None:
+            if property.processing.randValueConf.numTypeConf.minValue is not None:
+                minValue = property.processing.randValueConf.numTypeConf.minValue
+            if property.processing.randValueConf.numTypeConf.maxValue is not None:
+                maxValue = property.processing.randValueConf.numTypeConf.maxValue
+    newInt = random.randint(minValue, maxValue)
+    return random.random() + newInt
+
+
+def __getRandomBooleanValue(property, defaultConfig):
+    return bool(random.getrandbits(1))
+
+
+def __getRandomStringValue(property, defaultConfig):
+    handled, value = getValueFromPoolIfConfigured(property)
+    if handled:
+        return value
+    # property.processing.randValueConf = None
+    # property.processing.randValueConf.complexTypeConf = None
+    # property.processing.randValueConf.stringTypeConf = None
+    # property.processing.randValueConf.numTypeConf = None
+    # property.processing.randValueConf.dateTypeConf = None
+    # property.processing.randValueConf.timeTypeConf = None
+    # property.processing.randValueConf.durationTypeConf = None
+    pass # TODO
+
+
+def __getRandomEnumValue(property, defaultConfig):
+    handled, value = getValueFromPoolIfConfigured(property)
+    if handled:
+        return value
+    return random.choice(property.type.values)
+
+
+def __getRandomDateValueImpl(property, defaultConfig, formatStr):
+    handled, value = getValueFromPoolIfConfigured(property)
+    if handled:
+        return value
+    # seems to be a better approach:
+    # https://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
+    minDateStr = defaultConfig.defaultMinDate if defaultConfig.defaultMinDate is not None else "2020-01-01"
+    maxDateStr = defaultConfig.defaultMaxDate if defaultConfig.defaultMaxDate is not None else "2025-01-01"
+    if property.processing.randValueConf is not None:
+        if property.processing.randValueConf.dateTypeConf is not None:
+            if property.processing.randValueConf.dateTypeConf.minValue is not None:
+                minDateStr = property.processing.randValueConf.dateTypeConf.minValue
+            if property.processing.randValueConf.dateTypeConf.maxValue is not None:
+                maxDateStr = property.processing.randValueConf.dateTypeConf.maxValue
+
+    formatStr = "%d-%m-%Y"
+    startDate = datetime.strptime(minDateStr, formatStr)
+    endDate = datetime.strptime(maxDateStr, formatStr)
+    delta = endDate - startDate
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    random_second = random.randrange(int_delta)
+    randomDate = startDate + datetime.timedelta(seconds=random_second)
+    return randomDate.strftime(formatStr)
+
+
+def __getRandomDateValue(property, defaultConfig):
+    formatStr = "%d-%m-%Y"
+    __getRandomDateValueImpl(property, defaultConfig, formatStr)
+
+
+def __getRandomTimeValue(property, defaultConfig):
+    handled, value = getValueFromPoolIfConfigured(property)
+    if handled:
+        return value
+    # property.processing.randValueConf = None
+    # property.processing.randValueConf.complexTypeConf = None
+    # property.processing.randValueConf.stringTypeConf = None
+    # property.processing.randValueConf.numTypeConf = None
+    # property.processing.randValueConf.dateTypeConf = None
+    # property.processing.randValueConf.timeTypeConf = None
+    # property.processing.randValueConf.durationTypeConf = None
+    pass # TODO
+
+
+def __getRandomDateTimeValue(property, defaultConfig):
+    formatStr = "%d-%m-%YT%H:%M:%S"
+    __getRandomDateValueImpl(property, defaultConfig, formatStr)
