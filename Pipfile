@@ -17,6 +17,7 @@ pudb = "*"
 semver = "*"
 shell = "*"
 json-spec = "*"
+faker = "*"
 
 [requires]
 python_version = "3.10"

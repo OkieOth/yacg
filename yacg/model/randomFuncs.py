@@ -265,14 +265,39 @@ def __getRandomTimeValue(property, defaultConfig):
     handled, value = getValueFromPoolIfConfigured(property)
     if handled:
         return value
-    # property.processing.randValueConf = None
-    # property.processing.randValueConf.complexTypeConf = None
-    # property.processing.randValueConf.stringTypeConf = None
-    # property.processing.randValueConf.numTypeConf = None
-    # property.processing.randValueConf.dateTypeConf = None
-    # property.processing.randValueConf.timeTypeConf = None
-    # property.processing.randValueConf.durationTypeConf = None
-    pass # TODO
+    minTime = "00:00:00"
+    maxTime = "23:59:00"
+    if property.processing.randValueConf is not None:
+        if property.processing.randValueConf.dateTypeConf is not None:
+            if property.processing.randValueConf.timeTypeConf.minValue is not None:
+                minTime = property.processing.randValueConf.timeTypeConf.minValue
+            if property.processing.randValueConf.timeTypeConf.maxValue is not None:
+                maxTime = property.processing.randValueConf.timeTypeConf.maxValue
+
+    minParts = minTime.split(":")
+    minHour = int(minParts[0])
+    minMin = int(minParts[1])
+    minSec = int(minParts[2]) if len(minParts) > 2 else None
+    maxParts = maxTime.split(":")
+    maxHour = int(maxParts[0])
+    maxMin = int(maxParts[1])
+    maxSec = int(maxParts[2]) if len(maxParts) > 2 else None
+    hour = random.randint(minHour, maxHour)
+    min = random.randint(minMin, maxMin)
+    sec = random.randint(minSec, maxSec) if (minSec is not None) and (maxSec is not None) else None
+    retHour = str(hour)
+    if len(retHour) == 1:
+        retHour = "0" + retHour
+    retMin = str(min)
+    if len(retMin) == 1:
+        retMin = "0" + retMin
+    if sec is not None:
+        retSec = str(sec)
+        if len(retSec) == 1:
+            retSec = "0" + retSec
+        return "{}:{}:{}".format(retHour, retMin, retSec)
+    else:
+        return "{}:{}".format(retHour, retMin)
 
 
 def __getRandomDateTimeValue(property, defaultConfig):
