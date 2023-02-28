@@ -2,9 +2,13 @@
 import random
 import uuid
 import datetime
+import faker
 
 import yacg.model.random_config as randomConfig
 import yacg.model.model as model
+
+
+fakerInst = faker.Faker()
 
 
 def extendMetaModelWithRandomConfigTypes(loadedTypes):
@@ -40,7 +44,7 @@ def generateRandomData(type, defaultConfig):
     for i in range(type.processing.randElemCount):
         r = None
         if isinstance(type, model.ComplexType):
-            r = _generateRandomComplexType(type, defaultConfig)
+            r = _generateRandomComplexType(type, defaultConfig, 0)
         elif isinstance(type, model.ArrayType):
             r = _generateRandomArrayType(type, defaultConfig)
         elif isinstance(type, model.DictionaryType):
@@ -65,7 +69,7 @@ def _randIngnore(property, defaultConfig):
     return False
 
 
-def _generateRandomComplexType(type, defaultConfig):
+def _generateRandomComplexType(type, defaultConfig, currentDepth):
     '''Generates random object for given complex type.
 
     Returns a JSON dictionary that represents the random object.
@@ -73,6 +77,7 @@ def _generateRandomComplexType(type, defaultConfig):
     Keyword arguments:
     type -- complex type that describes the data to generate
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
+    currentDepth -- current depth for cascaded complex types
     '''
 
     typeDict = {}
@@ -91,7 +96,7 @@ def _generateRandomComplexType(type, defaultConfig):
             dummyArray.processing = property.procession
             randomValue = _generateRandomArrayType(dummyArray, defaultConfig)
         else:
-            randomValue = _getRandomValueForProperty(property, defaultConfig)
+            randomValue = _getRandomValueForProperty(property, defaultConfig, currentDepth + 1)
         if randomValue is None:
             continue
         typeDict[property.name] = randomValue
@@ -108,7 +113,23 @@ def _generateRandomArrayType(type, defaultConfig):
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
     '''
 
+    # dummyArray = model.ArrayType()
+    # dummyArray.itemsType = property.type
+    # dummyArray.arrayDimensions = property.arrayDimensions
+    # dummyArray.arrayConstraints = property.arrayConstraints
+    # dummyArray.processing = property.procession
+
+    # property.processing.randArrayConf.randMinElemCount = None
+    # property.processing.randArrayConf.randMaxElemCount = None
+    # property.processing.randArrayConf.randElemCount = None
+
+
+    # defaultConfig.defaultMinArrayElemCount = None
+    # defaultConfig.defaultMaxArrayElemCount = None
+
     typeArray = []
+
+
     # TODO
     return typeArray
 
@@ -128,7 +149,7 @@ def _generateRandomDictionaryType(type, defaultConfig):
     return typeDict
 
 
-def _getRandomValueForProperty(property, defaultConfig):
+def _getRandomValueForProperty(property, defaultConfig, currentDepth):
     '''Generates random data for a given property description.
 
     Returns a JSON object that represents the random object. The
@@ -137,6 +158,7 @@ def _getRandomValueForProperty(property, defaultConfig):
     Keyword arguments:
     property -- yacg property object
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
+    currentDepth -- current depth of cascaded complex types
     '''
 
     if property.type is None:
@@ -160,7 +182,7 @@ def _getRandomValueForProperty(property, defaultConfig):
     elif isinstance(property.type, model.DateTimeType):
         return __getRandomDateTimeValue(property, defaultConfig)
     elif isinstance(property.type, model.ComplexType):
-        return _generateRandomComplexType(property.type, defaultConfig)
+        return _generateRandomComplexType(property.type, defaultConfig, currentDepth + 1)
     else:
         return None
 
@@ -214,14 +236,45 @@ def __getRandomStringValue(property, defaultConfig):
     handled, value = getValueFromPoolIfConfigured(property)
     if handled:
         return value
-    # property.processing.randValueConf = None
-    # property.processing.randValueConf.complexTypeConf = None
-    # property.processing.randValueConf.stringTypeConf = None
-    # property.processing.randValueConf.numTypeConf = None
-    # property.processing.randValueConf.dateTypeConf = None
-    # property.processing.randValueConf.timeTypeConf = None
-    # property.processing.randValueConf.durationTypeConf = None
-    pass # TODO
+    # property.processing.randValueConf.stringTypeConf.strType
+    # ... 'NAME', 'ADDRESS', 'EMAIL', 'URL', 'PHONE', 'COUNTRY', 'TEXT', 'SENTENCE'
+
+    strType = randomConfig.RandomStringTypeConfStrTypeEnum.SENTENCE
+    maxLen = 512  # TODO make configurable
+    if property.processing.randValueConf is not None:
+        if property.processing.randValueConf.stringTypeConf is not None:
+            if property.processing.randValueConf.stringTypeConf.strType is not None:
+                strType = property.processing.randValueConf.stringTypeConf.strType
+            if property.processing.randValueConf.stringTypeConf.maxLength is not None:
+                maxLen = property.processing.randValueConf.stringTypeConf.maxLength
+    if strType == randomConfig.RandomStringTypeConfStrTypeEnum.TEXT:
+        ret = faker.text()
+    elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.NAME:
+        ret = faker.text()
+        pass
+    elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.ADDRESS:
+        ret = faker.address()
+        pass
+    elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.EMAIL:
+        ret = faker.email()
+        pass
+    elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.URL:
+        ret = faker.url()
+        pass
+    elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.PHONE:
+        ret = faker.phone()
+        pass
+    elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.COUNTRY:
+        ret = faker.country()
+        pass
+    elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.NAME:
+        ret = faker.name()
+    else:
+        ret = faker.sentence()
+    if len(ret) > maxLen:
+        return ret[:maxLen]
+    else:
+        return ret
 
 
 def __getRandomEnumValue(property, defaultConfig):
