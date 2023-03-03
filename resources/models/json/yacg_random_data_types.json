@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg random data configuration",
     "description": "yacg can parse x-tags extensions to take that as configuration input for random data creation",
-    "version": "0.1.8",
+    "version": "0.2.0",
     "x-domain": "yacg.model.random_config",
     "definitions": {
         "RamdonDefaultConfig": {
@@ -51,8 +51,16 @@
                     "description": "number of elements of that type should be at minimum generated",
                     "type": "integer"
                 },
-                "randTypeDepth": {
-                    "type": "integer"
+                "randComplexTypeConf": {
+                    "$ref": "#/definitions/RandomComplexTypeConf"
+                },
+                "randArrayTypeConf": {
+                    "description": "in case the type is an array, this specifies the random data handling of the array",
+                    "$ref": "#/definitions/RandomArrayConf"
+                },
+                "randDictTypeConf": {
+                    "description": "in case the is an dictionary, this specifies the random data handling of the dictionary",
+                    "$ref": "#/definitions/RandomDictConf"
                 }
             }
         },
@@ -90,6 +98,10 @@
             "properties": {
                 "complexTypeConf": {
                     "$ref": "#/definitions/RandomComplexTypeConf"
+                },
+                "dictTypeConf": {
+                    "description": "in case the property contains an dictionary, this specifies the random data handling of the dictionary",
+                    "$ref": "#/definitions/RandomDictConf"
                 },
                 "stringTypeConf": {
                     "$ref": "#/definitions/RandomStringTypeConf"
@@ -200,6 +212,30 @@
                 "randElemCount": {
                     "description": "number of elements of that type should be at minimum generated",
                     "type": "integer"
+                }
+            }
+        },
+        "RandomDictConf": {
+            "description": "Processing information to create random dictionaries",
+            "type": "object",
+            "properties": {
+                "randMinKeyCount": {
+                    "description": "how many elements of that type should be at minimum generated",
+                    "type": "integer"
+                },
+                "randMaxKeyCount": {
+                    "description": "how many elements of that type should be at maximum generated",
+                    "type": "integer"
+                },
+                "randKeyCount": {
+                    "description": "number of elements of that type should be at minimum generated",
+                    "type": "integer"
+                },
+                "keyPool": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }
