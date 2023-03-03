@@ -16,20 +16,24 @@ class TestYacgConfigurationForRandomDataGeneration (unittest.TestCase):
         x = yacg.model.random_config.RandomDataTypeConf()
         self.assertIsNotNone(x)
 
-    def testRandomDataPropertyConf(self):
-        x = yacg.model.random_config.RandomDataPropertyConf()
+    def testRandomComplexTypeConf(self):
+        x = yacg.model.random_config.RandomComplexTypeConf()
         self.assertIsNotNone(x)
 
     def testRandomArrayConf(self):
         x = yacg.model.random_config.RandomArrayConf()
         self.assertIsNotNone(x)
 
-    def testRandomPropertyTypeConf(self):
-        x = yacg.model.random_config.RandomPropertyTypeConf()
+    def testRandomDictConf(self):
+        x = yacg.model.random_config.RandomDictConf()
         self.assertIsNotNone(x)
 
-    def testRandomComplexTypeConf(self):
-        x = yacg.model.random_config.RandomComplexTypeConf()
+    def testRandomDataPropertyConf(self):
+        x = yacg.model.random_config.RandomDataPropertyConf()
+        self.assertIsNotNone(x)
+
+    def testRandomPropertyTypeConf(self):
+        x = yacg.model.random_config.RandomPropertyTypeConf()
         self.assertIsNotNone(x)
 
     def testRandomStringTypeConf(self):

@@ -61,7 +61,13 @@ class RandomDataTypeConf:
         #: number of elements of that type should be at minimum generated
         self.randElemCount = None
 
-        self.randTypeDepth = None
+        self.randComplexTypeConf = None
+
+        #: in case the type is an array, this specifies the random data handling of the array
+        self.randArrayTypeConf = None
+
+        #: in case the is an dictionary, this specifies the random data handling of the dictionary
+        self.randDictTypeConf = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -77,7 +83,103 @@ class RandomDataTypeConf:
 
         self.randElemCount = dictObj.get('randElemCount', None)
 
-        self.randTypeDepth = dictObj.get('randTypeDepth', None)
+        subDictObj = dictObj.get('randComplexTypeConf', None)
+        if subDictObj is not None:
+            self.randComplexTypeConf = RandomComplexTypeConf(subDictObj)
+
+        subDictObj = dictObj.get('randArrayTypeConf', None)
+        if subDictObj is not None:
+            self.randArrayTypeConf = RandomArrayConf(subDictObj)
+
+        subDictObj = dictObj.get('randDictTypeConf', None)
+        if subDictObj is not None:
+            self.randDictTypeConf = RandomDictConf(subDictObj)
+
+
+class RandomComplexTypeConf:
+    """Constraints to generate random values of a complex type
+    """
+
+    def __init__(self, dictObj=None):
+
+        #: defines for complex types how many levels of childs should be followed
+        self.typeDepth = None
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.typeDepth = dictObj.get('typeDepth', None)
+
+
+class RandomArrayConf:
+    """Processing information to create random arrays
+    """
+
+    def __init__(self, dictObj=None):
+
+        #: how many elements of that type should be at minimum generated
+        self.randMinElemCount = None
+
+        #: how many elements of that type should be at maximum generated
+        self.randMaxElemCount = None
+
+        #: number of elements of that type should be at minimum generated
+        self.randElemCount = None
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.randMinElemCount = dictObj.get('randMinElemCount', None)
+
+        self.randMaxElemCount = dictObj.get('randMaxElemCount', None)
+
+        self.randElemCount = dictObj.get('randElemCount', None)
+
+
+class RandomDictConf:
+    """Processing information to create random dictionaries
+    """
+
+    def __init__(self, dictObj=None):
+
+        #: how many elements of that type should be at minimum generated
+        self.randMinKeyCount = None
+
+        #: how many elements of that type should be at maximum generated
+        self.randMaxKeyCount = None
+
+        #: number of elements of that type should be at minimum generated
+        self.randKeyCount = None
+
+        self.keyPool = []
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+        self.randMinKeyCount = dictObj.get('randMinKeyCount', None)
+
+        self.randMaxKeyCount = dictObj.get('randMaxKeyCount', None)
+
+        self.randKeyCount = dictObj.get('randKeyCount', None)
+
+        arrayKeyPool = dictObj.get('keyPool', [])
+        for elemKeyPool in arrayKeyPool:
+            self.keyPool.append(elemKeyPool)
 
 
 class RandomDataPropertyConf:
@@ -126,40 +228,13 @@ class RandomDataPropertyConf:
             self.randValueConf = RandomPropertyTypeConf(subDictObj)
 
 
-class RandomArrayConf:
-    """Processing information to create random arrays
-    """
-
-    def __init__(self, dictObj=None):
-
-        #: how many elements of that type should be at minimum generated
-        self.randMinElemCount = None
-
-        #: how many elements of that type should be at maximum generated
-        self.randMaxElemCount = None
-
-        #: number of elements of that type should be at minimum generated
-        self.randElemCount = None
-
-        if dictObj is not None:
-            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
-            self.initFromDict(d)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.randMinElemCount = dictObj.get('randMinElemCount', None)
-
-        self.randMaxElemCount = dictObj.get('randMaxElemCount', None)
-
-        self.randElemCount = dictObj.get('randElemCount', None)
-
-
 class RandomPropertyTypeConf:
     def __init__(self, dictObj=None):
 
         self.complexTypeConf = None
+
+        #: in case the property contains an dictionary, this specifies the random data handling of the dictionary
+        self.dictTypeConf = None
 
         self.stringTypeConf = None
 
@@ -183,6 +258,10 @@ class RandomPropertyTypeConf:
         if subDictObj is not None:
             self.complexTypeConf = RandomComplexTypeConf(subDictObj)
 
+        subDictObj = dictObj.get('dictTypeConf', None)
+        if subDictObj is not None:
+            self.dictTypeConf = RandomDictConf(subDictObj)
+
         subDictObj = dictObj.get('stringTypeConf', None)
         if subDictObj is not None:
             self.stringTypeConf = RandomStringTypeConf(subDictObj)
@@ -202,26 +281,6 @@ class RandomPropertyTypeConf:
         subDictObj = dictObj.get('durationTypeConf', None)
         if subDictObj is not None:
             self.durationTypeConf = RandomDurationTypeConf(subDictObj)
-
-
-class RandomComplexTypeConf:
-    """Constraints to generate random values of a complex type
-    """
-
-    def __init__(self, dictObj=None):
-
-        #: defines for complex types how many levels of childs should be followed
-        self.typeDepth = None
-
-        if dictObj is not None:
-            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
-            self.initFromDict(d)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
-
-        self.typeDepth = dictObj.get('typeDepth', None)
 
 
 class RandomStringTypeConf:

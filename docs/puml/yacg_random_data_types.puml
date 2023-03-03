@@ -3,7 +3,7 @@
 hide empty methods
 hide empty fields
 
-modelTypes.size = 12
+modelTypes.size = 13
 
 
 class "**RamdonDefaultConfig**" as RamdonDefaultConfig {
@@ -22,9 +22,37 @@ class "**RandomDataTypeConf**" as RandomDataTypeConf {
         IntegerType randMinElemCount
         IntegerType randMaxElemCount
         IntegerType randElemCount
-        IntegerType randTypeDepth
+        RandomComplexTypeConf randComplexTypeConf
+        RandomArrayConf randArrayTypeConf
+        RandomDictConf randDictTypeConf
 }
 note top: can put on schema types\nto include them in the\nrandom data generation
+
+ 
+
+class "**RandomComplexTypeConf**" as RandomComplexTypeConf {
+        IntegerType typeDepth
+}
+note top: Constraints to generate random values\nof a complex type
+
+ 
+
+class "**RandomArrayConf**" as RandomArrayConf {
+        IntegerType randMinElemCount
+        IntegerType randMaxElemCount
+        IntegerType randElemCount
+}
+note top: Processing information to create random\narrays
+
+ 
+
+class "**RandomDictConf**" as RandomDictConf {
+        IntegerType randMinKeyCount
+        IntegerType randMaxKeyCount
+        IntegerType randKeyCount
+        StringType[] keyPool
+}
+note top: Processing information to create random\ndictionaries
 
  
 
@@ -39,30 +67,15 @@ note top: can put on schema properties\nto taylormade the random data\ngeneratio
 
  
 
-class "**RandomArrayConf**" as RandomArrayConf {
-        IntegerType randMinElemCount
-        IntegerType randMaxElemCount
-        IntegerType randElemCount
-}
-note top: Processing information to create random\narrays
-
- 
-
 class "**RandomPropertyTypeConf**" as RandomPropertyTypeConf {
         RandomComplexTypeConf complexTypeConf
+        RandomDictConf dictTypeConf
         RandomStringTypeConf stringTypeConf
         RandomNumTypeConf numTypeConf
         RandomDateTypeConf dateTypeConf
         RandomTimeTypeConf timeTypeConf
         RandomDurationTypeConf durationTypeConf
 }
-
- 
-
-class "**RandomComplexTypeConf**" as RandomComplexTypeConf {
-        IntegerType typeDepth
-}
-note top: Constraints to generate random values\nof a complex type
 
  
 
@@ -130,6 +143,22 @@ enum "RandomStringTypeConfStrTypeEnum" as RandomStringTypeConfStrTypeEnum {
 
 
 
+RandomDataTypeConf  *--  RandomComplexTypeConf
+
+RandomDataTypeConf  *--  RandomArrayConf
+
+RandomDataTypeConf  *--  RandomDictConf
+
+    
+
+    
+
+
+
+    
+
+
+
 
     
 
@@ -140,11 +169,9 @@ RandomDataPropertyConf  *--  RandomArrayConf
 RandomDataPropertyConf  *--  RandomPropertyTypeConf
 
     
-
-
-
-    
 RandomPropertyTypeConf  *--  RandomComplexTypeConf
+
+RandomPropertyTypeConf  *--  RandomDictConf
 
 RandomPropertyTypeConf  *--  RandomStringTypeConf
 
@@ -155,8 +182,6 @@ RandomPropertyTypeConf  *--  RandomDateTypeConf
 RandomPropertyTypeConf  *--  RandomTimeTypeConf
 
 RandomPropertyTypeConf  *--  RandomDurationTypeConf
-
-    
 
     
 
