@@ -49,6 +49,24 @@ def generateRandomData(type, defaultConfig):
             r = _generateRandomArrayType(type, defaultConfig)
         elif isinstance(type, model.DictionaryType):
             r = _generateRandomDictionaryType(type, defaultConfig)
+        elif isinstance(type, model.IntegerType):
+            r = __getRandomIntValue(None)
+        elif isinstance(type, model.NumberType):
+            r = __getRandomNumberValue(None)
+        elif isinstance(type, model.BooleanType):
+            r = __getRandomBooleanValue()
+        elif isinstance(type, model.StringType):
+            r = __getRandomStringValue(None)
+        elif isinstance(type, model.UuidType):
+            r = uuid.uuid4()
+        elif isinstance(type, model.EnumType):
+            r = __getRandomEnumValue(property.type, None)
+        elif isinstance(type, model.DateType):
+            r = __getRandomDateValue(defaultConfig, None)
+        elif isinstance(type, model.TimeType):
+            r = __getRandomTimeValue(None)
+        elif isinstance(type, model.DateTimeType):
+            r = __getRandomDateTimeValue(defaultConfig, None)
         if r is not None:
             ret.append(r)
     return ret
@@ -93,7 +111,7 @@ def _generateRandomComplexType(type, defaultConfig, currentDepth):
             dummyArray.itemsType = property.type
             dummyArray.arrayDimensions = property.arrayDimensions
             dummyArray.arrayConstraints = property.arrayConstraints
-            dummyArray.processing = property.procession
+            dummyArray.processing = property.processing
             randomValue = _generateRandomArrayType(dummyArray, defaultConfig)
         else:
             randomValue = _getRandomValueForProperty(property, defaultConfig, currentDepth + 1)
@@ -113,25 +131,92 @@ def _generateRandomArrayType(type, defaultConfig):
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
     '''
 
-    # dummyArray = model.ArrayType()
-    # dummyArray.itemsType = property.type
-    # dummyArray.arrayDimensions = property.arrayDimensions
-    # dummyArray.arrayConstraints = property.arrayConstraints
-    # dummyArray.processing = property.procession
+    arrayDimensions = type.arrayDimensions if type.arrayDimensions is not None else 1
+    minElems = 0
+    maxElems = 10
+    if (defaultConfig is not None) and (defaultConfig.defaultMinArrayElemCount is not None):
+        minElems = defaultConfig.defaultMinArrayElemCount
+    if (defaultConfig is not None) and (defaultConfig.defaultMaxArrayElemCount is not None):
+        maxElems = defaultConfig.defaultMaxArrayElemCount
+    if (type.processing is not None) and (type.processing.randArrayConf is not None):
+        if type.processing.randArrayConf.randMinElemCount is not None:
+            minElems = type.processing.randArrayConf.randMinElemCount
+        if type.processing.randArrayConf.randMaxElemCount is not None:
+            maxElems = type.processing.randArrayConf.randMaxElemCount
+    ret = []
+    uniqueValues = False
+    array = []
+    for i in range(arrayDimensions):
+        uValues = uniqueValues
+        minE = minElems
+        maxE = maxElems
+        if (type.arrayConstraints is not None) and (len(type.arrayConstraints) > i) and (type.arrayConstraints[i] is not None):
+            if type.arrayConstraints[i].arrayUniqueItems is not None:
+                uValues = type.arrayConstraints[i].arrayUniqueItems
+            if type.arrayConstraints[i].arrayMinItems is not None:
+                minE = type.arrayConstraints[i].arrayMinItems
+            if type.arrayConstraints[i].arrayMaxItems is not None:
+                maxE = type.arrayConstraints[i].arrayMaxItems
+        if (i + 1) < arrayDimensions:
+            __fillRandomChildArrays(minE, maxE, array)
+            if len(ret) == 0:
+                ret = array
+        else:
+            __fillRandomChildArraysWithValues(type.itemsType, defaultConfig, minE, maxE, uValues, array)
+    if len(ret) == 0:
+        return array
+    else:
+        return ret
 
-    # property.processing.randArrayConf.randMinElemCount = None
-    # property.processing.randArrayConf.randMaxElemCount = None
-    # property.processing.randArrayConf.randElemCount = None
+
+def __fillRandomChildArraysWithValues(itemsType, defaultConfig, minE, maxE, uValues, array):
+    for a in array:
+        if len(a) == 0:
+            __generateRandomArrayTypeImpl(type.itemsType, defaultConfig, minE, maxE, uValues, a)
+        else:
+            __fillRandomChildArraysWithValues(itemsType, defaultConfig, minE, maxE, uValues, a)
 
 
-    # defaultConfig.defaultMinArrayElemCount = None
-    # defaultConfig.defaultMaxArrayElemCount = None
+def __fillRandomChildArrays(minE, maxE, array):
+    for a in array:
+        if len(a) == 0:
+            __generateRandomArrayOfArrays(minE, maxE, a)
+        else:
+            __fillRandomChildArrays(minE, maxE, a)
 
-    typeArray = []
 
+def __generateRandomArrayOfArrays(minE, maxE, array):
+    numberOfElements = random.randint(minElems, maxElems)
+    for i in range(numberOfElements):
+        array.append([])
 
-    # TODO
-    return typeArray
+def __generateRandomArrayTypeImpl(itemsType, defaultConfig, minElems, maxElems, uniqueValues, array):
+    '''Generates random object for given array type.
+
+    Returns a JSON Array that represents the random object.
+
+    Keyword arguments:
+    itemsType -- type used for the random generation
+    defaultConfig -- default configuration for this random task
+    minElems -- minimal number of elements
+    maxElems -- maximum number of elements
+    uniqueValues -- bool if the content of the array should be uniqe
+    '''
+
+    numberOfElements = random.randint(minElems, maxElems)
+    ret = []
+    for i in range(numberOfElements):
+        v = generateRandomData(itemsType, defaultConfig)
+        if uniqueValues:
+            found = False
+            for e in ret:
+                if e == v:
+                    found = True
+                    break
+            if found:
+                continue
+        ret.append(generateRandomData(itemsType, defaultConfig))
+    return ret
 
 
 def _generateRandomDictionaryType(type, defaultConfig):
@@ -164,76 +249,76 @@ def _getRandomValueForProperty(property, defaultConfig, currentDepth):
     if property.type is None:
         return None
     elif isinstance(property.type, model.IntegerType):
-        return __getRandomIntValue(property, defaultConfig)
+        return __getRandomIntValue(property.processing)
     elif isinstance(property.type, model.NumberType):
-        return __getRandomNumberValue(property, defaultConfig)
+        return __getRandomNumberValue(property.processing)
     elif isinstance(property.type, model.BooleanType):
-        return __getRandomBooleanValue(property, defaultConfig)
+        return __getRandomBooleanValue()
     elif isinstance(property.type, model.StringType):
-        return __getRandomStringValue(property, defaultConfig)
+        return __getRandomStringValue(property.processing)
     elif isinstance(property.type, model.UuidType):
         return uuid.uuid4()
     elif isinstance(property.type, model.EnumType):
-        return __getRandomEnumValue(property, defaultConfig)
+        return __getRandomEnumValue(property.type, property.processing)
     elif isinstance(property.type, model.DateType):
-        return __getRandomDateValue(property, defaultConfig)
+        return __getRandomDateValue(defaultConfig, property.processing)
     elif isinstance(property.type, model.TimeType):
-        return __getRandomTimeValue(property, defaultConfig)
+        return __getRandomTimeValue(property.processing)
     elif isinstance(property.type, model.DateTimeType):
-        return __getRandomDateTimeValue(property, defaultConfig)
+        return __getRandomDateTimeValue(defaultConfig, property.processing)
     elif isinstance(property.type, model.ComplexType):
-        return _generateRandomComplexType(property.type, defaultConfig, currentDepth + 1)
+        return _generateRandomComplexType(type, defaultConfig, currentDepth + 1)
     else:
         return None
 
 
-def getValueFromPoolIfConfigured(property):
-    if (property.processing is not None):
-        poolLength = len(property.processing.randValuePool)
+def getValueFromPoolIfConfigured(processing):
+    if (processing is not None):
+        poolLength = len(processing.randValuePool)
         if poolLength == 0:
             return False, None
         index = random.randint(0, len(poolLength) - 1)
-        return True, property.processing.randValuePool[index]
+        return True, processing.randValuePool[index]
     return False, None
 
 
-def __getRandomIntValue(property, defaultConfig):
-    handled, value = getValueFromPoolIfConfigured(property)
+def __getRandomIntValue(processing):
+    handled, value = getValueFromPoolIfConfigured(processing)
     if handled:
         return value
     minValue = -10000
     maxValue = 10000
-    if property.processing.randValueConf is not None:
-        if property.processing.randValueConf.numTypeConf is not None:
-            if property.processing.randValueConf.numTypeConf.minValue is not None:
-                minValue = property.processing.randValueConf.numTypeConf.minValue
-            if property.processing.randValueConf.numTypeConf.maxValue is not None:
-                maxValue = property.processing.randValueConf.numTypeConf.maxValue
+    if (processing is not None) and (processing.randValueConf is not None):
+        if processing.randValueConf.numTypeConf is not None:
+            if processing.randValueConf.numTypeConf.minValue is not None:
+                minValue = processing.randValueConf.numTypeConf.minValue
+            if processing.randValueConf.numTypeConf.maxValue is not None:
+                maxValue = processing.randValueConf.numTypeConf.maxValue
     return random.randint(minValue, maxValue)
 
 
-def __getRandomNumberValue(property, defaultConfig):
-    handled, value = getValueFromPoolIfConfigured(property)
+def __getRandomNumberValue(processing):
+    handled, value = getValueFromPoolIfConfigured(processing)
     if handled:
         return value
     minValue = -10000
     maxValue = 10000
-    if property.processing.randValueConf is not None:
-        if property.processing.randValueConf.numTypeConf is not None:
-            if property.processing.randValueConf.numTypeConf.minValue is not None:
-                minValue = property.processing.randValueConf.numTypeConf.minValue
-            if property.processing.randValueConf.numTypeConf.maxValue is not None:
-                maxValue = property.processing.randValueConf.numTypeConf.maxValue
+    if (processing is not None) and (processing.randValueConf is not None):
+        if processing.randValueConf.numTypeConf is not None:
+            if processing.randValueConf.numTypeConf.minValue is not None:
+                minValue = processing.randValueConf.numTypeConf.minValue
+            if processing.randValueConf.numTypeConf.maxValue is not None:
+                maxValue = processing.randValueConf.numTypeConf.maxValue
     newInt = random.randint(minValue, maxValue)
     return random.random() + newInt
 
 
-def __getRandomBooleanValue(property, defaultConfig):
+def __getRandomBooleanValue():
     return bool(random.getrandbits(1))
 
 
-def __getRandomStringValue(property, defaultConfig):
-    handled, value = getValueFromPoolIfConfigured(property)
+def __getRandomStringValue(processing):
+    handled, value = getValueFromPoolIfConfigured(processing)
     if handled:
         return value
     # property.processing.randValueConf.stringTypeConf.strType
@@ -241,12 +326,12 @@ def __getRandomStringValue(property, defaultConfig):
 
     strType = randomConfig.RandomStringTypeConfStrTypeEnum.SENTENCE
     maxLen = 512  # TODO make configurable
-    if property.processing.randValueConf is not None:
-        if property.processing.randValueConf.stringTypeConf is not None:
-            if property.processing.randValueConf.stringTypeConf.strType is not None:
-                strType = property.processing.randValueConf.stringTypeConf.strType
-            if property.processing.randValueConf.stringTypeConf.maxLength is not None:
-                maxLen = property.processing.randValueConf.stringTypeConf.maxLength
+    if (processing is not None) and (processing.randValueConf is not None):
+        if processing.randValueConf.stringTypeConf is not None:
+            if processing.randValueConf.stringTypeConf.strType is not None:
+                strType = processing.randValueConf.stringTypeConf.strType
+            if processing.randValueConf.stringTypeConf.maxLength is not None:
+                maxLen = processing.randValueConf.stringTypeConf.maxLength
     if strType == randomConfig.RandomStringTypeConfStrTypeEnum.TEXT:
         ret = faker.text()
     elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.NAME:
@@ -277,27 +362,27 @@ def __getRandomStringValue(property, defaultConfig):
         return ret
 
 
-def __getRandomEnumValue(property, defaultConfig):
-    handled, value = getValueFromPoolIfConfigured(property)
+def __getRandomEnumValue(type, processing):
+    handled, value = getValueFromPoolIfConfigured(processing)
     if handled:
         return value
-    return random.choice(property.type.values)
+    return random.choice(type.values)
 
 
-def __getRandomDateValueImpl(property, defaultConfig, formatStr):
-    handled, value = getValueFromPoolIfConfigured(property)
+def __getRandomDateValueImpl(processing, defaultConfig, formatStr):
+    handled, value = getValueFromPoolIfConfigured(processing)
     if handled:
         return value
     # seems to be a better approach:
     # https://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
     minDateStr = defaultConfig.defaultMinDate if defaultConfig.defaultMinDate is not None else "2020-01-01"
     maxDateStr = defaultConfig.defaultMaxDate if defaultConfig.defaultMaxDate is not None else "2025-01-01"
-    if property.processing.randValueConf is not None:
-        if property.processing.randValueConf.dateTypeConf is not None:
-            if property.processing.randValueConf.dateTypeConf.minValue is not None:
-                minDateStr = property.processing.randValueConf.dateTypeConf.minValue
-            if property.processing.randValueConf.dateTypeConf.maxValue is not None:
-                maxDateStr = property.processing.randValueConf.dateTypeConf.maxValue
+    if (processing is not None) and (processing.randValueConf is not None):
+        if processing.randValueConf.dateTypeConf is not None:
+            if processing.randValueConf.dateTypeConf.minValue is not None:
+                minDateStr = processing.randValueConf.dateTypeConf.minValue
+            if processing.randValueConf.dateTypeConf.maxValue is not None:
+                maxDateStr = processing.randValueConf.dateTypeConf.maxValue
 
     formatStr = "%d-%m-%Y"
     startDate = datetime.strptime(minDateStr, formatStr)
@@ -309,23 +394,23 @@ def __getRandomDateValueImpl(property, defaultConfig, formatStr):
     return randomDate.strftime(formatStr)
 
 
-def __getRandomDateValue(property, defaultConfig):
+def __getRandomDateValue(defaultConfig, processing):
     formatStr = "%d-%m-%Y"
-    __getRandomDateValueImpl(property, defaultConfig, formatStr)
+    __getRandomDateValueImpl(processing, defaultConfig, formatStr)
 
 
-def __getRandomTimeValue(property, defaultConfig):
-    handled, value = getValueFromPoolIfConfigured(property)
+def __getRandomTimeValue(processing):
+    handled, value = getValueFromPoolIfConfigured(processing)
     if handled:
         return value
     minTime = "00:00:00"
     maxTime = "23:59:00"
-    if property.processing.randValueConf is not None:
-        if property.processing.randValueConf.dateTypeConf is not None:
-            if property.processing.randValueConf.timeTypeConf.minValue is not None:
-                minTime = property.processing.randValueConf.timeTypeConf.minValue
-            if property.processing.randValueConf.timeTypeConf.maxValue is not None:
-                maxTime = property.processing.randValueConf.timeTypeConf.maxValue
+    if (processing is not None) and (processing.randValueConf is not None):
+        if processing.randValueConf.dateTypeConf is not None:
+            if processing.randValueConf.timeTypeConf.minValue is not None:
+                minTime = processing.randValueConf.timeTypeConf.minValue
+            if processing.randValueConf.timeTypeConf.maxValue is not None:
+                maxTime = processing.randValueConf.timeTypeConf.maxValue
 
     minParts = minTime.split(":")
     minHour = int(minParts[0])
@@ -353,6 +438,6 @@ def __getRandomTimeValue(property, defaultConfig):
         return "{}:{}".format(retHour, retMin)
 
 
-def __getRandomDateTimeValue(property, defaultConfig):
+def __getRandomDateTimeValue(defaultConfig, processing):
     formatStr = "%d-%m-%YT%H:%M:%S"
-    __getRandomDateValueImpl(property, defaultConfig, formatStr)
+    __getRandomDateValueImpl(processing, defaultConfig, formatStr)
