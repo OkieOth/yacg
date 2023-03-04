@@ -161,6 +161,12 @@ class RandomDictConf:
         #: number of elements of that type should be at minimum generated
         self.randKeyCount = None
 
+        #: minimum length of dictionary key names
+        self.randKeyMinLen = 4
+
+        #: maximum length of dictionary key names
+        self.randKeyMaxLen = 10
+
         self.keyPool = []
 
         if dictObj is not None:
@@ -176,6 +182,10 @@ class RandomDictConf:
         self.randMaxKeyCount = dictObj.get('randMaxKeyCount', None)
 
         self.randKeyCount = dictObj.get('randKeyCount', None)
+
+        self.randKeyMinLen = dictObj.get('randKeyMinLen', 4)
+
+        self.randKeyMaxLen = dictObj.get('randKeyMaxLen', 10)
 
         arrayKeyPool = dictObj.get('keyPool', [])
         for elemKeyPool in arrayKeyPool:

@@ -50,6 +50,8 @@ class "**RandomDictConf**" as RandomDictConf {
         IntegerType randMinKeyCount
         IntegerType randMaxKeyCount
         IntegerType randKeyCount
+        IntegerType randKeyMinLen
+        IntegerType randKeyMaxLen
         StringType[] keyPool
 }
 note top: Processing information to create random\ndictionaries
@@ -156,6 +158,8 @@ RandomDataTypeConf  *--  RandomDictConf
 
 
     
+
+
 
 
 
