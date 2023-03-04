@@ -3,6 +3,7 @@ import random
 import uuid
 import datetime
 import faker
+import string
 
 import yacg.model.random_config as randomConfig
 import yacg.model.model as model
@@ -217,6 +218,12 @@ def __generateRandomArrayTypeImpl(itemsType, defaultConfig, minElems, maxElems, 
                 continue
         ret.append(generateRandomData(itemsType, defaultConfig))
     return ret
+
+
+def __getRandomKeyName(minLen, maxLen):
+    strLen = random.randint(minLen, maxLen)
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(strLen))
 
 
 def _generateRandomDictionaryType(type, defaultConfig):

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg random data configuration",
     "description": "yacg can parse x-tags extensions to take that as configuration input for random data creation",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "x-domain": "yacg.model.random_config",
     "definitions": {
         "RamdonDefaultConfig": {
@@ -230,6 +230,16 @@
                 "randKeyCount": {
                     "description": "number of elements of that type should be at minimum generated",
                     "type": "integer"
+                },
+                "randKeyMinLen": {
+                    "description": "minimum length of dictionary key names",
+                    "type": "integer",
+                    "default": "4"
+                },
+                "randKeyMaxLen": {
+                    "description": "maximum length of dictionary key names",
+                    "type": "integer",
+                    "default": "10"
                 },
                 "keyPool": {
                     "type": "array",
