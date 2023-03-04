@@ -45,11 +45,11 @@ def generateRandomData(type, defaultConfig):
     for i in range(type.processing.randElemCount):
         r = None
         if isinstance(type, model.ComplexType):
-            r = _generateRandomComplexType(type, defaultConfig, 0)
+            r = _generateRandomComplexType(type, defaultConfig, 0, None)
         elif isinstance(type, model.ArrayType):
             r = _generateRandomArrayType(type, defaultConfig)
         elif isinstance(type, model.DictionaryType):
-            r = _generateRandomDictionaryType(type, defaultConfig)
+            r = _generateRandomDictionaryType(type, defaultConfig, None)
         elif isinstance(type, model.IntegerType):
             r = __getRandomIntValue(None)
         elif isinstance(type, model.NumberType):
@@ -88,7 +88,7 @@ def _randIngnore(property, defaultConfig):
     return False
 
 
-def _generateRandomComplexType(type, defaultConfig, currentDepth):
+def _generateRandomComplexType(type, defaultConfig, currentDepth, randComplexTypeConf):
     '''Generates random object for given complex type.
 
     Returns a JSON dictionary that represents the random object.
@@ -97,6 +97,7 @@ def _generateRandomComplexType(type, defaultConfig, currentDepth):
     type -- complex type that describes the data to generate
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
     currentDepth -- current depth for cascaded complex types
+    randComplexTypeConf -- object of type RandomComplexTypeConf
     '''
 
     typeDict = {}
@@ -187,9 +188,10 @@ def __fillRandomChildArrays(minE, maxE, array):
 
 
 def __generateRandomArrayOfArrays(minE, maxE, array):
-    numberOfElements = random.randint(minElems, maxElems)
+    numberOfElements = random.randint(minE, maxE)
     for i in range(numberOfElements):
         array.append([])
+
 
 def __generateRandomArrayTypeImpl(itemsType, defaultConfig, minElems, maxElems, uniqueValues, array):
     '''Generates random object for given array type.
@@ -220,24 +222,65 @@ def __generateRandomArrayTypeImpl(itemsType, defaultConfig, minElems, maxElems, 
     return ret
 
 
-def __getRandomKeyName(minLen, maxLen):
+def __getRandomKeyName(keyPool, minLen, maxLen):
+    if (keyPool is not None) and (len(keyPool) > 0):
+        return keyPool[random.randint(0, len(keyPool) - 1)]
     strLen = random.randint(minLen, maxLen)
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(strLen))
 
 
-def _generateRandomDictionaryType(type, defaultConfig):
+def _generateRandomDictionaryType(type, defaultConfig, randDictTypeConf):
     '''Generates random object for given dictionary type.
 
     Returns a JSON dictionary that represents the random object.
 
     Keyword arguments:
-    type -- array type that describes the data to generate
-    defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
+    type -- array type that describes the data to generate, can also contain RandomDictConf
+    randDictTypeConf -- object of yacg.model.random_config.RamdonDictConf, maybe from a property for inner types
     '''
 
+    randMinKeyCount = 2
+    randMaxKeyCount = 20
+    randKeyCount = None
+    randKeyMinLen = 4
+    randKeyMaxLen = 15
+    keyPool = None
+
+    if (type.processing is not None) and (type.processing.randValueConf is not None):
+        if type.processing.randValueConf.randDictTypeConf.randMinKeyCount is not None:
+            randMinKeyCount = type.processing.randValueConf.randDictTypeConf.randMinKeyCount
+        if type.processing.randValueConf.randDictTypeConf.randMaxKeyCount is not None:
+            randMaxKeyCount = type.processing.randValueConf.randDictTypeConf.randMaxKeyCount
+        if type.processing.randValueConf.randDictTypeConf.randKeyCount is not None:
+            randKeyCount = type.processing.randValueConf.randDictTypeConf.randKeyCount
+        if type.processing.randValueConf.randDictTypeConf.randKeyMinLen is not None:
+            randKeyMinLen = type.processing.randValueConf.randDictTypeConf.randKeyMinLen
+        if type.processing.randValueConf.randDictTypeConf.randKeyMaxLen is not None:
+            randKeyMaxLen = type.processing.randValueConf.randDictTypeConf.randKeyMaxLen
+        if type.processing.randValueConf.randDictTypeConf.keyPool is not None:
+            keyPool = type.processing.randValueConf.randDictTypeConf.keyPool
+    if (randDictTypeConf is not None):
+        if randDictTypeConf.randMinKeyCount is not None:
+            randMinKeyCount = randDictTypeConf.randMinKeyCount
+        if randDictTypeConf.randMaxKeyCount is not None:
+            randMaxKeyCount = randDictTypeConf.randMaxKeyCount
+        if randDictTypeConf.randKeyCount is not None:
+            randKeyCount = randDictTypeConf.randKeyCount
+        if randDictTypeConf.randKeyMinLen is not None:
+            randKeyMinLen = randDictTypeConf.randKeyMinLen
+        if randDictTypeConf.randKeyMaxLen is not None:
+            randKeyMaxLen = randDictTypeConf.randKeyMaxLen
+        if randDictTypeConf.keyPool is not None:
+            keyPool = randDictTypeConf.keyPool
+
     typeDict = {}
-    # TODO
+    if randKeyCount is None:
+        randKeyCount = random.randint(randMinKeyCount, randMaxKeyCount)
+    for i in range(randKeyCount):
+        key = __getRandomKeyName(keyPool, randKeyMinLen, randKeyMaxLen)
+        value = generateRandomData(type.valueType, defaultConfig)
+        typeDict[key] = value
     return typeDict
 
 
@@ -273,8 +316,12 @@ def _getRandomValueForProperty(property, defaultConfig, currentDepth):
         return __getRandomTimeValue(property.processing)
     elif isinstance(property.type, model.DateTimeType):
         return __getRandomDateTimeValue(defaultConfig, property.processing)
+    elif isinstance(property.type, model.DictionaryType):
+        randDictTypeConf = property.processing.randValueConf if property.processing is not None else None
+        return _generateRandomDictionaryType(type, defaultConfig, randDictTypeConf)
     elif isinstance(property.type, model.ComplexType):
-        return _generateRandomComplexType(type, defaultConfig, currentDepth + 1)
+        randComplexTypeConf = property.processing.randValueConf if property.processing is not None else None
+        return _generateRandomComplexType(type, defaultConfig, currentDepth + 1, randComplexTypeConf)
     else:
         return None
 
