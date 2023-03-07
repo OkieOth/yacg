@@ -42,7 +42,19 @@ def generateRandomData(type, defaultConfig):
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
     '''
     ret = []
-    for i in range(type.processing.randElemCount):
+    elemCount = 0
+    if type.processing is not None:
+        if type.processing.randElemCount is not None:
+            elemCount = type.processing.randElemCount
+        else:
+            min = 1
+            max = 10
+            if type.processing.randMaxElemCount is not None:
+                max = type.processing.randMaxElemCount
+            if type.processing.randMinElemCount is not None:
+                min = type.processing.randMinElemCount
+            elemCount = random.randint(min, max)
+    for i in range(elemCount):
         r = None
         if isinstance(type, model.ComplexType):
             r = _generateRandomComplexType(type, defaultConfig, 0, None)
@@ -75,7 +87,7 @@ def generateRandomData(type, defaultConfig):
 
 def _randIngnore(property, defaultConfig):
     '''Process the configuration how likely a value should be generated
-    Returns True when a value for the property should be created
+    Returns False when a value for the property should be created
     '''
     if property.required:
         return False
@@ -84,8 +96,9 @@ def _randIngnore(property, defaultConfig):
         probabilityToBeEmpty = property.processing.randProbabilityToBeEmpty
     while probabilityToBeEmpty > 0:
         if bool(random.getrandbits(1)):
-            return True
-    return False
+            return False
+        probabilityToBeEmpty = probabilityToBeEmpty - 1
+    return True
 
 
 def _generateRandomComplexType(type, defaultConfig, currentDepth, randComplexTypeConf):
@@ -387,29 +400,29 @@ def __getRandomStringValue(processing):
             if processing.randValueConf.stringTypeConf.maxLength is not None:
                 maxLen = processing.randValueConf.stringTypeConf.maxLength
     if strType == randomConfig.RandomStringTypeConfStrTypeEnum.TEXT:
-        ret = faker.text()
+        ret = fakerInst.text()
     elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.NAME:
-        ret = faker.text()
+        ret = fakerInst.text()
         pass
     elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.ADDRESS:
-        ret = faker.address()
+        ret = fakerInst.address()
         pass
     elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.EMAIL:
-        ret = faker.email()
+        ret = fakerInst.email()
         pass
     elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.URL:
-        ret = faker.url()
+        ret = fakerInst.url()
         pass
     elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.PHONE:
-        ret = faker.phone()
+        ret = fakerInst.phone()
         pass
     elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.COUNTRY:
-        ret = faker.country()
+        ret = fakerInst.country()
         pass
     elif strType == randomConfig.RandomStringTypeConfStrTypeEnum.NAME:
-        ret = faker.name()
+        ret = fakerInst.name()
     else:
-        ret = faker.sentence()
+        ret = fakerInst.sentence()
     if len(ret) > maxLen:
         return ret[:maxLen]
     else:

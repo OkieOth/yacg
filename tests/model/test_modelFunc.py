@@ -1,5 +1,4 @@
 import unittest
-import os
 from yacg.builder.jsonBuilder import getModelFromJson
 import yacg.model.config as config
 import yacg.builder.impl.dictionaryBuilder as builder
