@@ -31,7 +31,7 @@ def extendMetaModelWithRandomConfigTypes(loadedTypes):
     pass
 
 
-def generateRandomData(type, defaultConfig):
+def generateRandomData(type, defaultConfig, defaultElemCount = 0):
     '''Generates random objects for that specific type in respect of the included
     'processing' attribute content and the passed 'defaultConfig'.
 
@@ -42,7 +42,7 @@ def generateRandomData(type, defaultConfig):
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
     '''
     ret = []
-    elemCount = 0
+    elemCount = defaultElemCount
     if type.processing is not None:
         if type.processing.randElemCount is not None:
             elemCount = type.processing.randElemCount
@@ -82,7 +82,10 @@ def generateRandomData(type, defaultConfig):
             r = __getRandomDateTimeValue(defaultConfig, None)
         if r is not None:
             ret.append(r)
-    return ret
+    if len(ret) == 1:
+        return ret[0]
+    else:
+        return ret
 
 
 def _randIngnore(property, defaultConfig):
@@ -147,13 +150,13 @@ def _generateRandomArrayType(type, defaultConfig):
     '''
 
     arrayDimensions = type.arrayDimensions if type.arrayDimensions is not None else 1
-    minElems = 0
+    minElems = 1
     maxElems = 10
     if (defaultConfig is not None) and (defaultConfig.defaultMinArrayElemCount is not None):
         minElems = defaultConfig.defaultMinArrayElemCount
     if (defaultConfig is not None) and (defaultConfig.defaultMaxArrayElemCount is not None):
         maxElems = defaultConfig.defaultMaxArrayElemCount
-    if (type.processing is not None) and (type.processing.randArrayConf is not None):
+    if (type.processing is not None) and (type.processing.randArrayTypeConf is not None):
         if type.processing.randArrayConf.randMinElemCount is not None:
             minElems = type.processing.randArrayConf.randMinElemCount
         if type.processing.randArrayConf.randMaxElemCount is not None:
@@ -185,11 +188,14 @@ def _generateRandomArrayType(type, defaultConfig):
 
 
 def __fillRandomChildArraysWithValues(itemsType, defaultConfig, minE, maxE, uValues, array):
-    for a in array:
-        if len(a) == 0:
-            __generateRandomArrayTypeImpl(type.itemsType, defaultConfig, minE, maxE, uValues, a)
-        else:
-            __fillRandomChildArraysWithValues(itemsType, defaultConfig, minE, maxE, uValues, a)
+    if len(array) == 0:
+        __generateRandomArrayTypeImpl(itemsType, defaultConfig, minE, maxE, uValues, array)
+    else:
+        for a in array:
+            if len(a) == 0:
+                __generateRandomArrayTypeImpl(itemsType, defaultConfig, minE, maxE, uValues, a)
+            else:
+                __fillRandomChildArraysWithValues(itemsType, defaultConfig, minE, maxE, uValues, a)
 
 
 def __fillRandomChildArrays(minE, maxE, array):
@@ -209,20 +215,18 @@ def __generateRandomArrayOfArrays(minE, maxE, array):
 def __generateRandomArrayTypeImpl(itemsType, defaultConfig, minElems, maxElems, uniqueValues, array):
     '''Generates random object for given array type.
 
-    Returns a JSON Array that represents the random object.
-
     Keyword arguments:
     itemsType -- type used for the random generation
     defaultConfig -- default configuration for this random task
     minElems -- minimal number of elements
     maxElems -- maximum number of elements
     uniqueValues -- bool if the content of the array should be uniqe
+    array -- array to fill with random values
     '''
 
     numberOfElements = random.randint(minElems, maxElems)
-    ret = []
     for i in range(numberOfElements):
-        v = generateRandomData(itemsType, defaultConfig)
+        v = generateRandomData(itemsType, defaultConfig, 1)
         if uniqueValues:
             found = False
             for e in ret:
@@ -231,8 +235,7 @@ def __generateRandomArrayTypeImpl(itemsType, defaultConfig, minElems, maxElems, 
                     break
             if found:
                 continue
-        ret.append(generateRandomData(itemsType, defaultConfig))
-    return ret
+        array.append(v)
 
 
 def __getRandomKeyName(keyPool, minLen, maxLen):
@@ -260,19 +263,19 @@ def _generateRandomDictionaryType(type, defaultConfig, randDictTypeConf):
     randKeyMaxLen = 15
     keyPool = None
 
-    if (type.processing is not None) and (type.processing.randValueConf is not None):
-        if type.processing.randValueConf.randDictTypeConf.randMinKeyCount is not None:
-            randMinKeyCount = type.processing.randValueConf.randDictTypeConf.randMinKeyCount
-        if type.processing.randValueConf.randDictTypeConf.randMaxKeyCount is not None:
-            randMaxKeyCount = type.processing.randValueConf.randDictTypeConf.randMaxKeyCount
-        if type.processing.randValueConf.randDictTypeConf.randKeyCount is not None:
-            randKeyCount = type.processing.randValueConf.randDictTypeConf.randKeyCount
-        if type.processing.randValueConf.randDictTypeConf.randKeyMinLen is not None:
-            randKeyMinLen = type.processing.randValueConf.randDictTypeConf.randKeyMinLen
-        if type.processing.randValueConf.randDictTypeConf.randKeyMaxLen is not None:
-            randKeyMaxLen = type.processing.randValueConf.randDictTypeConf.randKeyMaxLen
-        if type.processing.randValueConf.randDictTypeConf.keyPool is not None:
-            keyPool = type.processing.randValueConf.randDictTypeConf.keyPool
+    if (type.processing is not None) and (type.processing.randDictTypeConf is not None):
+        if type.processing.randDictTypeConf.randMinKeyCount is not None:
+            randMinKeyCount = type.processing.randDictTypeConf.randMinKeyCount
+        if type.processing.randDictTypeConf.randMaxKeyCount is not None:
+            randMaxKeyCount = type.processing.randDictTypeConf.randMaxKeyCount
+        if type.processing.randDictTypeConf.randKeyCount is not None:
+            randKeyCount = type.processing.randDictTypeConf.randKeyCount
+        if type.processing.randDictTypeConf.randKeyMinLen is not None:
+            randKeyMinLen = type.processing.randDictTypeConf.randKeyMinLen
+        if type.processing.randDictTypeConf.randKeyMaxLen is not None:
+            randKeyMaxLen = type.processing.randDictTypeConf.randKeyMaxLen
+        if type.processing.randDictTypeConf.keyPool is not None:
+            keyPool = type.processing.randDictTypeConf.keyPool
     if (randDictTypeConf is not None):
         if randDictTypeConf.randMinKeyCount is not None:
             randMinKeyCount = randDictTypeConf.randMinKeyCount
@@ -292,7 +295,7 @@ def _generateRandomDictionaryType(type, defaultConfig, randDictTypeConf):
         randKeyCount = random.randint(randMinKeyCount, randMaxKeyCount)
     for i in range(randKeyCount):
         key = __getRandomKeyName(keyPool, randKeyMinLen, randKeyMaxLen)
-        value = generateRandomData(type.valueType, defaultConfig)
+        value = generateRandomData(type.valueType, defaultConfig, 1)
         typeDict[key] = value
     return typeDict
 
