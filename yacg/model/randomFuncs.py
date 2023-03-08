@@ -43,6 +43,8 @@ def generateRandomData(type, defaultConfig, defaultElemCount = 0):
     '''
     ret = []
     elemCount = defaultElemCount
+    if (defaultConfig is not None) and (defaultConfig.defaultElemCount is not None):
+        elemCount = defaultConfig.defaultElemCount
     if type.processing is not None:
         if type.processing.randElemCount is not None:
             elemCount = type.processing.randElemCount
@@ -104,6 +106,17 @@ def _randIngnore(property, defaultConfig):
     return True
 
 
+def __getMaxDepth(type, defaultConfig, randComplexTypeConf):
+    maxDepth = 1
+    if defaultConfig.defaultTypeDepth is not None:
+        maxDepth = defaultConfig.defaultTypeDepth
+    if (randComplexTypeConf is not None) and (randComplexTypeConf.defaultTypeDepth is not None):
+        maxDepth = defaultConfig.defaultTypeDepth
+    if (type.processing is not None) and (type.processing.randComplexTypeConf is not None) and (type.processing.randComplexTypeConf.defaultTypeDepth is not None):
+        maxDepth = type.processing.randComplexTypeConf.defaultTypeDepth
+    return maxDepth
+
+
 def _generateRandomComplexType(type, defaultConfig, currentDepth, randComplexTypeConf):
     '''Generates random object for given complex type.
 
@@ -117,6 +130,8 @@ def _generateRandomComplexType(type, defaultConfig, currentDepth, randComplexTyp
     '''
 
     typeDict = {}
+    if currentDepth > __getMaxDepth(type, defaultConfig, randComplexTypeConf):
+        return None
     for property in type.properties:
         if (property.processing is not None) and (property.processing.randIgnore):
             continue
@@ -337,7 +352,7 @@ def _getRandomValueForProperty(property, defaultConfig, currentDepth):
         return _generateRandomDictionaryType(type, defaultConfig, randDictTypeConf)
     elif isinstance(property.type, model.ComplexType):
         randComplexTypeConf = property.processing.randValueConf if property.processing is not None else None
-        return _generateRandomComplexType(type, defaultConfig, currentDepth + 1, randComplexTypeConf)
+        return _generateRandomComplexType(property.type, defaultConfig, currentDepth + 1, randComplexTypeConf)
     else:
         return None
 

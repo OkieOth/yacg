@@ -208,6 +208,19 @@ docker run -u $(id -u ${USER}):$(id -g ${USER}) \
     --draft07hack
 ```
 
+# Create Random Data From Models
+
+With the `createRandomData.py` script, the package contains a tool to create random data based on the models.
+For further configurations see [here](docs/random_data_creation.md)
+
+```bash
+# creates in the tmp folder a file Job.json with 10 random objects of the Job type
+pipenv run python3 createRandomData.py --model resources/models/json/yacg_config_schema.json \
+  --type Job \
+  --defaultElemCount 10
+  --outputDir ./tmp
+```
+
 # Some Last Words
 This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines.
 

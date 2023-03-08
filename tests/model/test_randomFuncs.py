@@ -2,6 +2,7 @@ import unittest
 import yacg.model.randomFuncs as randomFuncs
 import yacg.model.random_config as randomConfig
 import yacg.model.model as model
+import createRandomData
 
 
 class TestRandomFuncs (unittest.TestCase):
@@ -197,3 +198,11 @@ class TestRandomFuncs (unittest.TestCase):
         ret = randomFuncs.generateRandomData(type, defaultConfig)
         self.assertTrue(isinstance(ret, dict))
         pass
+
+    def testMainFunc(self):
+        args = createRandomData.Args()
+        args.model = "resources/models/json/yacg_config_schema.json"
+        args.outputDir = "tmp"
+        args.type.append("Job")
+        args.defaultElemCount = 1
+        createRandomData.main(args)

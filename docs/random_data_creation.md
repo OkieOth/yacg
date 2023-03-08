@@ -7,7 +7,7 @@ process the configuration
 
 ## Configuration
 JSON schemas can be extended with specific configurations [see here](../resources/models/json/yacg_random_data_types.json). The extension can be put on types and attributes after an
-attribute `x-processing`
+attribute `processing`
 
 ```json
 {
@@ -26,7 +26,7 @@ attribute `x-processing`
         },
         "description": {
             "type": "string",
-            "x-processing": {
+            "processing": {
                 "randValueConf": {
                     "stringTypeConf": {
                         "strType": "TEXT",
@@ -37,12 +37,12 @@ attribute `x-processing`
         },
         "license": {
             "type": "string",
-            "x-processing": {
+            "processing": {
                 "randIgnore": true
             }
         }
     },
-    "x-processing": {
+    "processing": {
         "$comment": "includes this element in the random data creation, one element will be generated",
         "randElemCount": 1
     }
@@ -55,7 +55,7 @@ attribute `x-processing`
 ```bash
 cat resources/models/json/shared/info.json | jq \
      '. + {
-            "x-processing": {
+            "processing": {
                 comment: "includes this element in the random data creation", 
                 randElemCount: 1
             }
@@ -65,7 +65,7 @@ cat resources/models/json/shared/info.json | jq \
 ```bash
 cat resources/models/json/shared/info.json | jq \
      '.properties.description += {
-            "x-processing": {
+            "processing": {
                 "randValueConf": {
                     "stringTypeConf": {
                         "strType": "TEXT",
@@ -74,7 +74,7 @@ cat resources/models/json/shared/info.json | jq \
                 }
             }
         } | .properties.license += {
-            "x-processing": {
+            "processing": {
                 "randIgnore": true
             }
         }'
@@ -85,7 +85,7 @@ cat resources/models/json/shared/info.json | jq \
 # example with a monster configuration ...
 cat resources/models/json/shared/info.json | jq \
      '.properties.description += {
-            "x-processing": {
+            "processing": {
                 "randValueConf": {
                     "stringTypeConf": {
                         "strType": "TEXT",
@@ -94,11 +94,11 @@ cat resources/models/json/shared/info.json | jq \
                 }
             }
         } | .properties.license += {
-            "x-processing": {
+            "processing": {
                 "randIgnore": true
             }
         } | . += {
-            "x-processing": {
+            "processing": {
                 comment: "includes this element in the random data creation", 
                 randElemCount: 1
             }
@@ -108,7 +108,7 @@ cat resources/models/json/shared/info.json | jq \
 cat resources/models/json/shared/info.json | \
     # includes the configuration for the description property \
     jq '.properties.description += {
-            "x-processing": {
+            "processing": {
                 "randValueConf": {
                     "stringTypeConf": {
                         "strType": "TEXT",
@@ -119,13 +119,13 @@ cat resources/models/json/shared/info.json | \
         }' | \
     # includes the configuration for the license property \
     jq '.properties.license += {
-            "x-processing": {
+            "processing": {
                 "randIgnore": true
             }
         }' | \
     # enables the main type for the random data generation \
     jq '. += {
-            "x-processing": {
+            "processing": {
                 comment: "includes this element in the random data creation", 
                 randElemCount: 1
             }
