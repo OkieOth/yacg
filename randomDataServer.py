@@ -179,8 +179,8 @@ def main(args):
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    if args.model is None:
-        args.model = "resources/models/json/yacg_config_schema.json"
+    #if args.model is None:
+    #    args.model = "resources/models/json/yacg_config_schema.json"
     if args.model is None:
         printError('\nModel file not given. It can be passed as parameter or over stdin ... cancel')
         sys.exit(1)
