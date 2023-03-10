@@ -199,12 +199,8 @@
         "multiFileTask": {
           "description": "the code generation creates one file per type",
           "$ref": "#/definitions/MultiFileTask"
-        },
-        "randomDataTask": {
-          "description": "the code generation creates one file per type with random data",
-          "$ref": "#/definitions/RandomDataTask"
         }
-      }, 
+      },
       "required": [
           "name"
       ]

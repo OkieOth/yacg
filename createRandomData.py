@@ -46,7 +46,7 @@ class Args:
         self.defaultMaxDate = None
 
 
-def __createDefaultConfig(args):
+def createDefaultConfig(args):
     defaultConfig = randomConfig.RamdonDefaultConfig()
     defaultConfig.defaultElemCount = int(args.defaultElemCount) if args.defaultElemCount is not None else None
     defaultConfig.defaultTypeDepth = int(args.defaultTypeDepth) if args.defaultTypeDepth is not None else None
@@ -79,7 +79,7 @@ def _printYaml(randomDataDict, typeName, destDir, noIndent):
 
 def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
     """takes the prepared meta model ..."""
-    defaultConfig = __createDefaultConfig(args)
+    defaultConfig = createDefaultConfig(args)
     for t in loadedTypes:
         if (t.name in args.type) or ((t.processing is not None) and (t.procession.randElemCount > 0)):
             randomData = randomFuncs.generateRandomData(t, defaultConfig)
