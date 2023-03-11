@@ -2,7 +2,7 @@ import unittest
 import os.path
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.model.model import EnumType, Type
-
+import yacg.model.randomFuncs as randomFuncs
 import yacg.model.config as config
 
 
@@ -40,6 +40,67 @@ class TestYamlBuilder (unittest.TestCase):
             else:
                 self.assertFalse(prop.isArray, "property should be no array: %s.%s" % (typeName, prop.name))
 
+    def testXProcessing(self):
+        modelFile = 'tests/resources/models/yaml/examples/layer_annotated.yaml'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(12, len(modelTypes))
+        found = 0
+        for m in modelTypes:
+            if m.name == "Layer":
+                found = found + 1
+                self.assertIsNotNone(m.processing)
+                for p in m.properties:
+                    self.assertIsNone(p.processing)
+            elif m.name == "Geometry":
+                found = found + 1
+                self.assertIsNotNone(m.processing)
+            elif m.name == "DisplayConfigFill":
+                self.assertIsNotNone(m.properties[0].processing)
+                self.assertEqual(len(m.properties), 1)
+            elif m.processing is not None:
+                found = found + 1
+        self.assertEqual(found, 2)
+        randomFuncs.extendMetaModelWithRandomConfigTypes(modelTypes)
+        found = 0
+        for m in modelTypes:
+            if m.name == "Layer":
+                found = found + 1
+                self.assertIsNotNone(m.processing)
+                for p in m.properties:
+                    self.assertIsNone(p.processing)
+            elif m.name == "Geometry":
+                found = found + 1
+                self.assertIsNotNone(m.processing)
+                self.assertIsNotNone(m.properties[0].processing)
+                self.assertTrue(hasattr(m.properties[0].processing, "randIgnore"))
+                self.assertIsNone(m.properties[0].processing.randIgnore)
+                self.assertTrue(hasattr(m.properties[0].processing, "randArrayConf"))
+                self.assertIsNone(m.properties[0].processing.randArrayConf)
+                self.assertTrue(hasattr(m.properties[0].processing, "randValuePool"))
+                self.assertEqual(len(m.properties[0].processing.randValuePool), 0)
+                self.assertTrue(hasattr(m.properties[0].processing, "randValueConf"))
+                self.assertIsNotNone(m.properties[0].processing.randValueConf)
+                self.assertEqual(m.properties[0].processing.randValueConf.complexTypeConf.typeDepth, 2)
+                self.assertEqual(len(m.properties), 6)
+            elif m.name == "DisplayConfigFill":
+                self.assertIsNotNone(m.properties[0].processing)
+                self.assertTrue(hasattr(m.properties[0].processing, "randIgnore"))
+                self.assertTrue(m.properties[0].processing.randIgnore)
+                self.assertTrue(hasattr(m.properties[0].processing, "randArrayConf"))
+                self.assertIsNone(m.properties[0].processing.randArrayConf)
+                self.assertTrue(hasattr(m.properties[0].processing, "randValuePool"))
+                self.assertEqual(len(m.properties[0].processing.randValuePool), 0)
+                self.assertTrue(hasattr(m.properties[0].processing, "randValueConf"))
+                self.assertIsNone(m.properties[0].processing.randValueConf)
+                self.assertEqual(len(m.properties), 1)
+            elif m.processing is not None:
+                found = found + 1
+        self.assertEqual(found, 2)
 
 if __name__ == '__main__':
     unittest.main()

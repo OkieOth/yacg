@@ -4,6 +4,7 @@ hide empty methods
 hide empty fields
 
 class Type {
+        ObjectType processing
 }
 
 note top: Dummy base class to implement\nstrong typed references
@@ -177,6 +178,7 @@ class Property {
         BooleanType isVisualKey
         Type foreignKey
         StringType format
+        ObjectType processing
 }
 
 note top: a property of a type
@@ -230,6 +232,7 @@ note top: Type describes the reference of\na property to another field\nin the m
 
 
     
+
     
     
     
@@ -332,6 +335,7 @@ Property  *--  Type
 
 Property "0" *-- "n" Tag
             
+
 
 
 

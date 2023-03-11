@@ -13,11 +13,11 @@ class TestIncrementVersion (unittest.TestCase):
 
     def testGetJsonSchemaFileNames(self):
         ret = incrementVersion._getJsonSchemaFileNames('./resources')
-        self.assertEqual(10, len(ret))
+        self.assertEqual(11, len(ret))
         for file in ret:
             self.assertTrue(doesFileExist(file))
         ret2 = incrementVersion._getJsonSchemaFileNames('./tests')
-        self.assertEqual(49, len(ret2))
+        self.assertEqual(52, len(ret2))
         for file in ret2:
             self.assertTrue(doesFileExist(file))
         # negative test

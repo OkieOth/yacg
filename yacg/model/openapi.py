@@ -29,7 +29,7 @@ class OpenApiServer:
 
 class OpenApiInfo (yacg.model.shared.info.InfoSection):
     def __init__(self, dictObj=None):
-        super(yacg.model.shared.info.InfoSection, self).__init__()
+        yacg.model.shared.info.InfoSection.__init__(self)
         pass
 
         if dictObj is not None:
@@ -112,7 +112,7 @@ class PathType (yacg.model.model.Type):
     """
 
     def __init__(self, dictObj=None):
-        super(yacg.model.model.Type, self).__init__()
+        yacg.model.model.Type.__init__(self)
 
         #: REST path with parameter pattern if existing
         self.pathPattern = None

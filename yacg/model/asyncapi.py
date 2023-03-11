@@ -142,7 +142,7 @@ class AsyncApiInfo (yacg.model.shared.info.InfoSection):
     """
 
     def __init__(self, dictObj=None):
-        super(yacg.model.shared.info.InfoSection, self).__init__()
+        yacg.model.shared.info.InfoSection.__init__(self)
         pass
 
         if dictObj is not None:
@@ -490,7 +490,7 @@ class MessageBindingsAmqp:
 
 class AsyncApiHeaders (yacg.model.model.ComplexType):
     def __init__(self, dictObj=None):
-        super(yacg.model.model.ComplexType, self).__init__()
+        yacg.model.model.ComplexType.__init__(self)
         pass
 
         if dictObj is not None:

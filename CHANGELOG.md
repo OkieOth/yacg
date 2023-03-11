@@ -1,3 +1,7 @@
+# 6.0.0
+* fix bug in golang template
+* remove RandomDataGenerator from config and implementation
+
 # 5.9.5
 * add command line switches for better handling of Dictionary- and ArrayTypes
 * improve plantuml template
@@ -8,7 +12,6 @@
 
 # 5.9.2 - 5.9.3
 * CI fixes
-
 
 # 5.9.1
 * fix bug with not detected enum values, caused by a specific order of type declaration

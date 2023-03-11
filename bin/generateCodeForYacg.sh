@@ -38,6 +38,20 @@ if ! pipenv run python3 yacg.py --models \
     exit 1
 fi
 
+echo "create random config model classes ..."
+if ! pipenv run python3 yacg.py --models \
+    resources/models/json/yacg_random_data_types.json \
+    --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/random_config.py \
+                pythonBeansTests=${scriptPos}/../tests/model/test_random_config.py \
+                plantUml=${scriptPos}/../docs/puml/yacg_random_data_types.puml \
+    --protocolFile logs/gen_random_config.log \
+    --skipCodeGenIfVersionUnchanged $*\
+    --templateParameters baseModelDomain=yacg.model.random_config \
+                         title="yacg configuration for random data generation"; then
+    echo "    ERROR while create random config model classes"
+    exit 1
+fi
+
 echo "create shared model classes ..."
 if ! pipenv run python3 yacg.py --models \
     resources/models/json/shared/info.json \

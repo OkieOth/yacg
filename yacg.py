@@ -8,13 +8,12 @@ from yacg.builder.jsonBuilder import getModelFromJson
 from yacg.builder.yamlBuilder import getModelFromYaml
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 from yacg.generators.multiFileGenerator import renderMultiFileTemplate
-from yacg.generators.randomDataGenerator import renderRandomData
 from yacg.model.model import DictionaryType, EnumType, ComplexType, ArrayType
 import yacg.util.yacg_utils as yacg_utils
 import yacg.model.config as config
 import yacg.model.modelFuncs as modelFuncs
 import yacg.util.protocol_funcs as protocolFuncs
-
+from yacg.util.fileUtils import getFileExt
 
 description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
@@ -51,13 +50,6 @@ parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type nam
 parser.add_argument('--removeDicitonaryTypesFromTopLevel', help='Dictionary types are removed from the loaded types list', action='store_true')  # noqa: E501
 parser.add_argument('--removeArrayTypesFromTopLevel', help='Array types are removed from the loaded types list', action='store_true')  # noqa: E501
 parser.add_argument('--goOnlyWithTopLevelTypes', help='Only top-level-types from the schema remains in the loaded types list', action='store_true')  # noqa: E501
-
-
-def getFileExt(fileName):
-    """returns the fileextension of a given file name"""
-
-    lastDot = fileName.rindex('.')
-    return fileName[lastDot:]
 
 
 def readModels(configJob, flattenInheritance):
@@ -419,12 +411,6 @@ def __doCodeGen(codeGenerationJobs, args):
                     task.blackListed,
                     task.whiteListed,
                     task.multiFileTask)
-            elif task.randomDataTask is not None:
-                renderRandomData(
-                    loadedTypes,
-                    task.blackListed,
-                    task.whiteListed,
-                    task.randomDataTask)
     if (not allSkipped) and (args.skipCodeGenDryRun is not True):
         protocolFuncs.writeProtocolFile(args.protocolFile, codeGenMetaData)
 

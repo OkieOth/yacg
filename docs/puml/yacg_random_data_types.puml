@@ -1,0 +1,208 @@
+
+@startuml
+hide empty methods
+hide empty fields
+
+modelTypes.size = 13
+
+
+class "**RamdonDefaultConfig**" as RamdonDefaultConfig {
+        IntegerType defaultElemCount
+        IntegerType defaultTypeDepth
+        IntegerType defaultMinArrayElemCount
+        IntegerType defaultMaxArrayElemCount
+        DateTimeType defaultMinDate
+        DateTimeType defaultMaxDate
+        IntegerType defaultProbabilityToBeEmpty
+}
+
+ 
+
+class "**RandomDataTypeConf**" as RandomDataTypeConf {
+        IntegerType randMinElemCount
+        IntegerType randMaxElemCount
+        IntegerType randElemCount
+        RandomComplexTypeConf randComplexTypeConf
+        RandomArrayConf randArrayTypeConf
+        RandomDictConf randDictTypeConf
+}
+note top: can put on schema types\nto include them in the\nrandom data generation
+
+ 
+
+class "**RandomComplexTypeConf**" as RandomComplexTypeConf {
+        IntegerType typeDepth
+}
+note top: Constraints to generate random values\nof a complex type
+
+ 
+
+class "**RandomArrayConf**" as RandomArrayConf {
+        IntegerType randMinElemCount
+        IntegerType randMaxElemCount
+        IntegerType randElemCount
+}
+note top: Processing information to create random\narrays
+
+ 
+
+class "**RandomDictConf**" as RandomDictConf {
+        IntegerType randMinKeyCount
+        IntegerType randMaxKeyCount
+        IntegerType randKeyCount
+        IntegerType randKeyMinLen
+        IntegerType randKeyMaxLen
+        StringType[] keyPool
+}
+note top: Processing information to create random\ndictionaries
+
+ 
+
+class "**RandomDataPropertyConf**" as RandomDataPropertyConf {
+        BooleanType randIgnore
+        RandomArrayConf randArrayConf
+        ObjectType[] randValuePool
+        IntegerType randProbabilityToBeEmpty
+        RandomPropertyTypeConf randValueConf
+}
+note top: can put on schema properties\nto taylormade the random data\ngeneration
+
+ 
+
+class "**RandomPropertyTypeConf**" as RandomPropertyTypeConf {
+        RandomComplexTypeConf complexTypeConf
+        RandomDictConf dictTypeConf
+        RandomStringTypeConf stringTypeConf
+        RandomNumTypeConf numTypeConf
+        RandomDateTypeConf dateTypeConf
+        RandomTimeTypeConf timeTypeConf
+        RandomDurationTypeConf durationTypeConf
+}
+
+ 
+
+class "**RandomStringTypeConf**" as RandomStringTypeConf {
+        RandomStringTypeConfStrTypeEnum strType
+        IntegerType maxLength
+}
+note top: Constraints to generate random string\nvalues
+
+ 
+
+class "**RandomNumTypeConf**" as RandomNumTypeConf {
+        IntegerType minValue
+        IntegerType maxValue
+}
+note top: Constraints to generate random numeric\nvalues
+
+ 
+
+class "**RandomDateTypeConf**" as RandomDateTypeConf {
+        DateTimeType minValue
+        DateTimeType maxValue
+}
+note top: Constraints to generate random date\nvalues, used for dates and\ndate-times
+
+ 
+
+class "**RandomTimeTypeConf**" as RandomTimeTypeConf {
+        TimeType minValue
+        TimeType maxValue
+}
+note top: Constraints to generate random time\nvalues
+
+ 
+
+class "**RandomDurationTypeConf**" as RandomDurationTypeConf {
+        DurationType minValue
+        DurationType maxValue
+}
+note top: Constraints to generate random duration\nvalues
+
+ 
+
+enum "RandomStringTypeConfStrTypeEnum" as RandomStringTypeConfStrTypeEnum {
+    NAME
+    ADDRESS
+    EMAIL
+    URL
+    PHONE
+    COUNTRY
+    TEXT
+    SENTENCE
+}
+
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+RandomDataTypeConf  *--  RandomComplexTypeConf
+
+RandomDataTypeConf  *--  RandomArrayConf
+
+RandomDataTypeConf  *--  RandomDictConf
+
+    
+
+    
+
+
+
+    
+
+
+
+
+
+
+    
+
+RandomDataPropertyConf  *--  RandomArrayConf
+
+
+
+RandomDataPropertyConf  *--  RandomPropertyTypeConf
+
+    
+RandomPropertyTypeConf  *--  RandomComplexTypeConf
+
+RandomPropertyTypeConf  *--  RandomDictConf
+
+RandomPropertyTypeConf  *--  RandomStringTypeConf
+
+RandomPropertyTypeConf  *--  RandomNumTypeConf
+
+RandomPropertyTypeConf  *--  RandomDateTypeConf
+
+RandomPropertyTypeConf  *--  RandomTimeTypeConf
+
+RandomPropertyTypeConf  *--  RandomDurationTypeConf
+
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+    
+
+footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)
+@enduml

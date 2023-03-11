@@ -74,18 +74,17 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(16, len(modelTypes))
+        self.assertEqual(9, len(modelTypes))
 
         self._checkUpType(0, 'Job', 4, modelTypes, ['models', 'tasks'])
         self._checkUpType(1, 'Model', 4, modelTypes, [])
-        self._checkUpType(2, 'Task', 7, modelTypes, [])
+        self._checkUpType(2, 'Task', 6, modelTypes, [])
         self._checkUpType(3, 'BlackWhiteListEntry', 2, modelTypes, ['name'])
         self._checkUpType(4, 'BlackWhiteListEntryTypeEnum', 0, modelTypes, [])
         self._checkUpType(5, 'SingleFileTask', 3, modelTypes, [])
         self._checkUpType(6, 'TemplateParam', 5, modelTypes, ['name', 'value'])
         self._checkUpType(7, 'MultiFileTask', 10, modelTypes, [])
         self._checkUpType(8, 'MultiFileTaskFileFilterTypeEnum', 0, modelTypes, [])
-        self._checkUpType(9, 'RandomDataTask', 13, modelTypes, [], ('keyProperties', 'valuePools', 'arrays'))
 
     def testDoesTypeOrAttribContainsType(self):
         modelFile = 'resources/models/json/yacg_config_schema.json'
@@ -448,6 +447,17 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[0].valuesMap)
         self.assertEqual('true', modelTypes[0].valuesMap['1'])
 
+    def testEvilEnum_annotated(self):
+        modelFile = 'tests/resources/models/json/examples/evil_enum_annotated.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+
+        self.assertTrue(modelTypes[0], EnumType)
+        self.assertIsNotNone(modelTypes[0].processing)
+
     def testEvilIntEnum(self):
         modelFile = 'tests/resources/models/json/examples/evil_int_enum.json'
         modelFileExists = os.path.isfile(modelFile)
@@ -504,6 +514,25 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[0].properties[1].type)
         self.assertEqual(modelTypes[0].properties[2].arrayDimensions, 3)
         self.assertIsNotNone(modelTypes[0].properties[2].type)
+
+    def testEvilArrayAnnotated(self):
+        modelFile = 'tests/resources/models/json/examples/evil_array_annotated.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(len(modelTypes), 3)
+        self.assertEqual(len(modelTypes[0].properties), 3)
+        self.assertEqual(modelTypes[0].properties[0].arrayDimensions, 1)
+        self.assertIsNotNone(modelTypes[0].properties[0].type)
+        self.assertEqual(modelTypes[0].properties[1].arrayDimensions, 2)
+        self.assertIsNotNone(modelTypes[0].properties[1].type)
+        self.assertEqual(modelTypes[0].properties[2].arrayDimensions, 3)
+        self.assertIsNotNone(modelTypes[0].properties[2].type)
+        self.assertIsNotNone(modelTypes[0].processing)
+
 
     def testDictionary4(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof_with_dictionary.json'

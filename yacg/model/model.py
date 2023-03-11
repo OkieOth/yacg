@@ -10,7 +10,9 @@ class Type:
     """
 
     def __init__(self, dictObj=None):
-        pass
+
+        #: anchor to store codegen runtime data, for instance for the random data creation
+        self.processing = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -20,13 +22,15 @@ class Type:
         if dictObj is None:
             return
 
+        self.processing = dictObj.get('processing', None)
+
 
 class ObjectType (Type):
     """Straight out of hell - a undefined object type
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
         pass
 
         if dictObj is not None:
@@ -72,7 +76,7 @@ class IntegerType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.format = None
 
@@ -141,7 +145,7 @@ class NumberType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.format = None
 
@@ -181,7 +185,7 @@ class BooleanType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -201,7 +205,7 @@ class StringType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -233,7 +237,7 @@ class UuidType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -276,7 +280,7 @@ class EnumType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         #: is taken from the version entry of the file, optional
         self.version = None
@@ -355,7 +359,7 @@ class DateType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -391,7 +395,7 @@ class TimeType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -427,7 +431,7 @@ class DateTimeType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -463,7 +467,7 @@ class DurationType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -483,7 +487,7 @@ class BytesType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         self.default = None
 
@@ -503,7 +507,7 @@ class ComplexType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         #: is taken from the version entry of the file, optional
         self.version = None
@@ -624,6 +628,9 @@ class Property:
         #: holds the original 'format' value from the schema
         self.format = None
 
+        #: anchor to store codegen runtime data, for instance for the random data creation
+        self.processing = None
+
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
@@ -668,6 +675,8 @@ class Property:
 
         self.format = dictObj.get('format', None)
 
+        self.processing = dictObj.get('processing', None)
+
 
 class DictionaryType (Type):
     """key/value dictionary type. Keys are always strings, the value type can be
@@ -675,7 +684,7 @@ class DictionaryType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         #: is taken from the version entry of the file, optional
         self.version = None
@@ -768,7 +777,7 @@ class ArrayType (Type):
     """
 
     def __init__(self, dictObj=None):
-        super(Type, self).__init__()
+        Type.__init__(self)
 
         #: is taken from the version entry of the file, optional
         self.version = None

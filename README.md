@@ -208,6 +208,43 @@ docker run -u $(id -u ${USER}):$(id -g ${USER}) \
     --draft07hack
 ```
 
+# Create Random Data From Models
+
+With the `createRandomData.py` script, the package contains a tool to create random data based on the models.
+For further configurations see [here](docs/random_data_creation.md)
+
+```bash
+# creates in the tmp folder a file Job.json with 10 random objects of the Job type
+pipenv run python3 createRandomData.py --model resources/models/json/yacg_config_schema.json \
+  --type Job \
+  --defaultElemCount 10
+  --outputDir ./tmp
+```
+# Create Random Data and provide them over REST
+
+The script `randomDataServer.py` provides a simple http server that loads a model and
+provides random data based on the contained type description. It basically recycles
+the functions used in `createRandomData.py` and shares also the same commandline switches
+with that script.
+
+```bash
+# will start a simple http server on port 8080 that provides random data for a given type
+pipenv run python3 randomDataServer.py --model resources/models/json/yacg_config_schema.json
+
+# reading one random data set of the type 'Job'
+curl 'http://localhost:8080/job'
+
+# reading two random data sets of the type 'Job'
+curl 'http://localhost:8080/job?count=2'
+
+# reading two random data sets of the type 'Job', w/o any indent
+curl 'http://localhost:8080/job?count=2&noIndent=true'
+
+# reading one random data set of the type 'Job', with no random decision if non-required
+# properties should be generated or not
+curl 'http://localhost:8080/templateparam?probabilityToBeEmpty=0'
+```
+
 # Some Last Words
 This project is a spare time project - with all its pros and cons. The development of this project is done under a Linux OS, so I have no clue how it is working on Windows machines.
 
