@@ -246,7 +246,7 @@ def __generateRandomArrayTypeImpl(itemsType, defaultConfig, minElems, maxElems, 
         v = generateRandomData(itemsType, defaultConfig, 1)
         if uniqueValues:
             found = False
-            for e in ret:
+            for e in array:
                 if e == v:
                     found = True
                     break
