@@ -99,6 +99,8 @@ def _randIngnore(property, defaultConfig):
     probabilityToBeEmpty = defaultConfig.defaultProbabilityToBeEmpty
     if (property.processing is not None) and (property.processing.randProbabilityToBeEmpty is not None):
         probabilityToBeEmpty = property.processing.randProbabilityToBeEmpty
+    if probabilityToBeEmpty == 0:
+        return False
     while probabilityToBeEmpty > 0:
         if bool(random.getrandbits(1)):
             return False

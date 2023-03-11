@@ -239,6 +239,10 @@ curl 'http://localhost:8080/job?count=2'
 
 # reading two random data sets of the type 'Job', w/o any indent
 curl 'http://localhost:8080/job?count=2&noIndent=true'
+
+# reading one random data set of the type 'Job', with no random decision if non-required
+# properties should be generated or not
+curl 'http://localhost:8080/templateparam?probabilityToBeEmpty=0'
 ```
 
 # Some Last Words

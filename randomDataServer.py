@@ -80,6 +80,10 @@ def __createDefaultConfig(parameters):
     if maxDate is not None:
         defaultConfig.defaultMaxDate = maxDate
 
+    probabilityToBeEmpty = parameters.get("probabilityToBeEmpty", None)
+    if probabilityToBeEmpty is not None:
+        defaultConfig.defaultProbabilityToBeEmpty = int(probabilityToBeEmpty)
+
     return defaultConfig
 
 
