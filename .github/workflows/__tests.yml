@@ -16,7 +16,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pipenv flake8
         pipenv --python 3.10
-        pipenv --three install
+        pipenv install
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
