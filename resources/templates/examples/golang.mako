@@ -6,12 +6,12 @@
     import yacg.util.stringUtils as stringUtils
 
     templateFile = 'golang.mako'
-    templateVersion = '1.0.1'
+    templateVersion = '1.1.0'
 
     packageName = templateParameters.get('modelPackage','<<PLEASE SET modelPackage TEMPLATE PARAM>>')
 
 
-    def printGolangType(typeObj, isArray, isRequired):
+    def printGolangType(typeObj, isArray, isRequired, arrayDimensions = 1):
         ret = ''
         if typeObj is None:
             return '???'
@@ -50,7 +50,7 @@
         else:
             ret = '???'
         if isArray:
-            ret = "[]" + ret
+            ret = ("[]" * arrayDimensions) + ret
         if not isRequired:
             return "*" + ret
         else:
@@ -125,7 +125,7 @@ type ${type.name} struct {
             % if property.description != None:
     // ${property.description}
             % endif
-    ${stringUtils.toUpperCamelCase(property.name)} ${printGolangType(property.type, property.isArray, property.required)}
+    ${stringUtils.toUpperCamelCase(property.name)} ${printGolangType(property.type, property.isArray, property.required, property.arrayDimensions)} `json:"${property.name}"`
         % endfor
 }
 
