@@ -34,6 +34,7 @@ parser.add_argument('--defaultMaxDate', help='default maximal date for date and 
 
 class Args:
     def __init__(self) -> None:
+        self.allTypes = False
         self.model = None
         self.outputDir = None
         self.type = []
