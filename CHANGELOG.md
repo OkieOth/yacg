@@ -1,6 +1,14 @@
+# 6.0.1
+* improved GO template
+* introduce `allTypes` switch to `createRandomData.py`
+* add missing `createRandomData` and `randomDataServer` scripts to the docker image
+* fix random data issues for uuids and enum types
+
 # 6.0.0
 * fix bug in golang template
 * remove RandomDataGenerator from config and implementation
+* add `createRandomData.py` script to create random data
+* add `randomDataServer.py` script to deliver random data over http
 
 # 5.9.5
 * add command line switches for better handling of Dictionary- and ArrayTypes

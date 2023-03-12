@@ -31,7 +31,7 @@ def extendMetaModelWithRandomConfigTypes(loadedTypes):
     pass
 
 
-def generateRandomData(type, defaultConfig, defaultElemCount = 0):
+def generateRandomData(type, defaultConfig, defaultElemCount=0):
     '''Generates random objects for that specific type in respect of the included
     'processing' attribute content and the passed 'defaultConfig'.
 
@@ -73,9 +73,9 @@ def generateRandomData(type, defaultConfig, defaultElemCount = 0):
         elif isinstance(type, model.StringType):
             r = __getRandomStringValue(None)
         elif isinstance(type, model.UuidType):
-            r = uuid.uuid4()
+            r = str(uuid.uuid4())
         elif isinstance(type, model.EnumType):
-            r = __getRandomEnumValue(property.type, None)
+            r = __getRandomEnumValue(type, None)
         elif isinstance(type, model.DateType):
             r = __getRandomDateValue(defaultConfig, None)
         elif isinstance(type, model.TimeType):
@@ -164,6 +164,7 @@ def _generateRandomArrayType(type, defaultConfig):
     Keyword arguments:
     type -- array type that describes the data to generate
     defaultConfig -- object of yacg.model.random_config.RamdonDefaultConfig
+    arrayConstraints -- constraints related to the type or the property
     '''
 
     arrayDimensions = type.arrayDimensions if type.arrayDimensions is not None else 1
@@ -178,6 +179,13 @@ def _generateRandomArrayType(type, defaultConfig):
             minElems = type.processing.randArrayConf.randMinElemCount
         if type.processing.randArrayConf.randMaxElemCount is not None:
             maxElems = type.processing.randArrayConf.randMaxElemCount
+    if (type.arrayConstraints is not None) and (len(type.arrayConstraints) > 0):
+        l = len(type.arrayConstraints) - 1
+        if type.arrayConstraints[l].arrayMinItems is not None:
+            minElems = type.arrayConstraints[0].arrayMinItems
+        if type.arrayConstraints[l].arrayMaxItems is not None:
+            maxElems = type.arrayConstraints[0].arrayMaxItems
+
     ret = []
     uniqueValues = False
     array = []
@@ -280,7 +288,7 @@ def _generateRandomDictionaryType(type, defaultConfig, randDictTypeConf):
     randKeyMaxLen = 15
     keyPool = None
 
-    if (type.processing is not None) and (type.processing.randDictTypeConf is not None):
+    if (hasattr(type, "processing")) and (type.processing is not None) and (type.processing.randDictTypeConf is not None):
         if type.processing.randDictTypeConf.randMinKeyCount is not None:
             randMinKeyCount = type.processing.randDictTypeConf.randMinKeyCount
         if type.processing.randDictTypeConf.randMaxKeyCount is not None:
@@ -340,7 +348,7 @@ def _getRandomValueForProperty(property, defaultConfig, currentDepth):
     elif isinstance(property.type, model.StringType):
         return __getRandomStringValue(property.processing)
     elif isinstance(property.type, model.UuidType):
-        return uuid.uuid4()
+        return str(uuid.uuid4())
     elif isinstance(property.type, model.EnumType):
         return __getRandomEnumValue(property.type, property.processing)
     elif isinstance(property.type, model.DateType):
@@ -351,7 +359,7 @@ def _getRandomValueForProperty(property, defaultConfig, currentDepth):
         return __getRandomDateTimeValue(defaultConfig, property.processing)
     elif isinstance(property.type, model.DictionaryType):
         randDictTypeConf = property.processing.randValueConf if property.processing is not None else None
-        return _generateRandomDictionaryType(type, defaultConfig, randDictTypeConf)
+        return _generateRandomDictionaryType(property.type, defaultConfig, randDictTypeConf)
     elif isinstance(property.type, model.ComplexType):
         randComplexTypeConf = property.processing.randValueConf if property.processing is not None else None
         return _generateRandomComplexType(property.type, defaultConfig, currentDepth + 1, randComplexTypeConf)

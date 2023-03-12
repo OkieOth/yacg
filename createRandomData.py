@@ -21,6 +21,7 @@ parser = argparse.ArgumentParser(prog='createRandomData', description=descriptio
 parser.add_argument('--model', help='with random generation information annotated model schema')
 parser.add_argument('--outputDir', help='name of the directory to store the data with random data')
 parser.add_argument('--type', nargs='+', help='type name to generate data for, alternative to specific annotation')
+parser.add_argument('--allTypes', help='generate test data for all containted types of the model', action='store_true')
 parser.add_argument('--yaml', help='the default output is JSON, set this if YAML output desired', action='store_true')
 parser.add_argument('--noIndent', help='set this if the output should not be beautified', action='store_true')
 parser.add_argument('--defaultElemCount', help='default number of elements to generate for a type')
@@ -81,7 +82,7 @@ def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
     """takes the prepared meta model ..."""
     defaultConfig = createDefaultConfig(args)
     for t in loadedTypes:
-        if (t.name in args.type) or ((t.processing is not None) and (t.procession.randElemCount > 0)):
+        if (args.allTypes) or (t.name in args.type) or ((t.processing is not None) and (t.procession.randElemCount > 0)):
             randomData = randomFuncs.generateRandomData(t, defaultConfig)
             if args.yaml:
                 _printYaml(randomData, t.name, args.outputDir, args.noIndent)
