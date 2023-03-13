@@ -262,7 +262,8 @@
             }
           }
         }
-      }
+      },
+      "required": ["timestamp", "change", "dwarf", "mineSpotRow", "multiDimensionalArray", "mine"]
     }
   }
 }

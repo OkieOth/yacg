@@ -23,7 +23,7 @@ class "**RandomDataTypeConf**" as RandomDataTypeConf {
         IntegerType randMaxElemCount
         IntegerType randElemCount
         RandomComplexTypeConf randComplexTypeConf
-        RandomArrayConf randArrayTypeConf
+        RandomArrayConf randArrayConf
         RandomDictConf randDictTypeConf
 }
 note top: can put on schema types\nto include them in the\nrandom data generation

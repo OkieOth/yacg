@@ -1,3 +1,8 @@
+# 6.0.2
+* fix error in random array handling
+* fix errorn in handling of random dates
+* increment defaultTypeDepth for random data generation
+
 # 6.0.1
 * improved GO template
 * introduce `allTypes` switch to `createRandomData.py`

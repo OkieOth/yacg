@@ -206,3 +206,21 @@ class TestRandomFuncs (unittest.TestCase):
         args.type.append("Job")
         args.defaultElemCount = 1
         createRandomData.main(args)
+
+    def testMainFunc2(self):
+        args = createRandomData.Args()
+        args.model = "tests/resources/models/yaml/examples/layer_annotated.yaml"
+        args.outputDir = "tmp"
+        args.type.append("LayerContent")
+        args.defaultElemCount = 1
+        args.defaultTypeDepth = 10
+        createRandomData.main(args)
+
+
+    def testMainFunc(self):
+        args = createRandomData.Args()
+        args.model = "tests/resources/models/json/examples/nibelheim.json"
+        args.outputDir = "tmp"
+        args.type.append("History")
+        args.defaultElemCount = 1
+        createRandomData.main(args)

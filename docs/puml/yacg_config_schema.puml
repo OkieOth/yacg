@@ -3,44 +3,50 @@
 hide empty methods
 hide empty fields
 
-class Job {
+modelTypes.size = 9
+
+
+class "**Job**" as Job {
         StringType name
         StringType description
         Model[] models
         Task[] tasks
 }
-
 note top: base object that describes a\ncomplete code generation process
 
-class Model {
+ 
+
+class "**Model**" as Model {
         StringType schema
         StringType domain
         BlackWhiteListEntry[] blackListed
         BlackWhiteListEntry[] whiteListed
 }
-
 note top: A model that should be\nused
 
-class Task {
+ 
+
+class "**Task**" as Task {
         StringType name
         StringType description
         BlackWhiteListEntry[] blackListed
         BlackWhiteListEntry[] whiteListed
         SingleFileTask singleFileTask
         MultiFileTask multiFileTask
-        RandomDataTask randomDataTask
 }
-
 note top: A task to run
 
-class BlackWhiteListEntry {
+ 
+
+class "**BlackWhiteListEntry**" as BlackWhiteListEntry {
         StringType name
         BlackWhiteListEntryTypeEnum type
 }
-
 note top: entry of a type back/white\nlist
 
-enum BlackWhiteListEntryTypeEnum {
+ 
+
+enum "BlackWhiteListEntryTypeEnum" as BlackWhiteListEntryTypeEnum {
     TYPE
     TAG
     CONTAINEDATTRIB
@@ -49,26 +55,27 @@ enum BlackWhiteListEntryTypeEnum {
     TYPETYPE
 }
 
-
-class SingleFileTask {
+class "**SingleFileTask**" as SingleFileTask {
         StringType template
         StringType destFile
         TemplateParam[] templateParams
 }
-
 note top: parameter of a code generation\ntask that creates one file
 
-class TemplateParam {
+ 
+
+class "**TemplateParam**" as TemplateParam {
         StringType name
         StringType value
         StringType[] requiredDomains
         StringType[] requiredTags
         StringType[] requiredNames
 }
-
 note top: additional, template specific custom parameter\nfor codegen task
 
-class MultiFileTask {
+ 
+
+class "**MultiFileTask**" as MultiFileTask {
         StringType template
         StringType destDir
         StringType destFilePrefix
@@ -80,63 +87,49 @@ class MultiFileTask {
         BooleanType createOnlyIfNotExist
         BooleanType createTmpFileIfAlreadyExist
 }
-
 note top: parameter of a code generation\ntask that creates one file\nper model type
 
-enum MultiFileTaskFileFilterTypeEnum {
+ 
+
+enum "MultiFileTaskFileFilterTypeEnum" as MultiFileTaskFileFilterTypeEnum {
     TYPE
     OPENAPIOPERATIONID
 }
-
-
-class RandomDataTask {
-}
-
 
 
     
 
 
 Job "0" *-- "n" Model
-            
 
 Job "0" *-- "n" Task
-            
 
     
 
 
 Model "0" *-- "n" BlackWhiteListEntry
-            
 
+Model "0" *-- "n" BlackWhiteListEntry
 
     
 
 
 Task "0" *-- "n" BlackWhiteListEntry
-            
 
+Task "0" *-- "n" BlackWhiteListEntry
 
 Task  *--  SingleFileTask
-            
 
 Task  *--  MultiFileTask
-            
-
-Task  *--  RandomDataTask
-            
 
     
 
-BlackWhiteListEntry  *--  BlackWhiteListEntryTypeEnum
-            
 
     
     
 
 
 SingleFileTask "0" *-- "n" TemplateParam
-            
 
     
 
@@ -151,15 +144,11 @@ SingleFileTask "0" *-- "n" TemplateParam
 
 
 
-MultiFileTask  *--  MultiFileTaskFileFilterTypeEnum
-            
 
 MultiFileTask "0" *-- "n" TemplateParam
-            
 
 
 
-    
     
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

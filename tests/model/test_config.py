@@ -48,10 +48,6 @@ class TestYacgConfigurationModel (unittest.TestCase):
         self.assertIsNotNone(yacg.model.config.MultiFileTaskFileFilterTypeEnum.TYPE)
         self.assertIsNotNone(yacg.model.config.MultiFileTaskFileFilterTypeEnum.OPENAPIOPERATIONID)
 
-    def testRandomDataTask(self):
-        x = yacg.model.config.RandomDataTask()
-        self.assertIsNotNone(x)
-
 
 if __name__ == '__main__':
     unittest.main()

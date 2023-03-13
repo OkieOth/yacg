@@ -44,6 +44,10 @@ class TestYacgModel (unittest.TestCase):
         x = yacg.model.model.UuidType()
         self.assertIsNotNone(x)
 
+    def testEnumTypeValuesMap(self):
+        x = yacg.model.model.EnumTypeValuesMap()
+        self.assertIsNotNone(x)
+
     def testTag(self):
         x = yacg.model.model.Tag()
         self.assertIsNotNone(x)

@@ -3,7 +3,10 @@
 hide empty methods
 hide empty fields
 
-class OperationBase {
+modelTypes.size = 15
+
+
+class "**OperationBase**" as OperationBase {
         StringType operationId
         StringType summary
         StringType description
@@ -12,8 +15,9 @@ class OperationBase {
         Message xResponseMessage
 }
 
+ 
 
-class Message {
+class "**Message**" as Message {
         StringType name
         Payload payload
         MessageBindingsAmqp amqpBindings
@@ -21,35 +25,39 @@ class Message {
         AsyncApiHeaders headers
         StringType description
 }
-
 note top: Container that describes the messages\nare sent
 
-class OperationBindingsAmqp {
+ 
+
+class "**OperationBindingsAmqp**" as OperationBindingsAmqp {
         StringType name
         IntegerType expiration
         BooleanType mandatory
         StringType replyTo
 }
-
 note top: specific AMQP binding properties
 
-class AsyncApiInfo {
-}
+ 
 
+class "**AsyncApiInfo**" as AsyncApiInfo {
+}
 note top: Subset of the info object\nattribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
 
 AsyncApiInfo --|> InfoSection
-class AsyncApiServer {
+ 
+
+class "**AsyncApiServer**" as AsyncApiServer {
         StringType name
         StringType url
         StringType description
         StringType protocol
         StringType protocolVersion
 }
-
 note top: one entry of the servers\nsection
 
-class Channel {
+ 
+
+class "**Channel**" as Channel {
         StringType key
         StringType description
         Parameter[] parameters
@@ -57,36 +65,40 @@ class Channel {
         OperationBase subscribe
         ChannelBindingsAmqp amqpBindings
 }
-
 note top: one entry of the channels\nsection
 
-class Parameter {
+ 
+
+class "**Parameter**" as Parameter {
         StringType name
         StringType description
         StringType type
 }
-
 note top: Parameters contained in the channel\nkey
 
-class ChannelBindingsAmqp {
+ 
+
+class "**ChannelBindingsAmqp**" as ChannelBindingsAmqp {
         StringType name
         ChannelBindingsAmqpIsTypeEnum isType
         ChannelBindingsAmqpQueue queue
         ChannelBindingsAmqpExchange exchange
 }
-
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
 
-class ChannelBindingsAmqpExchange {
+ 
+
+class "**ChannelBindingsAmqpExchange**" as ChannelBindingsAmqpExchange {
         StringType name
         ChannelBindingsAmqpExchangeTypeEnum type
         BooleanType durable
         BooleanType autoDelete
 }
-
 note top: channel exchange parameters
 
-enum ChannelBindingsAmqpExchangeTypeEnum {
+ 
+
+enum "ChannelBindingsAmqpExchangeTypeEnum" as ChannelBindingsAmqpExchangeTypeEnum {
     TOPIC
     DIRECT
     FANOUT
@@ -94,64 +106,62 @@ enum ChannelBindingsAmqpExchangeTypeEnum {
     HEADERS
 }
 
-
-class ChannelBindingsAmqpQueue {
+class "**ChannelBindingsAmqpQueue**" as ChannelBindingsAmqpQueue {
         StringType name
         BooleanType durable
         BooleanType exclusive
         BooleanType autoDelete
 }
-
 note top: channel queue parameters
 
-enum ChannelBindingsAmqpIsTypeEnum {
+ 
+
+enum "ChannelBindingsAmqpIsTypeEnum" as ChannelBindingsAmqpIsTypeEnum {
     QUEUE
     ROUTINGKEY
 }
 
-
-class Payload {
+class "**Payload**" as Payload {
         Type type
         BooleanType isArray
 }
 
+ 
 
-class MessageBindingsAmqp {
+class "**MessageBindingsAmqp**" as MessageBindingsAmqp {
         StringType name
         StringType contentEncoding
         StringType messageType
 }
-
 note top: https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
 
-class AsyncApiHeaders {
+ 
+
+class "**AsyncApiHeaders**" as AsyncApiHeaders {
 }
 
-
 AsyncApiHeaders --|> ComplexType
+ 
+
 
     
 
 
 
 OperationBase  *--  Message
-            
 
 OperationBase  *--  OperationBindingsAmqp
-            
 
+OperationBase  *--  Message
 
     
 
 Message  *--  Payload
-            
 
 Message  *--  MessageBindingsAmqp
-            
 
 
 Message  *--  AsyncApiHeaders
-            
 
 
     
@@ -170,14 +180,12 @@ Message  *--  AsyncApiHeaders
 
 
 Channel "0" *-- "n" Parameter
-            
 
 Channel  *--  OperationBase
-            
 
+Channel  *--  OperationBase
 
 Channel  *--  ChannelBindingsAmqp
-            
 
     
 
@@ -185,19 +193,13 @@ Channel  *--  ChannelBindingsAmqp
 
     
 
-ChannelBindingsAmqp  *--  ChannelBindingsAmqpIsTypeEnum
-            
 
 ChannelBindingsAmqp  *--  ChannelBindingsAmqpQueue
-            
 
 ChannelBindingsAmqp  *--  ChannelBindingsAmqpExchange
-            
 
     
 
-ChannelBindingsAmqpExchange  *--  ChannelBindingsAmqpExchangeTypeEnum
-            
 
 
 
@@ -210,7 +212,6 @@ ChannelBindingsAmqpExchange  *--  ChannelBindingsAmqpExchangeTypeEnum
     
     
 Payload  *--  Type
-            
 
 
     

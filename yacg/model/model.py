@@ -252,6 +252,22 @@ class UuidType (Type):
         self.default = dictObj.get('default', None)
 
 
+class EnumTypeValuesMap:
+    """additional enum values
+    """
+
+    def __init__(self, dictObj=None):
+        pass
+
+        if dictObj is not None:
+            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
+            self.initFromDict(d)
+
+    def initFromDict(self, dictObj):
+        if dictObj is None:
+            return
+
+
 class Tag:
     """a tag type
     """

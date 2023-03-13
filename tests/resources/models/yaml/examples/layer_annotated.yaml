@@ -46,7 +46,7 @@ definitions:
           "$ref": "#/definitions/DisplayConfig"
     required:
       - id
-      - geometries
+      - geometry
   Color:
     description: The color definition to display a feature
     type: object

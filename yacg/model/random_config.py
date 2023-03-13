@@ -10,7 +10,7 @@ class RamdonDefaultConfig:
 
         self.defaultElemCount = None
 
-        self.defaultTypeDepth = None
+        self.defaultTypeDepth = 10
 
         self.defaultMinArrayElemCount = None
 
@@ -33,7 +33,7 @@ class RamdonDefaultConfig:
 
         self.defaultElemCount = dictObj.get('defaultElemCount', None)
 
-        self.defaultTypeDepth = dictObj.get('defaultTypeDepth', None)
+        self.defaultTypeDepth = dictObj.get('defaultTypeDepth', 10)
 
         self.defaultMinArrayElemCount = dictObj.get('defaultMinArrayElemCount', None)
 
@@ -64,7 +64,7 @@ class RandomDataTypeConf:
         self.randComplexTypeConf = None
 
         #: in case the type is an array, this specifies the random data handling of the array
-        self.randArrayTypeConf = None
+        self.randArrayConf = None
 
         #: in case the is an dictionary, this specifies the random data handling of the dictionary
         self.randDictTypeConf = None
@@ -87,9 +87,9 @@ class RandomDataTypeConf:
         if subDictObj is not None:
             self.randComplexTypeConf = RandomComplexTypeConf(subDictObj)
 
-        subDictObj = dictObj.get('randArrayTypeConf', None)
+        subDictObj = dictObj.get('randArrayConf', None)
         if subDictObj is not None:
-            self.randArrayTypeConf = RandomArrayConf(subDictObj)
+            self.randArrayConf = RandomArrayConf(subDictObj)
 
         subDictObj = dictObj.get('randDictTypeConf', None)
         if subDictObj is not None:
