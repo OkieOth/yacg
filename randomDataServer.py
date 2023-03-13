@@ -187,9 +187,9 @@ if __name__ == '__main__':
     #if args.model is None:
     #    args.model = "resources/models/json/yacg_config_schema.json"
     if args.model is None:
-        printError('\nModel file not given. It can be passed as parameter or over stdin ... cancel')
+        print('\nModel file not given. It can be passed as parameter or over stdin ... cancel')
         sys.exit(1)
     if not doesFileExist(args.model):
-        printError('\nModel file not found ... cancel: {}'.format(args.model))
+        print('\nModel file not found ... cancel: {}'.format(args.model))
         sys.exit(1)
     main(args)
