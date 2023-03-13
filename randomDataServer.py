@@ -1,17 +1,15 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import argparse
 import sys
-import logging
 import yaml
 import json
 import copy
 from yacg.util.fileUtils import doesFileExist
-from yacg.util.outputUtils import printError, printInfo
 import yacg.builder.impl.dictionaryBuilder as builder
 import yacg.model.randomFuncs as randomFuncs
-import yacg.model.random_config as randomConfig
 from yacg.util.fileUtils import getFileExt
 import createRandomData
+import customRandomContraints
 
 
 description = """
@@ -109,6 +107,9 @@ def _getRandomContent(parameters, currentPath):
     for t in loadedTypes:
         if (t.name is not None) and ( t.name.lower() == currentPath):
             randomData = randomFuncs.generateRandomData(t, defaultConfig)
+            shouldUse, value = customRandomContraints.doPostProcessing(t.name, randomData)
+            if not shouldUse:
+                continue
             noIndent = False
             if parameters.get("noIndent", None) is not None:
                 noIndent = True
@@ -186,9 +187,9 @@ if __name__ == '__main__':
     #if args.model is None:
     #    args.model = "resources/models/json/yacg_config_schema.json"
     if args.model is None:
-        printError('\nModel file not given. It can be passed as parameter or over stdin ... cancel')
+        print('\nModel file not given. It can be passed as parameter or over stdin ... cancel')
         sys.exit(1)
     if not doesFileExist(args.model):
-        printError('\nModel file not found ... cancel: {}'.format(args.model))
+        print('\nModel file not found ... cancel: {}'.format(args.model))
         sys.exit(1)
     main(args)

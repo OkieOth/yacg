@@ -3,18 +3,23 @@
 hide empty methods
 hide empty fields
 
-class OpenApiServer {
+modelTypes.size = 11
+
+
+class "**OpenApiServer**" as OpenApiServer {
         StringType url
         StringType description
 }
 
+ 
 
-class OpenApiInfo {
+class "**OpenApiInfo**" as OpenApiInfo {
 }
 
-
 OpenApiInfo --|> InfoSection
-class Command {
+ 
+
+class "**Command**" as Command {
         CommandCommandEnum command
         StringType[] tags
         StringType summary
@@ -25,18 +30,20 @@ class Command {
         Response[] responses
         CommandSecurity security
 }
-
 note top: information to a specific HTTP\ncommand
 
-class PathType {
+ 
+
+class "**PathType**" as PathType {
         StringType pathPattern
         Command[] commands
 }
-
 note top: base type that contains all\nREST path information
 
 PathType --|> Type
-enum CommandCommandEnum {
+ 
+
+enum "CommandCommandEnum" as CommandCommandEnum {
     GET
     PUT
     POST
@@ -45,8 +52,7 @@ enum CommandCommandEnum {
     PATCH
 }
 
-
-class Parameter {
+class "**Parameter**" as Parameter {
         ParameterInTypeEnum inType
         StringType name
         BooleanType isArray
@@ -54,38 +60,43 @@ class Parameter {
         BooleanType required
         Type type
 }
-
 note top: definition of a parameter that\nis used in the request
 
-class RequestBody {
+ 
+
+class "**RequestBody**" as RequestBody {
         StringType description
         BooleanType required
         ContentEntry[] content
 }
-
 note top: definition of a parameter that\nis used in the request
 
-class Response {
+ 
+
+class "**Response**" as Response {
         IntegerType returnCode
         StringType description
         ContentEntry[] content
 }
-
 note top: description of a response option\nfor a request
 
-class CommandSecurity {
+ 
+
+class "CommandSecurity" as CommandSecurity {
         StringType[] scopes
 }
 
+ 
 
-class ContentEntry {
+class "**ContentEntry**" as ContentEntry {
         StringType mimeType
         Type type
         BooleanType isArray
 }
 
+ 
 
-enum ParameterInTypeEnum {
+enum "ParameterInTypeEnum" as ParameterInTypeEnum {
     PATH
     QUERY
     HEADER
@@ -93,66 +104,52 @@ enum ParameterInTypeEnum {
 }
 
 
-
     
 
 
     
     
-Command  *--  CommandCommandEnum
-            
 
 
 
 
 
 Command "0" *-- "n" Parameter
-            
 
 Command  *--  RequestBody
-            
 
 Command "0" *-- "n" Response
-            
 
 Command  *--  CommandSecurity
-            
 
     
 
 PathType "0" *-- "n" Command
-            
 
     
     
-Parameter  *--  ParameterInTypeEnum
-            
 
 
 
 
 
 Parameter  *--  Type
-            
 
     
 
 
 RequestBody "0" *-- "n" ContentEntry
-            
 
     
 
 
 Response "0" *-- "n" ContentEntry
-            
 
     
 
     
 
 ContentEntry  *--  Type
-            
 
 
     

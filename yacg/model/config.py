@@ -111,9 +111,6 @@ class Task:
         #: the code generation creates one file per type
         self.multiFileTask = None
 
-        #: the code generation creates one file per type with random data
-        self.randomDataTask = None
-
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
@@ -143,10 +140,6 @@ class Task:
         subDictObj = dictObj.get('multiFileTask', None)
         if subDictObj is not None:
             self.multiFileTask = MultiFileTask(subDictObj)
-
-        subDictObj = dictObj.get('randomDataTask', None)
-        if subDictObj is not None:
-            self.randomDataTask = RandomDataTask(subDictObj)
 
 
 class BlackWhiteListEntry:
@@ -397,18 +390,5 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
         else:
             return ''
 
-
-
-class RandomDataTask:
-    def __init__(self, dictObj=None):
-        pass
-
-        if dictObj is not None:
-            d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
-            self.initFromDict(d)
-
-    def initFromDict(self, dictObj):
-        if dictObj is None:
-            return
 
 

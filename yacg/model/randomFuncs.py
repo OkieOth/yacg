@@ -43,6 +43,8 @@ def generateRandomData(type, defaultConfig, defaultElemCount=0):
     '''
     ret = []
     elemCount = defaultElemCount
+    if isinstance(type, list):
+        pass
     if (defaultConfig is not None) and (defaultConfig.defaultElemCount is not None):
         elemCount = defaultConfig.defaultElemCount
     if type.processing is not None:
@@ -174,17 +176,11 @@ def _generateRandomArrayType(type, defaultConfig):
         minElems = defaultConfig.defaultMinArrayElemCount
     if (defaultConfig is not None) and (defaultConfig.defaultMaxArrayElemCount is not None):
         maxElems = defaultConfig.defaultMaxArrayElemCount
-    if (type.processing is not None) and (type.processing.randArrayTypeConf is not None):
+    if (type.processing is not None) and (type.processing.randArrayConf is not None):
         if type.processing.randArrayConf.randMinElemCount is not None:
             minElems = type.processing.randArrayConf.randMinElemCount
         if type.processing.randArrayConf.randMaxElemCount is not None:
             maxElems = type.processing.randArrayConf.randMaxElemCount
-    if (type.arrayConstraints is not None) and (len(type.arrayConstraints) > 0):
-        l = len(type.arrayConstraints) - 1
-        if type.arrayConstraints[l].arrayMinItems is not None:
-            minElems = type.arrayConstraints[0].arrayMinItems
-        if type.arrayConstraints[l].arrayMaxItems is not None:
-            maxElems = type.arrayConstraints[0].arrayMaxItems
 
     ret = []
     uniqueValues = False
@@ -205,6 +201,12 @@ def _generateRandomArrayType(type, defaultConfig):
             if len(ret) == 0:
                 ret = array
         else:
+            if (type.arrayConstraints is not None) and (len(type.arrayConstraints) > 0):
+                l = len(type.arrayConstraints) - 1
+                if type.arrayConstraints[l].arrayMinItems is not None:
+                    minElems = type.arrayConstraints[l].arrayMinItems
+                if type.arrayConstraints[l].arrayMaxItems is not None:
+                    maxElems = type.arrayConstraints[l].arrayMaxItems
             __fillRandomChildArraysWithValues(type.itemsType, defaultConfig, minE, maxE, uValues, array)
     if len(ret) == 0:
         return array
@@ -224,6 +226,9 @@ def __fillRandomChildArraysWithValues(itemsType, defaultConfig, minE, maxE, uVal
 
 
 def __fillRandomChildArrays(minE, maxE, array):
+    if len(array) == 0:
+        __generateRandomArrayOfArrays(minE, maxE, array)
+        return
     for a in array:
         if len(a) == 0:
             __generateRandomArrayOfArrays(minE, maxE, a)
@@ -479,9 +484,9 @@ def __getRandomDateValueImpl(processing, defaultConfig, formatStr):
             if processing.randValueConf.dateTypeConf.maxValue is not None:
                 maxDateStr = processing.randValueConf.dateTypeConf.maxValue
 
-    formatStr = "%d-%m-%Y"
-    startDate = datetime.strptime(minDateStr, formatStr)
-    endDate = datetime.strptime(maxDateStr, formatStr)
+    fstr = "%Y-%m-%d"
+    startDate = datetime.datetime.strptime(minDateStr, fstr)
+    endDate = datetime.datetime.strptime(maxDateStr, fstr)
     delta = endDate - startDate
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
     random_second = random.randrange(int_delta)
@@ -491,7 +496,7 @@ def __getRandomDateValueImpl(processing, defaultConfig, formatStr):
 
 def __getRandomDateValue(defaultConfig, processing):
     formatStr = "%d-%m-%Y"
-    __getRandomDateValueImpl(processing, defaultConfig, formatStr)
+    return __getRandomDateValueImpl(processing, defaultConfig, formatStr)
 
 
 def __getRandomTimeValue(processing):
@@ -535,4 +540,4 @@ def __getRandomTimeValue(processing):
 
 def __getRandomDateTimeValue(defaultConfig, processing):
     formatStr = "%d-%m-%YT%H:%M:%S"
-    __getRandomDateValueImpl(processing, defaultConfig, formatStr)
+    return __getRandomDateValueImpl(processing, defaultConfig, formatStr)

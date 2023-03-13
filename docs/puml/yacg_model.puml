@@ -3,25 +3,29 @@
 hide empty methods
 hide empty fields
 
-class Type {
+modelTypes.size = 23
+
+
+class "**Type**" as Type {
         ObjectType processing
 }
-
 note top: Dummy base class to implement\nstrong typed references
 
-class ObjectType {
-}
+ 
 
+class "**ObjectType**" as ObjectType {
+}
 note top: Straight out of hell -\na undefined object type
 
 ObjectType --|> Type
-enum IntegerTypeFormatEnum {
+ 
+
+enum "IntegerTypeFormatEnum" as IntegerTypeFormatEnum {
     INT32
     INT64
 }
 
-
-class IntegerType {
+class "**IntegerType**" as IntegerType {
         IntegerTypeFormatEnum format
         IntegerType default
         IntegerType minimum
@@ -29,17 +33,17 @@ class IntegerType {
         IntegerType maximum
         IntegerType exclusiveMaximum
 }
-
 note top: integer values
 
 IntegerType --|> Type
-enum NumberTypeFormatEnum {
+ 
+
+enum "NumberTypeFormatEnum" as NumberTypeFormatEnum {
     FLOAT
     DOUBLE
 }
 
-
-class NumberType {
+class "**NumberType**" as NumberType {
         NumberTypeFormatEnum format
         NumberType default
         NumberType minimum
@@ -47,42 +51,48 @@ class NumberType {
         NumberType maximum
         NumberType exclusiveMaximum
 }
-
 note top: floating point values
 
 NumberType --|> Type
-class BooleanType {
+ 
+
+class "**BooleanType**" as BooleanType {
         BooleanType default
 }
-
 note top: boolean values
 
 BooleanType --|> Type
-class StringType {
+ 
+
+class "**StringType**" as StringType {
         StringType default
         NumberType minLength
         NumberType maxLength
         StringType pattern
 }
-
 note top: integer values
 
 StringType --|> Type
-class UuidType {
+ 
+
+class "**UuidType**" as UuidType {
         StringType default
 }
-
 note top: UUID values
 
 UuidType --|> Type
-class Tag {
+ 
+
+
+class "**Tag**" as Tag {
         StringType name
         StringType value
 }
-
 note top: a tag type
 
-class EnumType {
+ 
+
+class "**EnumType**" as EnumType {
         StringType version
         StringType name
         StringType domain
@@ -96,58 +106,64 @@ class EnumType {
         BooleanType topLevelType
         Tag[] tags
 }
-
 note top: type for enum values -\nfixed value types
 
 EnumType --|> Type
-class DateType {
+ 
+
+class "**DateType**" as DateType {
         DateType default
         DateType minimum
         DateType exclusiveMinimum
         DateType maximum
         DateType exclusiveMaximum
 }
-
 note top: type for date values
 
 DateType --|> Type
-class TimeType {
+ 
+
+class "**TimeType**" as TimeType {
         TimeType default
         TimeType minimum
         TimeType exclusiveMinimum
         TimeType maximum
         TimeType exclusiveMaximum
 }
-
 note top: type for time values
 
 TimeType --|> Type
-class DateTimeType {
+ 
+
+class "**DateTimeType**" as DateTimeType {
         DateTimeType default
         DateTimeType minimum
         DateTimeType exclusiveMinimum
         DateTimeType maximum
         DateTimeType exclusiveMaximum
 }
-
 note top: type for timestamp values
 
 DateTimeType --|> Type
-class DurationType {
+ 
+
+class "**DurationType**" as DurationType {
         DateType default
 }
-
 note top: type for date values
 
 DurationType --|> Type
-class BytesType {
+ 
+
+class "**BytesType**" as BytesType {
         BytesType default
 }
-
 note top: type for byte values, it\nwill usually be rendered to\na byte array
 
 BytesType --|> Type
-class ComplexType {
+ 
+
+class "**ComplexType**" as ComplexType {
         StringType version
         StringType name
         StringType description
@@ -160,11 +176,12 @@ class ComplexType {
         BooleanType topLevelType
         Tag[] tags
 }
-
 note top: complex type description
 
 ComplexType --|> Type
-class Property {
+ 
+
+class "**Property**" as Property {
         StringType name
         BooleanType isArray
         IntegerType arrayDimensions
@@ -180,10 +197,11 @@ class Property {
         StringType format
         ObjectType processing
 }
-
 note top: a property of a type
 
-class DictionaryType {
+ 
+
+class "**DictionaryType**" as DictionaryType {
         StringType version
         StringType name
         StringType description
@@ -194,18 +212,20 @@ class DictionaryType {
         BooleanType topLevelType
         Tag[] tags
 }
-
 note top: key/value dictionary type. Keys are\nalways strings, the value type\ncan be specified
 
 DictionaryType --|> Type
-class ArrayConstraints {
+ 
+
+class "**ArrayConstraints**" as ArrayConstraints {
         IntegerType arrayMinItems
         IntegerType arrayMaxItems
         BooleanType arrayUniqueItems
 }
 
+ 
 
-class ArrayType {
+class "**ArrayType**" as ArrayType {
         StringType version
         StringType name
         StringType description
@@ -218,36 +238,26 @@ class ArrayType {
         ArrayConstraints[] arrayConstraints
         IntegerType arrayDimensions
 }
-
 note top: Array type
 
 ArrayType --|> Type
-class ForeignKey {
+ 
+
+class "**ForeignKey**" as ForeignKey {
         Type type
         StringType propertyName
         Property property
 }
-
 note top: Type describes the reference of\na property to another field\nin the model
 
-
-    
-
-    
-    
-    
-IntegerType  *--  IntegerTypeFormatEnum
-            
-
-
-
-
+ 
 
 
     
+
     
-NumberType  *--  NumberTypeFormatEnum
-            
+    
+    
 
 
 
@@ -255,6 +265,14 @@ NumberType  *--  NumberTypeFormatEnum
 
 
     
+    
+
+
+
+
+
+
+    
 
     
 
@@ -263,6 +281,7 @@ NumberType  *--  NumberTypeFormatEnum
 
     
 
+    
     
 
 
@@ -273,7 +292,6 @@ NumberType  *--  NumberTypeFormatEnum
 
 
 EnumType  *--  Type
-            
 
 
 
@@ -281,7 +299,6 @@ EnumType  *--  Type
 
 
 EnumType "0" *-- "n" Tag
-            
 
     
 
@@ -312,35 +329,32 @@ EnumType "0" *-- "n" Tag
 
 
 ComplexType  *--  ComplexType
-            
 
+ComplexType "0" *-- "n" ComplexType
 
+ComplexType "0" *-- "n" ComplexType
 
 ComplexType "0" *-- "n" Property
-            
 
 
 ComplexType "0" *-- "n" Tag
-            
 
     
 
 
 
 Property "0" *-- "n" ArrayConstraints
-            
 
 Property  *--  Type
-            
 
 Property "0" *-- "n" Tag
-            
 
 
 
 
 
 
+Property  *--  Type
 
 
 
@@ -351,14 +365,11 @@ Property "0" *-- "n" Tag
 
 
 DictionaryType "0" *-- "n" ComplexType
-            
 
 DictionaryType  *--  Type
-            
 
 
 DictionaryType "0" *-- "n" Tag
-            
 
     
 
@@ -371,26 +382,20 @@ DictionaryType "0" *-- "n" Tag
 
 
 ArrayType "0" *-- "n" ComplexType
-            
 
 ArrayType  *--  Type
-            
 
 
 ArrayType "0" *-- "n" Tag
-            
 
 ArrayType "0" *-- "n" ArrayConstraints
-            
 
 
     
 ForeignKey  *--  Type
-            
 
 
 ForeignKey  *--  Property
-            
 
 
 footer \ngenerated with yacg (https://github.com/OkieOth/yacg),\n(template: plantUml.mako v1.1.0)\npowered by plantuml (https://plantuml.com/)

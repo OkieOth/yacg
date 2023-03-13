@@ -9,7 +9,7 @@ import yacg.builder.impl.dictionaryBuilder as builder
 import yacg.model.randomFuncs as randomFuncs
 import yacg.model.random_config as randomConfig
 from yacg.util.fileUtils import getFileExt
-
+import customRandomContraints
 
 description = """Reads a JSON schema model in JSON our YAML generates random data
 for specific annotated types
@@ -41,7 +41,7 @@ class Args:
         self.yaml = False
         self.noIndent = False
         self.defaultElemCount = None
-        self.defaultTypeDepth = None
+        self.defaultTypeDepth = 10
         self.defaultMinArrayElemCount = None
         self.defaultMaxArrayElemCount = None
         self.defaultMinDate = None
@@ -83,8 +83,11 @@ def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
     """takes the prepared meta model ..."""
     defaultConfig = createDefaultConfig(args)
     for t in loadedTypes:
-        if (args.allTypes) or (t.name in args.type) or ((t.processing is not None) and (t.procession.randElemCount > 0)):
+        if (args.allTypes) or (t.name in args.type) or ((t.processing is not None) and (t.processing.randElemCount > 0)):
             randomData = randomFuncs.generateRandomData(t, defaultConfig)
+            shouldUse, value = customRandomContraints.doPostProcessing(t.name, randomData)
+            if not shouldUse:
+                continue
             if args.yaml:
                 _printYaml(randomData, t.name, args.outputDir, args.noIndent)
             else:
@@ -95,6 +98,9 @@ def main(args):
     yamlExtensions = set(['.yaml', '.yml'])
     fileExt = getFileExt(args.model)
     loadedTypes = []
+    if not doesFileExist(args.model):
+        print("can't find model file: {}".format(args.model))
+        return
     if fileExt.lower() in yamlExtensions:
         dict = builder.getParsedSchemaFromYaml(args.model)
     else:

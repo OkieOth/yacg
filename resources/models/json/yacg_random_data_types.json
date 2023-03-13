@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg random data configuration",
     "description": "yacg can parse x-tags extensions to take that as configuration input for random data creation",
-    "version": "0.2.1",
+    "version": "0.3.1",
     "x-domain": "yacg.model.random_config",
     "definitions": {
         "RamdonDefaultConfig": {
@@ -12,7 +12,8 @@
                     "type": "integer"
                 },
                 "defaultTypeDepth": {
-                    "type": "integer"
+                    "type": "integer",
+                    "default": 10
                 },
                 "defaultMinArrayElemCount": {
                     "type": "integer"
@@ -54,7 +55,7 @@
                 "randComplexTypeConf": {
                     "$ref": "#/definitions/RandomComplexTypeConf"
                 },
-                "randArrayTypeConf": {
+                "randArrayConf": {
                     "description": "in case the type is an array, this specifies the random data handling of the array",
                     "$ref": "#/definitions/RandomArrayConf"
                 },
