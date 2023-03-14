@@ -209,11 +209,13 @@ class TestRandomFuncs (unittest.TestCase):
 
     def testMainFunc2(self):
         args = createRandomData.Args()
-        args.model = "tests/resources/models/yaml/examples/layer_annotated.yaml"
+        args.model = "tests/resources/models/yaml/examples/layer.yaml"
         args.outputDir = "tmp"
         args.type.append("LayerContent")
-        args.defaultElemCount = 1
+        args.defaultElemCount = 5
         args.defaultTypeDepth = 10
+        args.defaultMinArrayElemCount = 1
+        args.defaultMaxArrayElemCount = 5
         createRandomData.main(args)
 
 

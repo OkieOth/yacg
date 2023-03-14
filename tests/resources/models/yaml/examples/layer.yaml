@@ -15,8 +15,24 @@ definitions:
         type: string
       minZoom:
         type: integer
+        x-processing:
+          randValueConf:
+            numTypeConf:
+              minValue: 1
+              maxValue: 14
       maxZoom:
         type: integer
+        x-processing:
+          randValueConf:
+            numTypeConf:
+              minValue: 10
+              maxValue: 29
+      description:
+        type: string
+      dummyEnum:
+        description: this attrib has no real value, it's only there to challenge the enum handling
+        type: string
+        enum: ["value1", "value2", "value3"]
     required:
       - id
       - name
@@ -124,4 +140,4 @@ definitions:
         $ref: "#/definitions/PointGeometryArrayArray"
       multiPolygon:
         description: a geometry consisting of multiple separate polygons
-        ref: "#/definitions/PointGeometryArrayArrayArray"
+        $ref: "#/definitions/PointGeometryArrayArrayArray"
