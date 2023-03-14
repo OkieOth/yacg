@@ -1,3 +1,6 @@
+# 6.0.3
+* add missing file to docker image
+
 # 6.0.2
 * fix error in random array handling
 * fix errorn in handling of random dates
