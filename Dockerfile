@@ -11,6 +11,7 @@ ADD modelToYaml.py modelToYaml.py
 ADD normalizeSchema.py normalizeSchema.py
 ADD createRandomData.py createRandomData.py
 ADD randomDataServer.py randomDataServer.py
+ADD customRandomConstraints.py customRandomConstraints.py
 ADD validate.py validate.py
 ADD version.txt version.txt
 ADD Pipfile Pipfile

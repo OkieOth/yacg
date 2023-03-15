@@ -9,7 +9,7 @@ import yacg.builder.impl.dictionaryBuilder as builder
 import yacg.model.randomFuncs as randomFuncs
 from yacg.util.fileUtils import getFileExt
 import createRandomData
-import customRandomContraints
+import customRandomConstraints
 
 
 description = """
@@ -107,7 +107,7 @@ def _getRandomContent(parameters, currentPath):
     for t in loadedTypes:
         if (t.name is not None) and ( t.name.lower() == currentPath):
             randomData = randomFuncs.generateRandomData(t, defaultConfig)
-            shouldUse, value = customRandomContraints.doPostProcessing(t.name, randomData)
+            shouldUse, value = customRandomConstraints.doPostProcessing(t.name, randomData)
             if not shouldUse:
                 continue
             noIndent = False

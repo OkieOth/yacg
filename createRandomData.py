@@ -9,7 +9,7 @@ import yacg.builder.impl.dictionaryBuilder as builder
 import yacg.model.randomFuncs as randomFuncs
 import yacg.model.random_config as randomConfig
 from yacg.util.fileUtils import getFileExt
-import customRandomContraints
+import customRandomConstraints
 
 description = """Reads a JSON schema model in JSON our YAML generates random data
 for specific annotated types
@@ -30,6 +30,7 @@ parser.add_argument('--defaultMinArrayElemCount', help='default minimal array el
 parser.add_argument('--defaultMaxArrayElemCount', help='default maximal array element count')
 parser.add_argument('--defaultMinDate', help='default minimal date for date and timestamp fields')
 parser.add_argument('--defaultMaxDate', help='default maximal date for date and timestamp fields')
+parser.add_argument('--dryRun', help='if set, then no output files are created', action='store_true')
 
 
 class Args:
@@ -46,6 +47,7 @@ class Args:
         self.defaultMaxArrayElemCount = None
         self.defaultMinDate = None
         self.defaultMaxDate = None
+        self.dryRun = False
 
 
 def createDefaultConfig(args):
@@ -59,24 +61,30 @@ def createDefaultConfig(args):
     return defaultConfig
 
 
-def _printJson(randomDataDict, typeName, destDir, noIndent):
-    outputFile = "{}/{}.json".format(destDir, typeName)
-    printInfo('\nWrite JSON: {}'.format(outputFile))
-    with open(outputFile, 'w') as outfile:
-        if noIndent:
-            json.dump(randomDataDict, outfile)
-        else:
-            json.dump(randomDataDict, outfile, indent=4)
+def _printJson(randomDataDict, typeName, destDir, noIndent, dryRun):
+    if dryRun:
+        print(json.dumps(randomDataDict, indent=4, sort_keys=False))
+    else:
+        outputFile = "{}/{}.json".format(destDir, typeName)
+        printInfo('\nWrite JSON: {}'.format(outputFile))
+        with open(outputFile, 'w') as outfile:
+            if noIndent:
+                json.dump(randomDataDict, outfile)
+            else:
+                json.dump(randomDataDict, outfile, indent=4)
 
 
-def _printYaml(randomDataDict, typeName, destDir, noIndent):
-    outputFile = "{}/{}.yaml".format(destDir, typeName)
-    printInfo('\nWrite yaml: {}'.format(outputFile))
-    with open(outputFile, 'w') as outfile:
-        if noIndent:
-            yaml.dump(randomDataDict, outfile, sort_keys=False)
-        else:
-            yaml.dump(randomDataDict, outfile, indent=4, sort_keys=False)
+def _printYaml(randomDataDict, typeName, destDir, noIndent, dryRun):
+    if dryRun:
+        print(yaml.dumps(randomDataDict, indent=4, sort_keys=False))
+    else:
+        outputFile = "{}/{}.yaml".format(destDir, typeName)
+        printInfo('\nWrite yaml: {}'.format(outputFile))
+        with open(outputFile, 'w') as outfile:
+            if noIndent:
+                yaml.dump(randomDataDict, outfile, sort_keys=False)
+            else:
+                yaml.dump(randomDataDict, outfile, indent=4, sort_keys=False)
 
 
 def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
@@ -85,13 +93,13 @@ def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
     for t in loadedTypes:
         if (args.allTypes) or (t.name in args.type) or ((t.processing is not None) and (t.processing.randElemCount > 0)):
             randomData = randomFuncs.generateRandomData(t, defaultConfig)
-            shouldUse, value = customRandomContraints.doPostProcessing(t.name, randomData)
+            shouldUse, value = customRandomConstraints.doPostProcessing(t.name, randomData)
             if not shouldUse:
                 continue
             if args.yaml:
-                _printYaml(randomData, t.name, args.outputDir, args.noIndent)
+                _printYaml(randomData, t.name, args.outputDir, args.noIndent, args.dryRun)
             else:
-                _printJson(randomData, t.name, args.outputDir, args.noIndent)
+                _printJson(randomData, t.name, args.outputDir, args.noIndent, args.dryRun)
 
 
 def main(args):

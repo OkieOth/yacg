@@ -43,21 +43,22 @@ def generateRandomData(type, defaultConfig, defaultElemCount=0):
     '''
     ret = []
     elemCount = defaultElemCount
-    if isinstance(type, list):
-        pass
-    if (defaultConfig is not None) and (defaultConfig.defaultElemCount is not None):
-        elemCount = defaultConfig.defaultElemCount
-    if type.processing is not None:
-        if type.processing.randElemCount is not None:
-            elemCount = type.processing.randElemCount
-        else:
-            min = 1
-            max = 10
-            if type.processing.randMaxElemCount is not None:
-                max = type.processing.randMaxElemCount
-            if type.processing.randMinElemCount is not None:
-                min = type.processing.randMinElemCount
-            elemCount = random.randint(min, max)
+    if elemCount == 0:
+        if isinstance(type, list):
+            pass
+        if (defaultConfig is not None) and (defaultConfig.defaultElemCount is not None):
+            elemCount = defaultConfig.defaultElemCount
+        if type.processing is not None:
+            if type.processing.randElemCount is not None:
+                elemCount = type.processing.randElemCount
+            else:
+                min = 1
+                max = 10
+                if type.processing.randMaxElemCount is not None:
+                    max = type.processing.randMaxElemCount
+                if type.processing.randMinElemCount is not None:
+                    min = type.processing.randMinElemCount
+                elemCount = random.randint(min, max)
     for i in range(elemCount):
         r = None
         if isinstance(type, model.ComplexType):

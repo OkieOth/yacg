@@ -57,7 +57,6 @@ def __replaceEnvVars(jobArray, additionalVarsDict):
                 __replaceEnvVarsInSingleFileTask(task.singleFileTask, additionalVarsDict)
             if task.multiFileTask is not None:
                 __replaceEnvVarsInMultiFileTask(task.multiFileTask, additionalVarsDict)
-            # not needed for randomDataTask
 
 
 def __replaceEnvVarsInSingleFileTask(singleFileTask, additionalVarsDict):

@@ -51,12 +51,6 @@ if ! bin/demoMultiFileGenerator.sh > /dev/null; then
     exit 1
 fi
 
-if ! bin/generateRandomData_example.sh &> /dev/null; then
-    echo "problems while generate random data job from command line"
-    popd > /dev/null
-    exit 1
-fi
-
 if ! pipenv run python3 \
     modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun &> /dev/null; then
     echo "problems while run modelToYaml.py"
@@ -83,6 +77,15 @@ if pipenv run python3 \
     validate.py --schema resources/models/json/yacg_config_schema.json \
     --inputFile resources/configurations/conf_with_vars.json &> /dev/null; then
     echo "wrong validation of schema"
+    popd > /dev/null
+    exit 1
+fi
+
+if ! pipenv run python3 createRandomData.py --model resources/models/json/yacg_config_schema.json \
+  --type Job \
+  --defaultElemCount 10 \
+  --outputDir ./tmp &> /dev/null; then
+    echo "error while create random data"
     popd > /dev/null
     exit 1
 fi

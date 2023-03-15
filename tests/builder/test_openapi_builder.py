@@ -97,4 +97,4 @@ class TestOpenApiParsing (unittest.TestCase):
         parsedSchema = dictionaryBuilder.getParsedSchemaFromYaml(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(35, len(modelTypes))
+        self.assertEqual(36, len(modelTypes))
