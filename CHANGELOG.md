@@ -1,5 +1,6 @@
 # 6.0.3
 * add missing file to docker image
+* fix error with wrong array sizes for random data, when defaultConfig.defaultElemCount is set
 
 # 6.0.2
 * fix error in random array handling
