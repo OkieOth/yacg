@@ -44,18 +44,7 @@
                 "tests/resources/models/json/examples"
             ],
             "console": "integratedTerminal"
-        },
-        {
-            "name": "randomData",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/yacg.py",
-            "args": [
-                "--config",
-                "resources/configurations/random_data_example.json"
-            ],
-            "console": "integratedTerminal"
-        },
+        }
         {
             "name": "special debug",
             "type": "python",
