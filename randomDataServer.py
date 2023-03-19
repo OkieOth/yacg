@@ -31,6 +31,7 @@ parser.add_argument('--defaultMinArrayElemCount', help='default minimal array el
 parser.add_argument('--defaultMaxArrayElemCount', help='default maximal array element count')
 parser.add_argument('--defaultMinDate', help='default minimal date for date and timestamp fields')
 parser.add_argument('--defaultMaxDate', help='default maximal date for date and timestamp fields')
+parser.add_argument('--defaultProbabilityToBeEmpty', help='0 - always a value, 1 - 50 % empty, 2 - 75 % empty, 3 - 88% empty')
 
 
 defaultHostName = "localhost"
@@ -106,17 +107,20 @@ def _getRandomContent(parameters, currentPath):
         defaultConfig.defaultElemCount = 1
     for t in loadedTypes:
         if (t.name is not None) and ( t.name.lower() == currentPath):
-            randomData = randomFuncs.generateRandomData(t, defaultConfig)
-            shouldUse, value = customRandomConstraints.doPostProcessing(t.name, randomData)
-            if not shouldUse:
-                continue
-            noIndent = False
-            if parameters.get("noIndent", None) is not None:
-                noIndent = True
-            if parameters.get("yaml", None) is not None:
-                return _getYaml(randomData, noIndent)
-            else:
-                return _getJson(randomData, noIndent)
+            numberOfAttempts = 0
+            while numberOfAttempts < 5:
+                numberOfAttempts = numberOfAttempts + 1
+                randomData = randomFuncs.generateRandomData(t, defaultConfig)
+                shouldUse, randomData = customRandomConstraints.doPostProcessing(t.name, randomData)
+                if not shouldUse:
+                    continue
+                noIndent = False
+                if parameters.get("noIndent", None) is not None:
+                    noIndent = True
+                if parameters.get("yaml", None) is not None:
+                    return _getYaml(randomData, noIndent)
+                else:
+                    return _getJson(randomData, noIndent)
     return None
 
 
