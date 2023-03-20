@@ -31,6 +31,7 @@ parser.add_argument('--defaultMaxArrayElemCount', help='default maximal array el
 parser.add_argument('--defaultMinDate', help='default minimal date for date and timestamp fields')
 parser.add_argument('--defaultMaxDate', help='default maximal date for date and timestamp fields')
 parser.add_argument('--dryRun', help='if set, then no output files are created', action='store_true')
+parser.add_argument('--defaultProbabilityToBeEmpty', help='0 - always a value, 1 - 50 % empty, 2 - 75 % empty, 3 - 88% empty')
 
 
 class Args:
@@ -48,6 +49,7 @@ class Args:
         self.defaultMinDate = None
         self.defaultMaxDate = None
         self.dryRun = False
+        self.defaultProbabilityToBeEmpty = 1
 
 
 def createDefaultConfig(args):
@@ -58,6 +60,7 @@ def createDefaultConfig(args):
     defaultConfig.defaultMaxArrayElemCount = int(args.defaultMaxArrayElemCount) if args.defaultMaxArrayElemCount is not None else None
     defaultConfig.defaultMinDate = args.defaultMinDate if args.defaultMinDate is not None else None
     defaultConfig.defaultMaxDate = args.defaultMaxDate if args.defaultMaxDate is not None else None
+    defaultConfig.defaultProbabilityToBeEmpty = int(args.defaultProbabilityToBeEmpty) if args.defaultProbabilityToBeEmpty is not None else 1
     return defaultConfig
 
 
@@ -92,14 +95,18 @@ def _searchForTypesToGenerateAndProcessThem(args, loadedTypes):
     defaultConfig = createDefaultConfig(args)
     for t in loadedTypes:
         if (args.allTypes) or (t.name in args.type) or ((t.processing is not None) and (t.processing.randElemCount > 0)):
-            randomData = randomFuncs.generateRandomData(t, defaultConfig)
-            shouldUse, value = customRandomConstraints.doPostProcessing(t.name, randomData)
-            if not shouldUse:
-                continue
-            if args.yaml:
-                _printYaml(randomData, t.name, args.outputDir, args.noIndent, args.dryRun)
-            else:
-                _printJson(randomData, t.name, args.outputDir, args.noIndent, args.dryRun)
+            numberOfAttempts = 0
+            while numberOfAttempts < 10:
+                numberOfAttempts = numberOfAttempts + 1
+                randomData = randomFuncs.generateRandomData(t, defaultConfig)
+                shouldUse, randomData = customRandomConstraints.doPostProcessing(t.name, randomData)
+                if not shouldUse:
+                    continue
+                if args.yaml:
+                    _printYaml(randomData, t.name, args.outputDir, args.noIndent, args.dryRun)
+                else:
+                    _printJson(randomData, t.name, args.outputDir, args.noIndent, args.dryRun)
+                break
 
 
 def main(args):

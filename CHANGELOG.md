@@ -1,3 +1,6 @@
+# 6.0.4
+* prevent empty output from random gerenrated data
+
 # 6.0.3
 * add missing file to docker image
 * fix error with wrong array sizes for random data, when defaultConfig.defaultElemCount is set
