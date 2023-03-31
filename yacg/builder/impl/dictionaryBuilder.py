@@ -473,7 +473,7 @@ def _extractDictionaryValueType(type, additionalProperties, modelTypes, modelFil
         return
     property = Property()
     property.name = ''
-    type.valueType = _extractAttribType(type.name, property, additionalProperties, modelTypes, modelFileContainer)
+    type.valueType = _extractAttribType(type.name + "Value", property, additionalProperties, modelTypes, modelFileContainer)
     if property.isArray:
         tmpArrayType = ArrayType()
         tmpArrayType.name = type.name + "InnerArray"
