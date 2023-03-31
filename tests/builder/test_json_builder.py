@@ -392,6 +392,26 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[0].valueType)
         self.assertTrue(isinstance(modelTypes[0].valueType, ComplexType))
 
+    def testDictionary3(self):
+        modelFile = 'tests/resources/models/json/examples/another_dict_example.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(3, len(modelTypes))
+        self.assertTrue(isinstance(modelTypes[0], ComplexType))
+        self.assertEqual(modelTypes[0].name, "SomeType")
+        self.assertEqual(len(modelTypes[0].properties), 1)
+        self.assertTrue(isinstance(modelTypes[1], DictionaryType))
+        self.assertEqual(modelTypes[1].name, "SomeTypeProp_1")
+        self.assertTrue(isinstance(modelTypes[2], ComplexType))
+        self.assertEqual(modelTypes[2].name, "SomeTypeProp_1Value")
+        self.assertEqual(len(modelTypes[2].properties), 2)
+        self.assertEqual(modelTypes[2].properties[0].name, "prop_a")
+        self.assertEqual(modelTypes[2].properties[1].name, "prop_b")
+
     def testExternalEnum(self):
         modelFile = 'tests/resources/models/json/examples/ExternalEnum.json'
         modelFileExists = os.path.isfile(modelFile)
@@ -859,7 +879,7 @@ class TestJsonBuilder (unittest.TestCase):
         model.schema = modelFile
         modelTypes = getModelFromJson(model, [])
         self.assertIsNotNone(modelTypes)
-        self.assertEqual(11, len(modelTypes))
+        self.assertEqual(14, len(modelTypes))
         found = 0
         for t in modelTypes:
             if t.name == 'StackedDict':
@@ -871,6 +891,19 @@ class TestJsonBuilder (unittest.TestCase):
             if t.name == 'StackedDictEvil':
                 self.assertTrue(isinstance(t, DictionaryType))
                 self.assertIsNotNone(t.valueType)
+                found = found + 1
+            if t.name == 'StackedDictEvilValue':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+            if t.name == 'StackedDictEvilValueValue':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                found = found + 1
+            if t.name == 'StackedDictEvilValueValueValue':
+                self.assertTrue(isinstance(t, DictionaryType))
+                self.assertIsNotNone(t.valueType)
+                self.assertTrue(isinstance(t.valueType, StringType))
                 found = found + 1
             if t.name == 'DictWithArrayValue':
                 self.assertTrue(isinstance(t, ComplexType))
@@ -921,7 +954,7 @@ class TestJsonBuilder (unittest.TestCase):
                 self.assertEqual("evil", t.properties[1].name)
                 self.assertEqual("Dict1", t.properties[1].type.name)
                 found = found + 1
-        self.assertEqual(11, found)
+        self.assertEqual(14, found)
 
 
 if __name__ == '__main__':

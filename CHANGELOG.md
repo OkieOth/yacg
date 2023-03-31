@@ -1,3 +1,6 @@
+# 6.0.5
+* fix complex value type issue for dictionaries (issue139)
+
 # 6.0.4
 * prevent empty output from random gerenrated data
 

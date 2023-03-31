@@ -167,8 +167,6 @@
 hide empty methods
 hide empty fields
 
-modelTypes.size = ${len(modelTypes)}
-
 
 % for type in modelTypes:
     % if modelFuncs.isEnumType(type):

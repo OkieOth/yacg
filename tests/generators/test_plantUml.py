@@ -127,3 +127,8 @@ class TestPlantUml (unittest.TestCase):
             (),
             (),
             singleFileTask)
+
+    def testAnotherDict(self):
+        modelFile = 'tests/resources/models/json/examples/another_dict_example.json'
+        testOutputFile = "tmp/another_dict_example.puml"
+        self._renderPuml(modelFile, testOutputFile)
