@@ -100,27 +100,29 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
 
     def toDict(self):
         ret = {}
-        % for property in type.properties:
-            % if (property.isArray) or (isinstance(property.type, model.DictionaryType)) or (isinstance(property.type, model.ArrayType)):
+        % if hasattr(type, "properties"):
+            % for property in type.properties:
+                % if (property.isArray) or (isinstance(property.type, model.DictionaryType)) or (isinstance(property.type, model.ArrayType)):
             if (${property.name} is not None) and (len(${property.name}) > 0):
-                % if model.isBaseType(property.type):
-                    ret[${property.name}] = ${property.name}
-                % elif isinstance(property.type, model.EnumType):
-                    ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
+                    % if model.isBaseType(property.type):
+                ret[${property.name}] = ${property.name}
+                    % elif isinstance(property.type, model.EnumType):
+                ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
+                    % else:
+                ret[${property.name}] = ${property.name}.toDict()
+                    % endif
                 % else:
-                    ret[${property.name}] = ${property.name}.toDict()
-                % endif
-            % else:
             if ${property.name} is not None:
-                % if model.isBaseType(property.type):
-                    ret[${property.name}] = ${property.name}
-                % elif isinstance(property.type, model.EnumType):
-                    ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
-                % else:
-                    ret[${property.name}] = ${property.name}.toDict()
+                    % if model.isBaseType(property.type):
+                ret[${property.name}] = ${property.name}
+                    % elif isinstance(property.type, model.EnumType):
+                ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
+                    % else:
+                ret[${property.name}] = ${property.name}.toDict()
+                    % endif
                 % endif
-            % endif
-        % endfor
+            % endfor
+        % endif
         return ret
 
     def initFromDict(self, dictObj):
