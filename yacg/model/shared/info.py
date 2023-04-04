@@ -35,6 +35,16 @@ class InfoSection:
             ret["license"] = self.license
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "title":
+            self.title = value
+        if attribName == "version":
+            self.version = value
+        if attribName == "description":
+            self.description = value
+        if attribName == "license":
+            self.license = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -47,4 +57,17 @@ class InfoSection:
 
         self.license = dictObj.get('license', None)
 
+
+def createInfoSectionFromFlatDict(flatDict={}):
+    ret = InfoSection()
+    for key, value in flatDict.items():
+        if key == "title":
+            ret.title = value
+        if key == "version":
+            ret.version = value
+        if key == "description":
+            ret.description = value
+        if key == "license":
+            ret.license = value
+    return ret
 

@@ -45,6 +45,22 @@ class RamdonDefaultConfig:
             ret["defaultProbabilityToBeEmpty"] = self.defaultProbabilityToBeEmpty
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "defaultElemCount":
+            self.defaultElemCount = value
+        if attribName == "defaultTypeDepth":
+            self.defaultTypeDepth = value
+        if attribName == "defaultMinArrayElemCount":
+            self.defaultMinArrayElemCount = value
+        if attribName == "defaultMaxArrayElemCount":
+            self.defaultMaxArrayElemCount = value
+        if attribName == "defaultMinDate":
+            self.defaultMinDate = value
+        if attribName == "defaultMaxDate":
+            self.defaultMaxDate = value
+        if attribName == "defaultProbabilityToBeEmpty":
+            self.defaultProbabilityToBeEmpty = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -63,6 +79,25 @@ class RamdonDefaultConfig:
 
         self.defaultProbabilityToBeEmpty = dictObj.get('defaultProbabilityToBeEmpty', 1)
 
+
+def createRamdonDefaultConfigFromFlatDict(flatDict={}):
+    ret = RamdonDefaultConfig()
+    for key, value in flatDict.items():
+        if key == "defaultElemCount":
+            ret.defaultElemCount = value
+        if key == "defaultTypeDepth":
+            ret.defaultTypeDepth = value
+        if key == "defaultMinArrayElemCount":
+            ret.defaultMinArrayElemCount = value
+        if key == "defaultMaxArrayElemCount":
+            ret.defaultMaxArrayElemCount = value
+        if key == "defaultMinDate":
+            ret.defaultMinDate = value
+        if key == "defaultMaxDate":
+            ret.defaultMaxDate = value
+        if key == "defaultProbabilityToBeEmpty":
+            ret.defaultProbabilityToBeEmpty = value
+    return ret
 
 class RandomDataTypeConf:
     """can put on schema types to include them in the random data generation
@@ -107,6 +142,17 @@ class RandomDataTypeConf:
             ret["randDictTypeConf"] = self.randDictTypeConf.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "randMinElemCount":
+            self.randMinElemCount = value
+        if attribName == "randMaxElemCount":
+            self.randMaxElemCount = value
+        if attribName == "randElemCount":
+            self.randElemCount = value
+        self.randComplexTypeConf.initFlatValue(attribName, value)
+        self.randArrayConf.initFlatValue(attribName, value)
+        self.randDictTypeConf.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -130,6 +176,20 @@ class RandomDataTypeConf:
             self.randDictTypeConf = RandomDictConf(subDictObj)
 
 
+def createRandomDataTypeConfFromFlatDict(flatDict={}):
+    ret = RandomDataTypeConf()
+    for key, value in flatDict.items():
+        if key == "randMinElemCount":
+            ret.randMinElemCount = value
+        if key == "randMaxElemCount":
+            ret.randMaxElemCount = value
+        if key == "randElemCount":
+            ret.randElemCount = value
+        ret.randComplexTypeConf.initFlatValue(key, value)
+        ret.randArrayConf.initFlatValue(key, value)
+        ret.randDictTypeConf.initFlatValue(key, value)
+    return ret
+
 class RandomComplexTypeConf:
     """Constraints to generate random values of a complex type
     """
@@ -149,12 +209,23 @@ class RandomComplexTypeConf:
             ret["typeDepth"] = self.typeDepth
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "typeDepth":
+            self.typeDepth = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
 
         self.typeDepth = dictObj.get('typeDepth', None)
 
+
+def createRandomComplexTypeConfFromFlatDict(flatDict={}):
+    ret = RandomComplexTypeConf()
+    for key, value in flatDict.items():
+        if key == "typeDepth":
+            ret.typeDepth = value
+    return ret
 
 class RandomArrayConf:
     """Processing information to create random arrays
@@ -185,6 +256,14 @@ class RandomArrayConf:
             ret["randElemCount"] = self.randElemCount
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "randMinElemCount":
+            self.randMinElemCount = value
+        if attribName == "randMaxElemCount":
+            self.randMaxElemCount = value
+        if attribName == "randElemCount":
+            self.randElemCount = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -195,6 +274,17 @@ class RandomArrayConf:
 
         self.randElemCount = dictObj.get('randElemCount', None)
 
+
+def createRandomArrayConfFromFlatDict(flatDict={}):
+    ret = RandomArrayConf()
+    for key, value in flatDict.items():
+        if key == "randMinElemCount":
+            ret.randMinElemCount = value
+        if key == "randMaxElemCount":
+            ret.randMaxElemCount = value
+        if key == "randElemCount":
+            ret.randElemCount = value
+    return ret
 
 class RandomDictConf:
     """Processing information to create random dictionaries
@@ -239,6 +329,20 @@ class RandomDictConf:
             ret["keyPool"] = self.keyPool
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "randMinKeyCount":
+            self.randMinKeyCount = value
+        if attribName == "randMaxKeyCount":
+            self.randMaxKeyCount = value
+        if attribName == "randKeyCount":
+            self.randKeyCount = value
+        if attribName == "randKeyMinLen":
+            self.randKeyMinLen = value
+        if attribName == "randKeyMaxLen":
+            self.randKeyMaxLen = value
+        if attribName == "keyPool":
+            self.keyPool = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -257,6 +361,23 @@ class RandomDictConf:
         for elemKeyPool in arrayKeyPool:
             self.keyPool.append(elemKeyPool)
 
+
+def createRandomDictConfFromFlatDict(flatDict={}):
+    ret = RandomDictConf()
+    for key, value in flatDict.items():
+        if key == "randMinKeyCount":
+            ret.randMinKeyCount = value
+        if key == "randMaxKeyCount":
+            ret.randMaxKeyCount = value
+        if key == "randKeyCount":
+            ret.randKeyCount = value
+        if key == "randKeyMinLen":
+            ret.randKeyMinLen = value
+        if key == "randKeyMaxLen":
+            ret.randKeyMaxLen = value
+        if key == "keyPool":
+            ret.keyPool = value
+    return ret
 
 class RandomDataPropertyConf:
     """can put on schema properties to taylormade the random data generation
@@ -297,6 +418,16 @@ class RandomDataPropertyConf:
             ret["randValueConf"] = self.randValueConf.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "randIgnore":
+            self.randIgnore = value
+        self.randArrayConf.initFlatValue(attribName, value)
+        if attribName == "randValuePool":
+            self.randValuePool = value
+        if attribName == "randProbabilityToBeEmpty":
+            self.randProbabilityToBeEmpty = value
+        self.randValueConf.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -317,6 +448,19 @@ class RandomDataPropertyConf:
         if subDictObj is not None:
             self.randValueConf = RandomPropertyTypeConf(subDictObj)
 
+
+def createRandomDataPropertyConfFromFlatDict(flatDict={}):
+    ret = RandomDataPropertyConf()
+    for key, value in flatDict.items():
+        if key == "randIgnore":
+            ret.randIgnore = value
+        ret.randArrayConf.initFlatValue(key, value)
+        if key == "randValuePool":
+            ret.randValuePool = value
+        if key == "randProbabilityToBeEmpty":
+            ret.randProbabilityToBeEmpty = value
+        ret.randValueConf.initFlatValue(key, value)
+    return ret
 
 class RandomPropertyTypeConf:
     def __init__(self, dictObj=None):
@@ -358,6 +502,15 @@ class RandomPropertyTypeConf:
             ret["durationTypeConf"] = self.durationTypeConf.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        self.complexTypeConf.initFlatValue(attribName, value)
+        self.dictTypeConf.initFlatValue(attribName, value)
+        self.stringTypeConf.initFlatValue(attribName, value)
+        self.numTypeConf.initFlatValue(attribName, value)
+        self.dateTypeConf.initFlatValue(attribName, value)
+        self.timeTypeConf.initFlatValue(attribName, value)
+        self.durationTypeConf.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -391,6 +544,18 @@ class RandomPropertyTypeConf:
             self.durationTypeConf = RandomDurationTypeConf(subDictObj)
 
 
+def createRandomPropertyTypeConfFromFlatDict(flatDict={}):
+    ret = RandomPropertyTypeConf()
+    for key, value in flatDict.items():
+        ret.complexTypeConf.initFlatValue(key, value)
+        ret.dictTypeConf.initFlatValue(key, value)
+        ret.stringTypeConf.initFlatValue(key, value)
+        ret.numTypeConf.initFlatValue(key, value)
+        ret.dateTypeConf.initFlatValue(key, value)
+        ret.timeTypeConf.initFlatValue(key, value)
+        ret.durationTypeConf.initFlatValue(key, value)
+    return ret
+
 class RandomStringTypeConf:
     """Constraints to generate random string values
     """
@@ -413,6 +578,12 @@ class RandomStringTypeConf:
             ret["maxLength"] = self.maxLength
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "strType":
+            self.strType = RandomStringTypeConfStrTypeEnum.valueForString(value)
+        if attribName == "maxLength":
+            self.maxLength = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -421,6 +592,15 @@ class RandomStringTypeConf:
 
         self.maxLength = dictObj.get('maxLength', None)
 
+
+def createRandomStringTypeConfFromFlatDict(flatDict={}):
+    ret = RandomStringTypeConf()
+    for key, value in flatDict.items():
+        if key == "strType":
+            ret.strType = RandomStringTypeConfStrTypeEnum.valueForString(value)
+        if key == "maxLength":
+            ret.maxLength = value
+    return ret
 
 class RandomNumTypeConf:
     """Constraints to generate random numeric values
@@ -444,6 +624,12 @@ class RandomNumTypeConf:
             ret["maxValue"] = self.maxValue
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "minValue":
+            self.minValue = value
+        if attribName == "maxValue":
+            self.maxValue = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -452,6 +638,15 @@ class RandomNumTypeConf:
 
         self.maxValue = dictObj.get('maxValue', None)
 
+
+def createRandomNumTypeConfFromFlatDict(flatDict={}):
+    ret = RandomNumTypeConf()
+    for key, value in flatDict.items():
+        if key == "minValue":
+            ret.minValue = value
+        if key == "maxValue":
+            ret.maxValue = value
+    return ret
 
 class RandomDateTypeConf:
     """Constraints to generate random date values, used for dates and date-times
@@ -475,6 +670,12 @@ class RandomDateTypeConf:
             ret["maxValue"] = self.maxValue
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "minValue":
+            self.minValue = value
+        if attribName == "maxValue":
+            self.maxValue = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -483,6 +684,15 @@ class RandomDateTypeConf:
 
         self.maxValue = dictObj.get('maxValue', None)
 
+
+def createRandomDateTypeConfFromFlatDict(flatDict={}):
+    ret = RandomDateTypeConf()
+    for key, value in flatDict.items():
+        if key == "minValue":
+            ret.minValue = value
+        if key == "maxValue":
+            ret.maxValue = value
+    return ret
 
 class RandomTimeTypeConf:
     """Constraints to generate random time values
@@ -506,6 +716,12 @@ class RandomTimeTypeConf:
             ret["maxValue"] = self.maxValue
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "minValue":
+            self.minValue = value
+        if attribName == "maxValue":
+            self.maxValue = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -514,6 +730,15 @@ class RandomTimeTypeConf:
 
         self.maxValue = dictObj.get('maxValue', None)
 
+
+def createRandomTimeTypeConfFromFlatDict(flatDict={}):
+    ret = RandomTimeTypeConf()
+    for key, value in flatDict.items():
+        if key == "minValue":
+            ret.minValue = value
+        if key == "maxValue":
+            ret.maxValue = value
+    return ret
 
 class RandomDurationTypeConf:
     """Constraints to generate random duration values
@@ -537,6 +762,12 @@ class RandomDurationTypeConf:
             ret["maxValue"] = self.maxValue
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "minValue":
+            self.minValue = value
+        if attribName == "maxValue":
+            self.maxValue = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -545,6 +776,15 @@ class RandomDurationTypeConf:
 
         self.maxValue = dictObj.get('maxValue', None)
 
+
+def createRandomDurationTypeConfFromFlatDict(flatDict={}):
+    ret = RandomDurationTypeConf()
+    for key, value in flatDict.items():
+        if key == "minValue":
+            ret.minValue = value
+        if key == "maxValue":
+            ret.maxValue = value
+    return ret
 
 class RandomStringTypeConfStrTypeEnum(Enum):
     NAME = 'NAME'
@@ -602,6 +842,7 @@ class RandomStringTypeConfStrTypeEnum(Enum):
             return 'SENTENCE'
         else:
             return ''
+
 
 
 

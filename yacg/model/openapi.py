@@ -26,6 +26,12 @@ class OpenApiServer:
             ret["description"] = self.description
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "url":
+            self.url = value
+        if attribName == "description":
+            self.description = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -34,6 +40,15 @@ class OpenApiServer:
 
         self.description = dictObj.get('description', None)
 
+
+def createOpenApiServerFromFlatDict(flatDict={}):
+    ret = OpenApiServer()
+    for key, value in flatDict.items():
+        if key == "url":
+            ret.url = value
+        if key == "description":
+            ret.description = value
+    return ret
 
 class OpenApiInfo (yacg.model.shared.info.InfoSection):
     def __init__(self, dictObj=None):
@@ -48,9 +63,11 @@ class OpenApiInfo (yacg.model.shared.info.InfoSection):
         ret = {}
         return ret
 
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
 
 
 class Command:
@@ -106,6 +123,22 @@ class Command:
             ret["security"] = self.security.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "command":
+            self.command = CommandCommandEnum.valueForString(value)
+        if attribName == "tags":
+            self.tags = value
+        if attribName == "summary":
+            self.summary = value
+        if attribName == "description":
+            self.description = value
+        if attribName == "operationId":
+            self.operationId = value
+        self.parameters.initFlatValue(attribName, value)
+        self.requestBody.initFlatValue(attribName, value)
+        self.responses.initFlatValue(attribName, value)
+        self.security.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -141,6 +174,25 @@ class Command:
             self.security = CommandSecurity(subDictObj)
 
 
+def createCommandFromFlatDict(flatDict={}):
+    ret = Command()
+    for key, value in flatDict.items():
+        if key == "command":
+            ret.command = CommandCommandEnum.valueForString(value)
+        if key == "tags":
+            ret.tags = value
+        if key == "summary":
+            ret.summary = value
+        if key == "description":
+            ret.description = value
+        if key == "operationId":
+            ret.operationId = value
+        ret.parameters.initFlatValue(key, value)
+        ret.requestBody.initFlatValue(key, value)
+        ret.responses.initFlatValue(key, value)
+        ret.security.initFlatValue(key, value)
+    return ret
+
 class PathType (yacg.model.model.Type):
     """base type that contains all REST path information
     """
@@ -165,6 +217,11 @@ class PathType (yacg.model.model.Type):
             ret["commands"] = self.commands.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "pathPattern":
+            self.pathPattern = value
+        self.commands.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -176,6 +233,14 @@ class PathType (yacg.model.model.Type):
             self.commands.append(
                 Command(elemCommands))
 
+
+def createPathTypeFromFlatDict(flatDict={}):
+    ret = PathType()
+    for key, value in flatDict.items():
+        if key == "pathPattern":
+            ret.pathPattern = value
+        ret.commands.initFlatValue(key, value)
+    return ret
 
 class CommandCommandEnum(Enum):
     GET = 'GET'
@@ -226,6 +291,7 @@ class CommandCommandEnum(Enum):
 
 
 
+
 class Parameter:
     """definition of a parameter that is used in the request
     """
@@ -269,6 +335,19 @@ class Parameter:
             ret["type"] = self.type.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "inType":
+            self.inType = ParameterInTypeEnum.valueForString(value)
+        if attribName == "name":
+            self.name = value
+        if attribName == "isArray":
+            self.isArray = value
+        if attribName == "description":
+            self.description = value
+        if attribName == "required":
+            self.required = value
+        self.type.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -287,6 +366,22 @@ class Parameter:
         if subDictObj is not None:
             self.type = yacg.model.model.Type(subDictObj)
 
+
+def createParameterFromFlatDict(flatDict={}):
+    ret = Parameter()
+    for key, value in flatDict.items():
+        if key == "inType":
+            ret.inType = ParameterInTypeEnum.valueForString(value)
+        if key == "name":
+            ret.name = value
+        if key == "isArray":
+            ret.isArray = value
+        if key == "description":
+            ret.description = value
+        if key == "required":
+            ret.required = value
+        ret.type.initFlatValue(key, value)
+    return ret
 
 class RequestBody:
     """definition of a parameter that is used in the request
@@ -316,6 +411,13 @@ class RequestBody:
             ret["content"] = self.content.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "description":
+            self.description = value
+        if attribName == "required":
+            self.required = value
+        self.content.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -329,6 +431,16 @@ class RequestBody:
             self.content.append(
                 ContentEntry(elemContent))
 
+
+def createRequestBodyFromFlatDict(flatDict={}):
+    ret = RequestBody()
+    for key, value in flatDict.items():
+        if key == "description":
+            ret.description = value
+        if key == "required":
+            ret.required = value
+        ret.content.initFlatValue(key, value)
+    return ret
 
 class Response:
     """description of a response option for a request
@@ -357,6 +469,13 @@ class Response:
             ret["content"] = self.content.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "returnCode":
+            self.returnCode = value
+        if attribName == "description":
+            self.description = value
+        self.content.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -370,6 +489,16 @@ class Response:
             self.content.append(
                 ContentEntry(elemContent))
 
+
+def createResponseFromFlatDict(flatDict={}):
+    ret = Response()
+    for key, value in flatDict.items():
+        if key == "returnCode":
+            ret.returnCode = value
+        if key == "description":
+            ret.description = value
+        ret.content.initFlatValue(key, value)
+    return ret
 
 class CommandSecurity:
     def __init__(self, dictObj=None):
@@ -386,6 +515,10 @@ class CommandSecurity:
             ret["scopes"] = self.scopes
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "scopes":
+            self.scopes = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -394,6 +527,13 @@ class CommandSecurity:
         for elemScopes in arrayScopes:
             self.scopes.append(elemScopes)
 
+
+def createCommandSecurityFromFlatDict(flatDict={}):
+    ret = CommandSecurity()
+    for key, value in flatDict.items():
+        if key == "scopes":
+            ret.scopes = value
+    return ret
 
 class ContentEntry:
     def __init__(self, dictObj=None):
@@ -420,6 +560,13 @@ class ContentEntry:
             ret["isArray"] = self.isArray
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "mimeType":
+            self.mimeType = value
+        self.type.initFlatValue(attribName, value)
+        if attribName == "isArray":
+            self.isArray = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -432,6 +579,16 @@ class ContentEntry:
 
         self.isArray = dictObj.get('isArray', False)
 
+
+def createContentEntryFromFlatDict(flatDict={}):
+    ret = ContentEntry()
+    for key, value in flatDict.items():
+        if key == "mimeType":
+            ret.mimeType = value
+        ret.type.initFlatValue(key, value)
+        if key == "isArray":
+            ret.isArray = value
+    return ret
 
 class ParameterInTypeEnum(Enum):
     PATH = 'path'
@@ -469,6 +626,7 @@ class ParameterInTypeEnum(Enum):
             return 'cookie'
         else:
             return ''
+
 
 
 

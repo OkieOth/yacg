@@ -48,6 +48,17 @@ class OperationBase:
             ret["xResponseMessage"] = self.xResponseMessage.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "operationId":
+            self.operationId = value
+        if attribName == "summary":
+            self.summary = value
+        if attribName == "description":
+            self.description = value
+        self.message.initFlatValue(attribName, value)
+        self.amqpBindings.initFlatValue(attribName, value)
+        self.xResponseMessage.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -70,6 +81,20 @@ class OperationBase:
         if subDictObj is not None:
             self.xResponseMessage = Message(subDictObj)
 
+
+def createOperationBaseFromFlatDict(flatDict={}):
+    ret = OperationBase()
+    for key, value in flatDict.items():
+        if key == "operationId":
+            ret.operationId = value
+        if key == "summary":
+            ret.summary = value
+        if key == "description":
+            ret.description = value
+        ret.message.initFlatValue(key, value)
+        ret.amqpBindings.initFlatValue(key, value)
+        ret.xResponseMessage.initFlatValue(key, value)
+    return ret
 
 class Message:
     """Container that describes the messages are sent
@@ -114,6 +139,17 @@ class Message:
             ret["description"] = self.description
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "name":
+            self.name = value
+        self.payload.initFlatValue(attribName, value)
+        self.amqpBindings.initFlatValue(attribName, value)
+        if attribName == "contentType":
+            self.contentType = value
+        self.headers.initFlatValue(attribName, value)
+        if attribName == "description":
+            self.description = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -136,6 +172,20 @@ class Message:
 
         self.description = dictObj.get('description', None)
 
+
+def createMessageFromFlatDict(flatDict={}):
+    ret = Message()
+    for key, value in flatDict.items():
+        if key == "name":
+            ret.name = value
+        ret.payload.initFlatValue(key, value)
+        ret.amqpBindings.initFlatValue(key, value)
+        if key == "contentType":
+            ret.contentType = value
+        ret.headers.initFlatValue(key, value)
+        if key == "description":
+            ret.description = value
+    return ret
 
 class OperationBindingsAmqp:
     """specific AMQP binding properties
@@ -168,6 +218,16 @@ class OperationBindingsAmqp:
             ret["replyTo"] = self.replyTo
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "name":
+            self.name = value
+        if attribName == "expiration":
+            self.expiration = value
+        if attribName == "mandatory":
+            self.mandatory = value
+        if attribName == "replyTo":
+            self.replyTo = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -180,6 +240,19 @@ class OperationBindingsAmqp:
 
         self.replyTo = dictObj.get('replyTo', "amq.rabbitmq.reply-to")
 
+
+def createOperationBindingsAmqpFromFlatDict(flatDict={}):
+    ret = OperationBindingsAmqp()
+    for key, value in flatDict.items():
+        if key == "name":
+            ret.name = value
+        if key == "expiration":
+            ret.expiration = value
+        if key == "mandatory":
+            ret.mandatory = value
+        if key == "replyTo":
+            ret.replyTo = value
+    return ret
 
 class AsyncApiInfo (yacg.model.shared.info.InfoSection):
     """Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
@@ -197,9 +270,11 @@ class AsyncApiInfo (yacg.model.shared.info.InfoSection):
         ret = {}
         return ret
 
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
 
 
 class AsyncApiServer:
@@ -236,6 +311,18 @@ class AsyncApiServer:
             ret["protocolVersion"] = self.protocolVersion
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "name":
+            self.name = value
+        if attribName == "url":
+            self.url = value
+        if attribName == "description":
+            self.description = value
+        if attribName == "protocol":
+            self.protocol = value
+        if attribName == "protocolVersion":
+            self.protocolVersion = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -250,6 +337,21 @@ class AsyncApiServer:
 
         self.protocolVersion = dictObj.get('protocolVersion', None)
 
+
+def createAsyncApiServerFromFlatDict(flatDict={}):
+    ret = AsyncApiServer()
+    for key, value in flatDict.items():
+        if key == "name":
+            ret.name = value
+        if key == "url":
+            ret.url = value
+        if key == "description":
+            ret.description = value
+        if key == "protocol":
+            ret.protocol = value
+        if key == "protocolVersion":
+            ret.protocolVersion = value
+    return ret
 
 class Channel:
     """one entry of the channels section
@@ -289,6 +391,16 @@ class Channel:
             ret["amqpBindings"] = self.amqpBindings.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "key":
+            self.key = value
+        if attribName == "description":
+            self.description = value
+        self.parameters.initFlatValue(attribName, value)
+        self.publish.initFlatValue(attribName, value)
+        self.subscribe.initFlatValue(attribName, value)
+        self.amqpBindings.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -314,6 +426,19 @@ class Channel:
         if subDictObj is not None:
             self.amqpBindings = ChannelBindingsAmqp(subDictObj)
 
+
+def createChannelFromFlatDict(flatDict={}):
+    ret = Channel()
+    for key, value in flatDict.items():
+        if key == "key":
+            ret.key = value
+        if key == "description":
+            ret.description = value
+        ret.parameters.initFlatValue(key, value)
+        ret.publish.initFlatValue(key, value)
+        ret.subscribe.initFlatValue(key, value)
+        ret.amqpBindings.initFlatValue(key, value)
+    return ret
 
 class Parameter:
     """Parameters contained in the channel key
@@ -341,6 +466,14 @@ class Parameter:
             ret["type"] = self.type
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "name":
+            self.name = value
+        if attribName == "description":
+            self.description = value
+        if attribName == "type":
+            self.type = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -351,6 +484,17 @@ class Parameter:
 
         self.type = dictObj.get('type', None)
 
+
+def createParameterFromFlatDict(flatDict={}):
+    ret = Parameter()
+    for key, value in flatDict.items():
+        if key == "name":
+            ret.name = value
+        if key == "description":
+            ret.description = value
+        if key == "type":
+            ret.type = value
+    return ret
 
 class ChannelBindingsAmqp:
     """https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
@@ -383,6 +527,14 @@ class ChannelBindingsAmqp:
             ret["exchange"] = self.exchange.toDict()
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "name":
+            self.name = value
+        if attribName == "isType":
+            self.isType = ChannelBindingsAmqpIsTypeEnum.valueForString(value)
+        self.queue.initFlatValue(attribName, value)
+        self.exchange.initFlatValue(attribName, value)
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -399,6 +551,17 @@ class ChannelBindingsAmqp:
         if subDictObj is not None:
             self.exchange = ChannelBindingsAmqpExchange(subDictObj)
 
+
+def createChannelBindingsAmqpFromFlatDict(flatDict={}):
+    ret = ChannelBindingsAmqp()
+    for key, value in flatDict.items():
+        if key == "name":
+            ret.name = value
+        if key == "isType":
+            ret.isType = ChannelBindingsAmqpIsTypeEnum.valueForString(value)
+        ret.queue.initFlatValue(key, value)
+        ret.exchange.initFlatValue(key, value)
+    return ret
 
 class ChannelBindingsAmqpExchange:
     """channel exchange parameters
@@ -430,6 +593,16 @@ class ChannelBindingsAmqpExchange:
             ret["autoDelete"] = self.autoDelete
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "name":
+            self.name = value
+        if attribName == "type":
+            self.type = ChannelBindingsAmqpExchangeTypeEnum.valueForString(value)
+        if attribName == "durable":
+            self.durable = value
+        if attribName == "autoDelete":
+            self.autoDelete = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -442,6 +615,19 @@ class ChannelBindingsAmqpExchange:
 
         self.autoDelete = dictObj.get('autoDelete', False)
 
+
+def createChannelBindingsAmqpExchangeFromFlatDict(flatDict={}):
+    ret = ChannelBindingsAmqpExchange()
+    for key, value in flatDict.items():
+        if key == "name":
+            ret.name = value
+        if key == "type":
+            ret.type = ChannelBindingsAmqpExchangeTypeEnum.valueForString(value)
+        if key == "durable":
+            ret.durable = value
+        if key == "autoDelete":
+            ret.autoDelete = value
+    return ret
 
 class ChannelBindingsAmqpExchangeTypeEnum(Enum):
     TOPIC = 'topic'
@@ -487,6 +673,7 @@ class ChannelBindingsAmqpExchangeTypeEnum(Enum):
 
 
 
+
 class ChannelBindingsAmqpQueue:
     """channel queue parameters
     """
@@ -517,6 +704,16 @@ class ChannelBindingsAmqpQueue:
             ret["autoDelete"] = self.autoDelete
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "name":
+            self.name = value
+        if attribName == "durable":
+            self.durable = value
+        if attribName == "exclusive":
+            self.exclusive = value
+        if attribName == "autoDelete":
+            self.autoDelete = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -529,6 +726,19 @@ class ChannelBindingsAmqpQueue:
 
         self.autoDelete = dictObj.get('autoDelete', False)
 
+
+def createChannelBindingsAmqpQueueFromFlatDict(flatDict={}):
+    ret = ChannelBindingsAmqpQueue()
+    for key, value in flatDict.items():
+        if key == "name":
+            ret.name = value
+        if key == "durable":
+            ret.durable = value
+        if key == "exclusive":
+            ret.exclusive = value
+        if key == "autoDelete":
+            ret.autoDelete = value
+    return ret
 
 class ChannelBindingsAmqpIsTypeEnum(Enum):
     QUEUE = 'queue'
@@ -559,6 +769,7 @@ class ChannelBindingsAmqpIsTypeEnum(Enum):
 
 
 
+
 class Payload:
     def __init__(self, dictObj=None):
 
@@ -579,6 +790,11 @@ class Payload:
             ret["isArray"] = self.isArray
         return ret
 
+    def initFlatValue(self, attribName, value):
+        self.type.initFlatValue(attribName, value)
+        if attribName == "isArray":
+            self.isArray = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -589,6 +805,14 @@ class Payload:
 
         self.isArray = dictObj.get('isArray', False)
 
+
+def createPayloadFromFlatDict(flatDict={}):
+    ret = Payload()
+    for key, value in flatDict.items():
+        ret.type.initFlatValue(key, value)
+        if key == "isArray":
+            ret.isArray = value
+    return ret
 
 class MessageBindingsAmqp:
     """https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
@@ -619,6 +843,14 @@ class MessageBindingsAmqp:
             ret["messageType"] = self.messageType
         return ret
 
+    def initFlatValue(self, attribName, value):
+        if attribName == "name":
+            self.name = value
+        if attribName == "contentEncoding":
+            self.contentEncoding = value
+        if attribName == "messageType":
+            self.messageType = value
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -629,6 +861,17 @@ class MessageBindingsAmqp:
 
         self.messageType = dictObj.get('messageType', None)
 
+
+def createMessageBindingsAmqpFromFlatDict(flatDict={}):
+    ret = MessageBindingsAmqp()
+    for key, value in flatDict.items():
+        if key == "name":
+            ret.name = value
+        if key == "contentEncoding":
+            ret.contentEncoding = value
+        if key == "messageType":
+            ret.messageType = value
+    return ret
 
 class AsyncApiHeaders (yacg.model.model.ComplexType):
     def __init__(self, dictObj=None):
@@ -643,8 +886,10 @@ class AsyncApiHeaders (yacg.model.model.ComplexType):
         ret = {}
         return ret
 
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
+
 
 
