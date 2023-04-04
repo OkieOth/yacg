@@ -98,6 +98,31 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        % for property in type.properties:
+            % if (property.isArray) or (isinstance(property.type, model.DictionaryType)) or (isinstance(property.type, model.ArrayType)):
+            if (${property.name} is not None) and (len(${property.name}) > 0):
+                % if model.isBaseType(property.type):
+                    ret[${property.name}] = ${property.name}
+                % elif isinstance(property.type, model.EnumType):
+                    ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
+                % else:
+                    ret[${property.name}] = ${property.name}.toDict()
+                % endif
+            % else:
+            if ${property.name} is not None:
+                % if model.isBaseType(property.type):
+                    ret[${property.name}] = ${property.name}
+                % elif isinstance(property.type, model.EnumType):
+                    ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
+                % else:
+                    ret[${property.name}] = ${property.name}.toDict()
+                % endif
+            % endif
+        % endfor
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
