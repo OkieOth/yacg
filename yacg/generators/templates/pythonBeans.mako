@@ -169,7 +169,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                 ret.${property.name} = ${property.type.name}.valueForString(value)
                 % elif isinstance(property.type, model.ComplexType):
             initObj = ret.${property.name} if ret is not None else None
-            ${property.name}Tmp = ${property.type.name}.initWithFlatValue(attribName, value, initObj)
+            ${property.name}Tmp = ${property.type.name}.initWithFlatValue(key, value, initObj)
             if ${property.name}Tmp is not None:
                 if ret is None:
                     ret = ${type.name}()
