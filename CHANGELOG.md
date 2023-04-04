@@ -1,3 +1,6 @@
+# 6.0.6
+* improve the python bean template
+
 # 6.0.5
 * fix complex value type issue for dictionaries (issue139)
 
