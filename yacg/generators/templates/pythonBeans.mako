@@ -200,7 +200,7 @@ def create${type.name}FromFlatDict(flatDict={}):
         ret.${property.name}.initFlatValue(key, value)
             % endif
         % endfor
-    % endif
     return ret
+    % endif
 
 % endfor
