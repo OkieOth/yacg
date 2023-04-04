@@ -11,7 +11,7 @@
 
     baseModelDomain = templateParameters.get('baseModelDomain',None)
     domainList = modelFuncs.getDomainsAsList(modelTypes)
-    includeFlatInit = templateParameters.get('includeFlatInit', True)
+    includeFlatInit = templateParameters.get('includeFlatInit', False)
 
     def printDefaultValue(property):
         if hasattr(property.type,'default'):
@@ -128,7 +128,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
 
         % if includeFlatInit and hasattr(type, "properties") and len(type.properties) > 0:
     @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
+    def initWithFlatValue(cls, attribName, value, initObj=None):
         ret = initObj
             % for property in type.properties:
                 % if modelFuncs.isBaseType(property.type):
@@ -151,15 +151,6 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                 % endif
             % endfor
         return ret
-
-    @classmethod
-    def flatConfigOptions(cls, path=""):
-        ret = []
-            % for property in type.properties:
-        ret.append({"${property.name}": {"path": path}})
-            % endfor
-        return ret
-
 
     @classmethod
     def createFromFlatDict(cls, flatDict={}):

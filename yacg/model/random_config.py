@@ -39,72 +39,6 @@ class RamdonDefaultConfig:
             ret["defaultProbabilityToBeEmpty"] = self.defaultProbabilityToBeEmpty
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "defaultElemCount":
-            if ret is None:
-                ret = RamdonDefaultConfig()
-            ret.defaultElemCount = value
-        if attribName == "defaultTypeDepth":
-            if ret is None:
-                ret = RamdonDefaultConfig()
-            ret.defaultTypeDepth = value
-        if attribName == "defaultMinArrayElemCount":
-            if ret is None:
-                ret = RamdonDefaultConfig()
-            ret.defaultMinArrayElemCount = value
-        if attribName == "defaultMaxArrayElemCount":
-            if ret is None:
-                ret = RamdonDefaultConfig()
-            ret.defaultMaxArrayElemCount = value
-        if attribName == "defaultMinDate":
-            if ret is None:
-                ret = RamdonDefaultConfig()
-            ret.defaultMinDate = value
-        if attribName == "defaultMaxDate":
-            if ret is None:
-                ret = RamdonDefaultConfig()
-            ret.defaultMaxDate = value
-        if attribName == "defaultProbabilityToBeEmpty":
-            if ret is None:
-                ret = RamdonDefaultConfig()
-            ret.defaultProbabilityToBeEmpty = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "defaultElemCount":
-                if ret is None:
-                    ret = RamdonDefaultConfig()
-                ret.defaultElemCount = value
-            if key == "defaultTypeDepth":
-                if ret is None:
-                    ret = RamdonDefaultConfig()
-                ret.defaultTypeDepth = value
-            if key == "defaultMinArrayElemCount":
-                if ret is None:
-                    ret = RamdonDefaultConfig()
-                ret.defaultMinArrayElemCount = value
-            if key == "defaultMaxArrayElemCount":
-                if ret is None:
-                    ret = RamdonDefaultConfig()
-                ret.defaultMaxArrayElemCount = value
-            if key == "defaultMinDate":
-                if ret is None:
-                    ret = RamdonDefaultConfig()
-                ret.defaultMinDate = value
-            if key == "defaultMaxDate":
-                if ret is None:
-                    ret = RamdonDefaultConfig()
-                ret.defaultMaxDate = value
-            if key == "defaultProbabilityToBeEmpty":
-                if ret is None:
-                    ret = RamdonDefaultConfig()
-                ret.defaultProbabilityToBeEmpty = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -167,76 +101,6 @@ class RandomDataTypeConf:
             ret["randDictTypeConf"] = self.randDictTypeConf.toDict()
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "randMinElemCount":
-            if ret is None:
-                ret = RandomDataTypeConf()
-            ret.randMinElemCount = value
-        if attribName == "randMaxElemCount":
-            if ret is None:
-                ret = RandomDataTypeConf()
-            ret.randMaxElemCount = value
-        if attribName == "randElemCount":
-            if ret is None:
-                ret = RandomDataTypeConf()
-            ret.randElemCount = value
-        initObj = ret.randComplexTypeConf if ret is not None else None
-        randComplexTypeConfTmp = RandomComplexTypeConf.initWithFlatValue(attribName, value, initObj)
-        if randComplexTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomDataTypeConf()
-            ret.randComplexTypeConf = randComplexTypeConfTmp
-        initObj = ret.randArrayConf if ret is not None else None
-        randArrayConfTmp = RandomArrayConf.initWithFlatValue(attribName, value, initObj)
-        if randArrayConfTmp is not None:
-            if ret is None:
-                ret = RandomDataTypeConf()
-            ret.randArrayConf = randArrayConfTmp
-        initObj = ret.randDictTypeConf if ret is not None else None
-        randDictTypeConfTmp = RandomDictConf.initWithFlatValue(attribName, value, initObj)
-        if randDictTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomDataTypeConf()
-            ret.randDictTypeConf = randDictTypeConfTmp
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "randMinElemCount":
-                if ret is None:
-                    ret = RandomDataTypeConf()
-                ret.randMinElemCount = value
-            if key == "randMaxElemCount":
-                if ret is None:
-                    ret = RandomDataTypeConf()
-                ret.randMaxElemCount = value
-            if key == "randElemCount":
-                if ret is None:
-                    ret = RandomDataTypeConf()
-                ret.randElemCount = value
-            initObj = ret.randComplexTypeConf if ret is not None else None
-            randComplexTypeConfTmp = RandomComplexTypeConf.initWithFlatValue(attribName, value, initObj)
-            if randComplexTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomDataTypeConf()
-                ret.randComplexTypeConf = randComplexTypeConfTmp
-            initObj = ret.randArrayConf if ret is not None else None
-            randArrayConfTmp = RandomArrayConf.initWithFlatValue(attribName, value, initObj)
-            if randArrayConfTmp is not None:
-                if ret is None:
-                    ret = RandomDataTypeConf()
-                ret.randArrayConf = randArrayConfTmp
-            initObj = ret.randDictTypeConf if ret is not None else None
-            randDictTypeConfTmp = RandomDictConf.initWithFlatValue(attribName, value, initObj)
-            if randDictTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomDataTypeConf()
-                ret.randDictTypeConf = randDictTypeConfTmp
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -280,24 +144,6 @@ class RandomComplexTypeConf:
             ret["typeDepth"] = self.typeDepth
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "typeDepth":
-            if ret is None:
-                ret = RandomComplexTypeConf()
-            ret.typeDepth = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "typeDepth":
-                if ret is None:
-                    ret = RandomComplexTypeConf()
-                ret.typeDepth = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -335,40 +181,6 @@ class RandomArrayConf:
             ret["randElemCount"] = self.randElemCount
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "randMinElemCount":
-            if ret is None:
-                ret = RandomArrayConf()
-            ret.randMinElemCount = value
-        if attribName == "randMaxElemCount":
-            if ret is None:
-                ret = RandomArrayConf()
-            ret.randMaxElemCount = value
-        if attribName == "randElemCount":
-            if ret is None:
-                ret = RandomArrayConf()
-            ret.randElemCount = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "randMinElemCount":
-                if ret is None:
-                    ret = RandomArrayConf()
-                ret.randMinElemCount = value
-            if key == "randMaxElemCount":
-                if ret is None:
-                    ret = RandomArrayConf()
-                ret.randMaxElemCount = value
-            if key == "randElemCount":
-                if ret is None:
-                    ret = RandomArrayConf()
-                ret.randElemCount = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -423,64 +235,6 @@ class RandomDictConf:
             ret["keyPool"] = self.keyPool
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "randMinKeyCount":
-            if ret is None:
-                ret = RandomDictConf()
-            ret.randMinKeyCount = value
-        if attribName == "randMaxKeyCount":
-            if ret is None:
-                ret = RandomDictConf()
-            ret.randMaxKeyCount = value
-        if attribName == "randKeyCount":
-            if ret is None:
-                ret = RandomDictConf()
-            ret.randKeyCount = value
-        if attribName == "randKeyMinLen":
-            if ret is None:
-                ret = RandomDictConf()
-            ret.randKeyMinLen = value
-        if attribName == "randKeyMaxLen":
-            if ret is None:
-                ret = RandomDictConf()
-            ret.randKeyMaxLen = value
-        if attribName == "keyPool":
-            if ret is None:
-                ret = RandomDictConf()
-            ret.keyPool = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "randMinKeyCount":
-                if ret is None:
-                    ret = RandomDictConf()
-                ret.randMinKeyCount = value
-            if key == "randMaxKeyCount":
-                if ret is None:
-                    ret = RandomDictConf()
-                ret.randMaxKeyCount = value
-            if key == "randKeyCount":
-                if ret is None:
-                    ret = RandomDictConf()
-                ret.randKeyCount = value
-            if key == "randKeyMinLen":
-                if ret is None:
-                    ret = RandomDictConf()
-                ret.randKeyMinLen = value
-            if key == "randKeyMaxLen":
-                if ret is None:
-                    ret = RandomDictConf()
-                ret.randKeyMaxLen = value
-            if key == "keyPool":
-                if ret is None:
-                    ret = RandomDictConf()
-                ret.keyPool = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -540,64 +294,6 @@ class RandomDataPropertyConf:
             ret["randValueConf"] = self.randValueConf.toDict()
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "randIgnore":
-            if ret is None:
-                ret = RandomDataPropertyConf()
-            ret.randIgnore = value
-        initObj = ret.randArrayConf if ret is not None else None
-        randArrayConfTmp = RandomArrayConf.initWithFlatValue(attribName, value, initObj)
-        if randArrayConfTmp is not None:
-            if ret is None:
-                ret = RandomDataPropertyConf()
-            ret.randArrayConf = randArrayConfTmp
-        if attribName == "randValuePool":
-            if ret is None:
-                ret = RandomDataPropertyConf()
-            ret.randValuePool = value
-        if attribName == "randProbabilityToBeEmpty":
-            if ret is None:
-                ret = RandomDataPropertyConf()
-            ret.randProbabilityToBeEmpty = value
-        initObj = ret.randValueConf if ret is not None else None
-        randValueConfTmp = RandomPropertyTypeConf.initWithFlatValue(attribName, value, initObj)
-        if randValueConfTmp is not None:
-            if ret is None:
-                ret = RandomDataPropertyConf()
-            ret.randValueConf = randValueConfTmp
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "randIgnore":
-                if ret is None:
-                    ret = RandomDataPropertyConf()
-                ret.randIgnore = value
-            initObj = ret.randArrayConf if ret is not None else None
-            randArrayConfTmp = RandomArrayConf.initWithFlatValue(attribName, value, initObj)
-            if randArrayConfTmp is not None:
-                if ret is None:
-                    ret = RandomDataPropertyConf()
-                ret.randArrayConf = randArrayConfTmp
-            if key == "randValuePool":
-                if ret is None:
-                    ret = RandomDataPropertyConf()
-                ret.randValuePool = value
-            if key == "randProbabilityToBeEmpty":
-                if ret is None:
-                    ret = RandomDataPropertyConf()
-                ret.randProbabilityToBeEmpty = value
-            initObj = ret.randValueConf if ret is not None else None
-            randValueConfTmp = RandomPropertyTypeConf.initWithFlatValue(attribName, value, initObj)
-            if randValueConfTmp is not None:
-                if ret is None:
-                    ret = RandomDataPropertyConf()
-                ret.randValueConf = randValueConfTmp
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -654,100 +350,6 @@ class RandomPropertyTypeConf:
             ret["durationTypeConf"] = self.durationTypeConf.toDict()
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        initObj = ret.complexTypeConf if ret is not None else None
-        complexTypeConfTmp = RandomComplexTypeConf.initWithFlatValue(attribName, value, initObj)
-        if complexTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomPropertyTypeConf()
-            ret.complexTypeConf = complexTypeConfTmp
-        initObj = ret.dictTypeConf if ret is not None else None
-        dictTypeConfTmp = RandomDictConf.initWithFlatValue(attribName, value, initObj)
-        if dictTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomPropertyTypeConf()
-            ret.dictTypeConf = dictTypeConfTmp
-        initObj = ret.stringTypeConf if ret is not None else None
-        stringTypeConfTmp = RandomStringTypeConf.initWithFlatValue(attribName, value, initObj)
-        if stringTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomPropertyTypeConf()
-            ret.stringTypeConf = stringTypeConfTmp
-        initObj = ret.numTypeConf if ret is not None else None
-        numTypeConfTmp = RandomNumTypeConf.initWithFlatValue(attribName, value, initObj)
-        if numTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomPropertyTypeConf()
-            ret.numTypeConf = numTypeConfTmp
-        initObj = ret.dateTypeConf if ret is not None else None
-        dateTypeConfTmp = RandomDateTypeConf.initWithFlatValue(attribName, value, initObj)
-        if dateTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomPropertyTypeConf()
-            ret.dateTypeConf = dateTypeConfTmp
-        initObj = ret.timeTypeConf if ret is not None else None
-        timeTypeConfTmp = RandomTimeTypeConf.initWithFlatValue(attribName, value, initObj)
-        if timeTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomPropertyTypeConf()
-            ret.timeTypeConf = timeTypeConfTmp
-        initObj = ret.durationTypeConf if ret is not None else None
-        durationTypeConfTmp = RandomDurationTypeConf.initWithFlatValue(attribName, value, initObj)
-        if durationTypeConfTmp is not None:
-            if ret is None:
-                ret = RandomPropertyTypeConf()
-            ret.durationTypeConf = durationTypeConfTmp
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            initObj = ret.complexTypeConf if ret is not None else None
-            complexTypeConfTmp = RandomComplexTypeConf.initWithFlatValue(attribName, value, initObj)
-            if complexTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomPropertyTypeConf()
-                ret.complexTypeConf = complexTypeConfTmp
-            initObj = ret.dictTypeConf if ret is not None else None
-            dictTypeConfTmp = RandomDictConf.initWithFlatValue(attribName, value, initObj)
-            if dictTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomPropertyTypeConf()
-                ret.dictTypeConf = dictTypeConfTmp
-            initObj = ret.stringTypeConf if ret is not None else None
-            stringTypeConfTmp = RandomStringTypeConf.initWithFlatValue(attribName, value, initObj)
-            if stringTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomPropertyTypeConf()
-                ret.stringTypeConf = stringTypeConfTmp
-            initObj = ret.numTypeConf if ret is not None else None
-            numTypeConfTmp = RandomNumTypeConf.initWithFlatValue(attribName, value, initObj)
-            if numTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomPropertyTypeConf()
-                ret.numTypeConf = numTypeConfTmp
-            initObj = ret.dateTypeConf if ret is not None else None
-            dateTypeConfTmp = RandomDateTypeConf.initWithFlatValue(attribName, value, initObj)
-            if dateTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomPropertyTypeConf()
-                ret.dateTypeConf = dateTypeConfTmp
-            initObj = ret.timeTypeConf if ret is not None else None
-            timeTypeConfTmp = RandomTimeTypeConf.initWithFlatValue(attribName, value, initObj)
-            if timeTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomPropertyTypeConf()
-                ret.timeTypeConf = timeTypeConfTmp
-            initObj = ret.durationTypeConf if ret is not None else None
-            durationTypeConfTmp = RandomDurationTypeConf.initWithFlatValue(attribName, value, initObj)
-            if durationTypeConfTmp is not None:
-                if ret is None:
-                    ret = RandomPropertyTypeConf()
-                ret.durationTypeConf = durationTypeConfTmp
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -802,32 +404,6 @@ class RandomStringTypeConf:
             ret["maxLength"] = self.maxLength
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "strType":
-            if ret is None:
-                ret = RandomStringTypeConf()
-            ret.strType = RandomStringTypeConfStrTypeEnum.valueForString(value)
-        if attribName == "maxLength":
-            if ret is None:
-                ret = RandomStringTypeConf()
-            ret.maxLength = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "strType":
-                if ret is None:
-                    ret = RandomStringTypeConf()
-                ret.strType = RandomStringTypeConfStrTypeEnum.valueForString(value)
-            if key == "maxLength":
-                if ret is None:
-                    ret = RandomStringTypeConf()
-                ret.maxLength = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -858,32 +434,6 @@ class RandomNumTypeConf:
             ret["maxValue"] = self.maxValue
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "minValue":
-            if ret is None:
-                ret = RandomNumTypeConf()
-            ret.minValue = value
-        if attribName == "maxValue":
-            if ret is None:
-                ret = RandomNumTypeConf()
-            ret.maxValue = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "minValue":
-                if ret is None:
-                    ret = RandomNumTypeConf()
-                ret.minValue = value
-            if key == "maxValue":
-                if ret is None:
-                    ret = RandomNumTypeConf()
-                ret.maxValue = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -914,32 +464,6 @@ class RandomDateTypeConf:
             ret["maxValue"] = self.maxValue
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "minValue":
-            if ret is None:
-                ret = RandomDateTypeConf()
-            ret.minValue = value
-        if attribName == "maxValue":
-            if ret is None:
-                ret = RandomDateTypeConf()
-            ret.maxValue = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "minValue":
-                if ret is None:
-                    ret = RandomDateTypeConf()
-                ret.minValue = value
-            if key == "maxValue":
-                if ret is None:
-                    ret = RandomDateTypeConf()
-                ret.maxValue = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -970,32 +494,6 @@ class RandomTimeTypeConf:
             ret["maxValue"] = self.maxValue
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "minValue":
-            if ret is None:
-                ret = RandomTimeTypeConf()
-            ret.minValue = value
-        if attribName == "maxValue":
-            if ret is None:
-                ret = RandomTimeTypeConf()
-            ret.maxValue = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "minValue":
-                if ret is None:
-                    ret = RandomTimeTypeConf()
-                ret.minValue = value
-            if key == "maxValue":
-                if ret is None:
-                    ret = RandomTimeTypeConf()
-                ret.maxValue = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -1026,32 +524,6 @@ class RandomDurationTypeConf:
             ret["maxValue"] = self.maxValue
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "minValue":
-            if ret is None:
-                ret = RandomDurationTypeConf()
-            ret.minValue = value
-        if attribName == "maxValue":
-            if ret is None:
-                ret = RandomDurationTypeConf()
-            ret.maxValue = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "minValue":
-                if ret is None:
-                    ret = RandomDurationTypeConf()
-                ret.minValue = value
-            if key == "maxValue":
-                if ret is None:
-                    ret = RandomDurationTypeConf()
-                ret.maxValue = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:

@@ -31,48 +31,6 @@ class InfoSection:
             ret["license"] = self.license
         return ret
 
-    @classmethod
-    def initWithFlatValue(cls, attribName, value, initObj = None):
-        ret = initObj
-        if attribName == "title":
-            if ret is None:
-                ret = InfoSection()
-            ret.title = value
-        if attribName == "version":
-            if ret is None:
-                ret = InfoSection()
-            ret.version = value
-        if attribName == "description":
-            if ret is None:
-                ret = InfoSection()
-            ret.description = value
-        if attribName == "license":
-            if ret is None:
-                ret = InfoSection()
-            ret.license = value
-        return ret
-
-    @classmethod
-    def createFromFlatDict(cls, flatDict={}):
-        ret = None
-        for key, value in flatDict.items():
-            if key == "title":
-                if ret is None:
-                    ret = InfoSection()
-                ret.title = value
-            if key == "version":
-                if ret is None:
-                    ret = InfoSection()
-                ret.version = value
-            if key == "description":
-                if ret is None:
-                    ret = InfoSection()
-                ret.description = value
-            if key == "license":
-                if ret is None:
-                    ret = InfoSection()
-                ret.license = value
-        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
