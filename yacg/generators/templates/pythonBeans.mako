@@ -125,7 +125,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % endif
         return ret
 
-        % if hasattr(type, "properties"):
+        % if hasattr(type, "properties") and len(type.properties) > 0:
     def initFlatValue(self, attribName, value):
             % for property in type.properties:
                 % if modelFuncs.isBaseType(property.type):
