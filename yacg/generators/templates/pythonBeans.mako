@@ -104,7 +104,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
             % for property in type.properties:
                 % if (property.isArray) or (isinstance(property.type, model.DictionaryType)) or (isinstance(property.type, model.ArrayType)):
             if (${property.name} is not None) and (len(${property.name}) > 0):
-                    % if model.isBaseType(property.type):
+                    % if modelFuncs.isBaseType(property.type):
                 ret[${property.name}] = ${property.name}
                     % elif isinstance(property.type, model.EnumType):
                 ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
@@ -113,7 +113,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                     % endif
                 % else:
             if ${property.name} is not None:
-                    % if model.isBaseType(property.type):
+                    % if modelFuncs.isBaseType(property.type):
                 ret[${property.name}] = ${property.name}
                     % elif isinstance(property.type, model.EnumType):
                 ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
