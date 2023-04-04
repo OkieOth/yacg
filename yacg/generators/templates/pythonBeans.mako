@@ -153,6 +153,14 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         return ret
 
     @classmethod
+    def flatConfigOptions(cls, path=""):
+        ret = []
+            % for property in type.properties:
+                ret.append({"${property.name}": {"path": path}})
+        return ret
+
+
+    @classmethod
     def createFromFlatDict(cls, flatDict={}):
         ret = None
         for key, value in flatDict.items():
