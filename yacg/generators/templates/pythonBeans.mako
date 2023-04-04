@@ -103,22 +103,22 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % if hasattr(type, "properties"):
             % for property in type.properties:
                 % if (property.isArray) or (isinstance(property.type, model.DictionaryType)) or (isinstance(property.type, model.ArrayType)):
-        if (${property.name} is not None) and (len(${property.name}) > 0):
+        if (self.${property.name} is not None) and (len(self.${property.name}) > 0):
                     % if modelFuncs.isBaseType(property.type):
-            ret[${property.name}] = ${property.name}
+            ret[${property.name}] = self.${property.name}
                     % elif isinstance(property.type, model.EnumType):
-            ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
+            ret[${property.name}] = ${property.type.name}.valueAsString(self.${property.name})
                     % else:
-            ret[${property.name}] = ${property.name}.toDict()
+            ret[${property.name}] = self.${property.name}.toDict()
                     % endif
                 % else:
-        if ${property.name} is not None:
+        if self.${property.name} is not None:
                     % if modelFuncs.isBaseType(property.type):
-            ret[${property.name}] = ${property.name}
+            ret[${property.name}] = self.${property.name}
                     % elif isinstance(property.type, model.EnumType):
-            ret[${property.name}] = ${property.type.name}.valueAsString(${property.name})
+            ret[${property.name}] = ${property.type.name}.valueAsString(self.${property.name})
                     % else:
-            ret[${property.name}] = ${property.name}.toDict()
+            ret[${property.name}] = self.${property.name}.toDict()
                     % endif
                 % endif
             % endfor
