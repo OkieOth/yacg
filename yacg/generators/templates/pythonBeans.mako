@@ -185,7 +185,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
 
     % endif
 
-    % if hasattr(type, "properties"):
+    % if hasattr(type, "properties") and len(type.properties) > 0:
 def create${type.name}FromFlatDict(flatDict={}):
     ret = ${type.name}()
     for key, value in flatDict.items():
