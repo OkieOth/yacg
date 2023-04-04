@@ -7,10 +7,11 @@
     import yacg.generators.helper.pythonFuncs as pythonFuncs
 
     templateFile = 'pythonBeans.mako'
-    templateVersion = '1.0.0'
+    templateVersion = '1.1.0'
 
     baseModelDomain = templateParameters.get('baseModelDomain',None)
     domainList = modelFuncs.getDomainsAsList(modelTypes)
+    includeFlatInit = templateParameters.get('includeFlatInit', False)
 
     def printDefaultValue(property):
         if hasattr(property.type,'default'):
@@ -86,8 +87,8 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         pass
         % else:
             % for property in type.properties:
-
                 % if property.description != None:
+
         #: ${property.description}
                 % endif
         self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
@@ -97,6 +98,86 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        % if hasattr(type, "properties"):
+            % for property in type.properties:
+                % if (property.isArray) or (isinstance(property.type, model.DictionaryType)) or (isinstance(property.type, model.ArrayType)):
+        if (self.${property.name} is not None) and (len(self.${property.name}) > 0):
+                    % if modelFuncs.isBaseType(property.type):
+            ret["${property.name}"] = self.${property.name}
+                    % elif isinstance(property.type, model.EnumType):
+            ret["${property.name}"] = ${property.type.name}.valueAsString(self.${property.name})
+                    % else:
+            ret["${property.name}"] = self.${property.name}.toDict()
+                    % endif
+                % else:
+        if self.${property.name} is not None:
+                    % if modelFuncs.isBaseType(property.type):
+            ret["${property.name}"] = self.${property.name}
+                    % elif isinstance(property.type, model.EnumType):
+            ret["${property.name}"] = ${property.type.name}.valueAsString(self.${property.name})
+                    % else:
+            ret["${property.name}"] = self.${property.name}.toDict()
+                    % endif
+                % endif
+            % endfor
+        % endif
+        return ret
+
+        % if includeFlatInit and hasattr(type, "properties") and len(type.properties) > 0:
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj=None):
+        ret = initObj
+            % for property in type.properties:
+                % if modelFuncs.isBaseType(property.type):
+        if attribName == "${property.name}":
+            if ret is None:
+                ret = ${type.name}()
+            ret.${property.name} = value
+                % elif isinstance(property.type, model.EnumType):
+        if attribName == "${property.name}":
+            if ret is None:
+                ret = ${type.name}()
+            ret.${property.name} = ${property.type.name}.valueForString(value)
+                % elif isinstance(property.type, model.ComplexType):
+        initObj = ret.${property.name} if ret is not None else None
+        ${property.name}Tmp = ${property.type.name}.initWithFlatValue(attribName, value, initObj)
+        if ${property.name}Tmp is not None:
+            if ret is None:
+                ret = ${type.name}()
+            ret.${property.name} = ${property.name}Tmp
+                % endif
+            % endfor
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            % for property in type.properties:
+                % if modelFuncs.isBaseType(property.type):
+            if key == "${property.name}":
+                if ret is None:
+                    ret = ${type.name}()
+                ret.${property.name} = value
+                % elif isinstance(property.type, model.EnumType):
+            if key == "${property.name}":
+                if ret is None:
+                    ret = ${type.name}()
+                ret.${property.name} = ${property.type.name}.valueForString(value)
+                % elif isinstance(property.type, model.ComplexType):
+            initObj = ret.${property.name} if ret is not None else None
+            ${property.name}Tmp = ${property.type.name}.initWithFlatValue(key, value, initObj)
+            if ${property.name}Tmp is not None:
+                if ret is None:
+                    ret = ${type.name}()
+                ret.${property.name} = ${property.name}Tmp
+                % endif
+            % endfor
+        return ret
+        % endif
 
     def initFromDict(self, dictObj):
         if dictObj is None:

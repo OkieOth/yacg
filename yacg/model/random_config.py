@@ -1,23 +1,17 @@
 # Attention, this file is generated. Manual changes get lost with the next
 # run of the code generation.
-# created by yacg (template: pythonBeans.mako v1.0.0)
+# created by yacg (template: pythonBeans.mako v1.1.0)
 
 from enum import Enum
 
 
 class RamdonDefaultConfig:
     def __init__(self, dictObj=None):
-
         self.defaultElemCount = None
-
         self.defaultTypeDepth = 10
-
         self.defaultMinArrayElemCount = None
-
         self.defaultMaxArrayElemCount = None
-
         self.defaultMinDate = None
-
         self.defaultMaxDate = None
 
         #: 0 - always a value, 1 - 50 % empty, 2 - 75 % empty, 3 - 88% empty
@@ -26,6 +20,25 @@ class RamdonDefaultConfig:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.defaultElemCount is not None:
+            ret["defaultElemCount"] = self.defaultElemCount
+        if self.defaultTypeDepth is not None:
+            ret["defaultTypeDepth"] = self.defaultTypeDepth
+        if self.defaultMinArrayElemCount is not None:
+            ret["defaultMinArrayElemCount"] = self.defaultMinArrayElemCount
+        if self.defaultMaxArrayElemCount is not None:
+            ret["defaultMaxArrayElemCount"] = self.defaultMaxArrayElemCount
+        if self.defaultMinDate is not None:
+            ret["defaultMinDate"] = self.defaultMinDate
+        if self.defaultMaxDate is not None:
+            ret["defaultMaxDate"] = self.defaultMaxDate
+        if self.defaultProbabilityToBeEmpty is not None:
+            ret["defaultProbabilityToBeEmpty"] = self.defaultProbabilityToBeEmpty
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -60,7 +73,6 @@ class RandomDataTypeConf:
 
         #: number of elements of that type should be at minimum generated
         self.randElemCount = None
-
         self.randComplexTypeConf = None
 
         #: in case the type is an array, this specifies the random data handling of the array
@@ -72,6 +84,23 @@ class RandomDataTypeConf:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.randMinElemCount is not None:
+            ret["randMinElemCount"] = self.randMinElemCount
+        if self.randMaxElemCount is not None:
+            ret["randMaxElemCount"] = self.randMaxElemCount
+        if self.randElemCount is not None:
+            ret["randElemCount"] = self.randElemCount
+        if self.randComplexTypeConf is not None:
+            ret["randComplexTypeConf"] = self.randComplexTypeConf.toDict()
+        if self.randArrayConf is not None:
+            ret["randArrayConf"] = self.randArrayConf.toDict()
+        if self.randDictTypeConf is not None:
+            ret["randDictTypeConf"] = self.randDictTypeConf.toDict()
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -109,6 +138,13 @@ class RandomComplexTypeConf:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.typeDepth is not None:
+            ret["typeDepth"] = self.typeDepth
+        return ret
+
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -134,6 +170,17 @@ class RandomArrayConf:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.randMinElemCount is not None:
+            ret["randMinElemCount"] = self.randMinElemCount
+        if self.randMaxElemCount is not None:
+            ret["randMaxElemCount"] = self.randMaxElemCount
+        if self.randElemCount is not None:
+            ret["randElemCount"] = self.randElemCount
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -166,12 +213,28 @@ class RandomDictConf:
 
         #: maximum length of dictionary key names
         self.randKeyMaxLen = 10
-
         self.keyPool = []
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.randMinKeyCount is not None:
+            ret["randMinKeyCount"] = self.randMinKeyCount
+        if self.randMaxKeyCount is not None:
+            ret["randMaxKeyCount"] = self.randMaxKeyCount
+        if self.randKeyCount is not None:
+            ret["randKeyCount"] = self.randKeyCount
+        if self.randKeyMinLen is not None:
+            ret["randKeyMinLen"] = self.randKeyMinLen
+        if self.randKeyMaxLen is not None:
+            ret["randKeyMaxLen"] = self.randKeyMaxLen
+        if (self.keyPool is not None) and (len(self.keyPool) > 0):
+            ret["keyPool"] = self.keyPool
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -217,6 +280,21 @@ class RandomDataPropertyConf:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.randIgnore is not None:
+            ret["randIgnore"] = self.randIgnore
+        if self.randArrayConf is not None:
+            ret["randArrayConf"] = self.randArrayConf.toDict()
+        if (self.randValuePool is not None) and (len(self.randValuePool) > 0):
+            ret["randValuePool"] = self.randValuePool
+        if self.randProbabilityToBeEmpty is not None:
+            ret["randProbabilityToBeEmpty"] = self.randProbabilityToBeEmpty
+        if self.randValueConf is not None:
+            ret["randValueConf"] = self.randValueConf.toDict()
+        return ret
+
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -240,25 +318,38 @@ class RandomDataPropertyConf:
 
 class RandomPropertyTypeConf:
     def __init__(self, dictObj=None):
-
         self.complexTypeConf = None
 
         #: in case the property contains an dictionary, this specifies the random data handling of the dictionary
         self.dictTypeConf = None
-
         self.stringTypeConf = None
-
         self.numTypeConf = None
-
         self.dateTypeConf = None
-
         self.timeTypeConf = None
-
         self.durationTypeConf = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.complexTypeConf is not None:
+            ret["complexTypeConf"] = self.complexTypeConf.toDict()
+        if self.dictTypeConf is not None:
+            ret["dictTypeConf"] = self.dictTypeConf.toDict()
+        if self.stringTypeConf is not None:
+            ret["stringTypeConf"] = self.stringTypeConf.toDict()
+        if self.numTypeConf is not None:
+            ret["numTypeConf"] = self.numTypeConf.toDict()
+        if self.dateTypeConf is not None:
+            ret["dateTypeConf"] = self.dateTypeConf.toDict()
+        if self.timeTypeConf is not None:
+            ret["timeTypeConf"] = self.timeTypeConf.toDict()
+        if self.durationTypeConf is not None:
+            ret["durationTypeConf"] = self.durationTypeConf.toDict()
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -298,14 +389,21 @@ class RandomStringTypeConf:
     """
 
     def __init__(self, dictObj=None):
-
         self.strType = None
-
         self.maxLength = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.strType is not None:
+            ret["strType"] = RandomStringTypeConfStrTypeEnum.valueAsString(self.strType)
+        if self.maxLength is not None:
+            ret["maxLength"] = self.maxLength
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -321,14 +419,21 @@ class RandomNumTypeConf:
     """
 
     def __init__(self, dictObj=None):
-
         self.minValue = None
-
         self.maxValue = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.minValue is not None:
+            ret["minValue"] = self.minValue
+        if self.maxValue is not None:
+            ret["maxValue"] = self.maxValue
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -344,14 +449,21 @@ class RandomDateTypeConf:
     """
 
     def __init__(self, dictObj=None):
-
         self.minValue = None
-
         self.maxValue = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.minValue is not None:
+            ret["minValue"] = self.minValue
+        if self.maxValue is not None:
+            ret["maxValue"] = self.maxValue
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -367,14 +479,21 @@ class RandomTimeTypeConf:
     """
 
     def __init__(self, dictObj=None):
-
         self.minValue = None
-
         self.maxValue = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.minValue is not None:
+            ret["minValue"] = self.minValue
+        if self.maxValue is not None:
+            ret["maxValue"] = self.maxValue
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -390,14 +509,21 @@ class RandomDurationTypeConf:
     """
 
     def __init__(self, dictObj=None):
-
         self.minValue = None
-
         self.maxValue = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.minValue is not None:
+            ret["minValue"] = self.minValue
+        if self.maxValue is not None:
+            ret["maxValue"] = self.maxValue
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:

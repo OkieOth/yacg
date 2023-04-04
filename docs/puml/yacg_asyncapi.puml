@@ -3,8 +3,6 @@
 hide empty methods
 hide empty fields
 
-modelTypes.size = 15
-
 
 class "**OperationBase**" as OperationBase {
         StringType operationId

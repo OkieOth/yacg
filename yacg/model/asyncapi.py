@@ -1,6 +1,6 @@
 # Attention, this file is generated. Manual changes get lost with the next
 # run of the code generation.
-# created by yacg (template: pythonBeans.mako v1.0.0)
+# created by yacg (template: pythonBeans.mako v1.1.0)
 
 from enum import Enum
 import yacg.model.shared.info
@@ -31,6 +31,23 @@ class OperationBase:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.operationId is not None:
+            ret["operationId"] = self.operationId
+        if self.summary is not None:
+            ret["summary"] = self.summary
+        if self.description is not None:
+            ret["description"] = self.description
+        if self.message is not None:
+            ret["message"] = self.message.toDict()
+        if self.amqpBindings is not None:
+            ret["amqpBindings"] = self.amqpBindings.toDict()
+        if self.xResponseMessage is not None:
+            ret["xResponseMessage"] = self.xResponseMessage.toDict()
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -75,12 +92,28 @@ class Message:
 
         #: this is basically a complex type, whos top-level properties are used as keys for AMQP headers
         self.headers = None
-
         self.description = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.payload is not None:
+            ret["payload"] = self.payload.toDict()
+        if self.amqpBindings is not None:
+            ret["amqpBindings"] = self.amqpBindings.toDict()
+        if self.contentType is not None:
+            ret["contentType"] = self.contentType
+        if self.headers is not None:
+            ret["headers"] = self.headers.toDict()
+        if self.description is not None:
+            ret["description"] = self.description
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -113,16 +146,26 @@ class OperationBindingsAmqp:
 
         #: optional name, is used when defined in the components section
         self.name = None
-
         self.expiration = None
-
         self.mandatory = False
-
         self.replyTo = "amq.rabbitmq.reply-to"
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.expiration is not None:
+            ret["expiration"] = self.expiration
+        if self.mandatory is not None:
+            ret["mandatory"] = self.mandatory
+        if self.replyTo is not None:
+            ret["replyTo"] = self.replyTo
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -149,6 +192,11 @@ class AsyncApiInfo (yacg.model.shared.info.InfoSection):
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        return ret
+
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -159,20 +207,30 @@ class AsyncApiServer:
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.url = None
-
         self.description = None
-
         self.protocol = None
-
         self.protocolVersion = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.url is not None:
+            ret["url"] = self.url
+        if self.description is not None:
+            ret["description"] = self.description
+        if self.protocol is not None:
+            ret["protocol"] = self.protocol
+        if self.protocolVersion is not None:
+            ret["protocolVersion"] = self.protocolVersion
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -194,22 +252,33 @@ class Channel:
     """
 
     def __init__(self, dictObj=None):
-
         self.key = None
-
         self.description = None
-
         self.parameters = []
-
         self.publish = None
-
         self.subscribe = None
-
         self.amqpBindings = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.key is not None:
+            ret["key"] = self.key
+        if self.description is not None:
+            ret["description"] = self.description
+        if (self.parameters is not None) and (len(self.parameters) > 0):
+            ret["parameters"] = self.parameters.toDict()
+        if self.publish is not None:
+            ret["publish"] = self.publish.toDict()
+        if self.subscribe is not None:
+            ret["subscribe"] = self.subscribe.toDict()
+        if self.amqpBindings is not None:
+            ret["amqpBindings"] = self.amqpBindings.toDict()
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -242,16 +311,24 @@ class Parameter:
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.description = None
-
         self.type = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.description is not None:
+            ret["description"] = self.description
+        if self.type is not None:
+            ret["type"] = self.type
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -272,16 +349,26 @@ class ChannelBindingsAmqp:
 
         #: optional name, is used when defined in the components section
         self.name = None
-
         self.isType = ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY
-
         self.queue = None
-
         self.exchange = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.isType is not None:
+            ret["isType"] = ChannelBindingsAmqpIsTypeEnum.valueAsString(self.isType)
+        if self.queue is not None:
+            ret["queue"] = self.queue.toDict()
+        if self.exchange is not None:
+            ret["exchange"] = self.exchange.toDict()
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -305,18 +392,27 @@ class ChannelBindingsAmqpExchange:
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.type = None
-
         self.durable = False
-
         self.autoDelete = False
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.type is not None:
+            ret["type"] = ChannelBindingsAmqpExchangeTypeEnum.valueAsString(self.type)
+        if self.durable is not None:
+            ret["durable"] = self.durable
+        if self.autoDelete is not None:
+            ret["autoDelete"] = self.autoDelete
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -380,18 +476,27 @@ class ChannelBindingsAmqpQueue:
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.durable = False
-
         self.exclusive = False
-
         self.autoDelete = False
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.durable is not None:
+            ret["durable"] = self.durable
+        if self.exclusive is not None:
+            ret["exclusive"] = self.exclusive
+        if self.autoDelete is not None:
+            ret["autoDelete"] = self.autoDelete
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -440,12 +545,20 @@ class Payload:
 
         #: meta model type that is passed in the body
         self.type = None
-
         self.isArray = False
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.type is not None:
+            ret["type"] = self.type.toDict()
+        if self.isArray is not None:
+            ret["isArray"] = self.isArray
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -477,6 +590,17 @@ class MessageBindingsAmqp:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.contentEncoding is not None:
+            ret["contentEncoding"] = self.contentEncoding
+        if self.messageType is not None:
+            ret["messageType"] = self.messageType
+        return ret
+
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -496,6 +620,11 @@ class AsyncApiHeaders (yacg.model.model.ComplexType):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:

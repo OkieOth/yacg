@@ -1,6 +1,6 @@
 # Attention, this file is generated. Manual changes get lost with the next
 # run of the code generation.
-# created by yacg (template: pythonBeans.mako v1.0.0)
+# created by yacg (template: pythonBeans.mako v1.1.0)
 
 from enum import Enum
 
@@ -26,6 +26,19 @@ class Job:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.description is not None:
+            ret["description"] = self.description
+        if (self.models is not None) and (len(self.models) > 0):
+            ret["models"] = self.models.toDict()
+        if (self.tasks is not None) and (len(self.tasks) > 0):
+            ret["tasks"] = self.tasks.toDict()
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -67,6 +80,19 @@ class Model:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.schema is not None:
+            ret["schema"] = self.schema
+        if self.domain is not None:
+            ret["domain"] = self.domain
+        if (self.blackListed is not None) and (len(self.blackListed) > 0):
+            ret["blackListed"] = self.blackListed.toDict()
+        if (self.whiteListed is not None) and (len(self.whiteListed) > 0):
+            ret["whiteListed"] = self.whiteListed.toDict()
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -115,6 +141,23 @@ class Task:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.description is not None:
+            ret["description"] = self.description
+        if (self.blackListed is not None) and (len(self.blackListed) > 0):
+            ret["blackListed"] = self.blackListed.toDict()
+        if (self.whiteListed is not None) and (len(self.whiteListed) > 0):
+            ret["whiteListed"] = self.whiteListed.toDict()
+        if self.singleFileTask is not None:
+            ret["singleFileTask"] = self.singleFileTask.toDict()
+        if self.multiFileTask is not None:
+            ret["multiFileTask"] = self.multiFileTask.toDict()
+        return ret
+
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -157,6 +200,15 @@ class BlackWhiteListEntry:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.type is not None:
+            ret["type"] = BlackWhiteListEntryTypeEnum.valueAsString(self.type)
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -235,6 +287,17 @@ class SingleFileTask:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.template is not None:
+            ret["template"] = self.template
+        if self.destFile is not None:
+            ret["destFile"] = self.destFile
+        if (self.templateParams is not None) and (len(self.templateParams) > 0):
+            ret["templateParams"] = self.templateParams.toDict()
+        return ret
+
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -273,6 +336,21 @@ class TemplateParam:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.value is not None:
+            ret["value"] = self.value
+        if (self.requiredDomains is not None) and (len(self.requiredDomains) > 0):
+            ret["requiredDomains"] = self.requiredDomains
+        if (self.requiredTags is not None) and (len(self.requiredTags) > 0):
+            ret["requiredTags"] = self.requiredTags
+        if (self.requiredNames is not None) and (len(self.requiredNames) > 0):
+            ret["requiredNames"] = self.requiredNames
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -334,6 +412,31 @@ class MultiFileTask:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.template is not None:
+            ret["template"] = self.template
+        if self.destDir is not None:
+            ret["destDir"] = self.destDir
+        if self.destFilePrefix is not None:
+            ret["destFilePrefix"] = self.destFilePrefix
+        if self.destFilePostfix is not None:
+            ret["destFilePostfix"] = self.destFilePostfix
+        if self.destFileExt is not None:
+            ret["destFileExt"] = self.destFileExt
+        if self.upperCaseStartedDestFileName is not None:
+            ret["upperCaseStartedDestFileName"] = self.upperCaseStartedDestFileName
+        if self.fileFilterType is not None:
+            ret["fileFilterType"] = MultiFileTaskFileFilterTypeEnum.valueAsString(self.fileFilterType)
+        if (self.templateParams is not None) and (len(self.templateParams) > 0):
+            ret["templateParams"] = self.templateParams.toDict()
+        if self.createOnlyIfNotExist is not None:
+            ret["createOnlyIfNotExist"] = self.createOnlyIfNotExist
+        if self.createTmpFileIfAlreadyExist is not None:
+            ret["createTmpFileIfAlreadyExist"] = self.createTmpFileIfAlreadyExist
+        return ret
+
 
     def initFromDict(self, dictObj):
         if dictObj is None:
