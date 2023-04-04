@@ -156,7 +156,8 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
     def flatConfigOptions(cls, path=""):
         ret = []
             % for property in type.properties:
-                ret.append({"${property.name}": {"path": path}})
+        ret.append({"${property.name}": {"path": path}})
+            % endfor
         return ret
 
 
