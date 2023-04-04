@@ -191,10 +191,10 @@ def create${type.name}FromFlatDict(flatDict={}):
     for key, value in flatDict.items():
         % for property in type.properties:
             % if modelFuncs.isBaseType(property.type):
-        if key == "${property.name}"
+        if key == "${property.name}":
             ret.${property.name} = value
             % elif isinstance(property.type, model.EnumType):
-        if key == "${property.name}"
+        if key == "${property.name}":
             ret.${property.name} = ${property.type.name}.valueForString(value)
             % elif isinstance(property.type, model.ComplexType):
         ret.${property.name}.initFlatValue(key, value)
