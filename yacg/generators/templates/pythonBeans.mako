@@ -87,8 +87,8 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         pass
         % else:
             % for property in type.properties:
-
                 % if property.description != None:
+
         #: ${property.description}
                 % endif
         self.${property.name} = ${pythonFuncs.getDefaultPythonValue(property)}
@@ -128,8 +128,8 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
 
         % if includeFlatInit and hasattr(type, "properties") and len(type.properties) > 0:
     @classmethod
-    def initWithFlatValue(cls, attribName, value):
-        ret = None
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
             % for property in type.properties:
                 % if modelFuncs.isBaseType(property.type):
         if attribName == "${property.name}":
@@ -142,10 +142,11 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                 ret = ${type.name}()
             ret.${property.name} = ${property.type.name}.valueForString(value)
                 % elif isinstance(property.type, model.ComplexType):
-        ${property.name}Tmp = ${property.type.name}.initWithFlatValue(attribName, value)
+        initObj = ret.${property.name} if ret is not None else None
+        ${property.name}Tmp = ${property.type.name}.initWithFlatValue(attribName, value, initObj)
         if ${property.name}Tmp is not None:
             if ret is None:
-                ret = ${type.name}
+                ret = ${type.name}()
             ret.${property.name} = ${property.name}Tmp
                 % endif
             % endfor
@@ -167,10 +168,11 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                     ret = ${type.name}()
                 ret.${property.name} = ${property.type.name}.valueForString(value)
                 % elif isinstance(property.type, model.ComplexType):
-            ${property.name}Tmp = ${property.type.name}.initWithFlatValue(attribName, value)
+            initObj = ret.${property.name} if ret is not None else None
+            ${property.name}Tmp = ${property.type.name}.initWithFlatValue(attribName, value, initObj)
             if ${property.name}Tmp is not None:
                 if ret is None:
-                    ret = ${type.name}
+                    ret = ${type.name}()
                 ret.${property.name} = ${property.name}Tmp
                 % endif
             % endfor

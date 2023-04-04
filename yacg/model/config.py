@@ -39,13 +39,56 @@ class Job:
             ret["tasks"] = self.tasks.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = Job()
+            ret.name = value
         if attribName == "description":
-            self.description = value
-        self.models.initFlatValue(attribName, value)
-        self.tasks.initFlatValue(attribName, value)
+            if ret is None:
+                ret = Job()
+            ret.description = value
+        initObj = ret.models if ret is not None else None
+        modelsTmp = Model.initWithFlatValue(attribName, value, initObj)
+        if modelsTmp is not None:
+            if ret is None:
+                ret = Job()
+            ret.models = modelsTmp
+        initObj = ret.tasks if ret is not None else None
+        tasksTmp = Task.initWithFlatValue(attribName, value, initObj)
+        if tasksTmp is not None:
+            if ret is None:
+                ret = Job()
+            ret.tasks = tasksTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = Job()
+                ret.name = value
+            if key == "description":
+                if ret is None:
+                    ret = Job()
+                ret.description = value
+            initObj = ret.models if ret is not None else None
+            modelsTmp = Model.initWithFlatValue(attribName, value, initObj)
+            if modelsTmp is not None:
+                if ret is None:
+                    ret = Job()
+                ret.models = modelsTmp
+            initObj = ret.tasks if ret is not None else None
+            tasksTmp = Task.initWithFlatValue(attribName, value, initObj)
+            if tasksTmp is not None:
+                if ret is None:
+                    ret = Job()
+                ret.tasks = tasksTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -65,17 +108,6 @@ class Job:
             self.tasks.append(
                 Task(elemTasks))
 
-
-def createJobFromFlatDict(flatDict={}):
-    ret = Job()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "description":
-            ret.description = value
-        ret.models.initFlatValue(key, value)
-        ret.tasks.initFlatValue(key, value)
-    return ret
 
 class Model:
     """A model that should be used
@@ -111,13 +143,56 @@ class Model:
             ret["whiteListed"] = self.whiteListed.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "schema":
-            self.schema = value
+            if ret is None:
+                ret = Model()
+            ret.schema = value
         if attribName == "domain":
-            self.domain = value
-        self.blackListed.initFlatValue(attribName, value)
-        self.whiteListed.initFlatValue(attribName, value)
+            if ret is None:
+                ret = Model()
+            ret.domain = value
+        initObj = ret.blackListed if ret is not None else None
+        blackListedTmp = BlackWhiteListEntry.initWithFlatValue(attribName, value, initObj)
+        if blackListedTmp is not None:
+            if ret is None:
+                ret = Model()
+            ret.blackListed = blackListedTmp
+        initObj = ret.whiteListed if ret is not None else None
+        whiteListedTmp = BlackWhiteListEntry.initWithFlatValue(attribName, value, initObj)
+        if whiteListedTmp is not None:
+            if ret is None:
+                ret = Model()
+            ret.whiteListed = whiteListedTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "schema":
+                if ret is None:
+                    ret = Model()
+                ret.schema = value
+            if key == "domain":
+                if ret is None:
+                    ret = Model()
+                ret.domain = value
+            initObj = ret.blackListed if ret is not None else None
+            blackListedTmp = BlackWhiteListEntry.initWithFlatValue(attribName, value, initObj)
+            if blackListedTmp is not None:
+                if ret is None:
+                    ret = Model()
+                ret.blackListed = blackListedTmp
+            initObj = ret.whiteListed if ret is not None else None
+            whiteListedTmp = BlackWhiteListEntry.initWithFlatValue(attribName, value, initObj)
+            if whiteListedTmp is not None:
+                if ret is None:
+                    ret = Model()
+                ret.whiteListed = whiteListedTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -137,17 +212,6 @@ class Model:
             self.whiteListed.append(
                 BlackWhiteListEntry(elemWhiteListed))
 
-
-def createModelFromFlatDict(flatDict={}):
-    ret = Model()
-    for key, value in flatDict.items():
-        if key == "schema":
-            ret.schema = value
-        if key == "domain":
-            ret.domain = value
-        ret.blackListed.initFlatValue(key, value)
-        ret.whiteListed.initFlatValue(key, value)
-    return ret
 
 class Task:
     """A task to run
@@ -193,15 +257,80 @@ class Task:
             ret["multiFileTask"] = self.multiFileTask.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = Task()
+            ret.name = value
         if attribName == "description":
-            self.description = value
-        self.blackListed.initFlatValue(attribName, value)
-        self.whiteListed.initFlatValue(attribName, value)
-        self.singleFileTask.initFlatValue(attribName, value)
-        self.multiFileTask.initFlatValue(attribName, value)
+            if ret is None:
+                ret = Task()
+            ret.description = value
+        initObj = ret.blackListed if ret is not None else None
+        blackListedTmp = BlackWhiteListEntry.initWithFlatValue(attribName, value, initObj)
+        if blackListedTmp is not None:
+            if ret is None:
+                ret = Task()
+            ret.blackListed = blackListedTmp
+        initObj = ret.whiteListed if ret is not None else None
+        whiteListedTmp = BlackWhiteListEntry.initWithFlatValue(attribName, value, initObj)
+        if whiteListedTmp is not None:
+            if ret is None:
+                ret = Task()
+            ret.whiteListed = whiteListedTmp
+        initObj = ret.singleFileTask if ret is not None else None
+        singleFileTaskTmp = SingleFileTask.initWithFlatValue(attribName, value, initObj)
+        if singleFileTaskTmp is not None:
+            if ret is None:
+                ret = Task()
+            ret.singleFileTask = singleFileTaskTmp
+        initObj = ret.multiFileTask if ret is not None else None
+        multiFileTaskTmp = MultiFileTask.initWithFlatValue(attribName, value, initObj)
+        if multiFileTaskTmp is not None:
+            if ret is None:
+                ret = Task()
+            ret.multiFileTask = multiFileTaskTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = Task()
+                ret.name = value
+            if key == "description":
+                if ret is None:
+                    ret = Task()
+                ret.description = value
+            initObj = ret.blackListed if ret is not None else None
+            blackListedTmp = BlackWhiteListEntry.initWithFlatValue(attribName, value, initObj)
+            if blackListedTmp is not None:
+                if ret is None:
+                    ret = Task()
+                ret.blackListed = blackListedTmp
+            initObj = ret.whiteListed if ret is not None else None
+            whiteListedTmp = BlackWhiteListEntry.initWithFlatValue(attribName, value, initObj)
+            if whiteListedTmp is not None:
+                if ret is None:
+                    ret = Task()
+                ret.whiteListed = whiteListedTmp
+            initObj = ret.singleFileTask if ret is not None else None
+            singleFileTaskTmp = SingleFileTask.initWithFlatValue(attribName, value, initObj)
+            if singleFileTaskTmp is not None:
+                if ret is None:
+                    ret = Task()
+                ret.singleFileTask = singleFileTaskTmp
+            initObj = ret.multiFileTask if ret is not None else None
+            multiFileTaskTmp = MultiFileTask.initWithFlatValue(attribName, value, initObj)
+            if multiFileTaskTmp is not None:
+                if ret is None:
+                    ret = Task()
+                ret.multiFileTask = multiFileTaskTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -230,19 +359,6 @@ class Task:
             self.multiFileTask = MultiFileTask(subDictObj)
 
 
-def createTaskFromFlatDict(flatDict={}):
-    ret = Task()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "description":
-            ret.description = value
-        ret.blackListed.initFlatValue(key, value)
-        ret.whiteListed.initFlatValue(key, value)
-        ret.singleFileTask.initFlatValue(key, value)
-        ret.multiFileTask.initFlatValue(key, value)
-    return ret
-
 class BlackWhiteListEntry:
     """entry of a type back/white list
     """
@@ -267,11 +383,32 @@ class BlackWhiteListEntry:
             ret["type"] = BlackWhiteListEntryTypeEnum.valueAsString(self.type)
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = BlackWhiteListEntry()
+            ret.name = value
         if attribName == "type":
-            self.type = BlackWhiteListEntryTypeEnum.valueForString(value)
+            if ret is None:
+                ret = BlackWhiteListEntry()
+            ret.type = BlackWhiteListEntryTypeEnum.valueForString(value)
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = BlackWhiteListEntry()
+                ret.name = value
+            if key == "type":
+                if ret is None:
+                    ret = BlackWhiteListEntry()
+                ret.type = BlackWhiteListEntryTypeEnum.valueForString(value)
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -281,15 +418,6 @@ class BlackWhiteListEntry:
 
         self.type = BlackWhiteListEntryTypeEnum.valueForString(dictObj.get('type', None))
 
-
-def createBlackWhiteListEntryFromFlatDict(flatDict={}):
-    ret = BlackWhiteListEntry()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "type":
-            ret.type = BlackWhiteListEntryTypeEnum.valueForString(value)
-    return ret
 
 class BlackWhiteListEntryTypeEnum(Enum):
     TYPE = 'type'
@@ -340,7 +468,6 @@ class BlackWhiteListEntryTypeEnum(Enum):
 
 
 
-
 class SingleFileTask:
     """parameter of a code generation task that creates one file
     """
@@ -370,12 +497,44 @@ class SingleFileTask:
             ret["templateParams"] = self.templateParams.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "template":
-            self.template = value
+            if ret is None:
+                ret = SingleFileTask()
+            ret.template = value
         if attribName == "destFile":
-            self.destFile = value
-        self.templateParams.initFlatValue(attribName, value)
+            if ret is None:
+                ret = SingleFileTask()
+            ret.destFile = value
+        initObj = ret.templateParams if ret is not None else None
+        templateParamsTmp = TemplateParam.initWithFlatValue(attribName, value, initObj)
+        if templateParamsTmp is not None:
+            if ret is None:
+                ret = SingleFileTask()
+            ret.templateParams = templateParamsTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "template":
+                if ret is None:
+                    ret = SingleFileTask()
+                ret.template = value
+            if key == "destFile":
+                if ret is None:
+                    ret = SingleFileTask()
+                ret.destFile = value
+            initObj = ret.templateParams if ret is not None else None
+            templateParamsTmp = TemplateParam.initWithFlatValue(attribName, value, initObj)
+            if templateParamsTmp is not None:
+                if ret is None:
+                    ret = SingleFileTask()
+                ret.templateParams = templateParamsTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -390,16 +549,6 @@ class SingleFileTask:
             self.templateParams.append(
                 TemplateParam(elemTemplateParams))
 
-
-def createSingleFileTaskFromFlatDict(flatDict={}):
-    ret = SingleFileTask()
-    for key, value in flatDict.items():
-        if key == "template":
-            ret.template = value
-        if key == "destFile":
-            ret.destFile = value
-        ret.templateParams.initFlatValue(key, value)
-    return ret
 
 class TemplateParam:
     """additional, template specific custom parameter for codegen task
@@ -440,17 +589,56 @@ class TemplateParam:
             ret["requiredNames"] = self.requiredNames
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = TemplateParam()
+            ret.name = value
         if attribName == "value":
-            self.value = value
+            if ret is None:
+                ret = TemplateParam()
+            ret.value = value
         if attribName == "requiredDomains":
-            self.requiredDomains = value
+            if ret is None:
+                ret = TemplateParam()
+            ret.requiredDomains = value
         if attribName == "requiredTags":
-            self.requiredTags = value
+            if ret is None:
+                ret = TemplateParam()
+            ret.requiredTags = value
         if attribName == "requiredNames":
-            self.requiredNames = value
+            if ret is None:
+                ret = TemplateParam()
+            ret.requiredNames = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = TemplateParam()
+                ret.name = value
+            if key == "value":
+                if ret is None:
+                    ret = TemplateParam()
+                ret.value = value
+            if key == "requiredDomains":
+                if ret is None:
+                    ret = TemplateParam()
+                ret.requiredDomains = value
+            if key == "requiredTags":
+                if ret is None:
+                    ret = TemplateParam()
+                ret.requiredTags = value
+            if key == "requiredNames":
+                if ret is None:
+                    ret = TemplateParam()
+                ret.requiredNames = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -472,21 +660,6 @@ class TemplateParam:
         for elemRequiredNames in arrayRequiredNames:
             self.requiredNames.append(elemRequiredNames)
 
-
-def createTemplateParamFromFlatDict(flatDict={}):
-    ret = TemplateParam()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "value":
-            ret.value = value
-        if key == "requiredDomains":
-            ret.requiredDomains = value
-        if key == "requiredTags":
-            ret.requiredTags = value
-        if key == "requiredNames":
-            ret.requiredNames = value
-    return ret
 
 class MultiFileTask:
     """parameter of a code generation task that creates one file per model type
@@ -552,26 +725,100 @@ class MultiFileTask:
             ret["createTmpFileIfAlreadyExist"] = self.createTmpFileIfAlreadyExist
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "template":
-            self.template = value
+            if ret is None:
+                ret = MultiFileTask()
+            ret.template = value
         if attribName == "destDir":
-            self.destDir = value
+            if ret is None:
+                ret = MultiFileTask()
+            ret.destDir = value
         if attribName == "destFilePrefix":
-            self.destFilePrefix = value
+            if ret is None:
+                ret = MultiFileTask()
+            ret.destFilePrefix = value
         if attribName == "destFilePostfix":
-            self.destFilePostfix = value
+            if ret is None:
+                ret = MultiFileTask()
+            ret.destFilePostfix = value
         if attribName == "destFileExt":
-            self.destFileExt = value
+            if ret is None:
+                ret = MultiFileTask()
+            ret.destFileExt = value
         if attribName == "upperCaseStartedDestFileName":
-            self.upperCaseStartedDestFileName = value
+            if ret is None:
+                ret = MultiFileTask()
+            ret.upperCaseStartedDestFileName = value
         if attribName == "fileFilterType":
-            self.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(value)
-        self.templateParams.initFlatValue(attribName, value)
+            if ret is None:
+                ret = MultiFileTask()
+            ret.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(value)
+        initObj = ret.templateParams if ret is not None else None
+        templateParamsTmp = TemplateParam.initWithFlatValue(attribName, value, initObj)
+        if templateParamsTmp is not None:
+            if ret is None:
+                ret = MultiFileTask()
+            ret.templateParams = templateParamsTmp
         if attribName == "createOnlyIfNotExist":
-            self.createOnlyIfNotExist = value
+            if ret is None:
+                ret = MultiFileTask()
+            ret.createOnlyIfNotExist = value
         if attribName == "createTmpFileIfAlreadyExist":
-            self.createTmpFileIfAlreadyExist = value
+            if ret is None:
+                ret = MultiFileTask()
+            ret.createTmpFileIfAlreadyExist = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "template":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.template = value
+            if key == "destDir":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.destDir = value
+            if key == "destFilePrefix":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.destFilePrefix = value
+            if key == "destFilePostfix":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.destFilePostfix = value
+            if key == "destFileExt":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.destFileExt = value
+            if key == "upperCaseStartedDestFileName":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.upperCaseStartedDestFileName = value
+            if key == "fileFilterType":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(value)
+            initObj = ret.templateParams if ret is not None else None
+            templateParamsTmp = TemplateParam.initWithFlatValue(attribName, value, initObj)
+            if templateParamsTmp is not None:
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.templateParams = templateParamsTmp
+            if key == "createOnlyIfNotExist":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.createOnlyIfNotExist = value
+            if key == "createTmpFileIfAlreadyExist":
+                if ret is None:
+                    ret = MultiFileTask()
+                ret.createTmpFileIfAlreadyExist = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -601,30 +848,6 @@ class MultiFileTask:
         self.createTmpFileIfAlreadyExist = dictObj.get('createTmpFileIfAlreadyExist', False)
 
 
-def createMultiFileTaskFromFlatDict(flatDict={}):
-    ret = MultiFileTask()
-    for key, value in flatDict.items():
-        if key == "template":
-            ret.template = value
-        if key == "destDir":
-            ret.destDir = value
-        if key == "destFilePrefix":
-            ret.destFilePrefix = value
-        if key == "destFilePostfix":
-            ret.destFilePostfix = value
-        if key == "destFileExt":
-            ret.destFileExt = value
-        if key == "upperCaseStartedDestFileName":
-            ret.upperCaseStartedDestFileName = value
-        if key == "fileFilterType":
-            ret.fileFilterType = MultiFileTaskFileFilterTypeEnum.valueForString(value)
-        ret.templateParams.initFlatValue(key, value)
-        if key == "createOnlyIfNotExist":
-            ret.createOnlyIfNotExist = value
-        if key == "createTmpFileIfAlreadyExist":
-            ret.createTmpFileIfAlreadyExist = value
-    return ret
-
 class MultiFileTaskFileFilterTypeEnum(Enum):
     TYPE = 'type'
     OPENAPIOPERATIONID = 'openApiOperationId'
@@ -651,7 +874,6 @@ class MultiFileTaskFileFilterTypeEnum(Enum):
             return 'openApiOperationId'
         else:
             return ''
-
 
 
 

@@ -24,9 +24,24 @@ class Type:
             ret["processing"] = self.processing
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "processing":
-            self.processing = value
+            if ret is None:
+                ret = Type()
+            ret.processing = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "processing":
+                if ret is None:
+                    ret = Type()
+                ret.processing = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -34,13 +49,6 @@ class Type:
 
         self.processing = dictObj.get('processing', None)
 
-
-def createTypeFromFlatDict(flatDict={}):
-    ret = Type()
-    for key, value in flatDict.items():
-        if key == "processing":
-            ret.processing = value
-    return ret
 
 class ObjectType (Type):
     """Straight out of hell - a undefined object type
@@ -62,7 +70,6 @@ class ObjectType (Type):
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
-
 
 
 class IntegerTypeFormatEnum(Enum):
@@ -94,24 +101,17 @@ class IntegerTypeFormatEnum(Enum):
 
 
 
-
 class IntegerType (Type):
     """integer values
     """
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.format = None
-
         self.default = None
-
         self.minimum = None
-
         self.exclusiveMinimum = None
-
         self.maximum = None
-
         self.exclusiveMaximum = None
 
         if dictObj is not None:
@@ -134,19 +134,64 @@ class IntegerType (Type):
             ret["exclusiveMaximum"] = self.exclusiveMaximum
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "format":
-            self.format = IntegerTypeFormatEnum.valueForString(value)
+            if ret is None:
+                ret = IntegerType()
+            ret.format = IntegerTypeFormatEnum.valueForString(value)
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = IntegerType()
+            ret.default = value
         if attribName == "minimum":
-            self.minimum = value
+            if ret is None:
+                ret = IntegerType()
+            ret.minimum = value
         if attribName == "exclusiveMinimum":
-            self.exclusiveMinimum = value
+            if ret is None:
+                ret = IntegerType()
+            ret.exclusiveMinimum = value
         if attribName == "maximum":
-            self.maximum = value
+            if ret is None:
+                ret = IntegerType()
+            ret.maximum = value
         if attribName == "exclusiveMaximum":
-            self.exclusiveMaximum = value
+            if ret is None:
+                ret = IntegerType()
+            ret.exclusiveMaximum = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "format":
+                if ret is None:
+                    ret = IntegerType()
+                ret.format = IntegerTypeFormatEnum.valueForString(value)
+            if key == "default":
+                if ret is None:
+                    ret = IntegerType()
+                ret.default = value
+            if key == "minimum":
+                if ret is None:
+                    ret = IntegerType()
+                ret.minimum = value
+            if key == "exclusiveMinimum":
+                if ret is None:
+                    ret = IntegerType()
+                ret.exclusiveMinimum = value
+            if key == "maximum":
+                if ret is None:
+                    ret = IntegerType()
+                ret.maximum = value
+            if key == "exclusiveMaximum":
+                if ret is None:
+                    ret = IntegerType()
+                ret.exclusiveMaximum = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -164,23 +209,6 @@ class IntegerType (Type):
 
         self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
-
-def createIntegerTypeFromFlatDict(flatDict={}):
-    ret = IntegerType()
-    for key, value in flatDict.items():
-        if key == "format":
-            ret.format = IntegerTypeFormatEnum.valueForString(value)
-        if key == "default":
-            ret.default = value
-        if key == "minimum":
-            ret.minimum = value
-        if key == "exclusiveMinimum":
-            ret.exclusiveMinimum = value
-        if key == "maximum":
-            ret.maximum = value
-        if key == "exclusiveMaximum":
-            ret.exclusiveMaximum = value
-    return ret
 
 class NumberTypeFormatEnum(Enum):
     FLOAT = 'float'
@@ -211,24 +239,17 @@ class NumberTypeFormatEnum(Enum):
 
 
 
-
 class NumberType (Type):
     """floating point values
     """
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.format = None
-
         self.default = None
-
         self.minimum = None
-
         self.exclusiveMinimum = None
-
         self.maximum = None
-
         self.exclusiveMaximum = None
 
         if dictObj is not None:
@@ -251,19 +272,64 @@ class NumberType (Type):
             ret["exclusiveMaximum"] = self.exclusiveMaximum
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "format":
-            self.format = NumberTypeFormatEnum.valueForString(value)
+            if ret is None:
+                ret = NumberType()
+            ret.format = NumberTypeFormatEnum.valueForString(value)
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = NumberType()
+            ret.default = value
         if attribName == "minimum":
-            self.minimum = value
+            if ret is None:
+                ret = NumberType()
+            ret.minimum = value
         if attribName == "exclusiveMinimum":
-            self.exclusiveMinimum = value
+            if ret is None:
+                ret = NumberType()
+            ret.exclusiveMinimum = value
         if attribName == "maximum":
-            self.maximum = value
+            if ret is None:
+                ret = NumberType()
+            ret.maximum = value
         if attribName == "exclusiveMaximum":
-            self.exclusiveMaximum = value
+            if ret is None:
+                ret = NumberType()
+            ret.exclusiveMaximum = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "format":
+                if ret is None:
+                    ret = NumberType()
+                ret.format = NumberTypeFormatEnum.valueForString(value)
+            if key == "default":
+                if ret is None:
+                    ret = NumberType()
+                ret.default = value
+            if key == "minimum":
+                if ret is None:
+                    ret = NumberType()
+                ret.minimum = value
+            if key == "exclusiveMinimum":
+                if ret is None:
+                    ret = NumberType()
+                ret.exclusiveMinimum = value
+            if key == "maximum":
+                if ret is None:
+                    ret = NumberType()
+                ret.maximum = value
+            if key == "exclusiveMaximum":
+                if ret is None:
+                    ret = NumberType()
+                ret.exclusiveMaximum = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -282,30 +348,12 @@ class NumberType (Type):
         self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
-def createNumberTypeFromFlatDict(flatDict={}):
-    ret = NumberType()
-    for key, value in flatDict.items():
-        if key == "format":
-            ret.format = NumberTypeFormatEnum.valueForString(value)
-        if key == "default":
-            ret.default = value
-        if key == "minimum":
-            ret.minimum = value
-        if key == "exclusiveMinimum":
-            ret.exclusiveMinimum = value
-        if key == "maximum":
-            ret.maximum = value
-        if key == "exclusiveMaximum":
-            ret.exclusiveMaximum = value
-    return ret
-
 class BooleanType (Type):
     """boolean values
     """
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.default = None
 
         if dictObj is not None:
@@ -318,9 +366,24 @@ class BooleanType (Type):
             ret["default"] = self.default
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = BooleanType()
+            ret.default = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "default":
+                if ret is None:
+                    ret = BooleanType()
+                ret.default = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -329,26 +392,15 @@ class BooleanType (Type):
         self.default = dictObj.get('default', None)
 
 
-def createBooleanTypeFromFlatDict(flatDict={}):
-    ret = BooleanType()
-    for key, value in flatDict.items():
-        if key == "default":
-            ret.default = value
-    return ret
-
 class StringType (Type):
     """integer values
     """
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.default = None
-
         self.minLength = None
-
         self.maxLength = None
-
         self.pattern = None
 
         if dictObj is not None:
@@ -367,15 +419,48 @@ class StringType (Type):
             ret["pattern"] = self.pattern
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = StringType()
+            ret.default = value
         if attribName == "minLength":
-            self.minLength = value
+            if ret is None:
+                ret = StringType()
+            ret.minLength = value
         if attribName == "maxLength":
-            self.maxLength = value
+            if ret is None:
+                ret = StringType()
+            ret.maxLength = value
         if attribName == "pattern":
-            self.pattern = value
+            if ret is None:
+                ret = StringType()
+            ret.pattern = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "default":
+                if ret is None:
+                    ret = StringType()
+                ret.default = value
+            if key == "minLength":
+                if ret is None:
+                    ret = StringType()
+                ret.minLength = value
+            if key == "maxLength":
+                if ret is None:
+                    ret = StringType()
+                ret.maxLength = value
+            if key == "pattern":
+                if ret is None:
+                    ret = StringType()
+                ret.pattern = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -390,26 +475,12 @@ class StringType (Type):
         self.pattern = dictObj.get('pattern', None)
 
 
-def createStringTypeFromFlatDict(flatDict={}):
-    ret = StringType()
-    for key, value in flatDict.items():
-        if key == "default":
-            ret.default = value
-        if key == "minLength":
-            ret.minLength = value
-        if key == "maxLength":
-            ret.maxLength = value
-        if key == "pattern":
-            ret.pattern = value
-    return ret
-
 class UuidType (Type):
     """UUID values
     """
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.default = None
 
         if dictObj is not None:
@@ -422,9 +493,24 @@ class UuidType (Type):
             ret["default"] = self.default
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = UuidType()
+            ret.default = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "default":
+                if ret is None:
+                    ret = UuidType()
+                ret.default = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -432,13 +518,6 @@ class UuidType (Type):
 
         self.default = dictObj.get('default', None)
 
-
-def createUuidTypeFromFlatDict(flatDict={}):
-    ret = UuidType()
-    for key, value in flatDict.items():
-        if key == "default":
-            ret.default = value
-    return ret
 
 class EnumTypeValuesMap:
     """additional enum values
@@ -461,15 +540,12 @@ class EnumTypeValuesMap:
             return
 
 
-
 class Tag:
     """a tag type
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.value = None
 
         if dictObj is not None:
@@ -484,11 +560,32 @@ class Tag:
             ret["value"] = self.value
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = Tag()
+            ret.name = value
         if attribName == "value":
-            self.value = value
+            if ret is None:
+                ret = Tag()
+            ret.value = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = Tag()
+                ret.name = value
+            if key == "value":
+                if ret is None:
+                    ret = Tag()
+                ret.value = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -499,15 +596,6 @@ class Tag:
         self.value = dictObj.get('value', None)
 
 
-def createTagFromFlatDict(flatDict={}):
-    ret = Tag()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "value":
-            ret.value = value
-    return ret
-
 class EnumType (Type):
     """type for enum values - fixed value types
     """
@@ -517,7 +605,6 @@ class EnumType (Type):
 
         #: is taken from the version entry of the file, optional
         self.version = None
-
         self.name = None
 
         #: scope/domain to that this type belongs
@@ -525,21 +612,16 @@ class EnumType (Type):
 
         #: from what file the Type was loaded
         self.source = None
-
         self.description = None
 
         #: only a string or numeric type make sense
         self.type = None
-
         self.numValues = []
-
         self.values = []
 
         #: additional enum values
         self.valuesMap = None
-
         self.default = None
-
         self.topLevelType = False
 
         #: additional flags to mark a type
@@ -577,27 +659,112 @@ class EnumType (Type):
             ret["tags"] = self.tags.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "version":
-            self.version = value
+            if ret is None:
+                ret = EnumType()
+            ret.version = value
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = EnumType()
+            ret.name = value
         if attribName == "domain":
-            self.domain = value
+            if ret is None:
+                ret = EnumType()
+            ret.domain = value
         if attribName == "source":
-            self.source = value
+            if ret is None:
+                ret = EnumType()
+            ret.source = value
         if attribName == "description":
-            self.description = value
-        self.type.initFlatValue(attribName, value)
+            if ret is None:
+                ret = EnumType()
+            ret.description = value
+        initObj = ret.type if ret is not None else None
+        typeTmp = Type.initWithFlatValue(attribName, value, initObj)
+        if typeTmp is not None:
+            if ret is None:
+                ret = EnumType()
+            ret.type = typeTmp
         if attribName == "numValues":
-            self.numValues = value
+            if ret is None:
+                ret = EnumType()
+            ret.numValues = value
         if attribName == "values":
-            self.values = value
+            if ret is None:
+                ret = EnumType()
+            ret.values = value
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = EnumType()
+            ret.default = value
         if attribName == "topLevelType":
-            self.topLevelType = value
-        self.tags.initFlatValue(attribName, value)
+            if ret is None:
+                ret = EnumType()
+            ret.topLevelType = value
+        initObj = ret.tags if ret is not None else None
+        tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+        if tagsTmp is not None:
+            if ret is None:
+                ret = EnumType()
+            ret.tags = tagsTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "version":
+                if ret is None:
+                    ret = EnumType()
+                ret.version = value
+            if key == "name":
+                if ret is None:
+                    ret = EnumType()
+                ret.name = value
+            if key == "domain":
+                if ret is None:
+                    ret = EnumType()
+                ret.domain = value
+            if key == "source":
+                if ret is None:
+                    ret = EnumType()
+                ret.source = value
+            if key == "description":
+                if ret is None:
+                    ret = EnumType()
+                ret.description = value
+            initObj = ret.type if ret is not None else None
+            typeTmp = Type.initWithFlatValue(attribName, value, initObj)
+            if typeTmp is not None:
+                if ret is None:
+                    ret = EnumType()
+                ret.type = typeTmp
+            if key == "numValues":
+                if ret is None:
+                    ret = EnumType()
+                ret.numValues = value
+            if key == "values":
+                if ret is None:
+                    ret = EnumType()
+                ret.values = value
+            if key == "default":
+                if ret is None:
+                    ret = EnumType()
+                ret.default = value
+            if key == "topLevelType":
+                if ret is None:
+                    ret = EnumType()
+                ret.topLevelType = value
+            initObj = ret.tags if ret is not None else None
+            tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+            if tagsTmp is not None:
+                if ret is None:
+                    ret = EnumType()
+                ret.tags = tagsTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -637,46 +804,16 @@ class EnumType (Type):
                 Tag(elemTags))
 
 
-def createEnumTypeFromFlatDict(flatDict={}):
-    ret = EnumType()
-    for key, value in flatDict.items():
-        if key == "version":
-            ret.version = value
-        if key == "name":
-            ret.name = value
-        if key == "domain":
-            ret.domain = value
-        if key == "source":
-            ret.source = value
-        if key == "description":
-            ret.description = value
-        ret.type.initFlatValue(key, value)
-        if key == "numValues":
-            ret.numValues = value
-        if key == "values":
-            ret.values = value
-        if key == "default":
-            ret.default = value
-        if key == "topLevelType":
-            ret.topLevelType = value
-        ret.tags.initFlatValue(key, value)
-    return ret
-
 class DateType (Type):
     """type for date values
     """
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.default = None
-
         self.minimum = None
-
         self.exclusiveMinimum = None
-
         self.maximum = None
-
         self.exclusiveMaximum = None
 
         if dictObj is not None:
@@ -697,17 +834,56 @@ class DateType (Type):
             ret["exclusiveMaximum"] = self.exclusiveMaximum
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = DateType()
+            ret.default = value
         if attribName == "minimum":
-            self.minimum = value
+            if ret is None:
+                ret = DateType()
+            ret.minimum = value
         if attribName == "exclusiveMinimum":
-            self.exclusiveMinimum = value
+            if ret is None:
+                ret = DateType()
+            ret.exclusiveMinimum = value
         if attribName == "maximum":
-            self.maximum = value
+            if ret is None:
+                ret = DateType()
+            ret.maximum = value
         if attribName == "exclusiveMaximum":
-            self.exclusiveMaximum = value
+            if ret is None:
+                ret = DateType()
+            ret.exclusiveMaximum = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "default":
+                if ret is None:
+                    ret = DateType()
+                ret.default = value
+            if key == "minimum":
+                if ret is None:
+                    ret = DateType()
+                ret.minimum = value
+            if key == "exclusiveMinimum":
+                if ret is None:
+                    ret = DateType()
+                ret.exclusiveMinimum = value
+            if key == "maximum":
+                if ret is None:
+                    ret = DateType()
+                ret.maximum = value
+            if key == "exclusiveMaximum":
+                if ret is None:
+                    ret = DateType()
+                ret.exclusiveMaximum = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -723,21 +899,6 @@ class DateType (Type):
 
         self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
-
-def createDateTypeFromFlatDict(flatDict={}):
-    ret = DateType()
-    for key, value in flatDict.items():
-        if key == "default":
-            ret.default = value
-        if key == "minimum":
-            ret.minimum = value
-        if key == "exclusiveMinimum":
-            ret.exclusiveMinimum = value
-        if key == "maximum":
-            ret.maximum = value
-        if key == "exclusiveMaximum":
-            ret.exclusiveMaximum = value
-    return ret
 
 class TimeType (Type):
     """type for time values
@@ -745,15 +906,10 @@ class TimeType (Type):
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.default = None
-
         self.minimum = None
-
         self.exclusiveMinimum = None
-
         self.maximum = None
-
         self.exclusiveMaximum = None
 
         if dictObj is not None:
@@ -774,17 +930,56 @@ class TimeType (Type):
             ret["exclusiveMaximum"] = self.exclusiveMaximum
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = TimeType()
+            ret.default = value
         if attribName == "minimum":
-            self.minimum = value
+            if ret is None:
+                ret = TimeType()
+            ret.minimum = value
         if attribName == "exclusiveMinimum":
-            self.exclusiveMinimum = value
+            if ret is None:
+                ret = TimeType()
+            ret.exclusiveMinimum = value
         if attribName == "maximum":
-            self.maximum = value
+            if ret is None:
+                ret = TimeType()
+            ret.maximum = value
         if attribName == "exclusiveMaximum":
-            self.exclusiveMaximum = value
+            if ret is None:
+                ret = TimeType()
+            ret.exclusiveMaximum = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "default":
+                if ret is None:
+                    ret = TimeType()
+                ret.default = value
+            if key == "minimum":
+                if ret is None:
+                    ret = TimeType()
+                ret.minimum = value
+            if key == "exclusiveMinimum":
+                if ret is None:
+                    ret = TimeType()
+                ret.exclusiveMinimum = value
+            if key == "maximum":
+                if ret is None:
+                    ret = TimeType()
+                ret.maximum = value
+            if key == "exclusiveMaximum":
+                if ret is None:
+                    ret = TimeType()
+                ret.exclusiveMaximum = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -800,21 +995,6 @@ class TimeType (Type):
 
         self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
-
-def createTimeTypeFromFlatDict(flatDict={}):
-    ret = TimeType()
-    for key, value in flatDict.items():
-        if key == "default":
-            ret.default = value
-        if key == "minimum":
-            ret.minimum = value
-        if key == "exclusiveMinimum":
-            ret.exclusiveMinimum = value
-        if key == "maximum":
-            ret.maximum = value
-        if key == "exclusiveMaximum":
-            ret.exclusiveMaximum = value
-    return ret
 
 class DateTimeType (Type):
     """type for timestamp values
@@ -822,15 +1002,10 @@ class DateTimeType (Type):
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.default = None
-
         self.minimum = None
-
         self.exclusiveMinimum = None
-
         self.maximum = None
-
         self.exclusiveMaximum = None
 
         if dictObj is not None:
@@ -851,17 +1026,56 @@ class DateTimeType (Type):
             ret["exclusiveMaximum"] = self.exclusiveMaximum
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = DateTimeType()
+            ret.default = value
         if attribName == "minimum":
-            self.minimum = value
+            if ret is None:
+                ret = DateTimeType()
+            ret.minimum = value
         if attribName == "exclusiveMinimum":
-            self.exclusiveMinimum = value
+            if ret is None:
+                ret = DateTimeType()
+            ret.exclusiveMinimum = value
         if attribName == "maximum":
-            self.maximum = value
+            if ret is None:
+                ret = DateTimeType()
+            ret.maximum = value
         if attribName == "exclusiveMaximum":
-            self.exclusiveMaximum = value
+            if ret is None:
+                ret = DateTimeType()
+            ret.exclusiveMaximum = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "default":
+                if ret is None:
+                    ret = DateTimeType()
+                ret.default = value
+            if key == "minimum":
+                if ret is None:
+                    ret = DateTimeType()
+                ret.minimum = value
+            if key == "exclusiveMinimum":
+                if ret is None:
+                    ret = DateTimeType()
+                ret.exclusiveMinimum = value
+            if key == "maximum":
+                if ret is None:
+                    ret = DateTimeType()
+                ret.maximum = value
+            if key == "exclusiveMaximum":
+                if ret is None:
+                    ret = DateTimeType()
+                ret.exclusiveMaximum = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -878,28 +1092,12 @@ class DateTimeType (Type):
         self.exclusiveMaximum = dictObj.get('exclusiveMaximum', None)
 
 
-def createDateTimeTypeFromFlatDict(flatDict={}):
-    ret = DateTimeType()
-    for key, value in flatDict.items():
-        if key == "default":
-            ret.default = value
-        if key == "minimum":
-            ret.minimum = value
-        if key == "exclusiveMinimum":
-            ret.exclusiveMinimum = value
-        if key == "maximum":
-            ret.maximum = value
-        if key == "exclusiveMaximum":
-            ret.exclusiveMaximum = value
-    return ret
-
 class DurationType (Type):
     """type for date values
     """
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.default = None
 
         if dictObj is not None:
@@ -912,9 +1110,24 @@ class DurationType (Type):
             ret["default"] = self.default
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = DurationType()
+            ret.default = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "default":
+                if ret is None:
+                    ret = DurationType()
+                ret.default = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -922,13 +1135,6 @@ class DurationType (Type):
 
         self.default = dictObj.get('default', None)
 
-
-def createDurationTypeFromFlatDict(flatDict={}):
-    ret = DurationType()
-    for key, value in flatDict.items():
-        if key == "default":
-            ret.default = value
-    return ret
 
 class BytesType (Type):
     """type for byte values, it will usually be rendered to a byte array
@@ -936,7 +1142,6 @@ class BytesType (Type):
 
     def __init__(self, dictObj=None):
         Type.__init__(self)
-
         self.default = None
 
         if dictObj is not None:
@@ -949,9 +1154,24 @@ class BytesType (Type):
             ret["default"] = self.default
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "default":
-            self.default = value
+            if ret is None:
+                ret = BytesType()
+            ret.default = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "default":
+                if ret is None:
+                    ret = BytesType()
+                ret.default = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -959,13 +1179,6 @@ class BytesType (Type):
 
         self.default = dictObj.get('default', None)
 
-
-def createBytesTypeFromFlatDict(flatDict={}):
-    ret = BytesType()
-    for key, value in flatDict.items():
-        if key == "default":
-            ret.default = value
-    return ret
 
 class ComplexType (Type):
     """complex type description
@@ -976,9 +1189,7 @@ class ComplexType (Type):
 
         #: is taken from the version entry of the file, optional
         self.version = None
-
         self.name = None
-
         self.description = None
 
         #: scope/domain to that this type belongs
@@ -998,7 +1209,6 @@ class ComplexType (Type):
 
         #: properties of that type
         self.properties = []
-
         self.topLevelType = False
 
         #: additional flags to mark a type
@@ -1034,24 +1244,124 @@ class ComplexType (Type):
             ret["tags"] = self.tags.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "version":
-            self.version = value
+            if ret is None:
+                ret = ComplexType()
+            ret.version = value
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = ComplexType()
+            ret.name = value
         if attribName == "description":
-            self.description = value
+            if ret is None:
+                ret = ComplexType()
+            ret.description = value
         if attribName == "domain":
-            self.domain = value
+            if ret is None:
+                ret = ComplexType()
+            ret.domain = value
         if attribName == "source":
-            self.source = value
-        self.extendsType.initFlatValue(attribName, value)
-        self.extendedBy.initFlatValue(attribName, value)
-        self.referencedBy.initFlatValue(attribName, value)
-        self.properties.initFlatValue(attribName, value)
+            if ret is None:
+                ret = ComplexType()
+            ret.source = value
+        initObj = ret.extendsType if ret is not None else None
+        extendsTypeTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+        if extendsTypeTmp is not None:
+            if ret is None:
+                ret = ComplexType()
+            ret.extendsType = extendsTypeTmp
+        initObj = ret.extendedBy if ret is not None else None
+        extendedByTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+        if extendedByTmp is not None:
+            if ret is None:
+                ret = ComplexType()
+            ret.extendedBy = extendedByTmp
+        initObj = ret.referencedBy if ret is not None else None
+        referencedByTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+        if referencedByTmp is not None:
+            if ret is None:
+                ret = ComplexType()
+            ret.referencedBy = referencedByTmp
+        initObj = ret.properties if ret is not None else None
+        propertiesTmp = Property.initWithFlatValue(attribName, value, initObj)
+        if propertiesTmp is not None:
+            if ret is None:
+                ret = ComplexType()
+            ret.properties = propertiesTmp
         if attribName == "topLevelType":
-            self.topLevelType = value
-        self.tags.initFlatValue(attribName, value)
+            if ret is None:
+                ret = ComplexType()
+            ret.topLevelType = value
+        initObj = ret.tags if ret is not None else None
+        tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+        if tagsTmp is not None:
+            if ret is None:
+                ret = ComplexType()
+            ret.tags = tagsTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "version":
+                if ret is None:
+                    ret = ComplexType()
+                ret.version = value
+            if key == "name":
+                if ret is None:
+                    ret = ComplexType()
+                ret.name = value
+            if key == "description":
+                if ret is None:
+                    ret = ComplexType()
+                ret.description = value
+            if key == "domain":
+                if ret is None:
+                    ret = ComplexType()
+                ret.domain = value
+            if key == "source":
+                if ret is None:
+                    ret = ComplexType()
+                ret.source = value
+            initObj = ret.extendsType if ret is not None else None
+            extendsTypeTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+            if extendsTypeTmp is not None:
+                if ret is None:
+                    ret = ComplexType()
+                ret.extendsType = extendsTypeTmp
+            initObj = ret.extendedBy if ret is not None else None
+            extendedByTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+            if extendedByTmp is not None:
+                if ret is None:
+                    ret = ComplexType()
+                ret.extendedBy = extendedByTmp
+            initObj = ret.referencedBy if ret is not None else None
+            referencedByTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+            if referencedByTmp is not None:
+                if ret is None:
+                    ret = ComplexType()
+                ret.referencedBy = referencedByTmp
+            initObj = ret.properties if ret is not None else None
+            propertiesTmp = Property.initWithFlatValue(attribName, value, initObj)
+            if propertiesTmp is not None:
+                if ret is None:
+                    ret = ComplexType()
+                ret.properties = propertiesTmp
+            if key == "topLevelType":
+                if ret is None:
+                    ret = ComplexType()
+                ret.topLevelType = value
+            initObj = ret.tags if ret is not None else None
+            tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+            if tagsTmp is not None:
+                if ret is None:
+                    ret = ComplexType()
+                ret.tags = tagsTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -1094,28 +1404,6 @@ class ComplexType (Type):
                 Tag(elemTags))
 
 
-def createComplexTypeFromFlatDict(flatDict={}):
-    ret = ComplexType()
-    for key, value in flatDict.items():
-        if key == "version":
-            ret.version = value
-        if key == "name":
-            ret.name = value
-        if key == "description":
-            ret.description = value
-        if key == "domain":
-            ret.domain = value
-        if key == "source":
-            ret.source = value
-        ret.extendsType.initFlatValue(key, value)
-        ret.extendedBy.initFlatValue(key, value)
-        ret.referencedBy.initFlatValue(key, value)
-        ret.properties.initFlatValue(key, value)
-        if key == "topLevelType":
-            ret.topLevelType = value
-        ret.tags.initFlatValue(key, value)
-    return ret
-
 class Property:
     """a property of a type
     """
@@ -1130,7 +1418,6 @@ class Property:
 
         #: if isArray true you can specify here the number of the array dimensions
         self.arrayDimensions = None
-
         self.arrayConstraints = []
 
         #: either a basic or a complex type
@@ -1199,31 +1486,144 @@ class Property:
             ret["processing"] = self.processing
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = Property()
+            ret.name = value
         if attribName == "isArray":
-            self.isArray = value
+            if ret is None:
+                ret = Property()
+            ret.isArray = value
         if attribName == "arrayDimensions":
-            self.arrayDimensions = value
-        self.arrayConstraints.initFlatValue(attribName, value)
-        self.type.initFlatValue(attribName, value)
-        self.tags.initFlatValue(attribName, value)
+            if ret is None:
+                ret = Property()
+            ret.arrayDimensions = value
+        initObj = ret.arrayConstraints if ret is not None else None
+        arrayConstraintsTmp = ArrayConstraints.initWithFlatValue(attribName, value, initObj)
+        if arrayConstraintsTmp is not None:
+            if ret is None:
+                ret = Property()
+            ret.arrayConstraints = arrayConstraintsTmp
+        initObj = ret.type if ret is not None else None
+        typeTmp = Type.initWithFlatValue(attribName, value, initObj)
+        if typeTmp is not None:
+            if ret is None:
+                ret = Property()
+            ret.type = typeTmp
+        initObj = ret.tags if ret is not None else None
+        tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+        if tagsTmp is not None:
+            if ret is None:
+                ret = Property()
+            ret.tags = tagsTmp
         if attribName == "description":
-            self.description = value
+            if ret is None:
+                ret = Property()
+            ret.description = value
         if attribName == "required":
-            self.required = value
+            if ret is None:
+                ret = Property()
+            ret.required = value
         if attribName == "ordinal":
-            self.ordinal = value
+            if ret is None:
+                ret = Property()
+            ret.ordinal = value
         if attribName == "isKey":
-            self.isKey = value
+            if ret is None:
+                ret = Property()
+            ret.isKey = value
         if attribName == "isVisualKey":
-            self.isVisualKey = value
-        self.foreignKey.initFlatValue(attribName, value)
+            if ret is None:
+                ret = Property()
+            ret.isVisualKey = value
+        initObj = ret.foreignKey if ret is not None else None
+        foreignKeyTmp = Type.initWithFlatValue(attribName, value, initObj)
+        if foreignKeyTmp is not None:
+            if ret is None:
+                ret = Property()
+            ret.foreignKey = foreignKeyTmp
         if attribName == "format":
-            self.format = value
+            if ret is None:
+                ret = Property()
+            ret.format = value
         if attribName == "processing":
-            self.processing = value
+            if ret is None:
+                ret = Property()
+            ret.processing = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = Property()
+                ret.name = value
+            if key == "isArray":
+                if ret is None:
+                    ret = Property()
+                ret.isArray = value
+            if key == "arrayDimensions":
+                if ret is None:
+                    ret = Property()
+                ret.arrayDimensions = value
+            initObj = ret.arrayConstraints if ret is not None else None
+            arrayConstraintsTmp = ArrayConstraints.initWithFlatValue(attribName, value, initObj)
+            if arrayConstraintsTmp is not None:
+                if ret is None:
+                    ret = Property()
+                ret.arrayConstraints = arrayConstraintsTmp
+            initObj = ret.type if ret is not None else None
+            typeTmp = Type.initWithFlatValue(attribName, value, initObj)
+            if typeTmp is not None:
+                if ret is None:
+                    ret = Property()
+                ret.type = typeTmp
+            initObj = ret.tags if ret is not None else None
+            tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+            if tagsTmp is not None:
+                if ret is None:
+                    ret = Property()
+                ret.tags = tagsTmp
+            if key == "description":
+                if ret is None:
+                    ret = Property()
+                ret.description = value
+            if key == "required":
+                if ret is None:
+                    ret = Property()
+                ret.required = value
+            if key == "ordinal":
+                if ret is None:
+                    ret = Property()
+                ret.ordinal = value
+            if key == "isKey":
+                if ret is None:
+                    ret = Property()
+                ret.isKey = value
+            if key == "isVisualKey":
+                if ret is None:
+                    ret = Property()
+                ret.isVisualKey = value
+            initObj = ret.foreignKey if ret is not None else None
+            foreignKeyTmp = Type.initWithFlatValue(attribName, value, initObj)
+            if foreignKeyTmp is not None:
+                if ret is None:
+                    ret = Property()
+                ret.foreignKey = foreignKeyTmp
+            if key == "format":
+                if ret is None:
+                    ret = Property()
+                ret.format = value
+            if key == "processing":
+                if ret is None:
+                    ret = Property()
+                ret.processing = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -1268,35 +1668,6 @@ class Property:
         self.processing = dictObj.get('processing', None)
 
 
-def createPropertyFromFlatDict(flatDict={}):
-    ret = Property()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "isArray":
-            ret.isArray = value
-        if key == "arrayDimensions":
-            ret.arrayDimensions = value
-        ret.arrayConstraints.initFlatValue(key, value)
-        ret.type.initFlatValue(key, value)
-        ret.tags.initFlatValue(key, value)
-        if key == "description":
-            ret.description = value
-        if key == "required":
-            ret.required = value
-        if key == "ordinal":
-            ret.ordinal = value
-        if key == "isKey":
-            ret.isKey = value
-        if key == "isVisualKey":
-            ret.isVisualKey = value
-        ret.foreignKey.initFlatValue(key, value)
-        if key == "format":
-            ret.format = value
-        if key == "processing":
-            ret.processing = value
-    return ret
-
 class DictionaryType (Type):
     """key/value dictionary type. Keys are always strings, the value type can be
     specified
@@ -1307,9 +1678,7 @@ class DictionaryType (Type):
 
         #: is taken from the version entry of the file, optional
         self.version = None
-
         self.name = None
-
         self.description = None
 
         #: scope/domain to that this type belongs
@@ -1323,7 +1692,6 @@ class DictionaryType (Type):
 
         #: either a basic or a complex type
         self.valueType = None
-
         self.topLevelType = False
 
         #: additional flags to mark a type
@@ -1355,22 +1723,100 @@ class DictionaryType (Type):
             ret["tags"] = self.tags.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "version":
-            self.version = value
+            if ret is None:
+                ret = DictionaryType()
+            ret.version = value
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = DictionaryType()
+            ret.name = value
         if attribName == "description":
-            self.description = value
+            if ret is None:
+                ret = DictionaryType()
+            ret.description = value
         if attribName == "domain":
-            self.domain = value
+            if ret is None:
+                ret = DictionaryType()
+            ret.domain = value
         if attribName == "source":
-            self.source = value
-        self.referencedBy.initFlatValue(attribName, value)
-        self.valueType.initFlatValue(attribName, value)
+            if ret is None:
+                ret = DictionaryType()
+            ret.source = value
+        initObj = ret.referencedBy if ret is not None else None
+        referencedByTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+        if referencedByTmp is not None:
+            if ret is None:
+                ret = DictionaryType()
+            ret.referencedBy = referencedByTmp
+        initObj = ret.valueType if ret is not None else None
+        valueTypeTmp = Type.initWithFlatValue(attribName, value, initObj)
+        if valueTypeTmp is not None:
+            if ret is None:
+                ret = DictionaryType()
+            ret.valueType = valueTypeTmp
         if attribName == "topLevelType":
-            self.topLevelType = value
-        self.tags.initFlatValue(attribName, value)
+            if ret is None:
+                ret = DictionaryType()
+            ret.topLevelType = value
+        initObj = ret.tags if ret is not None else None
+        tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+        if tagsTmp is not None:
+            if ret is None:
+                ret = DictionaryType()
+            ret.tags = tagsTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "version":
+                if ret is None:
+                    ret = DictionaryType()
+                ret.version = value
+            if key == "name":
+                if ret is None:
+                    ret = DictionaryType()
+                ret.name = value
+            if key == "description":
+                if ret is None:
+                    ret = DictionaryType()
+                ret.description = value
+            if key == "domain":
+                if ret is None:
+                    ret = DictionaryType()
+                ret.domain = value
+            if key == "source":
+                if ret is None:
+                    ret = DictionaryType()
+                ret.source = value
+            initObj = ret.referencedBy if ret is not None else None
+            referencedByTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+            if referencedByTmp is not None:
+                if ret is None:
+                    ret = DictionaryType()
+                ret.referencedBy = referencedByTmp
+            initObj = ret.valueType if ret is not None else None
+            valueTypeTmp = Type.initWithFlatValue(attribName, value, initObj)
+            if valueTypeTmp is not None:
+                if ret is None:
+                    ret = DictionaryType()
+                ret.valueType = valueTypeTmp
+            if key == "topLevelType":
+                if ret is None:
+                    ret = DictionaryType()
+                ret.topLevelType = value
+            initObj = ret.tags if ret is not None else None
+            tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+            if tagsTmp is not None:
+                if ret is None:
+                    ret = DictionaryType()
+                ret.tags = tagsTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -1403,26 +1849,6 @@ class DictionaryType (Type):
                 Tag(elemTags))
 
 
-def createDictionaryTypeFromFlatDict(flatDict={}):
-    ret = DictionaryType()
-    for key, value in flatDict.items():
-        if key == "version":
-            ret.version = value
-        if key == "name":
-            ret.name = value
-        if key == "description":
-            ret.description = value
-        if key == "domain":
-            ret.domain = value
-        if key == "source":
-            ret.source = value
-        ret.referencedBy.initFlatValue(key, value)
-        ret.valueType.initFlatValue(key, value)
-        if key == "topLevelType":
-            ret.topLevelType = value
-        ret.tags.initFlatValue(key, value)
-    return ret
-
 class ArrayConstraints:
     def __init__(self, dictObj=None):
 
@@ -1449,13 +1875,40 @@ class ArrayConstraints:
             ret["arrayUniqueItems"] = self.arrayUniqueItems
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "arrayMinItems":
-            self.arrayMinItems = value
+            if ret is None:
+                ret = ArrayConstraints()
+            ret.arrayMinItems = value
         if attribName == "arrayMaxItems":
-            self.arrayMaxItems = value
+            if ret is None:
+                ret = ArrayConstraints()
+            ret.arrayMaxItems = value
         if attribName == "arrayUniqueItems":
-            self.arrayUniqueItems = value
+            if ret is None:
+                ret = ArrayConstraints()
+            ret.arrayUniqueItems = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "arrayMinItems":
+                if ret is None:
+                    ret = ArrayConstraints()
+                ret.arrayMinItems = value
+            if key == "arrayMaxItems":
+                if ret is None:
+                    ret = ArrayConstraints()
+                ret.arrayMaxItems = value
+            if key == "arrayUniqueItems":
+                if ret is None:
+                    ret = ArrayConstraints()
+                ret.arrayUniqueItems = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -1468,17 +1921,6 @@ class ArrayConstraints:
         self.arrayUniqueItems = dictObj.get('arrayUniqueItems', False)
 
 
-def createArrayConstraintsFromFlatDict(flatDict={}):
-    ret = ArrayConstraints()
-    for key, value in flatDict.items():
-        if key == "arrayMinItems":
-            ret.arrayMinItems = value
-        if key == "arrayMaxItems":
-            ret.arrayMaxItems = value
-        if key == "arrayUniqueItems":
-            ret.arrayUniqueItems = value
-    return ret
-
 class ArrayType (Type):
     """Array type
     """
@@ -1488,9 +1930,7 @@ class ArrayType (Type):
 
         #: is taken from the version entry of the file, optional
         self.version = None
-
         self.name = None
-
         self.description = None
 
         #: scope/domain to that this type belongs
@@ -1504,12 +1944,10 @@ class ArrayType (Type):
 
         #: either a basic or a complex type
         self.itemsType = None
-
         self.topLevelType = False
 
         #: additional flags to mark a type
         self.tags = []
-
         self.arrayConstraints = []
 
         #: if isArray true you can specify here the number of the array dimensions
@@ -1545,25 +1983,120 @@ class ArrayType (Type):
             ret["arrayDimensions"] = self.arrayDimensions
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "version":
-            self.version = value
+            if ret is None:
+                ret = ArrayType()
+            ret.version = value
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = ArrayType()
+            ret.name = value
         if attribName == "description":
-            self.description = value
+            if ret is None:
+                ret = ArrayType()
+            ret.description = value
         if attribName == "domain":
-            self.domain = value
+            if ret is None:
+                ret = ArrayType()
+            ret.domain = value
         if attribName == "source":
-            self.source = value
-        self.referencedBy.initFlatValue(attribName, value)
-        self.itemsType.initFlatValue(attribName, value)
+            if ret is None:
+                ret = ArrayType()
+            ret.source = value
+        initObj = ret.referencedBy if ret is not None else None
+        referencedByTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+        if referencedByTmp is not None:
+            if ret is None:
+                ret = ArrayType()
+            ret.referencedBy = referencedByTmp
+        initObj = ret.itemsType if ret is not None else None
+        itemsTypeTmp = Type.initWithFlatValue(attribName, value, initObj)
+        if itemsTypeTmp is not None:
+            if ret is None:
+                ret = ArrayType()
+            ret.itemsType = itemsTypeTmp
         if attribName == "topLevelType":
-            self.topLevelType = value
-        self.tags.initFlatValue(attribName, value)
-        self.arrayConstraints.initFlatValue(attribName, value)
+            if ret is None:
+                ret = ArrayType()
+            ret.topLevelType = value
+        initObj = ret.tags if ret is not None else None
+        tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+        if tagsTmp is not None:
+            if ret is None:
+                ret = ArrayType()
+            ret.tags = tagsTmp
+        initObj = ret.arrayConstraints if ret is not None else None
+        arrayConstraintsTmp = ArrayConstraints.initWithFlatValue(attribName, value, initObj)
+        if arrayConstraintsTmp is not None:
+            if ret is None:
+                ret = ArrayType()
+            ret.arrayConstraints = arrayConstraintsTmp
         if attribName == "arrayDimensions":
-            self.arrayDimensions = value
+            if ret is None:
+                ret = ArrayType()
+            ret.arrayDimensions = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "version":
+                if ret is None:
+                    ret = ArrayType()
+                ret.version = value
+            if key == "name":
+                if ret is None:
+                    ret = ArrayType()
+                ret.name = value
+            if key == "description":
+                if ret is None:
+                    ret = ArrayType()
+                ret.description = value
+            if key == "domain":
+                if ret is None:
+                    ret = ArrayType()
+                ret.domain = value
+            if key == "source":
+                if ret is None:
+                    ret = ArrayType()
+                ret.source = value
+            initObj = ret.referencedBy if ret is not None else None
+            referencedByTmp = ComplexType.initWithFlatValue(attribName, value, initObj)
+            if referencedByTmp is not None:
+                if ret is None:
+                    ret = ArrayType()
+                ret.referencedBy = referencedByTmp
+            initObj = ret.itemsType if ret is not None else None
+            itemsTypeTmp = Type.initWithFlatValue(attribName, value, initObj)
+            if itemsTypeTmp is not None:
+                if ret is None:
+                    ret = ArrayType()
+                ret.itemsType = itemsTypeTmp
+            if key == "topLevelType":
+                if ret is None:
+                    ret = ArrayType()
+                ret.topLevelType = value
+            initObj = ret.tags if ret is not None else None
+            tagsTmp = Tag.initWithFlatValue(attribName, value, initObj)
+            if tagsTmp is not None:
+                if ret is None:
+                    ret = ArrayType()
+                ret.tags = tagsTmp
+            initObj = ret.arrayConstraints if ret is not None else None
+            arrayConstraintsTmp = ArrayConstraints.initWithFlatValue(attribName, value, initObj)
+            if arrayConstraintsTmp is not None:
+                if ret is None:
+                    ret = ArrayType()
+                ret.arrayConstraints = arrayConstraintsTmp
+            if key == "arrayDimensions":
+                if ret is None:
+                    ret = ArrayType()
+                ret.arrayDimensions = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -1603,39 +2136,13 @@ class ArrayType (Type):
         self.arrayDimensions = dictObj.get('arrayDimensions', None)
 
 
-def createArrayTypeFromFlatDict(flatDict={}):
-    ret = ArrayType()
-    for key, value in flatDict.items():
-        if key == "version":
-            ret.version = value
-        if key == "name":
-            ret.name = value
-        if key == "description":
-            ret.description = value
-        if key == "domain":
-            ret.domain = value
-        if key == "source":
-            ret.source = value
-        ret.referencedBy.initFlatValue(key, value)
-        ret.itemsType.initFlatValue(key, value)
-        if key == "topLevelType":
-            ret.topLevelType = value
-        ret.tags.initFlatValue(key, value)
-        ret.arrayConstraints.initFlatValue(key, value)
-        if key == "arrayDimensions":
-            ret.arrayDimensions = value
-    return ret
-
 class ForeignKey:
     """Type describes the reference of a property to another field in the model
     """
 
     def __init__(self, dictObj=None):
-
         self.type = None
-
         self.propertyName = None
-
         self.property = None
 
         if dictObj is not None:
@@ -1652,11 +2159,48 @@ class ForeignKey:
             ret["property"] = self.property.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
-        self.type.initFlatValue(attribName, value)
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
+        initObj = ret.type if ret is not None else None
+        typeTmp = Type.initWithFlatValue(attribName, value, initObj)
+        if typeTmp is not None:
+            if ret is None:
+                ret = ForeignKey()
+            ret.type = typeTmp
         if attribName == "propertyName":
-            self.propertyName = value
-        self.property.initFlatValue(attribName, value)
+            if ret is None:
+                ret = ForeignKey()
+            ret.propertyName = value
+        initObj = ret.property if ret is not None else None
+        propertyTmp = Property.initWithFlatValue(attribName, value, initObj)
+        if propertyTmp is not None:
+            if ret is None:
+                ret = ForeignKey()
+            ret.property = propertyTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            initObj = ret.type if ret is not None else None
+            typeTmp = Type.initWithFlatValue(attribName, value, initObj)
+            if typeTmp is not None:
+                if ret is None:
+                    ret = ForeignKey()
+                ret.type = typeTmp
+            if key == "propertyName":
+                if ret is None:
+                    ret = ForeignKey()
+                ret.propertyName = value
+            initObj = ret.property if ret is not None else None
+            propertyTmp = Property.initWithFlatValue(attribName, value, initObj)
+            if propertyTmp is not None:
+                if ret is None:
+                    ret = ForeignKey()
+                ret.property = propertyTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -1672,13 +2216,4 @@ class ForeignKey:
         if subDictObj is not None:
             self.property = Property(subDictObj)
 
-
-def createForeignKeyFromFlatDict(flatDict={}):
-    ret = ForeignKey()
-    for key, value in flatDict.items():
-        ret.type.initFlatValue(key, value)
-        if key == "propertyName":
-            ret.propertyName = value
-        ret.property.initFlatValue(key, value)
-    return ret
 

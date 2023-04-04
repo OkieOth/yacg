@@ -48,16 +48,76 @@ class OperationBase:
             ret["xResponseMessage"] = self.xResponseMessage.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "operationId":
-            self.operationId = value
+            if ret is None:
+                ret = OperationBase()
+            ret.operationId = value
         if attribName == "summary":
-            self.summary = value
+            if ret is None:
+                ret = OperationBase()
+            ret.summary = value
         if attribName == "description":
-            self.description = value
-        self.message.initFlatValue(attribName, value)
-        self.amqpBindings.initFlatValue(attribName, value)
-        self.xResponseMessage.initFlatValue(attribName, value)
+            if ret is None:
+                ret = OperationBase()
+            ret.description = value
+        initObj = ret.message if ret is not None else None
+        messageTmp = Message.initWithFlatValue(attribName, value, initObj)
+        if messageTmp is not None:
+            if ret is None:
+                ret = OperationBase()
+            ret.message = messageTmp
+        initObj = ret.amqpBindings if ret is not None else None
+        amqpBindingsTmp = OperationBindingsAmqp.initWithFlatValue(attribName, value, initObj)
+        if amqpBindingsTmp is not None:
+            if ret is None:
+                ret = OperationBase()
+            ret.amqpBindings = amqpBindingsTmp
+        initObj = ret.xResponseMessage if ret is not None else None
+        xResponseMessageTmp = Message.initWithFlatValue(attribName, value, initObj)
+        if xResponseMessageTmp is not None:
+            if ret is None:
+                ret = OperationBase()
+            ret.xResponseMessage = xResponseMessageTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "operationId":
+                if ret is None:
+                    ret = OperationBase()
+                ret.operationId = value
+            if key == "summary":
+                if ret is None:
+                    ret = OperationBase()
+                ret.summary = value
+            if key == "description":
+                if ret is None:
+                    ret = OperationBase()
+                ret.description = value
+            initObj = ret.message if ret is not None else None
+            messageTmp = Message.initWithFlatValue(attribName, value, initObj)
+            if messageTmp is not None:
+                if ret is None:
+                    ret = OperationBase()
+                ret.message = messageTmp
+            initObj = ret.amqpBindings if ret is not None else None
+            amqpBindingsTmp = OperationBindingsAmqp.initWithFlatValue(attribName, value, initObj)
+            if amqpBindingsTmp is not None:
+                if ret is None:
+                    ret = OperationBase()
+                ret.amqpBindings = amqpBindingsTmp
+            initObj = ret.xResponseMessage if ret is not None else None
+            xResponseMessageTmp = Message.initWithFlatValue(attribName, value, initObj)
+            if xResponseMessageTmp is not None:
+                if ret is None:
+                    ret = OperationBase()
+                ret.xResponseMessage = xResponseMessageTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -82,20 +142,6 @@ class OperationBase:
             self.xResponseMessage = Message(subDictObj)
 
 
-def createOperationBaseFromFlatDict(flatDict={}):
-    ret = OperationBase()
-    for key, value in flatDict.items():
-        if key == "operationId":
-            ret.operationId = value
-        if key == "summary":
-            ret.summary = value
-        if key == "description":
-            ret.description = value
-        ret.message.initFlatValue(key, value)
-        ret.amqpBindings.initFlatValue(key, value)
-        ret.xResponseMessage.initFlatValue(key, value)
-    return ret
-
 class Message:
     """Container that describes the messages are sent
     """
@@ -116,7 +162,6 @@ class Message:
 
         #: this is basically a complex type, whos top-level properties are used as keys for AMQP headers
         self.headers = None
-
         self.description = None
 
         if dictObj is not None:
@@ -139,16 +184,76 @@ class Message:
             ret["description"] = self.description
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
-        self.payload.initFlatValue(attribName, value)
-        self.amqpBindings.initFlatValue(attribName, value)
+            if ret is None:
+                ret = Message()
+            ret.name = value
+        initObj = ret.payload if ret is not None else None
+        payloadTmp = Payload.initWithFlatValue(attribName, value, initObj)
+        if payloadTmp is not None:
+            if ret is None:
+                ret = Message()
+            ret.payload = payloadTmp
+        initObj = ret.amqpBindings if ret is not None else None
+        amqpBindingsTmp = MessageBindingsAmqp.initWithFlatValue(attribName, value, initObj)
+        if amqpBindingsTmp is not None:
+            if ret is None:
+                ret = Message()
+            ret.amqpBindings = amqpBindingsTmp
         if attribName == "contentType":
-            self.contentType = value
-        self.headers.initFlatValue(attribName, value)
+            if ret is None:
+                ret = Message()
+            ret.contentType = value
+        initObj = ret.headers if ret is not None else None
+        headersTmp = AsyncApiHeaders.initWithFlatValue(attribName, value, initObj)
+        if headersTmp is not None:
+            if ret is None:
+                ret = Message()
+            ret.headers = headersTmp
         if attribName == "description":
-            self.description = value
+            if ret is None:
+                ret = Message()
+            ret.description = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = Message()
+                ret.name = value
+            initObj = ret.payload if ret is not None else None
+            payloadTmp = Payload.initWithFlatValue(attribName, value, initObj)
+            if payloadTmp is not None:
+                if ret is None:
+                    ret = Message()
+                ret.payload = payloadTmp
+            initObj = ret.amqpBindings if ret is not None else None
+            amqpBindingsTmp = MessageBindingsAmqp.initWithFlatValue(attribName, value, initObj)
+            if amqpBindingsTmp is not None:
+                if ret is None:
+                    ret = Message()
+                ret.amqpBindings = amqpBindingsTmp
+            if key == "contentType":
+                if ret is None:
+                    ret = Message()
+                ret.contentType = value
+            initObj = ret.headers if ret is not None else None
+            headersTmp = AsyncApiHeaders.initWithFlatValue(attribName, value, initObj)
+            if headersTmp is not None:
+                if ret is None:
+                    ret = Message()
+                ret.headers = headersTmp
+            if key == "description":
+                if ret is None:
+                    ret = Message()
+                ret.description = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -173,20 +278,6 @@ class Message:
         self.description = dictObj.get('description', None)
 
 
-def createMessageFromFlatDict(flatDict={}):
-    ret = Message()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        ret.payload.initFlatValue(key, value)
-        ret.amqpBindings.initFlatValue(key, value)
-        if key == "contentType":
-            ret.contentType = value
-        ret.headers.initFlatValue(key, value)
-        if key == "description":
-            ret.description = value
-    return ret
-
 class OperationBindingsAmqp:
     """specific AMQP binding properties
     """
@@ -195,11 +286,8 @@ class OperationBindingsAmqp:
 
         #: optional name, is used when defined in the components section
         self.name = None
-
         self.expiration = None
-
         self.mandatory = False
-
         self.replyTo = "amq.rabbitmq.reply-to"
 
         if dictObj is not None:
@@ -218,15 +306,48 @@ class OperationBindingsAmqp:
             ret["replyTo"] = self.replyTo
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = OperationBindingsAmqp()
+            ret.name = value
         if attribName == "expiration":
-            self.expiration = value
+            if ret is None:
+                ret = OperationBindingsAmqp()
+            ret.expiration = value
         if attribName == "mandatory":
-            self.mandatory = value
+            if ret is None:
+                ret = OperationBindingsAmqp()
+            ret.mandatory = value
         if attribName == "replyTo":
-            self.replyTo = value
+            if ret is None:
+                ret = OperationBindingsAmqp()
+            ret.replyTo = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = OperationBindingsAmqp()
+                ret.name = value
+            if key == "expiration":
+                if ret is None:
+                    ret = OperationBindingsAmqp()
+                ret.expiration = value
+            if key == "mandatory":
+                if ret is None:
+                    ret = OperationBindingsAmqp()
+                ret.mandatory = value
+            if key == "replyTo":
+                if ret is None:
+                    ret = OperationBindingsAmqp()
+                ret.replyTo = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -240,19 +361,6 @@ class OperationBindingsAmqp:
 
         self.replyTo = dictObj.get('replyTo', "amq.rabbitmq.reply-to")
 
-
-def createOperationBindingsAmqpFromFlatDict(flatDict={}):
-    ret = OperationBindingsAmqp()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "expiration":
-            ret.expiration = value
-        if key == "mandatory":
-            ret.mandatory = value
-        if key == "replyTo":
-            ret.replyTo = value
-    return ret
 
 class AsyncApiInfo (yacg.model.shared.info.InfoSection):
     """Subset of the info object attribs: https://www.asyncapi.com/docs/specifications/v2.0.0#infoObject
@@ -276,21 +384,15 @@ class AsyncApiInfo (yacg.model.shared.info.InfoSection):
             return
 
 
-
 class AsyncApiServer:
     """one entry of the servers section
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.url = None
-
         self.description = None
-
         self.protocol = None
-
         self.protocolVersion = None
 
         if dictObj is not None:
@@ -311,17 +413,56 @@ class AsyncApiServer:
             ret["protocolVersion"] = self.protocolVersion
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = AsyncApiServer()
+            ret.name = value
         if attribName == "url":
-            self.url = value
+            if ret is None:
+                ret = AsyncApiServer()
+            ret.url = value
         if attribName == "description":
-            self.description = value
+            if ret is None:
+                ret = AsyncApiServer()
+            ret.description = value
         if attribName == "protocol":
-            self.protocol = value
+            if ret is None:
+                ret = AsyncApiServer()
+            ret.protocol = value
         if attribName == "protocolVersion":
-            self.protocolVersion = value
+            if ret is None:
+                ret = AsyncApiServer()
+            ret.protocolVersion = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = AsyncApiServer()
+                ret.name = value
+            if key == "url":
+                if ret is None:
+                    ret = AsyncApiServer()
+                ret.url = value
+            if key == "description":
+                if ret is None:
+                    ret = AsyncApiServer()
+                ret.description = value
+            if key == "protocol":
+                if ret is None:
+                    ret = AsyncApiServer()
+                ret.protocol = value
+            if key == "protocolVersion":
+                if ret is None:
+                    ret = AsyncApiServer()
+                ret.protocolVersion = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -338,37 +479,16 @@ class AsyncApiServer:
         self.protocolVersion = dictObj.get('protocolVersion', None)
 
 
-def createAsyncApiServerFromFlatDict(flatDict={}):
-    ret = AsyncApiServer()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "url":
-            ret.url = value
-        if key == "description":
-            ret.description = value
-        if key == "protocol":
-            ret.protocol = value
-        if key == "protocolVersion":
-            ret.protocolVersion = value
-    return ret
-
 class Channel:
     """one entry of the channels section
     """
 
     def __init__(self, dictObj=None):
-
         self.key = None
-
         self.description = None
-
         self.parameters = []
-
         self.publish = None
-
         self.subscribe = None
-
         self.amqpBindings = None
 
         if dictObj is not None:
@@ -391,15 +511,80 @@ class Channel:
             ret["amqpBindings"] = self.amqpBindings.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "key":
-            self.key = value
+            if ret is None:
+                ret = Channel()
+            ret.key = value
         if attribName == "description":
-            self.description = value
-        self.parameters.initFlatValue(attribName, value)
-        self.publish.initFlatValue(attribName, value)
-        self.subscribe.initFlatValue(attribName, value)
-        self.amqpBindings.initFlatValue(attribName, value)
+            if ret is None:
+                ret = Channel()
+            ret.description = value
+        initObj = ret.parameters if ret is not None else None
+        parametersTmp = Parameter.initWithFlatValue(attribName, value, initObj)
+        if parametersTmp is not None:
+            if ret is None:
+                ret = Channel()
+            ret.parameters = parametersTmp
+        initObj = ret.publish if ret is not None else None
+        publishTmp = OperationBase.initWithFlatValue(attribName, value, initObj)
+        if publishTmp is not None:
+            if ret is None:
+                ret = Channel()
+            ret.publish = publishTmp
+        initObj = ret.subscribe if ret is not None else None
+        subscribeTmp = OperationBase.initWithFlatValue(attribName, value, initObj)
+        if subscribeTmp is not None:
+            if ret is None:
+                ret = Channel()
+            ret.subscribe = subscribeTmp
+        initObj = ret.amqpBindings if ret is not None else None
+        amqpBindingsTmp = ChannelBindingsAmqp.initWithFlatValue(attribName, value, initObj)
+        if amqpBindingsTmp is not None:
+            if ret is None:
+                ret = Channel()
+            ret.amqpBindings = amqpBindingsTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "key":
+                if ret is None:
+                    ret = Channel()
+                ret.key = value
+            if key == "description":
+                if ret is None:
+                    ret = Channel()
+                ret.description = value
+            initObj = ret.parameters if ret is not None else None
+            parametersTmp = Parameter.initWithFlatValue(attribName, value, initObj)
+            if parametersTmp is not None:
+                if ret is None:
+                    ret = Channel()
+                ret.parameters = parametersTmp
+            initObj = ret.publish if ret is not None else None
+            publishTmp = OperationBase.initWithFlatValue(attribName, value, initObj)
+            if publishTmp is not None:
+                if ret is None:
+                    ret = Channel()
+                ret.publish = publishTmp
+            initObj = ret.subscribe if ret is not None else None
+            subscribeTmp = OperationBase.initWithFlatValue(attribName, value, initObj)
+            if subscribeTmp is not None:
+                if ret is None:
+                    ret = Channel()
+                ret.subscribe = subscribeTmp
+            initObj = ret.amqpBindings if ret is not None else None
+            amqpBindingsTmp = ChannelBindingsAmqp.initWithFlatValue(attribName, value, initObj)
+            if amqpBindingsTmp is not None:
+                if ret is None:
+                    ret = Channel()
+                ret.amqpBindings = amqpBindingsTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -427,29 +612,13 @@ class Channel:
             self.amqpBindings = ChannelBindingsAmqp(subDictObj)
 
 
-def createChannelFromFlatDict(flatDict={}):
-    ret = Channel()
-    for key, value in flatDict.items():
-        if key == "key":
-            ret.key = value
-        if key == "description":
-            ret.description = value
-        ret.parameters.initFlatValue(key, value)
-        ret.publish.initFlatValue(key, value)
-        ret.subscribe.initFlatValue(key, value)
-        ret.amqpBindings.initFlatValue(key, value)
-    return ret
-
 class Parameter:
     """Parameters contained in the channel key
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.description = None
-
         self.type = None
 
         if dictObj is not None:
@@ -466,13 +635,40 @@ class Parameter:
             ret["type"] = self.type
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = Parameter()
+            ret.name = value
         if attribName == "description":
-            self.description = value
+            if ret is None:
+                ret = Parameter()
+            ret.description = value
         if attribName == "type":
-            self.type = value
+            if ret is None:
+                ret = Parameter()
+            ret.type = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = Parameter()
+                ret.name = value
+            if key == "description":
+                if ret is None:
+                    ret = Parameter()
+                ret.description = value
+            if key == "type":
+                if ret is None:
+                    ret = Parameter()
+                ret.type = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -485,17 +681,6 @@ class Parameter:
         self.type = dictObj.get('type', None)
 
 
-def createParameterFromFlatDict(flatDict={}):
-    ret = Parameter()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "description":
-            ret.description = value
-        if key == "type":
-            ret.type = value
-    return ret
-
 class ChannelBindingsAmqp:
     """https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel
     """
@@ -504,11 +689,8 @@ class ChannelBindingsAmqp:
 
         #: optional name, is used when defined in the components section
         self.name = None
-
         self.isType = ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY
-
         self.queue = None
-
         self.exchange = None
 
         if dictObj is not None:
@@ -527,13 +709,56 @@ class ChannelBindingsAmqp:
             ret["exchange"] = self.exchange.toDict()
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = ChannelBindingsAmqp()
+            ret.name = value
         if attribName == "isType":
-            self.isType = ChannelBindingsAmqpIsTypeEnum.valueForString(value)
-        self.queue.initFlatValue(attribName, value)
-        self.exchange.initFlatValue(attribName, value)
+            if ret is None:
+                ret = ChannelBindingsAmqp()
+            ret.isType = ChannelBindingsAmqpIsTypeEnum.valueForString(value)
+        initObj = ret.queue if ret is not None else None
+        queueTmp = ChannelBindingsAmqpQueue.initWithFlatValue(attribName, value, initObj)
+        if queueTmp is not None:
+            if ret is None:
+                ret = ChannelBindingsAmqp()
+            ret.queue = queueTmp
+        initObj = ret.exchange if ret is not None else None
+        exchangeTmp = ChannelBindingsAmqpExchange.initWithFlatValue(attribName, value, initObj)
+        if exchangeTmp is not None:
+            if ret is None:
+                ret = ChannelBindingsAmqp()
+            ret.exchange = exchangeTmp
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = ChannelBindingsAmqp()
+                ret.name = value
+            if key == "isType":
+                if ret is None:
+                    ret = ChannelBindingsAmqp()
+                ret.isType = ChannelBindingsAmqpIsTypeEnum.valueForString(value)
+            initObj = ret.queue if ret is not None else None
+            queueTmp = ChannelBindingsAmqpQueue.initWithFlatValue(attribName, value, initObj)
+            if queueTmp is not None:
+                if ret is None:
+                    ret = ChannelBindingsAmqp()
+                ret.queue = queueTmp
+            initObj = ret.exchange if ret is not None else None
+            exchangeTmp = ChannelBindingsAmqpExchange.initWithFlatValue(attribName, value, initObj)
+            if exchangeTmp is not None:
+                if ret is None:
+                    ret = ChannelBindingsAmqp()
+                ret.exchange = exchangeTmp
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -552,29 +777,14 @@ class ChannelBindingsAmqp:
             self.exchange = ChannelBindingsAmqpExchange(subDictObj)
 
 
-def createChannelBindingsAmqpFromFlatDict(flatDict={}):
-    ret = ChannelBindingsAmqp()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "isType":
-            ret.isType = ChannelBindingsAmqpIsTypeEnum.valueForString(value)
-        ret.queue.initFlatValue(key, value)
-        ret.exchange.initFlatValue(key, value)
-    return ret
-
 class ChannelBindingsAmqpExchange:
     """channel exchange parameters
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.type = None
-
         self.durable = False
-
         self.autoDelete = False
 
         if dictObj is not None:
@@ -593,15 +803,48 @@ class ChannelBindingsAmqpExchange:
             ret["autoDelete"] = self.autoDelete
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = ChannelBindingsAmqpExchange()
+            ret.name = value
         if attribName == "type":
-            self.type = ChannelBindingsAmqpExchangeTypeEnum.valueForString(value)
+            if ret is None:
+                ret = ChannelBindingsAmqpExchange()
+            ret.type = ChannelBindingsAmqpExchangeTypeEnum.valueForString(value)
         if attribName == "durable":
-            self.durable = value
+            if ret is None:
+                ret = ChannelBindingsAmqpExchange()
+            ret.durable = value
         if attribName == "autoDelete":
-            self.autoDelete = value
+            if ret is None:
+                ret = ChannelBindingsAmqpExchange()
+            ret.autoDelete = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = ChannelBindingsAmqpExchange()
+                ret.name = value
+            if key == "type":
+                if ret is None:
+                    ret = ChannelBindingsAmqpExchange()
+                ret.type = ChannelBindingsAmqpExchangeTypeEnum.valueForString(value)
+            if key == "durable":
+                if ret is None:
+                    ret = ChannelBindingsAmqpExchange()
+                ret.durable = value
+            if key == "autoDelete":
+                if ret is None:
+                    ret = ChannelBindingsAmqpExchange()
+                ret.autoDelete = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -615,19 +858,6 @@ class ChannelBindingsAmqpExchange:
 
         self.autoDelete = dictObj.get('autoDelete', False)
 
-
-def createChannelBindingsAmqpExchangeFromFlatDict(flatDict={}):
-    ret = ChannelBindingsAmqpExchange()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "type":
-            ret.type = ChannelBindingsAmqpExchangeTypeEnum.valueForString(value)
-        if key == "durable":
-            ret.durable = value
-        if key == "autoDelete":
-            ret.autoDelete = value
-    return ret
 
 class ChannelBindingsAmqpExchangeTypeEnum(Enum):
     TOPIC = 'topic'
@@ -673,19 +903,14 @@ class ChannelBindingsAmqpExchangeTypeEnum(Enum):
 
 
 
-
 class ChannelBindingsAmqpQueue:
     """channel queue parameters
     """
 
     def __init__(self, dictObj=None):
-
         self.name = None
-
         self.durable = False
-
         self.exclusive = False
-
         self.autoDelete = False
 
         if dictObj is not None:
@@ -704,15 +929,48 @@ class ChannelBindingsAmqpQueue:
             ret["autoDelete"] = self.autoDelete
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = ChannelBindingsAmqpQueue()
+            ret.name = value
         if attribName == "durable":
-            self.durable = value
+            if ret is None:
+                ret = ChannelBindingsAmqpQueue()
+            ret.durable = value
         if attribName == "exclusive":
-            self.exclusive = value
+            if ret is None:
+                ret = ChannelBindingsAmqpQueue()
+            ret.exclusive = value
         if attribName == "autoDelete":
-            self.autoDelete = value
+            if ret is None:
+                ret = ChannelBindingsAmqpQueue()
+            ret.autoDelete = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = ChannelBindingsAmqpQueue()
+                ret.name = value
+            if key == "durable":
+                if ret is None:
+                    ret = ChannelBindingsAmqpQueue()
+                ret.durable = value
+            if key == "exclusive":
+                if ret is None:
+                    ret = ChannelBindingsAmqpQueue()
+                ret.exclusive = value
+            if key == "autoDelete":
+                if ret is None:
+                    ret = ChannelBindingsAmqpQueue()
+                ret.autoDelete = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -726,19 +984,6 @@ class ChannelBindingsAmqpQueue:
 
         self.autoDelete = dictObj.get('autoDelete', False)
 
-
-def createChannelBindingsAmqpQueueFromFlatDict(flatDict={}):
-    ret = ChannelBindingsAmqpQueue()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "durable":
-            ret.durable = value
-        if key == "exclusive":
-            ret.exclusive = value
-        if key == "autoDelete":
-            ret.autoDelete = value
-    return ret
 
 class ChannelBindingsAmqpIsTypeEnum(Enum):
     QUEUE = 'queue'
@@ -769,13 +1014,11 @@ class ChannelBindingsAmqpIsTypeEnum(Enum):
 
 
 
-
 class Payload:
     def __init__(self, dictObj=None):
 
         #: meta model type that is passed in the body
         self.type = None
-
         self.isArray = False
 
         if dictObj is not None:
@@ -790,10 +1033,36 @@ class Payload:
             ret["isArray"] = self.isArray
         return ret
 
-    def initFlatValue(self, attribName, value):
-        self.type.initFlatValue(attribName, value)
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
+        initObj = ret.type if ret is not None else None
+        typeTmp = Type.initWithFlatValue(attribName, value, initObj)
+        if typeTmp is not None:
+            if ret is None:
+                ret = Payload()
+            ret.type = typeTmp
         if attribName == "isArray":
-            self.isArray = value
+            if ret is None:
+                ret = Payload()
+            ret.isArray = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            initObj = ret.type if ret is not None else None
+            typeTmp = Type.initWithFlatValue(attribName, value, initObj)
+            if typeTmp is not None:
+                if ret is None:
+                    ret = Payload()
+                ret.type = typeTmp
+            if key == "isArray":
+                if ret is None:
+                    ret = Payload()
+                ret.isArray = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -805,14 +1074,6 @@ class Payload:
 
         self.isArray = dictObj.get('isArray', False)
 
-
-def createPayloadFromFlatDict(flatDict={}):
-    ret = Payload()
-    for key, value in flatDict.items():
-        ret.type.initFlatValue(key, value)
-        if key == "isArray":
-            ret.isArray = value
-    return ret
 
 class MessageBindingsAmqp:
     """https://github.com/asyncapi/bindings/blob/master/amqp/README.md#message-binding-object
@@ -843,13 +1104,40 @@ class MessageBindingsAmqp:
             ret["messageType"] = self.messageType
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "name":
-            self.name = value
+            if ret is None:
+                ret = MessageBindingsAmqp()
+            ret.name = value
         if attribName == "contentEncoding":
-            self.contentEncoding = value
+            if ret is None:
+                ret = MessageBindingsAmqp()
+            ret.contentEncoding = value
         if attribName == "messageType":
-            self.messageType = value
+            if ret is None:
+                ret = MessageBindingsAmqp()
+            ret.messageType = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "name":
+                if ret is None:
+                    ret = MessageBindingsAmqp()
+                ret.name = value
+            if key == "contentEncoding":
+                if ret is None:
+                    ret = MessageBindingsAmqp()
+                ret.contentEncoding = value
+            if key == "messageType":
+                if ret is None:
+                    ret = MessageBindingsAmqp()
+                ret.messageType = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -861,17 +1149,6 @@ class MessageBindingsAmqp:
 
         self.messageType = dictObj.get('messageType', None)
 
-
-def createMessageBindingsAmqpFromFlatDict(flatDict={}):
-    ret = MessageBindingsAmqp()
-    for key, value in flatDict.items():
-        if key == "name":
-            ret.name = value
-        if key == "contentEncoding":
-            ret.contentEncoding = value
-        if key == "messageType":
-            ret.messageType = value
-    return ret
 
 class AsyncApiHeaders (yacg.model.model.ComplexType):
     def __init__(self, dictObj=None):
@@ -890,6 +1167,5 @@ class AsyncApiHeaders (yacg.model.model.ComplexType):
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
-
 
 

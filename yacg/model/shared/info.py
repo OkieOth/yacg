@@ -10,13 +10,9 @@ class InfoSection:
     """
 
     def __init__(self, dictObj=None):
-
         self.title = None
-
         self.version = None
-
         self.description = None
-
         self.license = None
 
         if dictObj is not None:
@@ -35,15 +31,48 @@ class InfoSection:
             ret["license"] = self.license
         return ret
 
-    def initFlatValue(self, attribName, value):
+    @classmethod
+    def initWithFlatValue(cls, attribName, value, initObj = None):
+        ret = initObj
         if attribName == "title":
-            self.title = value
+            if ret is None:
+                ret = InfoSection()
+            ret.title = value
         if attribName == "version":
-            self.version = value
+            if ret is None:
+                ret = InfoSection()
+            ret.version = value
         if attribName == "description":
-            self.description = value
+            if ret is None:
+                ret = InfoSection()
+            ret.description = value
         if attribName == "license":
-            self.license = value
+            if ret is None:
+                ret = InfoSection()
+            ret.license = value
+        return ret
+
+    @classmethod
+    def createFromFlatDict(cls, flatDict={}):
+        ret = None
+        for key, value in flatDict.items():
+            if key == "title":
+                if ret is None:
+                    ret = InfoSection()
+                ret.title = value
+            if key == "version":
+                if ret is None:
+                    ret = InfoSection()
+                ret.version = value
+            if key == "description":
+                if ret is None:
+                    ret = InfoSection()
+                ret.description = value
+            if key == "license":
+                if ret is None:
+                    ret = InfoSection()
+                ret.license = value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -57,17 +86,4 @@ class InfoSection:
 
         self.license = dictObj.get('license', None)
 
-
-def createInfoSectionFromFlatDict(flatDict={}):
-    ret = InfoSection()
-    for key, value in flatDict.items():
-        if key == "title":
-            ret.title = value
-        if key == "version":
-            ret.version = value
-        if key == "description":
-            ret.description = value
-        if key == "license":
-            ret.license = value
-    return ret
 
