@@ -1,6 +1,6 @@
 # Attention, this file is generated. Manual changes get lost with the next
 # run of the code generation.
-# created by yacg (template: pythonBeans.mako v1.0.0)
+# created by yacg (template: pythonBeans.mako v1.1.0)
 
 from enum import Enum
 
@@ -17,6 +17,12 @@ class Type:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.processing is not None:
+            ret["processing"] = self.processing
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -36,6 +42,10 @@ class ObjectType (Type):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -93,6 +103,22 @@ class IntegerType (Type):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.format is not None:
+            ret["format"] = IntegerTypeFormatEnum.valueAsString(self.format)
+        if self.default is not None:
+            ret["default"] = self.default
+        if self.minimum is not None:
+            ret["minimum"] = self.minimum
+        if self.exclusiveMinimum is not None:
+            ret["exclusiveMinimum"] = self.exclusiveMinimum
+        if self.maximum is not None:
+            ret["maximum"] = self.maximum
+        if self.exclusiveMaximum is not None:
+            ret["exclusiveMaximum"] = self.exclusiveMaximum
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -163,6 +189,22 @@ class NumberType (Type):
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.format is not None:
+            ret["format"] = NumberTypeFormatEnum.valueAsString(self.format)
+        if self.default is not None:
+            ret["default"] = self.default
+        if self.minimum is not None:
+            ret["minimum"] = self.minimum
+        if self.exclusiveMinimum is not None:
+            ret["exclusiveMinimum"] = self.exclusiveMinimum
+        if self.maximum is not None:
+            ret["maximum"] = self.maximum
+        if self.exclusiveMaximum is not None:
+            ret["exclusiveMaximum"] = self.exclusiveMaximum
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -193,6 +235,12 @@ class BooleanType (Type):
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.default is not None:
+            ret["default"] = self.default
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -218,6 +266,18 @@ class StringType (Type):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.default is not None:
+            ret["default"] = self.default
+        if self.minLength is not None:
+            ret["minLength"] = self.minLength
+        if self.maxLength is not None:
+            ret["maxLength"] = self.maxLength
+        if self.pattern is not None:
+            ret["pattern"] = self.pattern
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -245,6 +305,12 @@ class UuidType (Type):
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.default is not None:
+            ret["default"] = self.default
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -262,6 +328,10 @@ class EnumTypeValuesMap:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -281,6 +351,14 @@ class Tag:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.value is not None:
+            ret["value"] = self.value
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -331,6 +409,34 @@ class EnumType (Type):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.version is not None:
+            ret["version"] = self.version
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.domain is not None:
+            ret["domain"] = self.domain
+        if self.source is not None:
+            ret["source"] = self.source
+        if self.description is not None:
+            ret["description"] = self.description
+        if self.type is not None:
+            ret["type"] = self.type.toDict()
+        if (self.numValues is not None) and (len(self.numValues) > 0):
+            ret["numValues"] = self.numValues
+        if (self.values is not None) and (len(self.values) > 0):
+            ret["values"] = self.values
+        if (self.valuesMap is not None) and (len(self.valuesMap) > 0):
+            ret["valuesMap"] = self.valuesMap.toDict()
+        if self.default is not None:
+            ret["default"] = self.default
+        if self.topLevelType is not None:
+            ret["topLevelType"] = self.topLevelType
+        if (self.tags is not None) and (len(self.tags) > 0):
+            ret["tags"] = self.tags.toDict()
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -391,6 +497,20 @@ class DateType (Type):
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.default is not None:
+            ret["default"] = self.default
+        if self.minimum is not None:
+            ret["minimum"] = self.minimum
+        if self.exclusiveMinimum is not None:
+            ret["exclusiveMinimum"] = self.exclusiveMinimum
+        if self.maximum is not None:
+            ret["maximum"] = self.maximum
+        if self.exclusiveMaximum is not None:
+            ret["exclusiveMaximum"] = self.exclusiveMaximum
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -426,6 +546,20 @@ class TimeType (Type):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.default is not None:
+            ret["default"] = self.default
+        if self.minimum is not None:
+            ret["minimum"] = self.minimum
+        if self.exclusiveMinimum is not None:
+            ret["exclusiveMinimum"] = self.exclusiveMinimum
+        if self.maximum is not None:
+            ret["maximum"] = self.maximum
+        if self.exclusiveMaximum is not None:
+            ret["exclusiveMaximum"] = self.exclusiveMaximum
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -463,6 +597,20 @@ class DateTimeType (Type):
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.default is not None:
+            ret["default"] = self.default
+        if self.minimum is not None:
+            ret["minimum"] = self.minimum
+        if self.exclusiveMinimum is not None:
+            ret["exclusiveMinimum"] = self.exclusiveMinimum
+        if self.maximum is not None:
+            ret["maximum"] = self.maximum
+        if self.exclusiveMaximum is not None:
+            ret["exclusiveMaximum"] = self.exclusiveMaximum
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -491,6 +639,12 @@ class DurationType (Type):
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.default is not None:
+            ret["default"] = self.default
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -510,6 +664,12 @@ class BytesType (Type):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.default is not None:
+            ret["default"] = self.default
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -558,6 +718,32 @@ class ComplexType (Type):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.version is not None:
+            ret["version"] = self.version
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.description is not None:
+            ret["description"] = self.description
+        if self.domain is not None:
+            ret["domain"] = self.domain
+        if self.source is not None:
+            ret["source"] = self.source
+        if self.extendsType is not None:
+            ret["extendsType"] = self.extendsType.toDict()
+        if (self.extendedBy is not None) and (len(self.extendedBy) > 0):
+            ret["extendedBy"] = self.extendedBy.toDict()
+        if (self.referencedBy is not None) and (len(self.referencedBy) > 0):
+            ret["referencedBy"] = self.referencedBy.toDict()
+        if (self.properties is not None) and (len(self.properties) > 0):
+            ret["properties"] = self.properties.toDict()
+        if self.topLevelType is not None:
+            ret["topLevelType"] = self.topLevelType
+        if (self.tags is not None) and (len(self.tags) > 0):
+            ret["tags"] = self.tags.toDict()
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -651,6 +837,38 @@ class Property:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.isArray is not None:
+            ret["isArray"] = self.isArray
+        if self.arrayDimensions is not None:
+            ret["arrayDimensions"] = self.arrayDimensions
+        if (self.arrayConstraints is not None) and (len(self.arrayConstraints) > 0):
+            ret["arrayConstraints"] = self.arrayConstraints.toDict()
+        if self.type is not None:
+            ret["type"] = self.type.toDict()
+        if (self.tags is not None) and (len(self.tags) > 0):
+            ret["tags"] = self.tags.toDict()
+        if self.description is not None:
+            ret["description"] = self.description
+        if self.required is not None:
+            ret["required"] = self.required
+        if self.ordinal is not None:
+            ret["ordinal"] = self.ordinal
+        if self.isKey is not None:
+            ret["isKey"] = self.isKey
+        if self.isVisualKey is not None:
+            ret["isVisualKey"] = self.isVisualKey
+        if self.foreignKey is not None:
+            ret["foreignKey"] = self.foreignKey.toDict()
+        if self.format is not None:
+            ret["format"] = self.format
+        if self.processing is not None:
+            ret["processing"] = self.processing
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -730,6 +948,28 @@ class DictionaryType (Type):
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
 
+    def toDict(self):
+        ret = {}
+        if self.version is not None:
+            ret["version"] = self.version
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.description is not None:
+            ret["description"] = self.description
+        if self.domain is not None:
+            ret["domain"] = self.domain
+        if self.source is not None:
+            ret["source"] = self.source
+        if (self.referencedBy is not None) and (len(self.referencedBy) > 0):
+            ret["referencedBy"] = self.referencedBy.toDict()
+        if self.valueType is not None:
+            ret["valueType"] = self.valueType.toDict()
+        if self.topLevelType is not None:
+            ret["topLevelType"] = self.topLevelType
+        if (self.tags is not None) and (len(self.tags) > 0):
+            ret["tags"] = self.tags.toDict()
+        return ret
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -776,6 +1016,16 @@ class ArrayConstraints:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.arrayMinItems is not None:
+            ret["arrayMinItems"] = self.arrayMinItems
+        if self.arrayMaxItems is not None:
+            ret["arrayMaxItems"] = self.arrayMaxItems
+        if self.arrayUniqueItems is not None:
+            ret["arrayUniqueItems"] = self.arrayUniqueItems
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -827,6 +1077,32 @@ class ArrayType (Type):
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.version is not None:
+            ret["version"] = self.version
+        if self.name is not None:
+            ret["name"] = self.name
+        if self.description is not None:
+            ret["description"] = self.description
+        if self.domain is not None:
+            ret["domain"] = self.domain
+        if self.source is not None:
+            ret["source"] = self.source
+        if (self.referencedBy is not None) and (len(self.referencedBy) > 0):
+            ret["referencedBy"] = self.referencedBy.toDict()
+        if self.itemsType is not None:
+            ret["itemsType"] = self.itemsType.toDict()
+        if self.topLevelType is not None:
+            ret["topLevelType"] = self.topLevelType
+        if (self.tags is not None) and (len(self.tags) > 0):
+            ret["tags"] = self.tags.toDict()
+        if (self.arrayConstraints is not None) and (len(self.arrayConstraints) > 0):
+            ret["arrayConstraints"] = self.arrayConstraints.toDict()
+        if self.arrayDimensions is not None:
+            ret["arrayDimensions"] = self.arrayDimensions
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:
@@ -881,6 +1157,16 @@ class ForeignKey:
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
             self.initFromDict(d)
+
+    def toDict(self):
+        ret = {}
+        if self.type is not None:
+            ret["type"] = self.type.toDict()
+        if self.propertyName is not None:
+            ret["propertyName"] = self.propertyName
+        if self.property is not None:
+            ret["property"] = self.property.toDict()
+        return ret
 
     def initFromDict(self, dictObj):
         if dictObj is None:

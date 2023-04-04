@@ -3,8 +3,6 @@
 hide empty methods
 hide empty fields
 
-modelTypes.size = 23
-
 
 class "**Type**" as Type {
         ObjectType processing

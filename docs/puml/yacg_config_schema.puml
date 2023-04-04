@@ -3,8 +3,6 @@
 hide empty methods
 hide empty fields
 
-modelTypes.size = 9
-
 
 class "**Job**" as Job {
         StringType name

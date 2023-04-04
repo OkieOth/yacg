@@ -3,8 +3,6 @@
 hide empty methods
 hide empty fields
 
-modelTypes.size = 13
-
 
 class "**RamdonDefaultConfig**" as RamdonDefaultConfig {
         IntegerType defaultElemCount

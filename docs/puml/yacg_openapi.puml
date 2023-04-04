@@ -3,8 +3,6 @@
 hide empty methods
 hide empty fields
 
-modelTypes.size = 11
-
 
 class "**OpenApiServer**" as OpenApiServer {
         StringType url
