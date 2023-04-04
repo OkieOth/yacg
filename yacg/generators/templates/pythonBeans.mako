@@ -7,7 +7,7 @@
     import yacg.generators.helper.pythonFuncs as pythonFuncs
 
     templateFile = 'pythonBeans.mako'
-    templateVersion = '1.0.0'
+    templateVersion = '1.1.0'
 
     baseModelDomain = templateParameters.get('baseModelDomain',None)
     domainList = modelFuncs.getDomainsAsList(modelTypes)
