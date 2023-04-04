@@ -129,10 +129,10 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
     def initFlatValue(self, attribName, value):
             % for property in type.properties:
                 % if modelFuncs.isBaseType(property.type):
-        if attribName == "${property.name}"
+        if attribName == "${property.name}":
             self.${property.name} = value
                 % elif isinstance(property.type, model.EnumType):
-        if attribName == "${property.name}"
+        if attribName == "${property.name}":
             self.${property.name} = ${property.type.name}.valueForString(value)
                 % elif isinstance(property.type, model.ComplexType):
         self.${property.name}.initFlatValue(attribName, value)
