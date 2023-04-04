@@ -125,6 +125,19 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % endif
         return ret
 
+    def initFlatValue(self, attribName, value):
+        % for property in type.properties:
+            % if modelFuncs.isBaseType(property.type):
+        if attribName == "${property.name}"
+            self.${property.name} = value
+            % elif isinstance(property.type, model.EnumType):
+        if attribName == "${property.name}"
+            self.${property.name} = ${property.type.name}.valueForString(value)
+            % elif isinstance(property.type, model.ComplexType):
+        self.${property.name}.initFlatValue(attribName, value)
+            % endif
+        % endfor
+
     def initFromDict(self, dictObj):
         if dictObj is None:
             return
@@ -169,5 +182,23 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         % endif
 
     % endif
+
+    % if hasattr(type, "properties"):
+def create${type.name}FromFlatDict(flatDict={}):
+    ret = ${type.name}()
+    for key, value in flatDict.items():
+        % for property in type.properties:
+            % if modelFuncs.isBaseType(property.type):
+        if key == "${property.name}"
+            ret.${property.name} = value
+            % elif isinstance(property.type, model.EnumType):
+        if key == "${property.name}"
+            ret.${property.name} = ${property.type.name}.valueForString(value)
+            % elif isinstance(property.type, model.ComplexType):
+        ret.${property.name}.initFlatValue(key, value)
+            % endif
+        % endfor
+    % endif
+    return ret
 
 % endfor
