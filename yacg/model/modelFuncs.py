@@ -383,6 +383,37 @@ def isDateContained(modelTypes):
     return False
 
 
+def containsOptionalProps(modelTypes):
+    """returns True, if at least one of model types contains an optional property, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if not property.required:
+                    return True
+    return False
+
+
+def isAtLeastOneDateRelatedTypeContained(modelTypes):
+    """returns True, if at least one of the model types is DateType, DateTimeType, TimeType,
+    False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if isinstance(property.type, model.DateTimeType) or isinstance(property.type, model.DateType) or isinstance(property.type, model.TimeType):
+                    return True
+    return False
+
+
 def isTimeContained(modelTypes):
     """returns True, if at least one of model types contains a property of type model.TimeType, False otherwise.
 
