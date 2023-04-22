@@ -368,6 +368,22 @@ def isTimestampContained(modelTypes):
     return False
 
 
+def typeIsAsOptionalContained(typeName, modelTypes):
+    """returns True, if at least one of model types contains a property of type model.DateTimeType, False otherwise.
+
+    Keyword arguments:
+    typeName -- name of type to search in the models
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (not isBaseType(property.type)) and (property.type.name == typeName) and (not property.required):
+                    return True
+    return False
+
+
 def isDateContained(modelTypes):
     """returns True, if at least one of model types contains a property of type model.DateType, False otherwise.
 
