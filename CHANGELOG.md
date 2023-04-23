@@ -1,3 +1,6 @@
+# 6.2.0
+* enable http/s sources for templates
+
 # 6.1.0
 * add additional functions to modelFuncs
 * fix random date generation in a way, that it produces ISO strings
