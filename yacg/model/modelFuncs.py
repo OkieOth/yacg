@@ -368,6 +368,22 @@ def isTimestampContained(modelTypes):
     return False
 
 
+def typeIsAsOptionalContained(typeName, modelTypes):
+    """returns True, if at least one of model types contains a property of type model.DateTimeType, False otherwise.
+
+    Keyword arguments:
+    typeName -- name of type to search in the models
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (not isBaseType(property.type)) and (property.type.name == typeName) and (not property.required):
+                    return True
+    return False
+
+
 def isDateContained(modelTypes):
     """returns True, if at least one of model types contains a property of type model.DateType, False otherwise.
 
@@ -379,6 +395,37 @@ def isDateContained(modelTypes):
         if isinstance(type, model.ComplexType):
             for property in type.properties:
                 if (property.type is not None) and (isinstance(property.type, model.DateType)):
+                    return True
+    return False
+
+
+def containsOptionalProps(modelTypes):
+    """returns True, if at least one of model types contains an optional property, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if not property.required:
+                    return True
+    return False
+
+
+def isAtLeastOneDateRelatedTypeContained(modelTypes):
+    """returns True, if at least one of the model types is DateType, DateTimeType, TimeType,
+    False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if isinstance(property.type, model.DateTimeType) or isinstance(property.type, model.DateType) or isinstance(property.type, model.TimeType):
                     return True
     return False
 

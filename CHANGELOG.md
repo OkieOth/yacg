@@ -1,3 +1,7 @@
+# 6.1.0
+* add additional functions to modelFuncs
+* fix random date generation in a way, that it produces ISO strings
+
 # 6.0.6
 * improve the python bean template
 

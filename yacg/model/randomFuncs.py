@@ -496,7 +496,7 @@ def __getRandomDateValueImpl(processing, defaultConfig, formatStr):
 
 
 def __getRandomDateValue(defaultConfig, processing):
-    formatStr = "%d-%m-%Y"
+    formatStr = "%Y-%m-%d"
     return __getRandomDateValueImpl(processing, defaultConfig, formatStr)
 
 
@@ -540,5 +540,5 @@ def __getRandomTimeValue(processing):
 
 
 def __getRandomDateTimeValue(defaultConfig, processing):
-    formatStr = "%d-%m-%YT%H:%M:%S"
+    formatStr = "%Y-%m-%dT%H:%M:%S"
     return __getRandomDateValueImpl(processing, defaultConfig, formatStr)
