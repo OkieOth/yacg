@@ -90,5 +90,16 @@ if ! pipenv run python3 createRandomData.py --model resources/models/json/yacg_c
     exit 1
 fi
 
+if ! pipenv run python3 yacg.py \
+    --models resources/models/json/yacg_config_schema.json \
+            resources/models/json/yacg_model_schema.json \
+    --delExistingStoredTemplates \
+    --singleFileTemplates https://raw.githubusercontent.com/OkieOth/oth.types/e0ceaf4d4333439b7f5ff0d7b4b62686f7eeb914/configs/codegen/templates/golang_types.mako=stdout > /dev/null; then
+    echo "problems while running a single file job from command line"
+    popd > /dev/null
+    exit 1
+fi
+
+
 echo "all good :)"
 popd > /dev/null

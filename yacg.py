@@ -311,7 +311,7 @@ def _tryToFindTemplate(templateFile, args):
         fileExists = True
     elif templateFile.startswith("http://") or templateFile.startswith("https://"):
         # load template from the remote location and store it in a temp folder
-        folderToStore = args.folder2StoreTemplates if args.folder2StoreTemplates else tempfile.gettempdir() + "/templates"
+        folderToStore = args.folder2StoreTemplates if args.folder2StoreTemplates else tempfile.gettempdir()
         (fileExists, templateFileToReturn) = _getFileFromRemoteSource(templateFile, folderToStore, args.delExistingStoredTemplates)
     else:
         internalTemplateName = 'yacg/generators/templates/{}.mako'.format(templateFile)
