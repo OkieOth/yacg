@@ -1,6 +1,10 @@
 import argparse
 import sys
+import os
 import logging
+import tempfile
+import requests
+import shutil
 from datetime import datetime
 from yacg.util.fileUtils import doesFileExist
 from yacg.util.outputUtils import printError, getErrorTxt, getOkTxt
@@ -50,6 +54,10 @@ parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type nam
 parser.add_argument('--removeDicitonaryTypesFromTopLevel', help='Dictionary types are removed from the loaded types list', action='store_true')  # noqa: E501
 parser.add_argument('--removeArrayTypesFromTopLevel', help='Array types are removed from the loaded types list', action='store_true')  # noqa: E501
 parser.add_argument('--goOnlyWithTopLevelTypes', help='Only top-level-types from the schema remains in the loaded types list', action='store_true')  # noqa: E501
+parser.add_argument('--folder2StoreModels', help='Folder to store models from http sources, this works only if they have no external references')  # noqa: E501
+parser.add_argument('--delExistingStoredModels', help='set to false to skip download of http located models if they exist locally', action='store_true')  # noqa: E501
+parser.add_argument('--folder2StoreTemplates', help='Folder to store templates from http sources, this works only if they have no references')  # noqa: E501
+parser.add_argument('--delExistingStoredTemplates', help='set to false to skip download of http located templates if they exist locally', action='store_true')  # noqa: E501
 
 
 def readModels(configJob, flattenInheritance):
@@ -228,7 +236,7 @@ def getJobConfigurations(args):
         return _getJobConfigurationsFromArgs(args)
 
 
-def _foundAllTemplates(codeGenerationJobs):
+def _foundAllTemplates(codeGenerationJobs, args):
     """checks up if all template file are accessible. For internal templates the
     template file name is changed
 
@@ -242,9 +250,9 @@ def _foundAllTemplates(codeGenerationJobs):
         for task in job.tasks:
             fileExists = False
             if (task.singleFileTask is not None) and (task.singleFileTask.template is not None):
-                (fileExists, task.singleFileTask.template) = _tryToFindTemplate(task.singleFileTask.template)
+                (fileExists, task.singleFileTask.template) = _tryToFindTemplate(task.singleFileTask.template, args)
             elif (task.multiFileTask is not None) and (task.multiFileTask.template is not None):
-                (fileExists, task.multiFileTask.template) = _tryToFindTemplate(task.multiFileTask.template)
+                (fileExists, task.multiFileTask.template) = _tryToFindTemplate(task.multiFileTask.template, args)
             elif (task.randomDataTask is not None):
                 fileExists = True
             if not fileExists:
@@ -252,11 +260,51 @@ def _foundAllTemplates(codeGenerationJobs):
     return foundAll
 
 
-def _tryToFindTemplate(templateFile):
+def _getFileFromRemoteSource(remoteFile, folderToStore, delExistingFiles):
+    """downloads a given files from a remote sources and stores it in a given folder. If the given folder does not
+    exist, then it is created.
+
+    The function returns a tupel of a boolean, that indicates that the downloaded file now exists, and
+    the path of the file that was downloaded.
+
+    Keyword arguments:
+    remoteFile -- File to download
+    folderToStore - folder to store the downloaded files
+    delExistingFile - if true, then a file with the same name will be deleted before the download. 
+    """
+
+    try:
+        # e.g. https:**/**/bla.com/xx
+        i = remoteFile.find("/")
+        # e.g. https:/**/**bla.com/xx
+        i = remoteFile.find("/", i+1)
+        # e.g. https://bla.com**/**xx
+        firstNonProtoSlash = remoteFile.find("/", i+1)
+        if firstNonProtoSlash != -1:
+            f = remoteFile[firstNonProtoSlash + 1:]
+            f = f.replace("/", "_")
+            destFile = folderToStore + os.sep + f
+        else:
+            logging.error('   URL for remote file contains no valid usable file extension: {}'.format(remoteFile))
+            return (False, remoteFile)
+        r = requests.get(remoteFile, stream=True)
+        if r.status_code != 200:
+            logging.error("Error while downloading remote source: status={}".format(r.status_code))
+            return (False, remoteFile)
+        r.raw.decode_content = True
+        with open(destFile, 'wb') as f:
+            shutil.copyfileobj(r.raw, f)
+        return (True, destFile)
+    except Exception as e:
+        logging.error("Error while downloading remote source: {}".format(e))
+        return (False, remoteFile)
+
+
+def _tryToFindTemplate(templateFile, args):
     """tests if the given file name is a external or an internal template. If it
     is an internal template, then the file name is changed to a relative path.
 
-    Function return a tupel with the true or false as first element, and the file name
+    Function return a tupel with the true or false as first element, and the file path
     to the found file as second element
     """
 
@@ -264,6 +312,10 @@ def _tryToFindTemplate(templateFile):
     templateFileToReturn = templateFile
     if doesFileExist(templateFile):
         fileExists = True
+    elif templateFile.startswith("http://") or templateFile.startswith("https://"):
+        # load template from the remote location and store it in a temp folder
+        folderToStore = args.folder2StoreTemplates if args.folder2StoreTemplates else tempfile.gettempdir()
+        (fileExists, templateFileToReturn) = _getFileFromRemoteSource(templateFile, folderToStore, args.delExistingStoredTemplates)
     else:
         internalTemplateName = 'yacg/generators/templates/{}.mako'.format(templateFile)
         fileExists = doesFileExist(internalTemplateName)
@@ -273,7 +325,7 @@ def _tryToFindTemplate(templateFile):
     return (fileExists, templateFileToReturn)
 
 
-def _foundAllModels(codeGenerationJobs):
+def _foundAllModels(codeGenerationJobs, args):
     """checks up if all model file are accessible. For internal templates the
     template file name is changed
 
@@ -283,7 +335,13 @@ def _foundAllModels(codeGenerationJobs):
     foundAll = True
     for job in codeGenerationJobs:
         for model in job.models:
-            fileExists = doesFileExist(model.schema)
+            if model.schema.startswith("http://") or model.schema.startswith("https://"):
+                folderToStore = args.folder2StoreModels if args.folder2StoreModels else tempfile.gettempdir()
+                (fileExists, localModelFile) = _getFileFromRemoteSource(model.schema, folderToStore, args.delExistingStoredModels)
+                if fileExists:
+                    model.schema = localModelFile
+            else:
+                fileExists = doesFileExist(model.schema)
             fileExistsString = getOkTxt('found') if fileExists \
                 else getErrorTxt('missing')
             if not fileExists:
@@ -292,7 +350,7 @@ def _foundAllModels(codeGenerationJobs):
     return foundAll
 
 
-def _isConfigurationValid(codeGenerationJobs):
+def _isConfigurationValid(codeGenerationJobs, args):
     """checks up the give job configuration array and
     returns True if valid else if not
     """
@@ -302,9 +360,9 @@ def _isConfigurationValid(codeGenerationJobs):
         errorMsg = getErrorTxt('no generation jobs are given - cancel')
         logging.info(errorMsg)
         return False
-    if _foundAllTemplates(codeGenerationJobs) is False:
+    if _foundAllTemplates(codeGenerationJobs, args) is False:
         isValid = False
-    if _foundAllModels(codeGenerationJobs) is False:
+    if _foundAllModels(codeGenerationJobs, args) is False:
         isValid = False
     return isValid
 
@@ -441,7 +499,7 @@ def main():
     """starts the program execution"""
     args = parser.parse_args()
     codeGenerationJobs = getJobConfigurations(args)
-    if not _isConfigurationValid(codeGenerationJobs):
+    if not _isConfigurationValid(codeGenerationJobs, args):
         sys.exit(1)
     if args.usedFilesOnly:
         __printUsedFiles(codeGenerationJobs, args)

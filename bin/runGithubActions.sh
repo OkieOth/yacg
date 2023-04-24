@@ -90,5 +90,33 @@ if ! pipenv run python3 createRandomData.py --model resources/models/json/yacg_c
     exit 1
 fi
 
+if ! pipenv run python3 yacg.py \
+    --models https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/models/model_0202.json \
+    --delExistingStoredTemplates \
+    --singleFileTemplates https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/codegen/templates/golang_types.mako=stdout > /dev/null; then
+    echo "problems while running a single file job from command line"
+    popd > /dev/null
+    exit 1
+fi
+
+if pipenv run python3 yacg.py \
+    --models https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/models/model_0203.json \
+    --delExistingStoredTemplates \
+    --singleFileTemplates https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/codegen/templates/golang_types.mako=stdout; then
+    echo "not detectig missing http based model"
+    popd > /dev/null
+    exit 1
+fi
+
+if pipenv run python3 yacg.py \
+    --models https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/models/model_0202.json \
+    --delExistingStoredTemplates \
+    --singleFileTemplates https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/codegen/templates/golang_types_X.mako=stdout; then
+    echo "problems while running a single file job from command line"
+    popd > /dev/null
+    exit 1
+fi
+
+
 echo "all good :)"
 popd > /dev/null

@@ -49,7 +49,11 @@ def toName(text):
     """converts a text that it is suitable as name
     """
 
-    ret = re.sub("[^0-9a-zA-Z_]+", "_", text)
+    ret = "x"
+    lastRet = ""
+    while ret != lastRet:
+        lastRet = ret
+        ret = re.sub("[^0-9a-zA-Z_]+", "_", text)
     pattern = re.compile("^[0-9]")
     return '_' + ret if pattern.match(ret) else ret
 
