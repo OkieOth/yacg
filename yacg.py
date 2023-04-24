@@ -288,6 +288,9 @@ def _getFileFromRemoteSource(remoteFile, folderToStore, delExistingFiles):
             logging.error('   URL for remote file contains no valid usable file extension: {}'.format(remoteFile))
             return (False, remoteFile)
         r = requests.get(remoteFile, stream=True)
+        if r.status_code != 200:
+            logging.error("Error while downloading remote source: status={}".format(r.status_code))
+            return (False, remoteFile)
         r.raw.decode_content = True
         with open(destFile, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
@@ -329,11 +332,16 @@ def _foundAllModels(codeGenerationJobs, args):
     returns True if all templates are available, else False
     """
 
-    # TODO ... load models from http/s sources
     foundAll = True
     for job in codeGenerationJobs:
         for model in job.models:
-            fileExists = doesFileExist(model.schema)
+            if model.schema.startswith("http://") or model.schema.startswith("https://"):
+                folderToStore = args.folder2StoreModels if args.folder2StoreModels else tempfile.gettempdir()
+                (fileExists, localModelFile) = _getFileFromRemoteSource(model.schema, folderToStore, args.delExistingStoredModels)
+                if fileExists:
+                    model.schema = localModelFile
+            else:
+                fileExists = doesFileExist(model.schema)
             fileExistsString = getOkTxt('found') if fileExists \
                 else getErrorTxt('missing')
             if not fileExists:
