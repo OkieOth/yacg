@@ -1,5 +1,6 @@
 # 6.2.0
 * enable http/s sources for templates
+* enable http/s sources for models
 
 # 6.1.0
 * add additional functions to modelFuncs
