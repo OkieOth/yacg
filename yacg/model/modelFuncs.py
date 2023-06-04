@@ -460,6 +460,23 @@ def isUuidContained(modelTypes):
     return False
 
 
+def isDictTypeContained(modelTypes):
+    """returns True, if at least one of model types contains a property of type model.DictionaryType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.DictionaryType):
+            return True
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.DictionaryType)):
+                    return True
+    return False
+
+
 def isObjectContained(modelTypes):
     """returns True, if at least one of model types contains a property of type model.ObjectType, False otherwise.
 
