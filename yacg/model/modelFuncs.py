@@ -817,6 +817,20 @@ def getLocalTypePrefix(schemaAsDict):
     return None
 
 
+def getRequiredProperties(type):
+    """This function goes all properties of the type and returns a
+    list with all required properties.
+    """
+
+    ret = []
+    if not hasattr(type, "properties"):
+        return ret
+    for p in type.properties:
+        if p.required:
+            ret.append(p)
+    return ret
+
+
 def _getTypeType(type):
     if isinstance(type, model.ComplexType):
         return "object"
