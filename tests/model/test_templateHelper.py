@@ -3,7 +3,7 @@ import unittest
 import yacg.templateHelper as templateHelper
 
 
-# For executing these test run: pipenv run python3 -m unittest -v tests/model/test_templateHelper.py
+# For executing these test run: python -m unittest -v tests/model/test_templateHelper.py
 class TestTemplateHelper (unittest.TestCase):
 
     def testAddLineBreakToDesc(self):

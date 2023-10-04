@@ -11,7 +11,7 @@ scriptPos=${0%/*}
 pushd $scriptPos/.. > /dev/null
 
 echo "create meta model classes ..."
-if ! pipenv run python3 yacg.py --models \
+if ! python yacg.py --models \
     resources/models/json/yacg_model_schema.json \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/model.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_model.py \
@@ -25,7 +25,7 @@ if ! pipenv run python3 yacg.py --models \
 fi
 
 echo "create config model classes ..."
-if ! pipenv run python3 yacg.py --models \
+if ! python yacg.py --models \
     resources/models/json/yacg_config_schema.json \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/config.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_config.py \
@@ -39,7 +39,7 @@ if ! pipenv run python3 yacg.py --models \
 fi
 
 echo "create random config model classes ..."
-if ! pipenv run python3 yacg.py --models \
+if ! python yacg.py --models \
     resources/models/json/yacg_random_data_types.json \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/random_config.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_random_config.py \
@@ -53,7 +53,7 @@ if ! pipenv run python3 yacg.py --models \
 fi
 
 echo "create shared model classes ..."
-if ! pipenv run python3 yacg.py --models \
+if ! python yacg.py --models \
     resources/models/json/shared/info.json \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/shared/info.py \
     --protocolFile logs/gen_shared_info.log \
@@ -66,7 +66,7 @@ fi
 
 
 echo "create openapi model classes ..."
-if ! pipenv run python3 yacg.py --models \
+if ! python yacg.py --models \
     resources/models/json/yacg_openapi_paths.json \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/openapi.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_openapi.py \
@@ -81,7 +81,7 @@ if ! pipenv run python3 yacg.py --models \
 fi
 
 echo "create asyncapi model classes ..."
-if ! pipenv run python3 yacg.py --models \
+if ! python yacg.py --models \
     resources/models/json/yacg_asyncapi_types.json \
     --singleFileTemplates pythonBeans=${scriptPos}/../yacg/model/asyncapi.py \
                 pythonBeansTests=${scriptPos}/../tests/model/test_asyncapi.py \

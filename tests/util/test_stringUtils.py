@@ -2,7 +2,7 @@ import unittest
 from yacg.util.stringUtils import toUpperCamelCase, toName
 from yacg.util.stringUtils import snakeToLowerCamelCase, snakeToUpperCamelCase, toLowerCase, toUpperCase
 
-# For executing these test run: pipenv run python3 -m unittest -v tests/util/test_stringUtils.py
+# For executing these test run: python -m unittest -v tests/util/test_stringUtils.py
 class TestStringUtils (unittest.TestCase):
     def testUpperCamelCase(self):
         t = toUpperCamelCase('i am a test')
