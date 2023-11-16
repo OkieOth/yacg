@@ -5,7 +5,7 @@ import yacg.model.config as config
 import yacg.model.modelFuncs as modelFuncs
 
 
-# For executing these tests run: pipenv run python3 -m unittest -v tests/util/test_additional.py
+# For executing these tests run: python -m unittest -v tests/util/test_additional.py
 class TestAdditional (unittest.TestCase):
     def _estFlattenTypes(self):
         modelFile = 'tests/resources/models/json/examples/more_sophisticated_allof.json'

@@ -1,6 +1,5 @@
 FROM python:3.10-slim-buster
 
-RUN pip install pipenv
 
 WORKDIR /yacg
 
@@ -14,15 +13,13 @@ ADD randomDataServer.py randomDataServer.py
 ADD customRandomConstraints.py customRandomConstraints.py
 ADD validate.py validate.py
 ADD version.txt version.txt
-ADD Pipfile Pipfile
-ADD Pipfile.lock Pipfile.lock
+ADD requirements.txt requirements.txt
 COPY yacg yacg/
 
 #RUN cd /yacg && \
 #    pipenv --python 3.8 && \
 #    pipenv --three install --system
 
-RUN pipenv requirements > requirements.txt
 RUN pip install -r requirements.txt
 
 WORKDIR /yacg

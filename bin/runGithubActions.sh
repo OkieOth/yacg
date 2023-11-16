@@ -4,29 +4,37 @@ scriptPos=${0%/*}
 
 pushd $scriptPos/.. > /dev/null
 
+echo "remove content of tmp folder ..."
+
 rm -rf tmp/*
 
+echo "removed content of tmp folder"
+
 # stop the build if there are Python syntax errors or undefined names
-if ! pipenv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics; then
+if ! flake8 --exclude venv --count --select=E9,F63,F7,F82 --show-source --statistics; then
     echo "There are flake8 problems [1]"
     popd > /dev/null
     exit 1
+else
+    echo "flake8-1 is done"
 fi
 
 # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-if ! pipenv run flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --per-file-ignores='yacg/model/*.py:E501 E303 W391'; then
+if ! flake8 --exclude venv --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --per-file-ignores='yacg/model/*.py:E501 E303 W391'; then
     echo "There are flake8 problems [2]"
     popd > /dev/null
     exit 1
+else
+    echo "flake8-2 is done"
 fi
 
-if ! pipenv run python3 -m unittest discover tests "test_*.py"; then
+if ! python -m unittest discover tests "test_*.py"; then
     echo "There are problems in the tests"
     popd > /dev/null
     exit 1
 fi
 
-if ! pipenv run python3 yacg.py \
+if ! python yacg.py \
     --models resources/models/json/yacg_config_schema.json \
             resources/models/json/yacg_model_schema.json \
     --singleFileTemplates plantUml=stdout > /dev/null; then
@@ -35,7 +43,7 @@ if ! pipenv run python3 yacg.py \
     exit 1
 fi
 
-if ! pipenv run python3 yacg.py \
+if ! python yacg.py \
     --models resources/models/json/yacg_config_schema.json \
              resources/models/json/yacg_model_schema.json \
     --usedFilesOnly > /dev/null; then
@@ -51,21 +59,21 @@ if ! bin/demoMultiFileGenerator.sh > /dev/null; then
     exit 1
 fi
 
-if ! pipenv run python3 \
+if ! python \
     modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun &> /dev/null; then
     echo "problems while run modelToYaml.py"
     popd > /dev/null
     exit 1
 fi
 
-if ! pipenv run python3 \
+if ! python \
     modelToJson.py --model resources/models/yaml/yacg_config_schema.yaml --dryRun &> /dev/null; then
     echo "problems while run modelToJson.py"
     popd > /dev/null
     exit 1
 fi
 
-if ! pipenv run python3 \
+if ! python \
     validate.py --schema resources/models/json/yacg_config_schema.json \
     --inputFile resources/configurations/conf_with_vars.json --draft07hack &> /dev/null; then
     echo "can't validate schema"
@@ -73,7 +81,7 @@ if ! pipenv run python3 \
     exit 1
 fi
 
-if pipenv run python3 \
+if python \
     validate.py --schema resources/models/json/yacg_config_schema.json \
     --inputFile resources/configurations/conf_with_vars.json &> /dev/null; then
     echo "wrong validation of schema"
@@ -81,7 +89,7 @@ if pipenv run python3 \
     exit 1
 fi
 
-if ! pipenv run python3 createRandomData.py --model resources/models/json/yacg_config_schema.json \
+if ! python createRandomData.py --model resources/models/json/yacg_config_schema.json \
   --type Job \
   --defaultElemCount 10 \
   --outputDir ./tmp &> /dev/null; then
@@ -90,7 +98,7 @@ if ! pipenv run python3 createRandomData.py --model resources/models/json/yacg_c
     exit 1
 fi
 
-if ! pipenv run python3 yacg.py \
+if ! python yacg.py \
     --models https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/models/model_0202.json \
     --delExistingStoredTemplates \
     --singleFileTemplates https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/codegen/templates/golang_types.mako=stdout > /dev/null; then
@@ -99,7 +107,7 @@ if ! pipenv run python3 yacg.py \
     exit 1
 fi
 
-if pipenv run python3 yacg.py \
+if python yacg.py \
     --models https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/models/model_0203.json \
     --delExistingStoredTemplates \
     --singleFileTemplates https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/codegen/templates/golang_types.mako=stdout; then
@@ -108,7 +116,7 @@ if pipenv run python3 yacg.py \
     exit 1
 fi
 
-if pipenv run python3 yacg.py \
+if python yacg.py \
     --models https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/models/model_0202.json \
     --delExistingStoredTemplates \
     --singleFileTemplates https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/codegen/templates/golang_types_X.mako=stdout; then

@@ -46,38 +46,37 @@ ln -s /bin/pip
 ```bash
 # basic preparation
 sudo apt-get install python3-venv
-pip install --user pipenv
 
-pipenv --python 3.11
-pipenv install
-pipenv shell
+virtualenv venv
+source venv/bin/activate
 
-# in case of errors to create virtual env look here
-# https://askubuntu.com/questions/1241993/why-i-cannot-create-pipenv-shell-in-ubuntu-20-04-lts-with-python3-8
+pip install -r requirements.txt
+
+
 
 # do a demo run ... and create plantuml
-pipenv run python3 yacg.py \
+python yacg.py \
     --models resources/models/json/yacg_config_schema.json \
              resources/models/json/yacg_model_schema.json \
     --singleFileTemplates plantUml=stdout
 
-pipenv run python3 yacg.py \
+python yacg.py \
     --models resources/models/json/yacg_config_schema.json \
              resources/models/json/yacg_model_schema.json \
     --usedFilesOnly
 
 # demo run with protobuf example output
-pipenv run python3 yacg.py \
+python yacg.py \
     --models resources/models/json/yacg_config_schema.json \
              resources/models/json/yacg_model_schema.json \
     --singleFileTemplates protobuf=stdout
 
 
 # run a test
-pipenv run python3 -m unittest -v tests/model/test_model.py
+python -m unittest -v tests/model/test_model.py
 
 # run all tests
-pipenv run python3 -m unittest discover tests "test_*.py"
+python -m unittest discover tests "test_*.py"
 ```
 ## Docker
 ```bash
@@ -118,10 +117,10 @@ This project contains also a script to increment model versions. I has the abili
 ## Usage
 ```bash
 # see the possible parameters of the script
-pipenv run python3 incrementVersion.py
+python incrementVersion.py
 
 # do an example dry-run
-pipenv run python3 incrementVersion.py --model resources/models/json/yacg_model_schema.json --version minor
+python incrementVersion.py --model resources/models/json/yacg_model_schema.json --version minor
 ```
 
 
@@ -131,20 +130,20 @@ This project contains also a script to convert JSON schemas to the yaml format. 
 ## Usage
 ```bash
 # see the possible parameters of the script
-pipenv run python3 modelToYaml.py --help
+python modelToYaml.py --help
 
 # do an example dry-run
-pipenv run python3 modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun
+python modelToYaml.py --model resources/models/json/yacg_model_schema.json --dryRun
 
 # feed stdin to convert
-cat resources/models/json/yacg_model_schema.json | pipenv run python3 modelToYaml.py --stdin --dryRun
+cat resources/models/json/yacg_model_schema.json | python modelToYaml.py --stdin --dryRun
 
 
 # more sophisticated example to create openApi yaml
-pipenv run python3 yacg.py \
+python yacg.py \
     --models tests/resources/models/json/examples/openapi_v3_example_refs.json \
     --singleFileTemplates resources/templates/examples/normalizedOpenApiJson.mako=/tmp/test.json && \
-    pipenv run python3 modelToYaml.py --model /tmp/test.json --destDir /tmp
+    python modelToYaml.py --model /tmp/test.json --destDir /tmp
 ```
 
 # Models to JSON
@@ -153,13 +152,13 @@ This project contains also a script to convert yaml schemas to the JSON format. 
 ## Usage
 ```bash
 # see the possible parameters of the script
-pipenv run python3 modelToJson.py --help
+python modelToJson.py --help
 
 # do an example dry-run
-pipenv run python3 modelToJson.py --model resources/models/yaml/yacg_config_schema.yaml --dryRun
+python modelToJson.py --model resources/models/yaml/yacg_config_schema.yaml --dryRun
 
 # feed stdin to convert
-cat resources/models/yaml/yacg_config_schema.yaml | pipenv run python3 modelToJson.py \
+cat resources/models/yaml/yacg_config_schema.yaml | python modelToJson.py \
     --stdin --dryRun
 ```
 
@@ -170,7 +169,7 @@ schema
 ## Usage
 ```bash
 # python version
-pipenv run python3 normalizeSchema.py --model
+python normalizeSchema.py --model
 
 # docker version
 docker run -u $(id -u ${USER}):$(id -g ${USER}) \
@@ -193,7 +192,7 @@ from the schema input and tries the validation without it.
 ## Usage
 ```bash
 # bash version
-pipenv run python3 validate.py --schema resources/models/json/yacg_config_schema.json \
+python validate.py --schema resources/models/json/yacg_config_schema.json \
   --inputFile resources/configurations/conf_with_vars.json \
   --draft07hack # used because json-spec has currently not draft07 support
 
@@ -215,7 +214,7 @@ For further configurations see [here](docs/random_data_creation.md)
 
 ```bash
 # creates in the tmp folder a file Job.json with 10 random objects of the Job type
-pipenv run python3 createRandomData.py --model resources/models/json/yacg_config_schema.json \
+python createRandomData.py --model resources/models/json/yacg_config_schema.json \
   --type Job \
   --defaultElemCount 10
   --outputDir ./tmp
@@ -229,7 +228,7 @@ with that script.
 
 ```bash
 # will start a simple http server on port 8080 that provides random data for a given type
-pipenv run python3 randomDataServer.py --model resources/models/json/yacg_config_schema.json
+python randomDataServer.py --model resources/models/json/yacg_config_schema.json
 
 # reading one random data set of the type 'Job'
 curl 'http://localhost:8080/job'
