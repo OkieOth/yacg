@@ -8,7 +8,7 @@ scriptPos=${0%/*}
 pushd $scriptPos/.. > /dev/null
 
 echo "create yacg demo code based on a config file ..."
-if ! pipenv run python3 yacg.py --config resources/configurations/gen_yacg_code.json; then
+if ! python yacg.py --config resources/configurations/gen_yacg_code.json; then
     echo "    ERROR while create the stuff :-/"
     exit 1
 fi
