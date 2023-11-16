@@ -4,20 +4,28 @@ scriptPos=${0%/*}
 
 pushd $scriptPos/.. > /dev/null
 
+echo "remove content of tmp folder ..."
+
 rm -rf tmp/*
 
+echo "removed content of tmp folder"
+
 # stop the build if there are Python syntax errors or undefined names
-if ! pipenv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics; then
+if ! flake8 --exclude venv --count --select=E9,F63,F7,F82 --show-source --statistics; then
     echo "There are flake8 problems [1]"
     popd > /dev/null
     exit 1
+else
+    echo "flake8-1 is done"
 fi
 
 # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-if ! pipenv run flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --per-file-ignores='yacg/model/*.py:E501 E303 W391'; then
+if ! flake8 --exclude venv --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --per-file-ignores='yacg/model/*.py:E501 E303 W391'; then
     echo "There are flake8 problems [2]"
     popd > /dev/null
     exit 1
+else
+    echo "flake8-2 is done"
 fi
 
 if ! python -m unittest discover tests "test_*.py"; then
