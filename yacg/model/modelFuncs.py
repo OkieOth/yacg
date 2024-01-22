@@ -840,13 +840,18 @@ def __printComplexTypeProperties(type, localTypePrefix):
     for p in type.properties:
         propertiesDict[p.name] = {}
         curDict = propertiesDict[p.name]
+        if hasattr(p, "description") and (p.description is not None):
+            curDict["description"] = p.description
         if p.isArray:
             propertiesDict[p.name] = {}
             curDict = propertiesDict[p.name]
+            if hasattr(p, "description") and (p.description is not None):
+                curDict["description"] = p.description
+            arrayItemDict = curDict
             for i in range(p.arrayDimensions):
-                curDict["type"] = "array"
-                curDict["items"] = {}
-                curDict = curDict["items"]
+                arrayItemDict["type"] = "array"
+                arrayItemDict["items"] = {}
+                arrayItemDict = arrayItemDict["items"]
 
         if isinstance(p.type, model.ComplexType):
             curDict["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
@@ -854,6 +859,9 @@ def __printComplexTypeProperties(type, localTypePrefix):
             curDict["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
         else:
             propertiesDict[p.name] = typeToJSONDict(p.type, localTypePrefix)
+            if hasattr(p, "description") and (p.description is not None):
+                propertiesDict[p.name]["description"] = p.description
+
         if p.required:
             requiredArray.append(p.name)
     return propertiesDict, requiredArray
