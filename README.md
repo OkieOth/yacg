@@ -1,3 +1,7 @@
+[![ci](https://github.com/OkieOth/yacg/actions/workflows/yacg_test.yml/badge.svg)](https://github.com/OkieOth/yacg/actions/workflows/yacg_test.yml)
+[![ci](https://github.com/OkieOth/yacg/actions/workflows/create_release.yml/badge.svg)](https://github.com/OkieOth/yacg/actions/workflows/create_release.yml)
+
+
 # yacg - yet another code generation
 
 The purpose of this project is to handle JSON schema models and generate
