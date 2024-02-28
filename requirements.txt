@@ -24,7 +24,7 @@ requests==2.31.0
 semver==3.0.0
 shell==1.0.1
 six==1.16.0
-urllib3==2.0.6
+urllib3==2.0.7
 urwid==2.2.2
 urwid-readline==0.13
 zipp==3.17.0
