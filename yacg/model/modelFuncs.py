@@ -336,9 +336,9 @@ def getDomainsAsList(modelTypes):
 
     domainList = []
     for type in modelTypes:
-        if (type.domain is not None) and (type.domain not in domainList):
+        if hasattr(type, "domain") and (type.domain is not None) and (type.domain not in domainList):
             domainList.append(type.domain)
-        if (hasattr(type, 'extendsType')) and (type.extendsType is not None):
+        if (hasattr(type, 'extendsType')) and (type.extendsType is not None) and hasattr(type.extendsType, "domain"):
             if (type.extendsType.domain is not None) and (type.extendsType.domain not in domainList):
                 domainList.append(type.extendsType.domain)
         if not hasattr(type, 'property'):
@@ -346,7 +346,8 @@ def getDomainsAsList(modelTypes):
         for property in type.properties:
             if property.type is None:
                 continue
-            propDomain = property.type.domain
+            if hasattr(property.type, "domain"):
+                propDomain = property.type.domain
             if (propDomain is not None) and (propDomain not in domainList):
                 domainList.append(propDomain)
 
@@ -839,13 +840,18 @@ def __printComplexTypeProperties(type, localTypePrefix):
     for p in type.properties:
         propertiesDict[p.name] = {}
         curDict = propertiesDict[p.name]
+        if hasattr(p, "description") and (p.description is not None):
+            curDict["description"] = p.description
         if p.isArray:
             propertiesDict[p.name] = {}
             curDict = propertiesDict[p.name]
+            if hasattr(p, "description") and (p.description is not None):
+                curDict["description"] = p.description
+            arrayItemDict = curDict
             for i in range(p.arrayDimensions):
-                curDict["type"] = "array"
-                curDict["items"] = {}
-                curDict = curDict["items"]
+                arrayItemDict["type"] = "array"
+                arrayItemDict["items"] = {}
+                arrayItemDict = arrayItemDict["items"]
 
         if isinstance(p.type, model.ComplexType):
             curDict["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
@@ -853,6 +859,9 @@ def __printComplexTypeProperties(type, localTypePrefix):
             curDict["$ref"] = "{}{}".format(localTypePrefix, p.type.name)
         else:
             propertiesDict[p.name] = typeToJSONDict(p.type, localTypePrefix)
+            if hasattr(p, "description") and (p.description is not None):
+                propertiesDict[p.name]["description"] = p.description
+
         if p.required:
             requiredArray.append(p.name)
     return propertiesDict, requiredArray

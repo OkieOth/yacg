@@ -7,9 +7,12 @@
     "type": "object",
     "properties": {
         "title": {
+            "description": "title of the model",
             "type": "string"
         },
         "version": {
+            "description": "version of the model",
+            "x-comment": "use the semantic versioning",
             "type": "string"
         },
         "description": {

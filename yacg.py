@@ -210,6 +210,7 @@ def getJobConfigurations(args):
     if args.config is not None:
         templateParameters = _getTemplateParameters(args)
         blackList, whiteList = __getBlackWhiteListsFromArgs(args)
+
         tasksToInclude = args.tasks if args.tasks is not None else []
         jobsToInclude = args.jobs if args.jobs is not None else []
         vars = _getVars(args)
@@ -218,8 +219,6 @@ def getJobConfigurations(args):
             # there are models from the commandline that have to be mixed in the config file data
             for job in jobArray:
                 _putArgModelsToJob(args, job)
-        if len(templateParameters) == 0:
-            return jobArray
         # mix in of command line parameters to increase flexibility
         for job in jobArray:
             for task in job.tasks:
