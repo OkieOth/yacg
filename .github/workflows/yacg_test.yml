@@ -19,6 +19,7 @@ jobs:
     - name: Install virtualenv
       run: |
         pip install virtualenv
+        pip install flake8
     - name: Install dependencies
       run: |
         [[ -d venv ]] || virtualenv venv
