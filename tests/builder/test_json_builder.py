@@ -215,6 +215,20 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
+    def testSchemaWithExternalRef_ignoreXref(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_external_ref_2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [], False, False)
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(7, len(modelTypes))
+
+        modelTypes2 = getModelFromJson(model, [], False, True)
+        self.assertIsNotNone(modelTypes2)
+        self.assertEqual(5, len(modelTypes2))
+
     def testSchemaWithHttpRef(self):
         modelFile = 'tests/resources/models/json/examples/schema_with_http_ref.json'
         modelFileExists = os.path.isfile(modelFile)

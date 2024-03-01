@@ -28,6 +28,8 @@ else
     echo "flake8-2 is done"
 fi
 
+source venv/bin/activate
+
 if ! python -m unittest discover tests "test_*.py"; then
     echo "There are problems in the tests"
     popd > /dev/null
