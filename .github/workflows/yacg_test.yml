@@ -21,10 +21,9 @@ jobs:
         sudo apt-get install python3-venv
     - name: Install dependencies
       run: |
+        sleep 10
         [[ -d venv ]] || virtualenv venv
         source venv/bin/activate
-        pipenv --python 3.10
-        pipenv install
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
