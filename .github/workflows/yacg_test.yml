@@ -23,6 +23,11 @@ jobs:
       run: |
         [[ -d venv ]] || virtualenv venv
         source venv/bin/activate
+    - name: Install dependencies
+      run: |
+        [[ -d venv ]] || virtualenv venv
+        source venv/bin/activate
+        pip install -r requirements.tx
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
