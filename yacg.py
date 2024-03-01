@@ -19,6 +19,11 @@ import yacg.model.modelFuncs as modelFuncs
 import yacg.util.protocol_funcs as protocolFuncs
 from yacg.util.fileUtils import getFileExt
 
+# # needed dependency for remote debugging: pip install debugpy
+# import debugpy
+# debugpy.listen(('0.0.0.0', 5678))
+
+
 description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
 source code from it
@@ -44,6 +49,7 @@ parser.add_argument('--whiteListedDomains', nargs='+', help='domains that should
 parser.add_argument('--vars', nargs='+', help='variables that are passed to the processing')
 parser.add_argument('--usedFilesOnly', help='import models but only print the used files to stdout', action='store_true')
 parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
+parser.add_argument('--ignoreXref', help='skip loading types that are referenced with `x-ref`', action='store_true')
 parser.add_argument('--noLogs', help='do not print logs', action='store_true')
 parser.add_argument('--protocolFile', help='where the metadata of the used models for this specifig gen job are stored')
 parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model versions are unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
@@ -60,7 +66,7 @@ parser.add_argument('--folder2StoreTemplates', help='Folder to store templates f
 parser.add_argument('--delExistingStoredTemplates', help='set to false to skip download of http located templates if they exist locally', action='store_true')  # noqa: E501
 
 
-def readModels(configJob, flattenInheritance):
+def readModels(configJob, flattenInheritance, ignoreXref):
     """reads all desired models and build the model object tree from it"""
 
     loadedTypes = []
@@ -68,17 +74,16 @@ def readModels(configJob, flattenInheritance):
     for model in configJob.models:
         fileExt = getFileExt(model.schema)
         if fileExt.lower() in yamlExtensions:
-            loadedTypes = getModelFromYaml(model, loadedTypes)
+            loadedTypes = getModelFromYaml(model, loadedTypes, False, ignoreXref)
         else:
-            loadedTypes = getModelFromJson(model, loadedTypes)
+            loadedTypes = getModelFromJson(model, loadedTypes, False, ignoreXref)
     return _postProcessLoadedModels(loadedTypes, flattenInheritance)
 
 
 def _postProcessLoadedModels(loadedTypes, flattenInheritance):
     if flattenInheritance:
         loadedTypes = modelFuncs.flattenTypes(loadedTypes)
-    loadedTypes = modelFuncs.processYacgTags(loadedTypes)
-    return loadedTypes
+    return modelFuncs.processYacgTags(loadedTypes)
 
 
 def _getVars(args):
@@ -424,7 +429,7 @@ def __doCodeGen(codeGenerationJobs, args):
     allSkipped = True
     jobIndex = 1
     for job in codeGenerationJobs:
-        allLoadedTypes = readModels(job, args.flattenInheritance)
+        allLoadedTypes = readModels(job, args.flattenInheritance, args.ignoreXref)
         modelMetaData = protocolFuncs.getModelMetaData(allLoadedTypes, job.models[0].schema)
         jobName = job.name if job.name else "UNKNOWN_JOB_{}".format(jobIndex)
         jobsMetaData[jobName] = modelMetaData
@@ -478,7 +483,7 @@ def __printUsedFiles(codeGenerationJobs, args):
 
     usedFiles = []
     for job in codeGenerationJobs:
-        loadedTypes = readModels(job, args.flattenInheritance)
+        loadedTypes = readModels(job, args.flattenInheritance, args.ignoreXref)
         for type in loadedTypes:
             if isinstance(type, EnumType) or isinstance(type, ComplexType):
                 if type.source is not None:

@@ -1,3 +1,6 @@
+# 6.3.0
+* introcude switch `ignoreXref` to exclude pure x-ref types from loading
+
 # 6.2.0
 * enable http/s sources for templates
 * enable http/s sources for models
