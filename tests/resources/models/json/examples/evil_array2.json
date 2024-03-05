@@ -1,0 +1,18 @@
+{
+    "title": "EvilArray2",
+    "type": "object",
+    "properties": {
+        "entry": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 16,
+            "items": {
+                "type": "integer",
+                "format": "int64",
+                "default": 0,
+                "minimum": 0,
+                "maximum": 65535
+            }
+        }
+    }
+}

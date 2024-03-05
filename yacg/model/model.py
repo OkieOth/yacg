@@ -55,18 +55,42 @@ class ObjectType (Type):
 
 
 class IntegerTypeFormatEnum(Enum):
+    INT8 = 'int8'
+    INT16 = 'int16'
+    INT24 = 'int24'
     INT32 = 'int32'
     INT64 = 'int64'
+    UINT8 = 'uint8'
+    UINT16 = 'uint16'
+    UINT24 = 'uint24'
+    UINT32 = 'uint32'
+    UINT64 = 'uint64'
 
     @classmethod
     def valueForString(cls, stringValue):
         lowerStringValue = stringValue.lower() if stringValue is not None else None
         if lowerStringValue is None:
             return None
+        elif lowerStringValue == 'int8':
+            return IntegerTypeFormatEnum.INT8
+        elif lowerStringValue == 'int16':
+            return IntegerTypeFormatEnum.INT16
+        elif lowerStringValue == 'int24':
+            return IntegerTypeFormatEnum.INT24
         elif lowerStringValue == 'int32':
             return IntegerTypeFormatEnum.INT32
         elif lowerStringValue == 'int64':
             return IntegerTypeFormatEnum.INT64
+        elif lowerStringValue == 'uint8':
+            return IntegerTypeFormatEnum.UINT8
+        elif lowerStringValue == 'uint16':
+            return IntegerTypeFormatEnum.UINT16
+        elif lowerStringValue == 'uint24':
+            return IntegerTypeFormatEnum.UINT24
+        elif lowerStringValue == 'uint32':
+            return IntegerTypeFormatEnum.UINT32
+        elif lowerStringValue == 'uint64':
+            return IntegerTypeFormatEnum.UINT64
         else:
             return None
 
@@ -74,10 +98,26 @@ class IntegerTypeFormatEnum(Enum):
     def valueAsString(cls, enumValue):
         if enumValue is None:
             return ''
+        elif enumValue == IntegerTypeFormatEnum.INT8:
+            return 'int8'
+        elif enumValue == IntegerTypeFormatEnum.INT16:
+            return 'int16'
+        elif enumValue == IntegerTypeFormatEnum.INT24:
+            return 'int24'
         elif enumValue == IntegerTypeFormatEnum.INT32:
             return 'int32'
         elif enumValue == IntegerTypeFormatEnum.INT64:
             return 'int64'
+        elif enumValue == IntegerTypeFormatEnum.UINT8:
+            return 'uint8'
+        elif enumValue == IntegerTypeFormatEnum.UINT16:
+            return 'uint16'
+        elif enumValue == IntegerTypeFormatEnum.UINT24:
+            return 'uint24'
+        elif enumValue == IntegerTypeFormatEnum.UINT32:
+            return 'uint32'
+        elif enumValue == IntegerTypeFormatEnum.UINT64:
+            return 'uint64'
         else:
             return ''
 
@@ -412,7 +452,7 @@ class EnumType (Type):
         if (self.values is not None) and (len(self.values) > 0):
             ret["values"] = self.values
         if (self.valuesMap is not None) and (len(self.valuesMap) > 0):
-            ret["valuesMap"] = self.valuesMap.toDict()
+            ret["valuesMap"] = self.valuesMap
         if self.default is not None:
             ret["default"] = self.default
         if self.topLevelType is not None:

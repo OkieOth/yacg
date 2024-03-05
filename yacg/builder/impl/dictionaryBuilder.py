@@ -157,6 +157,7 @@ def __extractPureArrayType(typeName, parsedSchema, modelTypes, modelFileContaine
         arrayType.arrayConstraints = tmpProperty.arrayConstraints
         arrayType.arrayDimensions = tmpProperty.arrayDimensions
         arrayType.topLevelType = isTopLevelType
+
         _appendToAlreadyLoadedTypes(arrayType, modelTypes)
         __initProcessing(arrayType, parsedSchema)
         __initTags(arrayType, parsedSchema)
@@ -514,7 +515,7 @@ def _extractAttributes(type, properties, modelTypes, modelFileContainer, ignoreX
         if description is not None:
             newProperty.description = description
         newProperty.type = _extractAttribType(type.name, newProperty, propDict, modelTypes, modelFileContainer, ignoreXRefTypes)
-        if newProperty.type is not None:
+        if (newProperty.type is not None) and (not newProperty.isArray):
             if hasattr(newProperty.type, 'default'):
                 newProperty.type.default = propDict.get('default', None)
             if hasattr(newProperty.type, 'minimum'):
@@ -616,6 +617,21 @@ def _extractAttribType(newTypeName, newProperty, propDict, modelTypes, modelFile
                 return tmp
         elif type == 'array':
             arrayType = _extractArrayType(newTypeName, newProperty, propDict, modelTypes, modelFileContainer, ignoreXRefTypes)
+            itemsDict = propDict.get("items", None)
+            if itemsDict is not None:
+                if hasattr(arrayType, "default"):
+                    arrayType.default = itemsDict.get('default', None)
+                if hasattr(arrayType, "minimum"):
+                    arrayType.minimum = itemsDict.get('minimum', None)
+                if hasattr(arrayType, "maximum"):
+                    arrayType.maximum = itemsDict.get('maximum', None)
+                if hasattr(arrayType, "exclusiveMinimum"):
+                    arrayType.exclusiveMinimum = itemsDict.get('exclusiveMinimum', None)
+                if hasattr(arrayType, "exclusiveMaximum"):
+                    arrayType.exclusiveMaximum = itemsDict.get('exclusiveMaximum', None)
+                if hasattr(arrayType, "pattern"):
+                    arrayType. pattern = itemsDict.get('pattern', None)
+
             # if hasattr(newProperty, 'arrayDimensions'):
             #     newProperty.arrayDimensions = len(newProperty.arrayConstraints)
             return arrayType

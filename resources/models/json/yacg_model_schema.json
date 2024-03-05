@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "yacg inner type model",
     "description": "model types used internally to provide loaded models for the code generators",
-    "version": "5.6.6",
+    "version": "5.7.0",
     "x-domain": "yacg.model.model",
     "definitions": {
         "Type": {
@@ -42,8 +42,16 @@
                         "format": {
                             "type": "string",
                             "enum": [
+                                "int8",
+                                "int16",
+                                "int24",
                                 "int32",
-                                "int64"
+                                "int64",
+                                "uint8",
+                                "uint16",
+                                "uint24",
+                                "uint32",
+                                "uint64"
                             ]
                         },
                         "default": {
