@@ -250,6 +250,7 @@ class StringType (Type):
         self.minLength = None
         self.maxLength = None
         self.pattern = None
+        self.format = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -265,6 +266,8 @@ class StringType (Type):
             ret["maxLength"] = self.maxLength
         if self.pattern is not None:
             ret["pattern"] = self.pattern
+        if self.format is not None:
+            ret["format"] = self.format
         return ret
 
 
@@ -279,6 +282,8 @@ class StringType (Type):
         self.maxLength = dictObj.get('maxLength', None)
 
         self.pattern = dictObj.get('pattern', None)
+
+        self.format = dictObj.get('format', None)
 
 
 class UuidType (Type):
@@ -412,7 +417,7 @@ class EnumType (Type):
         if (self.values is not None) and (len(self.values) > 0):
             ret["values"] = self.values
         if (self.valuesMap is not None) and (len(self.valuesMap) > 0):
-            ret["valuesMap"] = self.valuesMap.toDict()
+            ret["valuesMap"] = self.valuesMap
         if self.default is not None:
             ret["default"] = self.default
         if self.topLevelType is not None:

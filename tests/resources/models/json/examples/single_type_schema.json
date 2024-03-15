@@ -9,7 +9,8 @@
             "type": "string",
             "minLength": 2,
             "maxLength": 200,
-            "pattern": "^\\d$"
+            "pattern": "^\\d$",
+            "format": "dummy"
         },
         "aValue": {
             "type": "number",
@@ -47,6 +48,13 @@
                 },
                 "another2": {
                     "type": "number"
+                },
+                "another3": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "another4": {
+                    "type": "string"
                 }
             }
         }

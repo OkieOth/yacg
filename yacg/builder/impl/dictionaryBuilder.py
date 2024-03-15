@@ -1086,10 +1086,9 @@ def _extractStringType(newTypeName, newProperty, propDict, modelTypes, modelFile
     elif formatValue == 'byte':
         return BytesType()
     else:
-        logging.error(
-            "modelFile: %s, type=%s, property=%s: unknown string type format: %s"
-            % (modelFileContainer.fileName, newTypeName, newProperty.name, formatValue))
-        return StringType()
+        s = StringType()
+        s.format = formatValue
+        return s
 
 
 def __initEnumValuesFromContent(enumType, enumValuesArray):
