@@ -19,8 +19,16 @@ ObjectType --|> Type
  
 
 enum "IntegerTypeFormatEnum" as IntegerTypeFormatEnum {
+    INT8
+    INT16
+    INT24
     INT32
     INT64
+    UINT8
+    UINT16
+    UINT24
+    UINT32
+    UINT64
 }
 
 class "**IntegerType**" as IntegerType {

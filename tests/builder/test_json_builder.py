@@ -7,6 +7,7 @@ from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType, ArrayType
 from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes, getTypeAndAllRelatedTypes, getNotUniqueTypeNames, makeTypeNamesUnique  # noqa: E501
+from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 
 import yacg.model.config as config
 
@@ -555,6 +556,31 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[0].properties[1].type)
         self.assertEqual(modelTypes[0].properties[2].arrayDimensions, 3)
         self.assertIsNotNone(modelTypes[0].properties[2].type)
+
+    def testEvilArray2(self):
+        modelFile = 'tests/resources/models/json/examples/evil_array2.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromJson(model, [])
+        self.assertIsNotNone(modelTypes)
+        self.assertEqual(len(modelTypes), 1)
+        templateFile = 'tests/resources/templates/guido.mako'
+        templateFileExists = os.path.isfile(templateFile)
+        self.assertTrue('template file exists: ' + templateFile, templateFileExists)
+        templateParameters = []
+        singleFileTask = config.SingleFileTask()
+        singleFileTask.template = templateFile
+        singleFileTask.destFile = 'tmp/evil_array2_dump.txt'
+        singleFileTask.templateParams = templateParameters
+
+        renderSingleFileTemplate(
+            modelTypes,
+            (),
+            (),
+            singleFileTask)
+
 
     def testEvilArrayAnnotated(self):
         modelFile = 'tests/resources/models/json/examples/evil_array_annotated.json'
