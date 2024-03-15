@@ -39,6 +39,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(mainType.properties[0].type.minLength, 2)
         self.assertEqual(mainType.properties[0].type.maxLength, 200)
         self.assertEqual(mainType.properties[0].type.pattern, "^\\d$")
+        self.assertEqual(mainType.properties[0].type.format, "dummy")
 
         self.assertTrue(isinstance(mainType.properties[1].type, NumberType))
         self.assertEqual(mainType.properties[1].type.minimum, 0.5)
@@ -50,7 +51,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertTrue(isinstance(mainType.properties[3].type, ComplexType))
 
         self.assertIsNotNone(anotherType)
-        self.assertEqual(2, len(anotherType.properties))
+        self.assertEqual(4, len(anotherType.properties))
         self.assertTrue(isinstance(anotherType.properties[0].type, DateTimeType))
         self.assertTrue(isinstance(anotherType.properties[1].type, NumberType))
 
@@ -59,6 +60,12 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNone(anotherType.properties[1].type.maximum)
         self.assertIsNone(anotherType.properties[1].type.exclusiveMinimum)
         self.assertIsNone(anotherType.properties[1].type.exclusiveMaximum)
+
+        self.assertTrue(isinstance(anotherType.properties[2].type, StringType))
+        self.assertEqual(anotherType.properties[2].type.format, "email")
+        self.assertTrue(isinstance(anotherType.properties[3].type, StringType))
+        self.assertIsNone(anotherType.properties[3].type.format)
+        
 
         self.assertIsNotNone(innerComplexType)
         self.assertEqual(3, len(innerComplexType.properties))
@@ -213,7 +220,7 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.property)
         self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey.type)
         self.assertEqual(modelTypes[1].properties[3].foreignKey.property.name, modelTypes[1].properties[3].foreignKey.propertyName)  # noqa: E501
-        self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
+        self._checkUpType(2, 'AnotherType', 4, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
     def testSchemaWithExternalRef_ignoreXref(self):
@@ -261,7 +268,7 @@ class TestJsonBuilder (unittest.TestCase):
         self._checkUpType(1, 'RefBackType', 4, modelTypes, [])
         self._checkUpType(2, 'RefBackType2', 3, modelTypes, [])
         self._checkUpType(3, 'TwoType', 3, modelTypes, [])
-        self._checkUpType(4, 'AnotherType', 2, modelTypes, [])
+        self._checkUpType(4, 'AnotherType', 4, modelTypes, [])
 
     def testSimpleAllOf(self):
         modelFile = 'tests/resources/models/json/examples/simple_allof.json'

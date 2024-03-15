@@ -153,6 +153,9 @@
                         },
                         "pattern": {
                             "type": "string"
+                        },
+                        "format": {
+                            "type": "string"
                         }
                     }
                 }

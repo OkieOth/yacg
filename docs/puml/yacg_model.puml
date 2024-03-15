@@ -75,6 +75,7 @@ class "**StringType**" as StringType {
         NumberType minLength
         NumberType maxLength
         StringType pattern
+        StringType format
 }
 note top: integer values
 
@@ -281,6 +282,7 @@ note top: Type describes the reference of\na property to another field\nin the m
     
 
     
+
 
 
 

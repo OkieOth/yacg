@@ -290,6 +290,7 @@ class StringType (Type):
         self.minLength = None
         self.maxLength = None
         self.pattern = None
+        self.format = None
 
         if dictObj is not None:
             d = vars(dictObj) if not isinstance(dictObj, dict) else dictObj
@@ -305,6 +306,8 @@ class StringType (Type):
             ret["maxLength"] = self.maxLength
         if self.pattern is not None:
             ret["pattern"] = self.pattern
+        if self.format is not None:
+            ret["format"] = self.format
         return ret
 
 
@@ -319,6 +322,8 @@ class StringType (Type):
         self.maxLength = dictObj.get('maxLength', None)
 
         self.pattern = dictObj.get('pattern', None)
+
+        self.format = dictObj.get('format', None)
 
 
 class UuidType (Type):
