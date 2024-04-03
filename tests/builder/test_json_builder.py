@@ -251,7 +251,7 @@ class TestJsonBuilder (unittest.TestCase):
         # TwoType->implicitRef
         self.assertIsNotNone(modelTypes[1].properties[3].foreignKey.type)
         self.assertEqual(modelTypes[1].properties[2].type, modelTypes[1].properties[3].foreignKey.type)
-        self._checkUpType(2, 'AnotherType', 2, modelTypes, [])
+        self._checkUpType(2, 'AnotherType', 4, modelTypes, [])
         self._checkUpType(3, 'DemoEnum', 0, modelTypes, [])
 
     def testSchemaWithExternalCircularRefs(self):
