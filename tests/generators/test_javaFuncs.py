@@ -21,7 +21,7 @@ def getExampleType():
     return modelTypes[0]
 
 
-# For executing these tests run: python -m unittest -v tests/generators/test_javaFuncs.py
+# For executing these tests run: python3 -m unittest -v tests/generators/test_javaFuncs.py
 class TestJavaFuncs (unittest.TestCase):
 
     def testIsDouble(self):

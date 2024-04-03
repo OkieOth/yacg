@@ -46,7 +46,7 @@ def getComplexTypeWithBase():
     return myType
 
 
-# For executing these test run: python -m unittest -v tests/model/test_modelFunc.py
+# For executing these test run: python3 -m unittest -v tests/model/test_modelFunc.py
 class TestModelFuncs (unittest.TestCase):
 
     def testHasPropertyOfTypeNoBaseType(self):
