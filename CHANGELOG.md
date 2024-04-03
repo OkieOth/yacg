@@ -1,3 +1,6 @@
+# 6.5.1
+* Handle arrays of DictionaryType in javaFuncs.getJavaType()
+
 # 6.5.0
 * Introduce 'format' attribute to StringType
 

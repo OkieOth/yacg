@@ -5,7 +5,7 @@ import yacg.model.config as config
 import yacg.model.model as model
 
 from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum
-from yacg.model.model import StringType, EnumType #, DictionaryType
+from yacg.model.model import StringType, EnumType, DictionaryType
 from yacg.model.model import DateType, TimeType, DateTimeType, UuidType
 from yacg.model.model import ComplexType, BytesType, ObjectType
 import yacg.generators.helper.javaFuncs as javaFuncs
@@ -163,6 +163,11 @@ class TestJavaFuncs (unittest.TestCase):
         enumType.name = 'Foo'
         self.assertEqual('Foo', javaFuncs.getJavaType(enumType, False))
         self.assertEqual('java.util.List<Foo>', javaFuncs.getJavaType(enumType, True))
+
+        dictType = DictionaryType()
+        dictType.valueType = UuidType()
+        self.assertEqual('java.util.Map<String, java.util.UUID>', javaFuncs.getJavaType(dictType, False))
+        self.assertEqual('java.util.List<java.util.Map<String, java.util.UUID>>', javaFuncs.getJavaType(dictType, True))
 
     def testJavaFuncs(self):
         myType = getExampleType()
