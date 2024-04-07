@@ -2,42 +2,42 @@ import unittest
 import os
 
 import yacg.builder.impl.dictionaryBuilder as dictionaryBuilder
-import yacg.model.openapi as openapi
 import yacg.model.asyncapi as asyncapi
 import yacg.model.model as model
 
 
-class TestAsyncApiParsing (unittest.TestCase):
+class TestAsyncApiParsing(unittest.TestCase):
     def checkServerTypes(self, serverTypes):
-        self.assertEqual(serverTypes[0].name, 'dev')
-        self.assertEqual(serverTypes[0].url, 'broker.dev:5672')
-        self.assertEqual(serverTypes[0].description, 'Development server')
-        self.assertEqual(serverTypes[0].protocol, 'amqp')
-        self.assertEqual(serverTypes[0].protocolVersion, '0.9.1')
-        self.assertEqual(serverTypes[1].name, 'test')
-        self.assertEqual(serverTypes[1].url, 'broker.test:5672')
-        self.assertEqual(serverTypes[1].description, 'Test server')
-        self.assertEqual(serverTypes[1].protocol, 'amqp')
-        self.assertEqual(serverTypes[1].protocolVersion, '0.9.1')
+        self.assertEqual(serverTypes[0].name, "dev")
+        self.assertEqual(serverTypes[0].url, "broker.dev:5672")
+        self.assertEqual(serverTypes[0].description, "Development server")
+        self.assertEqual(serverTypes[0].protocol, "amqp")
+        self.assertEqual(serverTypes[0].protocolVersion, "0.9.1")
+        self.assertEqual(serverTypes[1].name, "test")
+        self.assertEqual(serverTypes[1].url, "broker.test:5672")
+        self.assertEqual(serverTypes[1].description, "Test server")
+        self.assertEqual(serverTypes[1].protocol, "amqp")
+        self.assertEqual(serverTypes[1].protocolVersion, "0.9.1")
 
     def checkInfoType(self, infoType):
-        self.assertEqual(infoType.title, 'AsyncAPI Test')
-        self.assertEqual(infoType.description, 'The file is an example')
-        self.assertEqual(infoType.version, '1.0.0')
+        self.assertEqual(infoType.title, "AsyncAPI Test")
+        self.assertEqual(infoType.description, "The file is an example")
+        self.assertEqual(infoType.version, "1.0.0")
 
     def checkChannelBinding(
-            self,
-            channelBinding,
-            name,
-            isType,
-            exchangeName,
-            exchangeType,
-            exchangeDurable,
-            exchangeAutoDelete,
-            queueName,
-            queueDurable,
-            queueExclusive,
-            queueAutoDelete):
+        self,
+        channelBinding,
+        name,
+        isType,
+        exchangeName,
+        exchangeType,
+        exchangeDurable,
+        exchangeAutoDelete,
+        queueName,
+        queueDurable,
+        queueExclusive,
+        queueAutoDelete,
+    ):
         self.assertEqual(channelBinding.name, name)
         self.assertEqual(channelBinding.isType, isType)
         if exchangeName is None:
@@ -56,51 +56,58 @@ class TestAsyncApiParsing (unittest.TestCase):
             self.assertEqual(channelBinding.queue.exclusive, queueExclusive)
 
     def checkChannelBindings(self, channelBindings):
-        self.assertEqual(len(channelBindings), 4)  # 5 are given in the test file, but one isn't amqp
+        self.assertEqual(
+            len(channelBindings), 4
+        )  # 5 are given in the test file, but one isn't amqp
         self.checkChannelBinding(
             channelBindings[0],
-            'myChannelBinding1',
+            "myChannelBinding1",
             asyncapi.ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY,
-            'xxx',
+            "xxx",
             asyncapi.ChannelBindingsAmqpExchangeTypeEnum.TOPIC,
             True,
             False,
-            'myQueue-xxx',
+            "myQueue-xxx",
             True,
             True,
-            True)
+            True,
+        )
         self.checkChannelBinding(
             channelBindings[1],
-            'myChannelBinding2',
+            "myChannelBinding2",
             asyncapi.ChannelBindingsAmqpIsTypeEnum.QUEUE,
             None,
             None,
             None,
             None,
-            'myQueue-1',
+            "myQueue-1",
             False,
             False,
-            False)
+            False,
+        )
         self.checkChannelBinding(
             channelBindings[2],
-            'myChannelBinding4',
+            "myChannelBinding4",
             asyncapi.ChannelBindingsAmqpIsTypeEnum.ROUTINGKEY,
-            'xxy',
+            "xxy",
             asyncapi.ChannelBindingsAmqpExchangeTypeEnum.FANOUT,
             True,
             True,
             None,
             None,
             None,
-            None)
+            None,
+        )
 
     def checkMessageBindings(self, messageBindings):
         self.assertEqual(len(messageBindings), 2)
-        self.assertEqual(messageBindings[0].messageType, 'typenamestring')
-        self.assertEqual(messageBindings[0].name, 'msgBinding1')
-        self.assertEqual(messageBindings[0].contentEncoding, 'UTF-8')
+        self.assertEqual(messageBindings[0].messageType, "typenamestring")
+        self.assertEqual(messageBindings[0].name, "msgBinding1")
+        self.assertEqual(messageBindings[0].contentEncoding, "UTF-8")
 
-    def checkOperationBinding(self, operationBinding, name, mandatory, expiration, replyTo):
+    def checkOperationBinding(
+        self, operationBinding, name, mandatory, expiration, replyTo
+    ):
         self.assertEqual(operationBinding.name, name)
         self.assertEqual(operationBinding.mandatory, mandatory)
         self.assertEqual(operationBinding.expiration, expiration)
@@ -108,8 +115,12 @@ class TestAsyncApiParsing (unittest.TestCase):
 
     def checkOperationBindings(self, operationBindings):
         self.assertEqual(len(operationBindings), 7)
-        self.checkOperationBinding(operationBindings[0], 'opBinding1', False, 10, 'test-reply-to')
-        self.checkOperationBinding(operationBindings[1], 'opBinding2', True, None, 'amq.rabbitmq.reply-to')
+        self.checkOperationBinding(
+            operationBindings[0], "opBinding1", False, 10, "test-reply-to"
+        )
+        self.checkOperationBinding(
+            operationBindings[1], "opBinding2", True, None, "amq.rabbitmq.reply-to"
+        )
 
     def checkParameter(self, parameter, name, description, type):
         self.assertEqual(parameter.name, name)
@@ -118,16 +129,34 @@ class TestAsyncApiParsing (unittest.TestCase):
 
     def checkParameters(self, parameters):
         self.assertEqual(len(parameters), 9)
-        self.checkParameter(parameters[0], 'myParam1', 'I am a dummy parameter', model.UuidType)
-        self.checkParameter(parameters[1], 'myParam2', 'I am a dummy complex parameter', model.ComplexType)
-        self.checkParameter(parameters[2], 'param1', 'a param', model.UuidType)
-        self.checkParameter(parameters[3], 'param2', 'another param', model.UuidType)
-        self.checkParameter(parameters[4], 'param3', 'another param', model.NumberType)
-        self.checkParameter(parameters[5], 'param1', 'a param', model.UuidType)
-        self.checkParameter(parameters[6], 'param2', 'another param', model.UuidType)
-        self.checkParameter(parameters[7], 'param3', 'yet another param', model.UuidType)
+        self.checkParameter(
+            parameters[0], "myParam1", "I am a dummy parameter", model.UuidType
+        )
+        self.checkParameter(
+            parameters[1],
+            "myParam2",
+            "I am a dummy complex parameter",
+            model.ComplexType,
+        )
+        self.checkParameter(parameters[2], "param1", "a param", model.UuidType)
+        self.checkParameter(parameters[3], "param2", "another param", model.UuidType)
+        self.checkParameter(parameters[4], "param3", "another param", model.NumberType)
+        self.checkParameter(parameters[5], "param1", "a param", model.UuidType)
+        self.checkParameter(parameters[6], "param2", "another param", model.UuidType)
+        self.checkParameter(
+            parameters[7], "param3", "yet another param", model.UuidType
+        )
 
-    def checkChannelObj(self, channels, key, channelBindings, parameterCount, publish, xResponse, subscribe):
+    def checkChannelObj(
+        self,
+        channels,
+        key,
+        channelBindings,
+        parameterCount,
+        publish,
+        xResponse,
+        subscribe,
+    ):
         found = []
         for c in channels:
             if c.key == key:
@@ -156,25 +185,40 @@ class TestAsyncApiParsing (unittest.TestCase):
             self.assertEqual(channelBindings.isType, bindingsToCheck.isType)
             if channelBindings.exchange is not None:
                 self.assertIsNotNone(bindingsToCheck.exchange)
-                self.assertEqual(channelBindings.exchange.name, bindingsToCheck.exchange.name)
-                self.assertEqual(channelBindings.exchange.type, bindingsToCheck.exchange.type)
-                self.assertEqual(channelBindings.exchange.durable, bindingsToCheck.exchange.durable)
-                self.assertEqual(channelBindings.exchange.autoDelete, bindingsToCheck.exchange.autoDelete)
+                self.assertEqual(
+                    channelBindings.exchange.name, bindingsToCheck.exchange.name
+                )
+                self.assertEqual(
+                    channelBindings.exchange.type, bindingsToCheck.exchange.type
+                )
+                self.assertEqual(
+                    channelBindings.exchange.durable, bindingsToCheck.exchange.durable
+                )
+                self.assertEqual(
+                    channelBindings.exchange.autoDelete,
+                    bindingsToCheck.exchange.autoDelete,
+                )
             if channelBindings.queue is not None:
                 self.assertIsNotNone(bindingsToCheck.queue)
                 self.assertEqual(channelBindings.queue.name, bindingsToCheck.queue.name)
-                self.assertEqual(channelBindings.queue.durable, bindingsToCheck.queue.durable)
-                self.assertEqual(channelBindings.queue.exclusive, bindingsToCheck.queue.exclusive)
-                self.assertEqual(channelBindings.queue.autoDelete, bindingsToCheck.queue.autoDelete)
+                self.assertEqual(
+                    channelBindings.queue.durable, bindingsToCheck.queue.durable
+                )
+                self.assertEqual(
+                    channelBindings.queue.exclusive, bindingsToCheck.queue.exclusive
+                )
+                self.assertEqual(
+                    channelBindings.queue.autoDelete, bindingsToCheck.queue.autoDelete
+                )
         return channelToCheck
 
     def test_asyncApiExample(self):
-        modelFile = 'tests/resources/models/json/examples/asyncapi_test.json'
+        modelFile = "tests/resources/models/json/examples/asyncapi_test.json"
         modelFileExists = os.path.isfile(modelFile)
-        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        self.assertTrue("model file exists: " + modelFile, modelFileExists)
         parsedSchema = dictionaryBuilder.getParsedSchemaFromJson(modelFile)
         modelTypes = dictionaryBuilder.extractTypes(parsedSchema, modelFile, [])
-        self.assertTrue(len(modelTypes)>0)
+        self.assertTrue(len(modelTypes) > 0)
         serverTypes = []
         infoTypes = []
         channelBindings = []
@@ -209,7 +253,9 @@ class TestAsyncApiParsing (unittest.TestCase):
         channelBindings = asyncapi.ChannelBindingsAmqp()
         channelBindings.exchange = asyncapi.ChannelBindingsAmqpExchange()
         channelBindings.exchange.name = "myExchange"
-        channelBindings.exchange.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.TOPIC
+        channelBindings.exchange.type = (
+            asyncapi.ChannelBindingsAmqpExchangeTypeEnum.TOPIC
+        )
         channelBindings.exchange.durable = True
         channelBindings.exchange.autoDelete = False
         channelBindings.queue = asyncapi.ChannelBindingsAmqpQueue()
@@ -217,26 +263,63 @@ class TestAsyncApiParsing (unittest.TestCase):
         channelBindings.queue.durable = True
         channelBindings.queue.exclusive = True
         channelBindings.queue.autoDelete = False
-        self.checkChannelObj(channels, "xxy.{param1}.yyx.{param2}", channelBindings, 3, True, False, False)
+        self.checkChannelObj(
+            channels,
+            "xxy.{param1}.yyx.{param2}",
+            channelBindings,
+            3,
+            True,
+            False,
+            False,
+        )
         channelBindings = asyncapi.ChannelBindingsAmqp()
         channelBindings.exchange = asyncapi.ChannelBindingsAmqpExchange()
         channelBindings.exchange.name = "xxy"
-        channelBindings.exchange.type = asyncapi.ChannelBindingsAmqpExchangeTypeEnum.FANOUT
+        channelBindings.exchange.type = (
+            asyncapi.ChannelBindingsAmqpExchangeTypeEnum.FANOUT
+        )
         channelBindings.exchange.durable = True
         channelBindings.exchange.autoDelete = True
-        self.checkChannelObj(channels, "xxz.{param1}.yyx.{param2}", channelBindings, 2, True, False, False)
+        self.checkChannelObj(
+            channels,
+            "xxz.{param1}.yyx.{param2}",
+            channelBindings,
+            2,
+            True,
+            False,
+            False,
+        )
         self.checkChannelObj(channels, "tt.getAll", None, 0, True, True, False)
         self.checkChannelObj(channels, "aaa2.{param3}", None, 1, False, False, True)
-        channel = self.checkChannelObj(channels, "xxx.{param1}.yyy.{param2}", None, 2, True, False, False)
+        channel = self.checkChannelObj(
+            channels, "xxx.{param1}.yyy.{param2}", None, 2, True, False, False
+        )
         self.assertIsNotNone(channel)
         self.assertIsNotNone(channel.publish)
         self.assertIsNotNone(channel.publish.message)
         self.assertIsNotNone(channel.publish.message.headers)
-        self.assertEqual(3,len(channel.publish.message.headers.properties))
-        self.assertEqual("headerKey1", channel.publish.message.headers.properties[0].name)
-        self.assertTrue(isinstance(channel.publish.message.headers.properties[0].type, model.IntegerType))
-        self.assertEqual("headerKey2", channel.publish.message.headers.properties[1].name)
-        self.assertTrue(isinstance(channel.publish.message.headers.properties[1].type, model.ComplexType))
-        self.assertEqual("headerKey3", channel.publish.message.headers.properties[2].name)
-        self.assertTrue(isinstance(channel.publish.message.headers.properties[2].type, model.ComplexType))
-
+        self.assertEqual(3, len(channel.publish.message.headers.properties))
+        self.assertEqual(
+            "headerKey1", channel.publish.message.headers.properties[0].name
+        )
+        self.assertTrue(
+            isinstance(
+                channel.publish.message.headers.properties[0].type, model.IntegerType
+            )
+        )
+        self.assertEqual(
+            "headerKey2", channel.publish.message.headers.properties[1].name
+        )
+        self.assertTrue(
+            isinstance(
+                channel.publish.message.headers.properties[1].type, model.ComplexType
+            )
+        )
+        self.assertEqual(
+            "headerKey3", channel.publish.message.headers.properties[2].name
+        )
+        self.assertTrue(
+            isinstance(
+                channel.publish.message.headers.properties[2].type, model.ComplexType
+            )
+        )
