@@ -26,3 +26,38 @@ class TestMultiFileCustomFilter (unittest.TestCase):
         self.assertEqual(14, len(pathTypes))
         multiFileTypes = swaggerFilterByOperationId(pathTypes)
         self.assertEqual(20, len(multiFileTypes))
+
+    def testTagWhiteList(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        ignorePathTypes = False
+        modelTypes = getModelFromJson(model, [], ignorePathTypes)
+        whiteList = []
+        whiteListEntry = BlackWhiteListEntry()
+        whiteListEntry.name = 'myTest'
+        whiteListEntry.type = BlackWhiteListEntryTypeEnum.TAG
+        whiteList.append(whiteListEntry)
+        relevantTypes = generatorHelper.trimModelTypes(modelTypes, (), whiteList)
+        self.assertEqual(2, len(relevantTypes))
+
+    def testTagBlackList(self):
+        modelFile = 'tests/resources/models/json/examples/schema_with_external_ref.json'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        ignorePathTypes = False  
+        modelTypes = getModelFromJson(model, [], ignorePathTypes)
+        blackList = []
+        blackListEntry = BlackWhiteListEntry()
+        blackListEntry.name = 'myTest'
+        blackListEntry.type = BlackWhiteListEntryTypeEnum.TAG
+        blackList.append(blackListEntry)
+        relevantTypes = generatorHelper.trimModelTypes(modelTypes, blackList, ())
+        self.assertEqual(2, len(relevantTypes))
+        self.assertEqual(0, len(relevantTypes[0].tags))
+        self.assertEqual(0, len(relevantTypes[1].tags))
+

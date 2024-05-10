@@ -20,8 +20,9 @@ import yacg.util.protocol_funcs as protocolFuncs
 from yacg.util.fileUtils import getFileExt
 
 # # needed dependency for remote debugging: pip install debugpy
-# import debugpy
-# debugpy.listen(('0.0.0.0', 5678))
+#import debugpy
+#debugpy.listen(('0.0.0.0', 5678))
+# you have to set the breakpoints manually via `breakpoint()` function
 
 
 description = """Yet another code generation.
@@ -54,6 +55,7 @@ parser.add_argument('--noLogs', help='do not print logs', action='store_true')
 parser.add_argument('--protocolFile', help='where the metadata of the used models for this specifig gen job are stored')
 parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model versions are unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
 parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5 is unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
+
 parser.add_argument('--skipCodeGenDryRun', help='prints only the log messages if codegen should be skipped', action='store_true')
 parser.add_argument('--failIfTypeNamesNotUnique', help='the code execution fails if there are not unique type names in the loaded type tree', action='store_true')  # noqa: E501
 parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type names multiple times in the list of loaded times, they are changed to be unique', action='store_true')  # noqa: E501
@@ -227,8 +229,12 @@ def getJobConfigurations(args):
         # mix in of command line parameters to increase flexibility
         for job in jobArray:
             for task in job.tasks:
-                task.blackListed = blackList
-                task.whiteListed = whiteList
+                if len(blackList) > 0:
+                    for entry in blackList:
+                        task.blackListed.append(entry)
+                if len(whiteList) > 0:
+                    for entry in whiteList:
+                        task.whiteListed.append(entry)
                 if task.singleFileTask is not None:
                     task.singleFileTask.templateParams = task.singleFileTask.templateParams + templateParameters
                 elif task.multiFileTask is not None:
@@ -503,6 +509,8 @@ def main():
     """starts the program execution"""
     args = parser.parse_args()
     codeGenerationJobs = getJobConfigurations(args)
+
+
     if not _isConfigurationValid(codeGenerationJobs, args):
         sys.exit(1)
     if args.usedFilesOnly:

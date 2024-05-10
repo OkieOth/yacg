@@ -14,7 +14,8 @@
                 "another2": {
                     "type": "number"
                 }
-            }
+            },
+            "x-tags": ["myTest"]
         },
         "TwoType": {
             "type": "object",
@@ -34,7 +35,8 @@
                     "format": "uuid",
                     "x-ref": "./single_type_schema.json#/definitions/AnotherType.another2"
                 }
-            }
+            },
+            "x-tags": ["myTest"]
         },
         "DemoEnum": {
             "type": "string",
