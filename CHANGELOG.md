@@ -1,3 +1,7 @@
+# 6.5.2
+* fix error with black- and white-lists in mixed usage scenarios of
+  config files and commandline switches
+
 # 6.5.1
 * Handle arrays of DictionaryType in javaFuncs.getJavaType()
 

@@ -14,6 +14,7 @@ ADD customRandomConstraints.py customRandomConstraints.py
 ADD validate.py validate.py
 ADD version.txt version.txt
 ADD requirements.txt requirements.txt
+#ADD start_debug.sh start_debug.sh
 COPY yacg yacg/
 
 #RUN cd /yacg && \
