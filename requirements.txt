@@ -21,7 +21,7 @@ Pygments==2.16.1
 pyparsing==3.0.9
 python-dateutil==2.8.2
 PyYAML==6.0
-requests==2.31.0
+requests==2.32.0
 semver==3.0.0
 shell==1.0.1
 six==1.16.0
