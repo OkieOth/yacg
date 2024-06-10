@@ -1,9 +1,10 @@
 certifi==2023.7.22
 charset-normalizer==3.3.0
 colorama==0.4.6
+debugpy==1.8.1
 Faker==18.4.0
 flake8==4.0.1
-idna==3.4
+idna==3.7
 importlib-metadata==5.2.0
 jedi==0.19.1
 json-spec==0.11.0
@@ -20,11 +21,11 @@ Pygments==2.16.1
 pyparsing==3.0.9
 python-dateutil==2.8.2
 PyYAML==6.0
-requests==2.31.0
+requests==2.32.0
 semver==3.0.0
 shell==1.0.1
 six==1.16.0
-urllib3==2.0.6
+urllib3==2.0.7
 urwid==2.2.2
-urwid-readline==0.13
+urwid_readline==0.13
 zipp==3.17.0

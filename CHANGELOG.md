@@ -1,5 +1,23 @@
-# 6.3.0
+# 6.6.0
 * add additional functions to modelFuncs
+
+# 6.5.2
+* fix error with black- and white-lists in mixed usage scenarios of
+  config files and commandline switches
+
+# 6.5.1
+* Handle arrays of DictionaryType in javaFuncs.getJavaType()
+
+# 6.5.0
+* Introduce 'format' attribute to StringType
+
+# 6.4.0
+* Introduce new (non-standard) formats to the IntType 
+* fix error where constraints for int types where not handled for arrays
+
+# 6.3.0
+* introduce switch `ignoreXref` to exclude pure x-ref types from loading
+>>>>>>> master
 
 # 6.2.0
 * enable http/s sources for templates
@@ -16,7 +34,7 @@
 * fix complex value type issue for dictionaries (issue139)
 
 # 6.0.4
-* prevent empty output from random gerenrated data
+* prevent empty output from random genenrated data
 
 # 6.0.3
 * add missing file to docker image
@@ -24,7 +42,7 @@
 
 # 6.0.2
 * fix error in random array handling
-* fix errorn in handling of random dates
+* fix error in handling of random dates
 * increment defaultTypeDepth for random data generation
 
 # 6.0.1
@@ -42,7 +60,7 @@
 # 5.9.5
 * add command line switches for better handling of Dictionary- and ArrayTypes
 * improve plantuml template
-* improve top level type detection - even in an unperformant way xD
+* improve top level type detection - even in an non performant way xD
 
 # 5.9.4
 * fix bug for dictionaries in models that contains arrays as value

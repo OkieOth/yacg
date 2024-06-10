@@ -8,5 +8,33 @@ on:
     branches: [ master ]
 
 jobs:
-  call-workflow-test:
-    uses: OkieOth/yacg/.github/workflows/__tests.yml@6.2.3
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.10'
+    - name: Install virtualenv
+      run: |
+        pip install virtualenv
+        pip install flake8
+    - name: Install dependencies
+      run: |
+        [[ -d venv ]] || virtualenv venv
+        source venv/bin/activate
+    - name: Install dependencies
+      run: |
+        [[ -d venv ]] || virtualenv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --exclude venv --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --exclude venv --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --per-file-ignores='yacg/model/*.py:E501 E303 W391'
+    - name: Run and stuff from command line
+      run: |
+        bin/runGithubActions.sh

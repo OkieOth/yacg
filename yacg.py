@@ -19,6 +19,12 @@ import yacg.model.modelFuncs as modelFuncs
 import yacg.util.protocol_funcs as protocolFuncs
 from yacg.util.fileUtils import getFileExt
 
+# # needed dependency for remote debugging: pip install debugpy
+#import debugpy
+#debugpy.listen(('0.0.0.0', 5678))
+# you have to set the breakpoints manually via `breakpoint()` function
+
+
 description = """Yet another code generation.
 Program takes one or more models, a bunch of templates and generates
 source code from it
@@ -44,10 +50,12 @@ parser.add_argument('--whiteListedDomains', nargs='+', help='domains that should
 parser.add_argument('--vars', nargs='+', help='variables that are passed to the processing')
 parser.add_argument('--usedFilesOnly', help='import models but only print the used files to stdout', action='store_true')
 parser.add_argument('--flattenInheritance', help='flatten included types so that inheritance', action='store_true')
+parser.add_argument('--ignoreXref', help='skip loading types that are referenced with `x-ref`', action='store_true')
 parser.add_argument('--noLogs', help='do not print logs', action='store_true')
 parser.add_argument('--protocolFile', help='where the metadata of the used models for this specifig gen job are stored')
 parser.add_argument('--skipCodeGenIfVersionUnchanged', help='when the model versions are unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
 parser.add_argument('--skipCodeGenIfMd5Unchanged', help='when the model file md5 is unchanged, then the codegen is skipped', action='store_true')  # noqa: E501
+
 parser.add_argument('--skipCodeGenDryRun', help='prints only the log messages if codegen should be skipped', action='store_true')
 parser.add_argument('--failIfTypeNamesNotUnique', help='the code execution fails if there are not unique type names in the loaded type tree', action='store_true')  # noqa: E501
 parser.add_argument('--makeMultipleTypeNamesUnique', help='if there are type names multiple times in the list of loaded times, they are changed to be unique', action='store_true')  # noqa: E501
@@ -60,7 +68,7 @@ parser.add_argument('--folder2StoreTemplates', help='Folder to store templates f
 parser.add_argument('--delExistingStoredTemplates', help='set to false to skip download of http located templates if they exist locally', action='store_true')  # noqa: E501
 
 
-def readModels(configJob, flattenInheritance):
+def readModels(configJob, flattenInheritance, ignoreXref):
     """reads all desired models and build the model object tree from it"""
 
     loadedTypes = []
@@ -68,17 +76,16 @@ def readModels(configJob, flattenInheritance):
     for model in configJob.models:
         fileExt = getFileExt(model.schema)
         if fileExt.lower() in yamlExtensions:
-            loadedTypes = getModelFromYaml(model, loadedTypes)
+            loadedTypes = getModelFromYaml(model, loadedTypes, False, ignoreXref)
         else:
-            loadedTypes = getModelFromJson(model, loadedTypes)
+            loadedTypes = getModelFromJson(model, loadedTypes, False, ignoreXref)
     return _postProcessLoadedModels(loadedTypes, flattenInheritance)
 
 
 def _postProcessLoadedModels(loadedTypes, flattenInheritance):
     if flattenInheritance:
         loadedTypes = modelFuncs.flattenTypes(loadedTypes)
-    loadedTypes = modelFuncs.processYacgTags(loadedTypes)
-    return loadedTypes
+    return modelFuncs.processYacgTags(loadedTypes)
 
 
 def _getVars(args):
@@ -210,6 +217,7 @@ def getJobConfigurations(args):
     if args.config is not None:
         templateParameters = _getTemplateParameters(args)
         blackList, whiteList = __getBlackWhiteListsFromArgs(args)
+
         tasksToInclude = args.tasks if args.tasks is not None else []
         jobsToInclude = args.jobs if args.jobs is not None else []
         vars = _getVars(args)
@@ -218,13 +226,15 @@ def getJobConfigurations(args):
             # there are models from the commandline that have to be mixed in the config file data
             for job in jobArray:
                 _putArgModelsToJob(args, job)
-        if len(templateParameters) == 0:
-            return jobArray
         # mix in of command line parameters to increase flexibility
         for job in jobArray:
             for task in job.tasks:
-                task.blackListed = blackList
-                task.whiteListed = whiteList
+                if len(blackList) > 0:
+                    for entry in blackList:
+                        task.blackListed.append(entry)
+                if len(whiteList) > 0:
+                    for entry in whiteList:
+                        task.whiteListed.append(entry)
                 if task.singleFileTask is not None:
                     task.singleFileTask.templateParams = task.singleFileTask.templateParams + templateParameters
                 elif task.multiFileTask is not None:
@@ -425,7 +435,7 @@ def __doCodeGen(codeGenerationJobs, args):
     allSkipped = True
     jobIndex = 1
     for job in codeGenerationJobs:
-        allLoadedTypes = readModels(job, args.flattenInheritance)
+        allLoadedTypes = readModels(job, args.flattenInheritance, args.ignoreXref)
         modelMetaData = protocolFuncs.getModelMetaData(allLoadedTypes, job.models[0].schema)
         jobName = job.name if job.name else "UNKNOWN_JOB_{}".format(jobIndex)
         jobsMetaData[jobName] = modelMetaData
@@ -479,7 +489,7 @@ def __printUsedFiles(codeGenerationJobs, args):
 
     usedFiles = []
     for job in codeGenerationJobs:
-        loadedTypes = readModels(job, args.flattenInheritance)
+        loadedTypes = readModels(job, args.flattenInheritance, args.ignoreXref)
         for type in loadedTypes:
             if isinstance(type, EnumType) or isinstance(type, ComplexType):
                 if type.source is not None:
@@ -499,6 +509,8 @@ def main():
     """starts the program execution"""
     args = parser.parse_args()
     codeGenerationJobs = getJobConfigurations(args)
+
+
     if not _isConfigurationValid(codeGenerationJobs, args):
         sys.exit(1)
     if args.usedFilesOnly:

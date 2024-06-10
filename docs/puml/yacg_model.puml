@@ -19,8 +19,16 @@ ObjectType --|> Type
  
 
 enum "IntegerTypeFormatEnum" as IntegerTypeFormatEnum {
+    INT8
+    INT16
+    INT24
     INT32
     INT64
+    UINT8
+    UINT16
+    UINT24
+    UINT32
+    UINT64
 }
 
 class "**IntegerType**" as IntegerType {
@@ -67,6 +75,7 @@ class "**StringType**" as StringType {
         NumberType minLength
         NumberType maxLength
         StringType pattern
+        StringType format
 }
 note top: integer values
 
@@ -273,6 +282,7 @@ note top: Type describes the reference of\na property to another field\nin the m
     
 
     
+
 
 
 

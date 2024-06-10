@@ -103,7 +103,7 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
         ret = {}
         % if hasattr(type, "properties"):
             % for property in type.properties:
-                % if (property.isArray) or (isinstance(property.type, model.DictionaryType)) or (isinstance(property.type, model.ArrayType)):
+                % if (property.isArray) or (isinstance(property.type, model.ArrayType)):
         if (self.${property.name} is not None) and (len(self.${property.name}) > 0):
                     % if modelFuncs.isBaseType(property.type):
             ret["${property.name}"] = self.${property.name}
@@ -112,6 +112,9 @@ class ${type.name}${ ' ({})'.format(pythonFuncs.getExtendsType(type, modelTypes,
                     % else:
             ret["${property.name}"] = self.${property.name}.toDict()
                     % endif
+                % elif isinstance(property.type, model.DictionaryType):
+        if (self.${property.name} is not None) and (len(self.${property.name}) > 0):
+            ret["${property.name}"] = self.${property.name}
                 % else:
         if self.${property.name} is not None:
                     % if modelFuncs.isBaseType(property.type):

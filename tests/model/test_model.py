@@ -17,8 +17,16 @@ class TestYacgModel (unittest.TestCase):
         self.assertIsNotNone(x)
 
     def testIntegerTypeFormatEnum(self):
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT8)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT16)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT24)
         self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT32)
         self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.INT64)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.UINT8)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.UINT16)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.UINT24)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.UINT32)
+        self.assertIsNotNone(yacg.model.model.IntegerTypeFormatEnum.UINT64)
 
     def testIntegerType(self):
         x = yacg.model.model.IntegerType()

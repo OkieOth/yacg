@@ -10,7 +10,11 @@ class InfoSection:
     """
 
     def __init__(self, dictObj=None):
+
+        #: title of the model
         self.title = None
+
+        #: version of the model
         self.version = None
         self.description = None
         self.license = None

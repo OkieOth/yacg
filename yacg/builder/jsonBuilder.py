@@ -3,7 +3,7 @@ import os.path
 from .impl.dictionaryBuilder import extractTypes, getParsedSchemaFromJson
 
 
-def getModelFromJson(model, typeList, skipOpenApi=False):
+def getModelFromJson(model, typeList, skipOpenApi=False, ignoreXRefTypes=False):
     """reads a JSON schema file and build a model from it,
     returns a list of yacg.model.model.Type objects
 
@@ -16,4 +16,4 @@ def getModelFromJson(model, typeList, skipOpenApi=False):
     modelFile = model.schema
     parsedSchema = getParsedSchemaFromJson(modelFile)
     modelFile = os.path.abspath(modelFile)
-    return extractTypes(parsedSchema, modelFile, typeList, skipOpenApi)
+    return extractTypes(parsedSchema, modelFile, typeList, skipOpenApi, ignoreXRefTypes)

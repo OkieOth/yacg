@@ -5,8 +5,8 @@ import yacg.model.config as config
 import yacg.model.model as model
 
 from yacg.model.model import IntegerType, IntegerTypeFormatEnum, NumberType, NumberTypeFormatEnum
-# from yacg.model.model import StringType, UuidType
-# from yacg.model.model import EnumType, DateTimeType, TimeType
+from yacg.model.model import StringType, EnumType, DictionaryType
+from yacg.model.model import DateType, TimeType, DateTimeType, UuidType
 from yacg.model.model import ComplexType, BytesType, ObjectType
 import yacg.generators.helper.javaFuncs as javaFuncs
 import yacg.model.modelFuncs as modelFuncs
@@ -21,7 +21,7 @@ def getExampleType():
     return modelTypes[0]
 
 
-# For executing these tests run: python -m unittest -v tests/generators/test_javaFuncs.py
+# For executing these tests run: python3 -m unittest -v tests/generators/test_javaFuncs.py
 class TestJavaFuncs (unittest.TestCase):
 
     def testIsDouble(self):
@@ -131,6 +131,14 @@ class TestJavaFuncs (unittest.TestCase):
         self.assertEqual('Double', javaFuncs.getJavaType(numberType, False))
         self.assertEqual('java.util.List<Double>', javaFuncs.getJavaType(numberType, True))
 
+        stringType = StringType()
+        self.assertEqual('String', javaFuncs.getJavaType(stringType, False))
+        self.assertEqual('java.util.List<String>', javaFuncs.getJavaType(stringType, True))
+
+        uuidType = UuidType()
+        self.assertEqual('java.util.UUID', javaFuncs.getJavaType(uuidType, False))
+        self.assertEqual('java.util.List<java.util.UUID>', javaFuncs.getJavaType(uuidType, True))
+
         objectType = ObjectType()
         self.assertEqual('Object', javaFuncs.getJavaType(objectType, False))
         self.assertEqual('java.util.List<Object>', javaFuncs.getJavaType(objectType, True))
@@ -139,6 +147,27 @@ class TestJavaFuncs (unittest.TestCase):
         self.assertEqual('byte[]', javaFuncs.getJavaType(bytesType, False))
         self.assertEqual('java.util.List<byte[]>', javaFuncs.getJavaType(bytesType, True))
 
+        dateType = DateType()
+        self.assertEqual('java.time.LocalDate', javaFuncs.getJavaType(dateType, False))
+        self.assertEqual('java.util.List<java.time.LocalDate>', javaFuncs.getJavaType(dateType, True))
+
+        timeType = TimeType()
+        self.assertEqual('java.time.LocalTime', javaFuncs.getJavaType(timeType, False))
+        self.assertEqual('java.util.List<java.time.LocalTime>', javaFuncs.getJavaType(timeType, True))
+
+        dateTimeType = DateTimeType()
+        self.assertEqual('java.time.LocalDateTime', javaFuncs.getJavaType(dateTimeType, False))
+        self.assertEqual('java.util.List<java.time.LocalDateTime>', javaFuncs.getJavaType(dateTimeType, True))
+
+        enumType = EnumType()
+        enumType.name = 'Foo'
+        self.assertEqual('Foo', javaFuncs.getJavaType(enumType, False))
+        self.assertEqual('java.util.List<Foo>', javaFuncs.getJavaType(enumType, True))
+
+        dictType = DictionaryType()
+        dictType.valueType = UuidType()
+        self.assertEqual('java.util.Map<String, java.util.UUID>', javaFuncs.getJavaType(dictType, False))
+        self.assertEqual('java.util.List<java.util.Map<String, java.util.UUID>>', javaFuncs.getJavaType(dictType, True))
 
     def testJavaFuncs(self):
         myType = getExampleType()
