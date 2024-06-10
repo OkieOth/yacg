@@ -1,3 +1,6 @@
+# 6.6.0
+* add additional functions to modelFuncs
+
 # 6.5.2
 * fix error with black- and white-lists in mixed usage scenarios of
   config files and commandline switches
@@ -14,6 +17,7 @@
 
 # 6.3.0
 * introduce switch `ignoreXref` to exclude pure x-ref types from loading
+>>>>>>> master
 
 # 6.2.0
 * enable http/s sources for templates

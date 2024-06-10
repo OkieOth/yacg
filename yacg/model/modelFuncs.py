@@ -461,6 +461,23 @@ def isUuidContained(modelTypes):
     return False
 
 
+def isDictTypeContained(modelTypes):
+    """returns True, if at least one of model types contains a property of type model.DictionaryType, False otherwise.
+
+    Keyword arguments:
+    modelTypes -- types of the model
+    """
+
+    for type in modelTypes:
+        if isinstance(type, model.DictionaryType):
+            return True
+        if isinstance(type, model.ComplexType):
+            for property in type.properties:
+                if (property.type is not None) and (isinstance(property.type, model.DictionaryType)):
+                    return True
+    return False
+
+
 def isObjectContained(modelTypes):
     """returns True, if at least one of model types contains a property of type model.ObjectType, False otherwise.
 
@@ -799,6 +816,20 @@ def getLocalTypePrefix(schemaAsDict):
         if componentsDict is not None:
             return "#/components/schemas/"
     return None
+
+
+def getRequiredProperties(type):
+    """This function goes all properties of the type and returns a
+    list with all required properties.
+    """
+
+    ret = []
+    if not hasattr(type, "properties"):
+        return ret
+    for p in type.properties:
+        if p.required:
+            ret.append(p)
+    return ret
 
 
 def _getTypeType(type):
