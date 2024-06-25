@@ -1,3 +1,6 @@
+# 6.7.0
+* add 'getProperty' function to modelFuncs
+
 # 6.6.0
 * add additional functions to modelFuncs
 

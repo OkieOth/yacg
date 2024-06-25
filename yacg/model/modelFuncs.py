@@ -54,6 +54,24 @@ def hasProperty(propertyName, typeObj):
     return False
 
 
+def getProperty(propertyName, typeObj):
+        """checks whether the type, which was provided as parameter, has a property with the given name,
+        and returns that property accordingly.
+        Returns the corresponding property or 'None', if no  such property is available
+
+        Keyword arguments:
+        propertyName -- name of the property to look for
+        typeObj -- type object to check up
+        """
+
+        if not hasattr(typeObj, 'properties'):
+            return False
+        for property in typeObj.properties:
+            if property.name == propertyName:
+                return property
+        return None
+
+
 def hasKey(typeObj):
     """checks if a specific type object has a property that is marked as
     unique key.
