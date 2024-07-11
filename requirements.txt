@@ -28,4 +28,4 @@ six==1.16.0
 urllib3==2.2.2
 urwid==2.2.2
 urwid_readline==0.13
-zipp==3.17.0
+zipp==3.19.1
