@@ -1,0 +1,79 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "version": "1.1.0",
+	"$comment": "working source: tests/resources/models/json/examples/generic-t.json",
+    "ddefinitions": {
+      "TTT": {
+        "type": "object",
+        "properties": {
+          "guid": {
+            "description": "primary key",
+            "x-comment": "use uuid v4",
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "$comment": "normal name thing",
+            "x-tags": ["filter"]
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/TTTNode"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "TTTNode": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "./id_name_pair.json"
+          },
+          {
+            "properties": {
+              "yyy": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "subNodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/TTTSubNode"
+                },
+                "examples": [
+                  {
+                    "xxx": 1,
+                    "y": true
+                  },
+                  123,
+                  "bla"
+                ],
+                "minItems": 0
+              },
+              "detectors": {
+                "description": "loops, cameras, buttons, ...",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/DDD"
+                },
+                "minItems": 0
+              }
+            }
+          }
+        ]
+      },
+      "TTTSubNode": {
+        "description": "representation of an intersection, all things are running in the same program",
+        "$ref": "./id_name_pair.json"
+      },
+      "DDD": {
+        "description": "representation of an intersection, all things are running in the same program",
+        "$ref": "./id_name_pair.json"
+      }
+    },
+    "type": "object"
+  }
+  

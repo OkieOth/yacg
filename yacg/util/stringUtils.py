@@ -21,6 +21,9 @@ def toUpperCamelCase(text, separator=None):
     """converts a given Text to a upper camel case text
     this is an example -> ThisIsAnExample"""
 
+    if text is None:
+        return ""
+
     splittedText = text.split() if separator is None else text.split(separator)
     upperCamelCase = ''
     for t in splittedText:

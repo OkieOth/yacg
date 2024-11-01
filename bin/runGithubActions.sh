@@ -77,7 +77,7 @@ fi
 
 if ! python \
     validate.py --schema resources/models/json/yacg_config_schema.json \
-    --inputFile resources/configurations/conf_with_vars.json --draft07hack &> /dev/null; then
+    --inputFile resources/configurations/conf_with_vars.json --draft07hack; then
     echo "can't validate schema"
     popd > /dev/null
     exit 1
@@ -127,6 +127,31 @@ if python yacg.py \
     exit 1
 fi
 
+# Tests for the schema validation
+
+if python validateSchemas.py --schema tests/resources/evil/evil1.json --noEmptySchemas > /dev/null; then
+    echo "Didn't identify violated schema: evil1.json"
+    popd &> /dev/null
+    exit 1
+fi
+
+if python validateSchemas.py --schema tests/resources/evil/evil2.json  --noEmptySchemas > /dev/null; then
+    echo "Didn't identify violated schema: evil2.json"
+    popd &> /dev/null
+    exit 1
+fi
+
+if ! python validateSchemas.py --inputDir tests/resources/models  --noEmptySchemas > /dev/null; then
+    echo "didn't validate inputDir: tests/resources/models"
+    popd &> /dev/null
+    exit 1
+fi
+
+if python validateSchemas.py --inputDir tests/resources/evil  --noEmptySchemas > /dev/null; then
+    echo "didn't fail on inputDir: tests/resources/evil"
+    popd &> /dev/null
+    exit 1
+fi
 
 echo "all good :)"
 popd > /dev/null
