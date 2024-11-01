@@ -141,6 +141,17 @@ if python validateSchemas.py --schema tests/resources/evil/evil2.json  --noEmpty
     exit 1
 fi
 
+if ! python validateSchemas.py --inputDir tests/resources/models  --noEmptySchemas > /dev/null; then
+    echo "didn't validate inputDir: tests/resources/models"
+    popd &> /dev/null
+    exit 1
+fi
+
+if python validateSchemas.py --inputDir tests/resources/evil  --noEmptySchemas > /dev/null; then
+    echo "didn't fail on inputDir: tests/resources/evil"
+    popd &> /dev/null
+    exit 1
+fi
 
 echo "all good :)"
 popd > /dev/null
