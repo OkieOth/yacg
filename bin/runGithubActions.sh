@@ -77,7 +77,7 @@ fi
 
 if ! python \
     validate.py --schema resources/models/json/yacg_config_schema.json \
-    --inputFile resources/configurations/conf_with_vars.json --draft07hack &> /dev/null; then
+    --inputFile resources/configurations/conf_with_vars.json --draft07hack; then
     echo "can't validate schema"
     popd > /dev/null
     exit 1
@@ -124,6 +124,20 @@ if python yacg.py \
     --singleFileTemplates https://raw.githubusercontent.com/OkieOth/oth.types/master/configs/codegen/templates/golang_types_X.mako=stdout; then
     echo "problems while running a single file job from command line"
     popd > /dev/null
+    exit 1
+fi
+
+# Tests for the schema validation
+
+if python validateSchemas.py --schema tests/resources/evil/evil1.json --noEmptySchemas > /dev/null; then
+    echo "Didn't identify violated schema: evil1.json"
+    popd &> /dev/null
+    exit 1
+fi
+
+if python validateSchemas.py --schema tests/resources/evil/evil2.json  --noEmptySchemas > /dev/null; then
+    echo "Didn't identify violated schema: evil2.json"
+    popd &> /dev/null
     exit 1
 fi
 
