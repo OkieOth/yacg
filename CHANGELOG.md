@@ -1,3 +1,9 @@
+# 6.8.1
+* update Dockerfile to add 'validateSchemas' script
+
+# 6.8.0
+* add 'validateSchemas' script, to check for JSON issues in schemas
+
 # 6.7.0
 * add 'getProperty' function to modelFuncs
 
