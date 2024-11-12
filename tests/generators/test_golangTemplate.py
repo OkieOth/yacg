@@ -45,6 +45,34 @@ class TestGoLang (unittest.TestCase):
             (),
             singleFileTask)
 
+    def testGolangTemplate(self):
+        dirpath = Path('tmp', 'golang3')
+        if dirpath.exists() and dirpath.is_dir():
+            shutil.rmtree(dirpath)
+        modelFile = 'resources/models/yaml/layer.yaml'
+        modelFileExists = os.path.isfile(modelFile)
+        self.assertTrue('model file exists: ' + modelFile, modelFileExists)
+        model = config.Model()
+        model.schema = modelFile
+        modelTypes = getModelFromYaml(model, [])
+        templateFile = 'yacg/generators/templates/golang.mako'
+        templateParameters = []
+        templateParam = config.TemplateParam()
+        templateParam.name = 'modelPackage'
+        templateParam.value = 'golang_test'
+        templateParameters.append(templateParam)
+        singleFileTask = SingleFileTask()
+        singleFileTask.template = templateFile
+        singleFileTask.destFile = 'tmp/golang3/layer.go'
+        singleFileTask.templateParams = templateParameters
+
+        renderSingleFileTemplate(
+            modelTypes,
+            (),
+            (),
+            singleFileTask)
+
+
     def testEvilEnum(self):
         dirpath = Path('tmp', 'golang2')
         if dirpath.exists() and dirpath.is_dir():

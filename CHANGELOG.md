@@ -1,3 +1,6 @@
+# 6.9.0
+* update Golang template, so that the builder pattern is supported
+
 # 6.8.1
 * update Dockerfile to add 'validateSchemas' script
 
