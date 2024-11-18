@@ -13,6 +13,7 @@ ADD randomDataServer.py randomDataServer.py
 ADD customRandomConstraints.py customRandomConstraints.py
 ADD validate.py validate.py
 ADD validateSchemas.py validateSchemas.py
+ADD sort_dict.py sort_dict.py
 ADD version.txt version.txt
 ADD requirements.txt requirements.txt
 #ADD start_debug.sh start_debug.sh
