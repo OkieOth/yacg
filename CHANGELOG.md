@@ -1,3 +1,6 @@
+# 6.10.1
+* fix required issue in allOf situations
+
 # 6.9.0
 * update Golang template, so that the builder pattern is supported
 

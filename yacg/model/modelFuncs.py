@@ -496,6 +496,8 @@ def isDictTypeContained(modelTypes):
     return False
 
 
+
+
 def isObjectContained(modelTypes):
     """returns True, if at least one of model types contains a property of type model.ObjectType, False otherwise.
 

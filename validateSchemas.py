@@ -53,7 +53,8 @@ def main():
                                     extractedTypes = builder.extractTypes(schemaAsDict, file_path, [], False)
                                     if len(extractedTypes) == 0:
                                         violatedFiles.append(file_path)            
-                    except (json.JSONDecodeError, FileNotFoundError, IndexError) as e:
+                    except Exception as e:
+                        print(e)
                         # Handle errors: skip files with bad JSON or that can't be read
                         violatedFiles.append(file_path)
         if len(violatedFiles) > 0:

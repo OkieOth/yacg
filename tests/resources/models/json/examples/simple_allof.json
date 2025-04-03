@@ -21,7 +21,7 @@
             "x-ordinal": 6
           }
         },
-        "required": ["street_address", "city", "state"]
+        "required": ["city", "state"]
       },
       "EvilAddress": {
         "$ref": "#/definitions/Address"

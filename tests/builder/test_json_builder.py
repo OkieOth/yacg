@@ -6,7 +6,7 @@ from yacg.model.model import DateType, DictionaryType, IntegerType, NumberType, 
 from yacg.model.model import StringType, UuidType
 from yacg.model.model import DateTimeType, BytesType
 from yacg.model.model import EnumType, ComplexType, ArrayType
-from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes, getTypeAndAllRelatedTypes, getNotUniqueTypeNames, makeTypeNamesUnique  # noqa: E501
+from yacg.model.modelFuncs import hasTag, getPropertiesThatHasTag, doesTypeOrAttribContainsType, getTypesWithTag, getTypesRelatedTagName, getTypeAndAllChildTypes, getTypeAndAllRelatedTypes, getNotUniqueTypeNames, makeTypeNamesUnique, flattenTypes  # noqa: E501
 from yacg.generators.singleFileGenerator import renderSingleFileTemplate
 
 import yacg.model.config as config
@@ -287,6 +287,16 @@ class TestJsonBuilder (unittest.TestCase):
         self.assertEqual(4, addressType.properties[0].ordinal)
         self.assertEqual(5, addressType.properties[1].ordinal)
         self.assertEqual(6, addressType.properties[2].ordinal)
+
+        modelTypes = flattenTypes(modelTypes)
+        self.assertEqual(6, len(modelTypes))
+        mainType = modelTypes[2]
+        self.assertEqual(mainType.name, 'SimpleAllOfSchema')
+        self.assertEqual(4, len(mainType.properties))
+        self.assertFalse(mainType.properties[0].required)
+        self.assertTrue(mainType.properties[2].required)
+        self.assertTrue(mainType.properties[3].required)
+
 
     def testSophisticatedAllOf(self):
         modelFile = 'tests/resources/models/json/examples/more_sophisticated_allof.json'

@@ -1044,7 +1044,7 @@ def __handleAllOf(newType, allOfEntries, modelTypes, modelFileContainer, ignoreX
         propertiesEntry = allOfEntry.get('properties', None)
         if (propertiesEntry is not None):
             _extractAttributes(newType, propertiesEntry, modelTypes, modelFileContainer, ignoreXRefTypes)
-            _markRequiredAttributes(type, allOfEntry.get('required', []))
+            _markRequiredAttributes(newType, allOfEntry.get('required', []))
         elif tmpRefEntry is not None:
             newType.extendsType = _extractReferenceType(tmpRefEntry, modelTypes, modelFileContainer, ignoreXRefTypes)
 
